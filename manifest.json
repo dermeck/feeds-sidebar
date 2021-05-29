@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "version": "0.1",
+  "name": "YTRSS",
+
+  "icons": {
+    "48": "rss.svg"
+  },
+
+  "permissions": ["<all_urls>"],
+
+  "sidebar_action": {
+    "default_title": "YTRSS",
+    "default_panel": "/src/sidebar/sidebar.html",
+    "default_icon": "rss.svg"
+  }
+}
