@@ -5,6 +5,7 @@ A Firefox Extensions with a configurable UI (in the future) which lives in the S
 
 ## Next Tasks
 - [ ] Setup TypeScript, React Toolchain
+- [ ] ESLint
 - [ ] Configure web-ext [Browser Extension Development Tools](https://extensionworkshop.com/documentation/develop/browser-extension-development-tools/)
 - [ ] Add RSS Feed via Button
 - [ ] Show Feed in Sidebar
@@ -12,6 +13,7 @@ A Firefox Extensions with a configurable UI (in the future) which lives in the S
 - [ ] Open item
 - [ ] Remove Item
 - [ ] Fetch feed cyclic
+- [ ] Commit hook
 ## Link Dump
 Things that might be useful during development.
 
@@ -25,6 +27,8 @@ Sidebar: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/
 
 ### Design
 - [Photon Design System](https://design.firefox.com/photon/) (Proton comeing...)
+
+[Redux + TS Recommendations](https://youtu.be/oDqg53iOub4?t=2470)
 
 ---
 ## How to test manually
