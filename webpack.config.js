@@ -3,7 +3,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: {
-    sidebar: "./src//sidebar/sidebar.js",
+    sidebar: "./src//sidebar/sidebar.ts",
   },
 
   output: {
@@ -20,7 +20,7 @@ module.exports = {
           from: "**/*",
           context: "src",
           globOptions: {
-            ignore: ["**/*.js"],
+            ignore: ["**/*.ts"],
           },
         },
       ],
