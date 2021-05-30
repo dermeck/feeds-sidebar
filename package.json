@@ -1,0 +1,16 @@
+{
+  "name": "ytrss",
+  "version": "0.0.1",
+  "description": "A Firefox extension to read RSS feeds",
+  "repository": "git@github.com:dermeck/ytrss.git",
+  "author": "dermeck <dermeck@posteo.de>",
+  "scripts": {
+    "start": "webpack --mode development --watch",
+    "build": "webpack --mode production"
+  },
+  "devDependencies": {
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0",
+    "copy-webpack-plugin": "^9.0.0"
+  }
+}
