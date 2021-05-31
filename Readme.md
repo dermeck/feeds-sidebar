@@ -30,6 +30,9 @@ Sidebar: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/
 
 [Redux + TS Recommendations](https://youtu.be/oDqg53iOub4?t=2470)
 
+### Tests
+https://lusito.github.io/mockzilla-webextension/
+
 ---
 ## How to test manually
 
