@@ -4,7 +4,8 @@
 A Firefox Extensions with a configurable UI (in the future) which lives in the Sidebar.
 
 ## Next Tasks
-- [ ] Setup TypeScript, React Toolchain
+- [x] Setup TypeScript, React Toolchain,
+- [ ] RTK
 - [ ] ESLint
 - [ ] Configure web-ext [Browser Extension Development Tools](https://extensionworkshop.com/documentation/develop/browser-extension-development-tools/)
 - [ ] Add RSS Feed via Button
