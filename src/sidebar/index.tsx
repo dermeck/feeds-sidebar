@@ -1,5 +1,16 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { render } from "react-dom";
 import Sidebar from "./Sidebar";
+import { Store } from "webext-redux";
+import { Provider } from "react-redux";
 
-ReactDOM.render(<Sidebar />, document.getElementById("sidebar-root"));
+const store = new Store();
+
+store.ready().then(() => {
+  render(
+    <Provider store={store}>
+      <Sidebar />
+    </Provider>,
+    document.getElementById("sidebar-root")
+  );
+});
