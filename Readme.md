@@ -3,18 +3,6 @@
 
 A Firefox Extensions with a configurable UI (in the future) which lives in the Sidebar.
 
-## Next Tasks
-- [x] Setup TypeScript, React Toolchain,
-- [ ] RTK
-- [ ] ESLint
-- [ ] Configure web-ext [Browser Extension Development Tools](https://extensionworkshop.com/documentation/develop/browser-extension-development-tools/)
-- [ ] Add RSS Feed via Button
-- [ ] Show Feed in Sidebar
-- [ ] Fetch Feed content (and show it) on manual trigger
-- [ ] Open item
-- [ ] Remove Item
-- [ ] Fetch feed cyclic
-- [ ] Commit hook
 ## Link Dump
 Things that might be useful during development.
 
