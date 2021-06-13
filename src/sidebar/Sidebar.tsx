@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
+import FeedSlice from "../store/slices/feeds";
 
 function Sidebar() {
   const dispatch = useDispatch();
@@ -9,6 +10,7 @@ function Sidebar() {
       onClick={(e) => {
         console.log(e);
         dispatch({ type: "feed/added" });
+        dispatch(FeedSlice.actions.addFeed("moep"));
       }}
     >
       moep...
