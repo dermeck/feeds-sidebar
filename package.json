@@ -4,6 +4,7 @@
   "description": "A Firefox extension to read RSS feeds",
   "repository": "git@github.com:dermeck/ytrss.git",
   "author": "dermeck <dermeck@posteo.de>",
+  "license": "MIT",
   "scripts": {
     "start": "webpack --mode development --watch",
     "build": "webpack --mode production",
