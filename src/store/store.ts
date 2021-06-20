@@ -1,12 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
-import feedsSlice from "./slices/feeds";
+import { loggerMiddleware } from "./middleware/loggerMiddleware";
+import feedsSlice, { FeedSliceState } from "./slices/feeds";
 
 const store = configureStore({
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(loggerMiddleware),
   reducer: {
     feeds: feedsSlice.reducer,
   },
 });
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = {
+  feeds: FeedSliceState;
+};
 
 export default store;

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type SliceState = {
+export type FeedSliceState = {
   feeds: ReadonlyArray<Feed>;
 };
 
@@ -8,7 +8,7 @@ interface Feed {
   url: string;
 }
 
-const initialState: SliceState = { feeds: [] };
+const initialState: FeedSliceState = { feeds: [] };
 
 const feedsSlice = createSlice({
   name: "feeds",

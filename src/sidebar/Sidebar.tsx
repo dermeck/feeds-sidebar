@@ -8,8 +8,6 @@ function Sidebar() {
   return (
     <button
       onClick={(e) => {
-        console.log(e);
-        dispatch({ type: "feed/added" });
         dispatch(FeedSlice.actions.addFeed("moep"));
       }}
     >
