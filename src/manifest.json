@@ -7,7 +7,7 @@
     "48": "rss.svg"
   },
 
-  "permissions": ["<all_urls>"],
+  "permissions": ["alarms", "<all_urls>"],
 
   "background": {
     "scripts": ["background.js"]

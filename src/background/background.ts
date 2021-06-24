@@ -1,5 +1,3 @@
-import { browser } from "webextension-polyfill-ts";
-
 import { wrapStore } from "webext-redux";
 import store from "../store/store";
 
@@ -10,3 +8,6 @@ browser.browserAction.onClicked.addListener((e) => {
 
   browser.sidebarAction.open();
 });
+
+browser.alarms.create("fetchFeedsCycle", { periodInMinutes: 1 });
+browser.alarms.onAlarm.addListener(() => console.log("fetchFeedsCylce"));
