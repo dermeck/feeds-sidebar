@@ -11,6 +11,9 @@
     "lint": "eslint .eslintrc.json"
   },
   "devDependencies": {
+    "@emotion/css": "^11.1.3",
+    "@emotion/react": "^11.4.0",
+    "@emotion/styled": "^11.3.0",
     "@reduxjs/toolkit": "^1.6.0",
     "@types/firefox-webext-browser": "^82.0.0",
     "@types/react": "^17.0.8",
