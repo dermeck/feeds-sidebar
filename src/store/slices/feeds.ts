@@ -1,4 +1,9 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 
 export type FeedSliceState = {
   feeds: ReadonlyArray<Feed>;
@@ -6,9 +11,22 @@ export type FeedSliceState = {
 
 interface Feed {
   url: string;
+  title?: string;
 }
 
+export const fetchAllFeedsCommand = createAction("feeds/fetchAllFeedsCommand");
+
 const initialState: FeedSliceState = { feeds: [] };
+
+export const fetchFeedByUrl = createAsyncThunk<string, string>(
+  "feeds/fetchByUrl",
+  async (url) => {
+    console.log("fetch", url);
+    const response = await fetch(url);
+    console.log(response);
+    return await response.text();
+  }
+);
 
 const feedsSlice = createSlice({
   name: "feeds",
@@ -18,6 +36,11 @@ const feedsSlice = createSlice({
       console.log(action.type);
       state.feeds.push({ url: action.payload });
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchFeedByUrl.fulfilled, (state, action) => {
+      console.log("fetched...", action);
+    });
   },
 });
 
