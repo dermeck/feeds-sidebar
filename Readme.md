@@ -19,6 +19,13 @@ Sidebar: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/
 
 [Redux + TS Recommendations](https://youtu.be/oDqg53iOub4?t=2470)
 
+Colors & Theme
+https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/theme/getCurrent
+
+https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/theme#colors
+
+https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/theme_experiment
+
 ### Tests
 https://lusito.github.io/mockzilla-webextension/
 
