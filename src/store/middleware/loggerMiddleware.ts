@@ -8,9 +8,13 @@ export const loggerMiddleware: Middleware<
   RootState,
   ThunkDispatch<RootState, undefined, AnyAction>
 > = (storeApi) => (next) => (action) => {
-  console.log("dispatching", action);
+
+
+  console.groupCollapsed(typeof action !== "function"? `action type: ${action.type}` : "thunk")
   const result = next(action);
+  console.log("action", action)
   console.log("next state", storeApi.getState());
+  console.groupEnd();
 
   return result;
 };
