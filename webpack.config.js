@@ -1,5 +1,6 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 module.exports = {
   entry: {
@@ -26,7 +27,7 @@ module.exports = {
 
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
-  },
+},
 
   plugins: [
     new CopyPlugin({
@@ -40,5 +41,7 @@ module.exports = {
         },
       ],
     }),
+    // TODO only add required polyfills
+    new NodePolyfillPlugin()
   ],
 };
