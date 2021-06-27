@@ -9,5 +9,6 @@ browser.browserAction.onClicked.addListener((e) => {
   browser.sidebarAction.open();
 });
 
-browser.alarms.create("fetchFeedsCycle", { periodInMinutes: 1 });
-browser.alarms.onAlarm.addListener(() => console.log("fetchFeedsCylce"));
+// TODO
+// browser.alarms.create("fetchFeedsCycle", { periodInMinutes: 1 });
+// browser.alarms.onAlarm.addListener(() => console.log("fetchFeedsCylce"));
