@@ -4,7 +4,6 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import parseFeed from "../../services/feedParser";
 
 export type FeedSliceState = {
   feeds: ReadonlyArray<Feed>;
@@ -27,7 +26,7 @@ export interface Feed {
   type?: FeedType;
   title?: string;
   id?: string;
-  items?: ReadonlyArray<FeedItem>;
+  items?: Array<FeedItem>; // TODO should this be ReadOnlyArray?
 }
 
 export const fetchAllFeedsCommand = createAction("feeds/fetchAllFeedsCommand");
@@ -63,11 +62,13 @@ const feedsSlice = createSlice({
       console.log(action.type);
       state.feeds.push({ url: action.payload });
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchFeedByUrl.fulfilled, (state, action) => {
-      const parsedFeed = parseFeed(action.payload);
-    });
+    updateFeed(state, action: PayloadAction<Feed>) {
+      // TODO properly update the feed instead of re-adding it
+      state.feeds.push({
+        url: action.payload.url,
+        items: action.payload.items,
+      });
+    },
   },
 });
 
