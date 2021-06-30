@@ -17,8 +17,7 @@ export const feedMiddleware: Middleware<
 
   if (fetchAllFeedsCommand.match(action)) {
     storeApi.getState().feeds.feeds.forEach((feed) => {
-      // TODO url should never be undefined
-      if (feed.url !== undefined) storeApi.dispatch(fetchFeedByUrl(feed.url));
+      storeApi.dispatch(fetchFeedByUrl(feed.url));
     });
   }
 
