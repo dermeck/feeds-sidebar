@@ -16,9 +16,7 @@ const mapAtomFeed = (parserResult: FeedMeResult): Feed => {
   };
 };
 
-const mapAtomLink = (
-  linkData: FeedObject | FeedObject[]
-): string | undefined => {
+const mapAtomLink = (linkData: FeedObject | FeedObject[]): string => {
   // TODO cleanup this method
 
   // console.log("mapAtomLink", linkData);
@@ -42,9 +40,9 @@ const mapAtomLink = (
       if (linkData.href !== undefined && typeof linkData.href === "string")
         return linkData.href;
     }
-
-    return undefined;
   }
+
+  throw new Error("atom link not found");
 };
 
 const mapAtomFeedItems = (

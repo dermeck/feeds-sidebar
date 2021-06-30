@@ -18,11 +18,11 @@ export const enum FeedType {
 
 export interface FeedItem {
   title: string;
-  url?: string; // TODO make this required
+  url: string;
 }
 
 export interface Feed {
-  url?: string; // TODO make this required
+  url: string;
   type?: FeedType;
   title?: string;
   id?: string;
