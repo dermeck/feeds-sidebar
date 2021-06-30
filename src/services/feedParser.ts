@@ -49,7 +49,7 @@ const mapAtomLink = (
 
 const mapAtomFeedItems = (
   items: ReadonlyArray<FeedMeFeedItem>
-): ReadonlyArray<FeedItem> => {
+): Array<FeedItem> => {
   return items.map((x) => {
     return {
       title: x.title as string, // TODO type this properly
@@ -58,43 +58,46 @@ const mapAtomFeedItems = (
   });
 };
 
-const parseFeed = (feed: string) => {
+const parseFeed = async (feed: string): Promise<Feed> => {
   const parser = new FeedMe(true);
 
-  parser.on("finish", () => {
-    const parserResult = parser.done();
+  return new Promise((resolve, reject) => {
+    parser.on("finish", () => {
+      const parserResult = parser.done();
 
-    if (parserResult === undefined) {
-      return;
-    }
-
-    const feedType = parserResult.type;
-
-    switch (feedType) {
-      case FeedType.atom:
-        const mappedFeed = mapAtomFeed(parserResult);
-        console.log("mappedAtomFeed", mappedFeed);
-
+      if (parserResult === undefined) {
         return;
-      case FeedType.rss1:
-      case FeedType.rss2:
-      case FeedType.json:
-      // TODO parse other feed types
-      // console.log("feed type not yet supported: ", feedType);
+      }
 
-      default:
-        console.log("unknown feed type: ", feedType);
-    }
+      const feedType = parserResult.type;
+
+      switch (feedType) {
+        case FeedType.atom:
+          const mappedFeed = mapAtomFeed(parserResult);
+          console.log("mappedAtomFeed", mappedFeed);
+
+          resolve(mappedFeed);
+          return;
+        case FeedType.rss1:
+        case FeedType.rss2:
+        case FeedType.json:
+          // TODO parse other feed types
+          // console.log("feed type not yet supported: ", feedType);
+
+          reject();
+        default:
+          console.log("unknown feed type: ", feedType);
+      }
+    });
+
+    parser.on("error", () => {
+      reject();
+      console.error("Error while parsing feed");
+    });
+
+    parser.write(feed);
+    parser.end();
   });
-
-  parser.on("error", () => {
-    console.error("Error while parsing feed");
-  });
-
-  parser.write(feed);
-  parser.end();
-
-  // TODO move to middleware and dispatch action with result
 };
 
 export default parseFeed;
