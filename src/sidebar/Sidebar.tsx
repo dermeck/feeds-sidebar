@@ -12,7 +12,14 @@ const Sidebar: FunctionComponent = () => {
     <Fragment>
       <NewFeedForm />
       {feeds.map((feed) => (
-        <li key={feed.url}>{feed.url}</li>
+        <div key={feed.url}>
+          {feed.url}
+          <ul>
+            {feed.items?.map((item) => (
+              <li>{item.title}</li>
+            ))}
+          </ul>
+        </div>
       ))}
       <Button onClick={() => dispatch(fetchAllFeedsCommand())}>
         Fetch Feeds
