@@ -38,7 +38,18 @@ const initialState: FeedSliceState = {
       // sample RSS 1.0 / RDF Feed
       // https://www.w3schools.com/xml/xml_rdf.asp
       url: "https://www.dragonball-multiverse.com/flux.rss.php?lang=en",
+      items: [],
     },*/
+    {
+      // sample RSS 2.0 Feed
+      url: "https://www.tagesschau.de/xml/rss2/",
+      items: [],
+    },
+    {
+      // sample Youtube Feed (Atom)
+      url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA",
+      items: [],
+    },
   ],
 };
 
