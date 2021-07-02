@@ -9,24 +9,20 @@ export type FeedSliceState = {
   feeds: ReadonlyArray<Feed>;
 };
 
-export const enum FeedType {
-  atom = "atom",
-  rss1 = "rss 1.0",
-  rss2 = "rss 2.0",
-  json = "json",
+export interface Feed {
+  url: string;
+  items: Array<FeedItem>; // TODO should this be ReadOnlyArray?
+  link?: string;
+  title?: string;
+  id?: string;
 }
 
 export interface FeedItem {
+  id: string;
   title: string;
   url: string;
-}
-
-export interface Feed {
-  url: string;
-  type?: FeedType;
-  title?: string;
-  id?: string;
-  items?: Array<FeedItem>; // TODO should this be ReadOnlyArray?
+  published?: Date;
+  lastModified?: Date;
 }
 
 export const fetchAllFeedsCommand = createAction("feeds/fetchAllFeedsCommand");
@@ -36,6 +32,7 @@ const initialState: FeedSliceState = {
     {
       // sample Atom Feed
       url: "https://ourworldindata.org/atom.xml",
+      items: [],
     },
     /*{
       // sample RSS 1.0 / RDF Feed
@@ -60,7 +57,7 @@ const feedsSlice = createSlice({
   reducers: {
     addFeed(state, action: PayloadAction<string>) {
       console.log(action.type);
-      state.feeds.push({ url: action.payload });
+      state.feeds.push({ url: action.payload, items: [] });
     },
     updateFeed(state, action: PayloadAction<Feed>) {
       // TODO feed should already exist since it was previously added, remove condition after parser works properly

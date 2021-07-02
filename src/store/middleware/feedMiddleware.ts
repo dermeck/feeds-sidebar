@@ -22,7 +22,10 @@ export const feedMiddleware: Middleware<
   }
 
   if (fetchFeedByUrl.fulfilled.match(action)) {
-    const parsedFeed = await parseFeed(action.payload);
+    const parsedFeed = await parseFeed({
+      feedUrl: action.meta.arg,
+      feedData: action.payload,
+    });
 
     storeApi.dispatch(feedsSlice.actions.updateFeed(parsedFeed));
   }

@@ -1,101 +1,48 @@
-import FeedMe, {
-  Feed as FeedMeResult,
-  FeedItem as FeedMeFeedItem,
-  FeedObject,
-} from "feedme";
-import { Feed, FeedItem, FeedType } from "../store/slices/feeds";
+import { Feed, FeedItem } from "../store/slices/feeds";
+import FeedParser, { Item } from "feedparser";
 
-const mapAtomFeed = (parserResult: FeedMeResult): Feed => {
-  return {
-    type: FeedType.atom,
-    title:
-      typeof parserResult.title === "string" ? parserResult.title : undefined,
-    id: typeof parserResult.id === "string" ? parserResult.id : undefined,
-    url: mapAtomLink(parserResult.link),
-    items: mapAtomFeedItems(parserResult.items),
+const parseFeed = async (input: {
+  feedUrl: string;
+  feedData: string;
+}): Promise<Feed> => {
+  const parser = new FeedParser({});
+  let parsedFeed: Feed = {
+    url: input.feedUrl,
+    items: [],
   };
-};
-
-const mapAtomLink = (linkData: FeedObject | FeedObject[]): string => {
-  // TODO cleanup this method
-
-  // console.log("mapAtomLink", linkData);
-
-  if (typeof linkData === "string") {
-    return linkData;
-  }
-
-  if (Array.isArray(linkData)) {
-    const result = linkData.find(
-      (x) =>
-        typeof x !== "string" && x.type === "text/html" && x.rel === "alternate"
-    );
-
-    if (typeof result === "object") {
-      if (result.href !== undefined && typeof result.href === "string")
-        return result.href;
-    }
-  } else {
-    if (typeof linkData === "object") {
-      if (linkData.href !== undefined && typeof linkData.href === "string")
-        return linkData.href;
-    }
-  }
-
-  throw new Error("atom link not found");
-};
-
-const mapAtomFeedItems = (
-  items: ReadonlyArray<FeedMeFeedItem>
-): Array<FeedItem> => {
-  return items.map((x) => {
-    return {
-      title: x.title as string, // TODO type this properly
-      url: mapAtomLink(x.link),
-    };
-  });
-};
-
-const parseFeed = async (feed: string): Promise<Feed> => {
-  const parser = new FeedMe(true);
 
   return new Promise((resolve, reject) => {
-    parser.on("finish", () => {
-      const parserResult = parser.done();
+    parser.on("meta", () => {
+      parsedFeed.title = parser.meta.title || "";
+      parsedFeed.link = parser.meta.link || "";
+    });
 
-      if (parserResult === undefined) {
-        return;
-      }
+    parser.on("readable", () => {
+      let item: Item;
 
-      const feedType = parserResult.type;
-
-      switch (feedType) {
-        case FeedType.atom:
-          const mappedFeed = mapAtomFeed(parserResult);
-          console.log("mappedAtomFeed", mappedFeed);
-
-          resolve(mappedFeed);
-          return;
-        case FeedType.rss1:
-        case FeedType.rss2:
-        case FeedType.json:
-          // TODO parse other feed types
-          // console.log("feed type not yet supported: ", feedType);
-
-          reject();
-        default:
-          console.log("unknown feed type: ", feedType);
+      while ((item = parser.read())) {
+        parsedFeed.items.push(mapFeedItem(item));
       }
     });
 
-    parser.on("error", () => {
-      reject();
-      console.error("Error while parsing feed");
+    parser.on("error", (e: any) => {
+      reject(e);
     });
 
-    parser.write(feed);
-    parser.end();
+    parser.write(input.feedData);
+
+    parser.end(() => {
+      resolve(parsedFeed);
+    });
   });
 };
+
+const mapFeedItem = (item: Item): FeedItem => ({
+  id: item.guid || item.link,
+  url: item.link,
+  title: item.title,
+  published: item.pubdate || undefined,
+  lastModified: item.date || undefined,
+});
 
 export default parseFeed;
