@@ -26,6 +26,8 @@ https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.
 
 https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/theme_experiment
 
+icons firefox-89.0/browser/themes/shared/places 
+
 ### Tests
 https://lusito.github.io/mockzilla-webextension/
 
