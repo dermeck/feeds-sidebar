@@ -13,10 +13,10 @@ const Sidebar: FunctionComponent = () => {
       <NewFeedForm />
       {feeds.map((feed) => (
         <div key={feed.url}>
-          {feed.url}
+          {feed.title || feed.url}
           <ul>
             {feed.items?.map((item) => (
-              <li>{item.title}</li>
+              <li key={item.id}>{item.title}</li>
             ))}
           </ul>
         </div>

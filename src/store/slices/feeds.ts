@@ -60,27 +60,13 @@ const feedsSlice = createSlice({
       state.feeds.push({ url: action.payload, items: [] });
     },
     updateFeed(state, action: PayloadAction<Feed>) {
-      // TODO feed should already exist since it was previously added, remove condition after parser works properly
-      if (state.feeds.some((x) => x.url === action.payload.url)) {
-        // update existing feed
-        const updatedFeed = state.feeds.find(
-          (x) => x.url === action.payload.url
-        );
+      // update existing feed
+      const updatedFeed = state.feeds.find((x) => x.url === action.payload.url);
+      const filtered = state.feeds.filter((x) => x.url !== action.payload.url);
 
-        const filtered = state.feeds.filter(
-          (x) => x.url !== action.payload.url
-        );
-
-        return {
-          feeds: [...filtered, { ...updatedFeed, ...action.payload }],
-        };
-      }
-
-      // add feed
-      state.feeds.push({
-        url: action.payload.url,
-        items: action.payload.items,
-      });
+      return {
+        feeds: [...filtered, { ...updatedFeed, ...action.payload }],
+      };
     },
   },
 });
