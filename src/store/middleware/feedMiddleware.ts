@@ -5,7 +5,7 @@ import feedsSlice, {
   fetchFeedByUrl,
   fetchAllFeedsCommand,
 } from "../slices/feeds";
-import store, { RootState } from "../store";
+import { RootState } from "../store";
 
 export const feedMiddleware: Middleware<
   // eslint-disable-next-line @typescript-eslint/ban-types
