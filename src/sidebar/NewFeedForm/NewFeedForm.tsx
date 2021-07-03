@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React, { FunctionComponent, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Button, Input } from "../../components/styled";
+import { useAppDispatch } from "../../store/hooks";
 import FeedSlice from "../../store/slices/feeds";
 
 const Container = styled.div`
@@ -12,7 +12,7 @@ const Container = styled.div`
 const AddButton = styled(Button)({ alignSelf: "flex-end" });
 
 const NewFeedForm: FunctionComponent = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [newFeedUrl, setNewFeedUrl] = useState("");
 

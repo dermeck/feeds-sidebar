@@ -6,7 +6,7 @@ const parseFeed = async (input: {
   feedData: string;
 }): Promise<Feed> => {
   const parser = new FeedParser({});
-  let parsedFeed: Feed = {
+  const parsedFeed: Feed = {
     url: input.feedUrl,
     items: [],
   };
@@ -25,7 +25,7 @@ const parseFeed = async (input: {
       }
     });
 
-    parser.on("error", (e: any) => {
+    parser.on("error", (e: Error) => {
       reject(e);
     });
 
