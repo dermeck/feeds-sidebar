@@ -7,8 +7,6 @@ import FeedSlice from "../../store/slices/feeds";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-
-  padding: 0.5rem;
 `;
 
 const AddButton = styled(Button)({ alignSelf: "flex-end" });

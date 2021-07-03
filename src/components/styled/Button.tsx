@@ -13,4 +13,5 @@ export const Button = styled.button`
   padding-inline-end: 20px;
   line-height: 27px;
   margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 `;
