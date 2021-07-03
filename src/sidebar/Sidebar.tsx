@@ -4,9 +4,21 @@ import { Button } from "../components/styled";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { fetchAllFeedsCommand } from "../store/slices/feeds";
 import NewFeedForm from "./NewFeedForm/NewFeedForm";
+import FeedItem from "./FeedItem/FeedItem";
 
-export const SidebarContainer = styled.div`
+const SidebarContainer = styled.div`
   padding: 0.5rem;
+  background-color: #fff;
+  color: #38383d;
+`;
+
+const FeedContainer = styled.ul`
+  padding-left: 1rem;
+  margin: 0.3rem 0 0.5rem 0;
+`;
+
+const FeedTitle = styled.label`
+  margin-left: 0.5rem;
 `;
 
 const Sidebar: FunctionComponent = () => {
@@ -21,12 +33,12 @@ const Sidebar: FunctionComponent = () => {
       </Button>
       {feeds.map((feed) => (
         <div key={feed.url}>
-          {feed.title || feed.url}
-          <ul>
-            {feed.items?.map((item) => (
-              <li key={item.id}>{item.title}</li>
+          <FeedTitle>{feed.title || feed.url}</FeedTitle>
+          <FeedContainer>
+            {feed.items.map((item) => (
+              <FeedItem item={item} />
             ))}
-          </ul>
+          </FeedContainer>
         </div>
       ))}
     </SidebarContainer>
