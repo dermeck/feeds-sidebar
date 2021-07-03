@@ -36,7 +36,7 @@ const Sidebar: FunctionComponent = () => {
           <FeedTitle>{feed.title || feed.url}</FeedTitle>
           <FeedContainer>
             {feed.items.map((item) => (
-              <FeedItem item={item} />
+              <FeedItem key={item.id} item={item} />
             ))}
           </FeedContainer>
         </div>
