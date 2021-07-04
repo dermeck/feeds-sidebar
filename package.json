@@ -8,7 +8,9 @@
   "scripts": {
     "start": "webpack --mode development --watch",
     "build": "webpack --mode production",
-    "lint": "eslint .eslintrc.json"
+    "lint": "eslint .eslintrc.json",
+    "package": "web-ext build --source-dir dist",
+    "start-hotreload": "web-ext run --source-dir dist"
   },
   "devDependencies": {
     "@emotion/css": "^11.1.3",
@@ -32,6 +34,7 @@
     "react-redux": "^7.2.4",
     "ts-loader": "^9.2.2",
     "typescript": "^4.3.2",
+    "web-ext": "6.0.0",
     "web-ext-types": "^3.2.1",
     "webext-redux": "^2.1.7",
     "webextension-polyfill-ts": "^0.25.0",

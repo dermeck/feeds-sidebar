@@ -1,6 +1,7 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+//const WebExtPlugin = require("web-ext-plugin");
 
 module.exports = {
   entry: {
@@ -10,7 +11,7 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "[name].js" /* [name] is the key specified in "entry" */,
+    filename: "[name].js", // [name] is the key specified in "entry"
   },
 
   devtool: "source-map",
@@ -27,7 +28,7 @@ module.exports = {
 
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
-},
+  },
 
   plugins: [
     new CopyPlugin({
@@ -42,6 +43,7 @@ module.exports = {
       ],
     }),
     // TODO only add required polyfills
-    new NodePolyfillPlugin()
+    new NodePolyfillPlugin(),
+    //new WebExtPlugin({}),
   ],
 };
