@@ -71,15 +71,21 @@ const feedsSlice = createSlice({
       state.feeds.push({ url: action.payload, items: [] });
     },
     updateFeed(state, action: PayloadAction<Feed>) {
-      // update existing feed
-      const updatedFeed = state.feeds.find((x) => x.url === action.payload.url);
-      const filtered = state.feeds.filter((x) => x.url !== action.payload.url);
-
-      return {
-        feeds: [...filtered, { ...updatedFeed, ...action.payload }],
-      };
+      state.feeds = updateFeed(state, action.payload);
     },
   },
 });
+
+const updateFeed = (state: FeedSliceState, updatedFeed: Feed) =>
+  state.feeds.map((feed) => {
+    if (feed.url !== updatedFeed.url) {
+      return feed;
+    }
+
+    return {
+      ...feed,
+      ...updatedFeed,
+    };
+  });
 
 export default feedsSlice;
