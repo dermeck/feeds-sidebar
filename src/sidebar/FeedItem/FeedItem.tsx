@@ -25,13 +25,31 @@ const Link = styled.a`
 
 interface Props {
   item: FeedItem;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+}
+
+const enum AuxButton {
+  middleMousButton = 1,
+  rightMouseButton = 2,
 }
 
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
   return (
     <Container key={props.item.id}>
-      <Link href={props.item.url} onClick={props.onClick}>
+      <Link
+        href={props.item.url}
+        onAuxClick={(e) => {
+          if (e.button === AuxButton.middleMousButton) {
+            props.onClick(e);
+          }
+        }}
+        onContextMenu={
+          // TODO create custom context menu (open in new tab etc)
+          // or find a way to track if item is opened in standard context menu to mark it as read
+          (e) => e.preventDefault()
+        }
+        onClick={props.onClick}
+      >
         {props.item.title}
       </Link>
     </Container>
