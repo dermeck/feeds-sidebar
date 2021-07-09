@@ -10,11 +10,11 @@ export type FeedSliceState = {
 };
 
 export interface Feed {
+  id: string;
   url: string;
   items: Array<FeedItem>; // TODO should this be ReadOnlyArray?
   link?: string;
   title?: string;
-  id?: string;
 }
 
 export interface FeedItem {
@@ -23,6 +23,7 @@ export interface FeedItem {
   url: string;
   published?: Date;
   lastModified?: Date;
+  isRead?: boolean;
 }
 
 export const fetchAllFeedsCommand = createAction("feeds/fetchAllFeedsCommand");
@@ -31,6 +32,7 @@ const initialState: FeedSliceState = {
   feeds: [
     {
       // sample Atom Feed
+      id: "https://ourworldindata.org/atom.xml",
       url: "https://ourworldindata.org/atom.xml",
       items: [],
     },
@@ -42,11 +44,13 @@ const initialState: FeedSliceState = {
     },*/
     {
       // sample RSS 2.0 Feed
+      id: "https://www.tagesschau.de/xml/rss2/",
       url: "https://www.tagesschau.de/xml/rss2/",
       items: [],
     },
     {
       // sample Youtube Feed (Atom)
+      id: "https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA",
       url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA",
       items: [],
     },
@@ -68,10 +72,19 @@ const feedsSlice = createSlice({
   reducers: {
     addFeed(state, action: PayloadAction<string>) {
       console.log(action.type);
-      state.feeds.push({ url: action.payload, items: [] });
+      state.feeds.push({ id: action.payload, url: action.payload, items: [] });
     },
     updateFeed(state, action: PayloadAction<Feed>) {
       state.feeds = updateFeed(state, action.payload);
+    },
+    itemRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
+      state.feeds = markItemAsRead(
+        state,
+        action.payload.feedId,
+        action.payload.itemId
+      );
+
+      console.log(action.payload);
     },
   },
 });
@@ -87,5 +100,35 @@ const updateFeed = (state: FeedSliceState, updatedFeed: Feed) =>
       ...updatedFeed,
     };
   });
+
+const markItemAsRead = (
+  state: FeedSliceState,
+  feedId: string,
+  itemId: string
+) => {
+  // TODO finde a more elegant solution
+  const feedToUpdate = state.feeds.find((x) => x.id === feedId);
+
+  if (feedToUpdate === undefined) {
+    console.log(`cannot mark Item ${itemId} as read in feed ${feedId}`);
+    return state.feeds.map((x) => x);
+  }
+
+  const items = feedToUpdate.items.map((item) => {
+    if (item.id !== itemId) {
+      return item;
+    }
+
+    return {
+      ...item,
+      isRead: true,
+    };
+  });
+
+  return updateFeed(state, {
+    ...feedToUpdate,
+    items,
+  });
+};
 
 export default feedsSlice;

@@ -25,12 +25,15 @@ const Link = styled.a`
 
 interface Props {
   item: FeedItem;
+  onClick: () => void;
 }
 
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
   return (
     <Container key={props.item.id}>
-      <Link href={props.item.url}>{props.item.title}</Link>
+      <Link href={props.item.url} onClick={props.onClick}>
+        {props.item.title}
+      </Link>
     </Container>
   );
 };

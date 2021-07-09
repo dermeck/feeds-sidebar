@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import React, { FunctionComponent } from "react";
 import { Button } from "../components/styled";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { fetchAllFeedsCommand } from "../store/slices/feeds";
+import feedsSlice, { fetchAllFeedsCommand } from "../store/slices/feeds";
 import NewFeedForm from "./NewFeedForm/NewFeedForm";
 import FeedItem from "./FeedItem/FeedItem";
 
@@ -35,9 +35,23 @@ const Sidebar: FunctionComponent = () => {
         <div key={feed.url}>
           <FeedTitle>{feed.title || feed.url}</FeedTitle>
           <FeedContainer>
-            {feed.items.map((item) => (
-              <FeedItem key={item.id} item={item} />
-            ))}
+            {feed.items.map(
+              (item) =>
+                !item.isRead && (
+                  <FeedItem
+                    key={item.id}
+                    item={item}
+                    onClick={() =>
+                      dispatch(
+                        feedsSlice.actions.itemRead({
+                          feedId: feed.id,
+                          itemId: item.id,
+                        })
+                      )
+                    }
+                  />
+                )
+            )}
           </FeedContainer>
         </div>
       ))}

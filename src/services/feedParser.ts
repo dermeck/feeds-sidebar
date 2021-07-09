@@ -7,6 +7,7 @@ const parseFeed = async (input: {
 }): Promise<Feed> => {
   const parser = new FeedParser({});
   const parsedFeed: Feed = {
+    id: input.feedUrl,
     url: input.feedUrl,
     items: [],
   };
