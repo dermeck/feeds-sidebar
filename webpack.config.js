@@ -1,7 +1,6 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
-//const WebExtPlugin = require("web-ext-plugin");
 
 module.exports = {
   entry: {
@@ -44,6 +43,5 @@ module.exports = {
     }),
     // TODO only add required polyfills
     new NodePolyfillPlugin(),
-    //new WebExtPlugin({}),
   ],
 };
