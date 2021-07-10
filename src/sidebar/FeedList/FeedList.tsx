@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import React, { Fragment, FunctionComponent } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import feedsSlice from "../../store/slices/feeds";
-import FeedItem from "../FeedItem/FeedItem";
+import FeedItem from "./FeedItem/FeedItem";
 
 const FeedContainer = styled.ul`
   padding-left: 1rem;
