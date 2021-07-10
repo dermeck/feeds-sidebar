@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React, { FunctionComponent } from "react";
-import { FeedItem } from "../../store/slices/feeds";
+import { FeedItem } from "../../../store/slices/feeds";
 
 const Container = styled.li`
   display: flex;
