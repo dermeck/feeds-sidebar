@@ -14,18 +14,11 @@ const SidebarContainer = styled.div`
   color: #38383d;
 `;
 
-export type View = "feeds" | "newFeed" | undefined;
+export type View = "feeds" | "newFeed";
 
 const Sidebar: FunctionComponent = () => {
-  useEffect(() => {
-    // TODO make sure Drawer is hidden initially
-    if (view === undefined) {
-      setView("feeds");
-    }
-  });
-
   const dispatch = useAppDispatch();
-  const [view, setView] = useState<View>(undefined);
+  const [view, setView] = useState<View>("feeds");
 
   return (
     <SidebarContainer>
