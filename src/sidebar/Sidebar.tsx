@@ -8,6 +8,7 @@ import { useAppDispatch } from "../store/hooks";
 import { fetchAllFeedsCommand } from "../store/slices/feeds";
 import FeedList from "./FeedList/FeedList";
 import NewFeedForm from "./NewFeedForm/NewFeedForm";
+import { Plus, RefreshCw } from "react-feather";
 
 const SidebarContainer = styled.div`
   background-color: #fff;
@@ -17,12 +18,13 @@ const SidebarContainer = styled.div`
 const Header = styled(ToolbarContainer)`
   display: grid;
   grid-template-columns: 32px 1fr 32px;
-  grid-column-gap: 6px;
+  grid-column-gap: 4px;
   align-items: center;
 `;
 
 const FetchAllButton = styled(ToolbarButton)({
   gridColumn: "1",
+  padding: "7px",
 });
 
 const NavigateToAddViewButton = styled(ToolbarButton)({
@@ -43,11 +45,11 @@ const Sidebar: FunctionComponent = () => {
     <SidebarContainer>
       <Header>
         <FetchAllButton onClick={() => dispatch(fetchAllFeedsCommand())}>
-          O
+          <RefreshCw size={18} />
         </FetchAllButton>
-        <FilterInput value="Filter..."></FilterInput>
+        <FilterInput value=""></FilterInput>
         <NavigateToAddViewButton onClick={() => setView("newFeed")}>
-          +
+          <Plus />
         </NavigateToAddViewButton>
       </Header>
       <FeedList />

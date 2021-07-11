@@ -23,7 +23,7 @@ export const ToolbarButton = styled(Button)`
   width: 32px;
   height: 32px;
 
-  padding: 0.5rem;
+  padding: 4px;
   margin: 0;
 
   background-color: ${colors.toolbarBackground};

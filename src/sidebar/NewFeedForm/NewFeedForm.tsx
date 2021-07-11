@@ -8,7 +8,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
 const AddButton = styled(Button)({ alignSelf: "flex-end" });
 
 interface Props {
