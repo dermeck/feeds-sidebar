@@ -12,7 +12,7 @@ export type FeedSliceState = {
 export interface Feed {
   id: string;
   url: string;
-  items: Array<FeedItem>; // TODO should this be ReadOnlyArray?
+  items: ReadonlyArray<FeedItem>;
   link?: string;
   title?: string;
 }
@@ -75,21 +75,28 @@ const feedsSlice = createSlice({
       state.feeds.push({ id: action.payload, url: action.payload, items: [] });
     },
     updateFeed(state, action: PayloadAction<Feed>) {
-      state.feeds = updateFeed(state, action.payload);
+      return {
+        feeds: [...updateFeed(state, action.payload)],
+      };
     },
     itemRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
-      state.feeds = markItemAsRead(
-        state,
-        action.payload.feedId,
-        action.payload.itemId
-      );
-
-      console.log(action.payload);
+      return {
+        feeds: [
+          ...markItemAsRead(
+            state,
+            action.payload.feedId,
+            action.payload.itemId
+          ),
+        ],
+      };
     },
   },
 });
 
-const updateFeed = (state: FeedSliceState, updatedFeed: Feed) =>
+const updateFeed = (
+  state: FeedSliceState,
+  updatedFeed: Feed
+): ReadonlyArray<Feed> =>
   state.feeds.map((feed) => {
     if (feed.url !== updatedFeed.url) {
       return feed;
@@ -127,7 +134,7 @@ const markItemAsRead = (
 
   return updateFeed(state, {
     ...feedToUpdate,
-    items,
+    items: [...items],
   });
 };
 

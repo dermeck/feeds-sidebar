@@ -12,6 +12,8 @@ const parseFeed = async (input: {
     items: [],
   };
 
+  const parsedItems: Array<FeedItem> = [];
+
   return new Promise((resolve, reject) => {
     parser.on("meta", () => {
       parsedFeed.title = parser.meta.title || "";
@@ -22,7 +24,7 @@ const parseFeed = async (input: {
       let item: Item;
 
       while ((item = parser.read())) {
-        parsedFeed.items.push(mapFeedItem(item));
+        parsedItems.push(mapFeedItem(item));
       }
     });
 
@@ -33,7 +35,10 @@ const parseFeed = async (input: {
     parser.write(input.feedData);
 
     parser.end(() => {
-      resolve(parsedFeed);
+      resolve({
+        ...parsedFeed,
+        items: [...parsedItems],
+      });
     });
   });
 };
