@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/react";
 import styled from "@emotion/styled";
-import { FunctionComponent, useState } from "react";
-import { Button, Fade } from "../components/styled";
+import { FunctionComponent, useEffect, useState } from "react";
+import { Button, Drawer } from "../components/styled";
 import { useAppDispatch } from "../store/hooks";
 import { fetchAllFeedsCommand } from "../store/slices/feeds";
 import FeedList from "./FeedList/FeedList";
@@ -14,11 +14,18 @@ const SidebarContainer = styled.div`
   color: #38383d;
 `;
 
-export type View = "feeds" | "newFeed";
+export type View = "feeds" | "newFeed" | undefined;
 
 const Sidebar: FunctionComponent = () => {
+  useEffect(() => {
+    // TODO make sure Drawer is hidden initially
+    if (view === undefined) {
+      setView("feeds");
+    }
+  });
+
   const dispatch = useAppDispatch();
-  const [view, setView] = useState<View>("feeds");
+  const [view, setView] = useState<View>(undefined);
 
   return (
     <SidebarContainer>
@@ -27,14 +34,11 @@ const Sidebar: FunctionComponent = () => {
       </Button>
       <Button onClick={() => setView("newFeed")}>New Feeds</Button>
       <Button onClick={() => setView("feeds")}>Feeds</Button>
-      <div>
-        <Fade in={view === "newFeed"}>
-          <NewFeedForm />
-        </Fade>
-        <Fade in={view === "feeds"}>
-          <FeedList />
-        </Fade>
-      </div>
+
+      <Drawer show={view === "newFeed"}>
+        <NewFeedForm />
+      </Drawer>
+      <FeedList />
     </SidebarContainer>
   );
 };

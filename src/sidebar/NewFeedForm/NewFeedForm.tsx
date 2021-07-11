@@ -11,7 +11,6 @@ const Container = styled.div`
 
 const AddButton = styled(Button)({ alignSelf: "flex-end" });
 
-// TODO make this form pop over the feed list (drawer-like)
 const NewFeedForm: FunctionComponent = () => {
   const dispatch = useAppDispatch();
 
