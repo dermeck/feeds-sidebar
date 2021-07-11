@@ -42,7 +42,7 @@ const initialState: FeedSliceState = {
       url: "https://www.dragonball-multiverse.com/flux.rss.php?lang=en",
       items: [],
     },*/
-    {
+    /*{
       // sample RSS 2.0 Feed
       id: "https://www.tagesschau.de/xml/rss2/",
       url: "https://www.tagesschau.de/xml/rss2/",
@@ -53,7 +53,7 @@ const initialState: FeedSliceState = {
       id: "https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA",
       url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA",
       items: [],
-    },
+    },*/
   ],
 };
 
@@ -103,10 +103,28 @@ const updateFeed = (
     }
 
     return {
-      ...feed,
-      ...updatedFeed,
+      ...mergeFeed(feed, updatedFeed),
     };
   });
+
+const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
+  console.log("merge", previous, updateFeed);
+  const newItems = updatedFeed.items.filter((item) => {
+    if (previous.items.some((x) => x.id === item.id)) {
+      return;
+    } else {
+      return item;
+    }
+  });
+
+  return {
+    id: updatedFeed.id,
+    url: updatedFeed.url,
+    title: previous.title !== "" ? previous.title : updatedFeed.title,
+    link: updatedFeed.link,
+    items: [...previous.items, ...newItems],
+  };
+};
 
 const markItemAsRead = (
   state: FeedSliceState,
@@ -132,9 +150,15 @@ const markItemAsRead = (
     };
   });
 
-  return updateFeed(state, {
-    ...feedToUpdate,
-    items: [...items],
+  return state.feeds.map((feed) => {
+    if (feed.id !== feedToUpdate.id) {
+      return feed;
+    }
+
+    return {
+      ...feed,
+      items,
+    };
   });
 };
 
