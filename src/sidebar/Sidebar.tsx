@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/react";
 import styled from "@emotion/styled";
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { Button, Drawer } from "../components/styled";
 import { useAppDispatch } from "../store/hooks";
 import { fetchAllFeedsCommand } from "../store/slices/feeds";
