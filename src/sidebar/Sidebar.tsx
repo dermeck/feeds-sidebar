@@ -2,38 +2,31 @@
 import { jsx } from "@emotion/react";
 import styled from "@emotion/styled";
 import { FunctionComponent, useState } from "react";
-import { Button, Drawer, HeaderContainer, Input } from "../components/styled";
+import { Drawer, ToolbarContainer, Input } from "../components/styled";
+import { ToolbarButton } from "../components/styled/Button";
 import { useAppDispatch } from "../store/hooks";
 import { fetchAllFeedsCommand } from "../store/slices/feeds";
 import FeedList from "./FeedList/FeedList";
 import NewFeedForm from "./NewFeedForm/NewFeedForm";
 
 const SidebarContainer = styled.div`
-  background-color: #fff
+  background-color: #fff;
   color: #38383d;
 `;
 
-const Header = styled(HeaderContainer)`
+const Header = styled(ToolbarContainer)`
   display: grid;
   grid-template-columns: 32px 1fr 32px;
-  grid-column-gap: 8px;
+  grid-column-gap: 6px;
   align-items: center;
 `;
 
-const FetchAllButton = styled(Button)({
+const FetchAllButton = styled(ToolbarButton)({
   gridColumn: "1",
-  paddingInline: "0",
-  marginLeft: "0.5rem",
-  width: "32px",
-  height: "32px",
 });
 
-const NavigateToAddViewButton = styled(Button)({
+const NavigateToAddViewButton = styled(ToolbarButton)({
   gridColumn: "3",
-  paddingInline: "0",
-  marginRight: "0.5rem",
-  width: "32px",
-  height: "32px",
 });
 
 const FilterInput = styled(Input)({

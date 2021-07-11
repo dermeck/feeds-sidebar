@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React, { FunctionComponent, useState } from "react";
-import { Button, HeaderContainer, Input } from "../../components/styled";
+import { Button, ToolbarContainer, Input } from "../../components/styled";
 import { useAppDispatch } from "../../store/hooks";
 import FeedSlice from "../../store/slices/feeds";
 
@@ -22,9 +22,9 @@ const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
 
   return (
     <Container>
-      <HeaderContainer>
+      <ToolbarContainer>
         <Button onClick={props.onCancel}>Cancel</Button>
-      </HeaderContainer>
+      </ToolbarContainer>
 
       <Input
         placeholder="https://blog.mozilla.org/en/feed/"
