@@ -6,6 +6,7 @@ interface DrawerProps {
 export const Drawer = styled.div`
   background-color: #fff;
   position: absolute;
+  top: 0;
   height: 100%;
 
   width: ${(props: DrawerProps) => (props.show ? "100%" : "0")};
