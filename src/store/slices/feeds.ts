@@ -61,7 +61,6 @@ export const fetchFeedByUrl = createAsyncThunk<string, string>(
   "feeds/fetchByUrl",
   async (url) => {
     const response = await fetch(url);
-    console.log(response);
     return await response.text();
   }
 );
@@ -71,7 +70,6 @@ const feedsSlice = createSlice({
   initialState,
   reducers: {
     addFeed(state, action: PayloadAction<string>) {
-      console.log(action.type);
       state.feeds.push({ id: action.payload, url: action.payload, items: [] });
     },
     updateFeed(state, action: PayloadAction<Feed>) {
@@ -108,7 +106,6 @@ const updateFeed = (
   });
 
 const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
-  console.log("merge", previous, updateFeed);
   const newItems = updatedFeed.items.filter((item) => {
     if (previous.items.some((x) => x.id === item.id)) {
       return;
@@ -130,36 +127,18 @@ const markItemAsRead = (
   state: FeedSliceState,
   feedId: string,
   itemId: string
-) => {
-  // TODO finde a more elegant solution
-  const feedToUpdate = state.feeds.find((x) => x.id === feedId);
-
-  if (feedToUpdate === undefined) {
-    console.log(`cannot mark Item ${itemId} as read in feed ${feedId}`);
-    return state.feeds.map((x) => x);
-  }
-
-  const items = feedToUpdate.items.map((item) => {
-    if (item.id !== itemId) {
-      return item;
-    }
-
-    return {
-      ...item,
-      isRead: true,
-    };
-  });
-
-  return state.feeds.map((feed) => {
-    if (feed.id !== feedToUpdate.id) {
+) =>
+  state.feeds.map((feed) => {
+    if (feed.id !== feedId) {
       return feed;
     }
 
     return {
       ...feed,
-      items,
+      items: feed.items.map((item) =>
+        item.id !== itemId ? item : { ...item, isRead: true }
+      ),
     };
   });
-};
 
 export default feedsSlice;
