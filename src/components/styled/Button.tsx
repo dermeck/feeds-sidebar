@@ -17,6 +17,8 @@ export const Button = styled.button`
   line-height: 27px;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+
+  border-radius: 4px;
 `;
 
 export const ToolbarButton = styled(Button)`

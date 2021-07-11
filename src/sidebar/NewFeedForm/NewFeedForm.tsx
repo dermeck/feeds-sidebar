@@ -4,10 +4,27 @@ import { Button, ToolbarContainer, Input } from "../../components/styled";
 import { useAppDispatch } from "../../store/hooks";
 import FeedSlice from "../../store/slices/feeds";
 
-const Container = styled.div`
+const Container = styled.div``;
+
+const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 0.5rem;
 `;
+
+const Title = styled.h1`
+  align-self: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: auto;
+`;
+
+const Label = styled.label`
+  font-size: 1rem;
+  line-height: 1.8rem;
+  font-weight: 600;
+`;
+
 const AddButton = styled(Button)({ alignSelf: "flex-end" });
 
 interface Props {
@@ -23,20 +40,23 @@ const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
     <Container>
       <ToolbarContainer>
         <Button onClick={props.onCancel}>Cancel</Button>
+        <Title>Add New Feed</Title>
       </ToolbarContainer>
-
-      <Input
-        placeholder="https://blog.mozilla.org/en/feed/"
-        value={newFeedUrl}
-        onChange={(e) => setNewFeedUrl(e.target.value)}
-      ></Input>
-      <AddButton
-        onClick={() => {
-          dispatch(FeedSlice.actions.addFeed(newFeedUrl));
-        }}
-      >
-        Add New Feed
-      </AddButton>
+      <ContentContainer>
+        <Label>Feed URL</Label>
+        <Input
+          placeholder="https://blog.mozilla.org/en/feed/"
+          value={newFeedUrl}
+          onChange={(e) => setNewFeedUrl(e.target.value)}
+        ></Input>
+        <AddButton
+          onClick={() => {
+            dispatch(FeedSlice.actions.addFeed(newFeedUrl));
+          }}
+        >
+          Add New Feed
+        </AddButton>
+      </ContentContainer>
     </Container>
   );
 };
