@@ -2,8 +2,12 @@
 import { jsx } from "@emotion/react";
 import styled from "@emotion/styled";
 import { FunctionComponent, useState } from "react";
-import { Drawer, ToolbarContainer, Input } from "../components/styled";
-import { ToolbarButton } from "../components/styled/Button";
+import {
+  Drawer,
+  ToolbarContainer,
+  Input,
+  ToolbarButton,
+} from "../components/styled";
 import { useAppDispatch } from "../store/hooks";
 import { fetchAllFeedsCommand } from "../store/slices/feeds";
 import FeedList from "./FeedList/FeedList";
