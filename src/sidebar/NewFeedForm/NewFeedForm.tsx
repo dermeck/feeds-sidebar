@@ -1,6 +1,12 @@
 import styled from "@emotion/styled";
 import React, { FunctionComponent, useState } from "react";
-import { Button, ToolbarContainer, Input } from "../../components/styled";
+import { ArrowLeft } from "react-feather";
+import {
+  Button,
+  ToolbarContainer,
+  Input,
+  ToolbarButton,
+} from "../../components/styled";
 import { useAppDispatch } from "../../store/hooks";
 import FeedSlice from "../../store/slices/feeds";
 
@@ -39,7 +45,9 @@ const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
   return (
     <Container>
       <ToolbarContainer>
-        <Button onClick={props.onCancel}>Cancel</Button>
+        <ToolbarButton onClick={props.onCancel}>
+          <ArrowLeft />
+        </ToolbarButton>
         <Title>Add New Feed</Title>
       </ToolbarContainer>
       <ContentContainer>

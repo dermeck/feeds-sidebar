@@ -3,6 +3,7 @@ import { colors } from "./colors";
 
 export const ToolbarContainer = styled.div`
   display: flex;
+  align-items: center;
 
   background-color: ${colors.toolbarBackground};
   background-image: linear-gradient(
