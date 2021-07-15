@@ -20,7 +20,7 @@ const FeedTitleContainer = styled.div`
 `;
 
 const FeedTitle = styled.label`
-    margin-left: 0.2rem;
+    margin-left: 0.25rem;
 `;
 
 const FeedList: FunctionComponent = () => {
