@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import React, { FunctionComponent } from "react";
+import { Globe } from "react-feather";
 import { FeedItem } from "../../../store/slices/feeds";
 
 const Container = styled.li`
@@ -13,6 +14,7 @@ const Link = styled.a`
   color: inherit;
   text-decoration: none;
   width: 100%;
+  margin-left: 0.25rem;
 
   &:hover {
     text-decoration: underline;
@@ -36,6 +38,7 @@ const enum AuxButton {
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
   return (
     <Container key={props.item.id}>
+      <Globe size={16}/>
       <Link
         href={props.item.url}
         onAuxClick={(e) => {
@@ -49,6 +52,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
           (e) => e.preventDefault()
         }
         onClick={props.onClick}
+        onDragStart={(e) => e.preventDefault()}
       >
         {props.item.title}
       </Link>
