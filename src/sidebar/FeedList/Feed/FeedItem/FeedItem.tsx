@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React, { FunctionComponent } from "react";
 import { Globe } from "react-feather";
-import { FeedItem } from "../../../store/slices/feeds";
+import { FeedItem } from "../../../../store/slices/feeds";
 
 const Container = styled.li`
   display: flex;
@@ -14,7 +14,7 @@ const Link = styled.a`
   color: inherit;
   text-decoration: none;
   width: 100%;
-  margin-left: 0.25rem;
+  margin-left: 0.25rem; 
 
   &:hover {
     text-decoration: underline;
