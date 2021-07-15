@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React, { Fragment, FunctionComponent } from 'react';
 import { Folder } from 'react-feather';
 
-import { Feed as FeedType } from '../../../store/slices/feeds';
+import { Feed as FeedType, FeedItem as FeedItemType } from '../../../store/slices/feeds';
 import FeedItem from './FeedItem/FeedItem';
 
 const FeedContainer = styled.ul`
@@ -27,6 +27,19 @@ interface Props {
     onItemClick: (payload: { feedId: string; itemId: string }) => void;
 }
 
+const renderItem = (item: FeedItemType, props: Props) => (
+    <FeedItem
+        key={item.id}
+        item={item}
+        onClick={() =>
+            props.onItemClick({
+                feedId: props.feed.id,
+                itemId: item.id,
+            })
+        }
+    />
+);
+
 const Feed: FunctionComponent<Props> = (props: Props) => (
     <Fragment>
         <FeedTitleContainer>
@@ -34,23 +47,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => (
             <FeedTitle>{props.feed.title || props.feed.url}</FeedTitle>
         </FeedTitleContainer>
 
-        <FeedContainer>
-            {props.feed.items.map(
-                (item) =>
-                    !item.isRead && (
-                        <FeedItem
-                            key={item.id}
-                            item={item}
-                            onClick={() =>
-                                props.onItemClick({
-                                    feedId: props.feed.id,
-                                    itemId: item.id,
-                                })
-                            }
-                        />
-                    ),
-            )}
-        </FeedContainer>
+        <FeedContainer>{props.feed.items.map((item) => !item.isRead && renderItem(item, props))}</FeedContainer>
     </Fragment>
 );
 
