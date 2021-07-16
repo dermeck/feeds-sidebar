@@ -47,7 +47,7 @@ const Sidebar: FunctionComponent = () => {
                 <FetchAllButton onClick={() => dispatch(fetchAllFeedsCommand())}>
                     <RefreshCw size={18} />
                 </FetchAllButton>
-                <FilterInput value=""></FilterInput>
+                <FilterInput></FilterInput>
                 <NavigateToAddViewButton onClick={() => setView('newFeed')}>
                     <Plus />
                 </NavigateToAddViewButton>
