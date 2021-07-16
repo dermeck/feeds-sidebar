@@ -31,24 +31,35 @@ const initialState: FeedSliceState = {
             url: 'https://ourworldindata.org/atom.xml',
             items: [],
         },
-        /*{
-      // sample RSS 1.0 / RDF Feed
-      // https://www.w3schools.com/xml/xml_rdf.asp
-      url: "https://www.dragonball-multiverse.com/flux.rss.php?lang=en",
-      items: [],
-    },*/
-        /*{
-      // sample RSS 2.0 Feed
-      id: "https://www.tagesschau.de/xml/rss2/",
-      url: "https://www.tagesschau.de/xml/rss2/",
-      items: [],
-    },
-    {
-      // sample Youtube Feed (Atom)
-      id: "https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA",
-      url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA",
-      items: [],
-    },*/
+        {
+            // sample RSS 1.0 / RDF Feed
+            // https://www.w3schools.com/xml/xml_rdf.asp
+            id: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
+            url: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
+            items: [],
+        },
+        {
+            // sample RSS 2.0 Feed
+            id: 'https://www.tagesschau.de/xml/rss2/',
+            url: 'https://www.tagesschau.de/xml/rss2/',
+            items: [],
+        },
+        {
+            // sample Youtube Feed (Atom)
+            id: 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA',
+            url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA',
+            items: [],
+        },
+        {
+            id: 'https://stackoverflow.blog/feed/',
+            url: 'https://stackoverflow.blog/feed/',
+            items: [],
+        },
+        {
+            id: 'https://www.quarks.de/feed/',
+            url: 'https://www.quarks.de/feed/',
+            items: [],
+        },
     ],
 };
 
