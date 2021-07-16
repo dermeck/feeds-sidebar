@@ -1,6 +1,6 @@
 import { wrapStore } from 'webext-redux';
 
-import { fetchAllFeedsCommand } from '../store/slices/feeds';
+import { initCommand } from '../store/slices/global';
 import store from '../store/store';
 
 wrapStore(store);
@@ -9,7 +9,7 @@ browser.browserAction.onClicked.addListener((e) => {
     browser.sidebarAction.open();
 });
 
-store.dispatch(fetchAllFeedsCommand());
+store.dispatch(initCommand());
 
 // TODO
 // browser.alarms.create("fetchFeedsCycle", { periodInMinutes: 1 });
