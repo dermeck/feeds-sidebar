@@ -6,21 +6,31 @@ import Feed from './Feed/Feed';
 
 const FeedList: FunctionComponent = () => {
     const dispatch = useAppDispatch();
-    const feeds = useAppSelector((state) => state.feeds.feeds);
+    const feeds = useAppSelector((state) => state.feeds);
 
-    const handleFeedItemClicked = (payload: { feedId: string; itemId: string }) => {
+    const handleFeedItemClick = (payload: { feedId: string; itemId: string }) =>
         dispatch(
             feedsSlice.actions.itemRead({
                 feedId: payload.feedId,
                 itemId: payload.itemId,
             }),
         );
+
+    const handleFeedTitleClick = (feedId: string) => {
+        console.log('handleFeedTitleClick');
+        dispatch(feedsSlice.actions.selectFeed(feedId));
     };
 
     return (
         <Fragment>
-            {feeds.map((feed) => (
-                <Feed key={feed.id} feed={feed} onItemClick={handleFeedItemClicked} />
+            {feeds.feeds.map((feed) => (
+                <Feed
+                    key={feed.id}
+                    isSelected={feeds.selectedFeedId === feed.id}
+                    feed={feed}
+                    onFeedTitleClick={() => handleFeedTitleClick(feed.id)}
+                    onItemClick={handleFeedItemClick}
+                />
             ))}
         </Fragment>
     );

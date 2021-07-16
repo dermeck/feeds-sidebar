@@ -2,12 +2,13 @@ import styled from '@emotion/styled';
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
+import { colors, rgba } from '../../../components/styled/colors';
 import { Feed as FeedType, FeedItem as FeedItemType } from '../../../store/slices/feeds';
 import FeedItem from './FeedItem/FeedItem';
 
 const FeedContainer = styled.ul`
     padding-left: 2rem;
-    margin: 0.3rem 0 0.7rem 0.5rem;
+    margin: 0 0 0.2rem 0;
 `;
 
 const FeedTitleContainer = styled.div`
@@ -15,7 +16,11 @@ const FeedTitleContainer = styled.div`
     flex-direction: row;
     align-items: center;
 
-    margin-left: 0.5rem;
+    background-color: ${(props: { highlight: boolean }) =>
+        props.highlight ? rgba(colors.highlightBackgroundColor1, 0.9) : 'inherit'};
+    color: ${(props: { highlight: boolean }) => (props.highlight ? colors.highlightColor1 : 'inherit')};
+
+    padding: 0.05rem 0 0.2rem 0.5rem;
 `;
 
 const FeedTitle = styled.label`
@@ -30,6 +35,8 @@ const ToggleIndicator = styled.div`
 
 interface Props {
     feed: FeedType;
+    isSelected: boolean;
+    onFeedTitleClick: () => void;
     onItemClick: (payload: { feedId: string; itemId: string }) => void;
 }
 
@@ -51,7 +58,12 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <Fragment>
-            <FeedTitleContainer onClick={() => setExpanded(!expanded)}>
+            <FeedTitleContainer
+                highlight={props.isSelected}
+                onClick={() => {
+                    setExpanded(!expanded);
+                    props.onFeedTitleClick();
+                }}>
                 <ToggleIndicator>{expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</ToggleIndicator>
                 <Folder size={16} />
                 <FeedTitle>{props.feed.title || props.feed.url}</FeedTitle>

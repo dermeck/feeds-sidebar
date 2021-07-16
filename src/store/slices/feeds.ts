@@ -2,6 +2,7 @@ import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@red
 
 export type FeedSliceState = {
     feeds: ReadonlyArray<Feed>;
+    selectedFeedId: Feed['id'];
 };
 
 export interface Feed {
@@ -61,6 +62,7 @@ const initialState: FeedSliceState = {
             items: [],
         },
     ],
+    selectedFeedId: '',
 };
 
 export const fetchFeedByUrl = createAsyncThunk<string, string>('feeds/fetchByUrl', async (url) => {
@@ -75,13 +77,18 @@ const feedsSlice = createSlice({
         addFeed(state, action: PayloadAction<string>) {
             state.feeds.push({ id: action.payload, url: action.payload, items: [] });
         },
+        selectFeed(state, action: PayloadAction<string>) {
+            state.selectedFeedId = action.payload;
+        },
         updateFeed(state, action: PayloadAction<Feed>) {
             return {
+                ...state,
                 feeds: [...updateFeed(state, action.payload)],
             };
         },
         itemRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             return {
+                ...state,
                 feeds: [...markItemAsRead(state, action.payload.feedId, action.payload.itemId)],
             };
         },
