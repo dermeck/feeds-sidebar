@@ -17,7 +17,6 @@ const FeedList: FunctionComponent = () => {
         );
 
     const handleFeedTitleClick = (feedId: string) => {
-        console.log('handleFeedTitleClick');
         dispatch(feedsSlice.actions.selectFeed(feedId));
     };
 

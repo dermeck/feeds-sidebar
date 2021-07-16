@@ -21,10 +21,7 @@ export const rgba = (hexColor: string, opacity: number): string => {
 
     const rgb = hexToRgb(hexColor);
 
-    const result = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
-    console.log(result);
-
-    return result;
+    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
 };
 
 const hexToRgb = (hex: string): RGB => {
