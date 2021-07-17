@@ -74,7 +74,7 @@ const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
-        extensionLoaded(_state, action: PayloadAction<FeedSliceState>) {
+        extensionStateLoaded(_state, action: PayloadAction<FeedSliceState>) {
             return { ...action.payload };
         },
         addFeed(state, action: PayloadAction<string>) {

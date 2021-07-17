@@ -2,7 +2,7 @@ import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { loadState, saveState } from '../../services/persistence';
-import feedsSlice from '../slices/feeds';
+import feedsSlice, { fetchAllFeedsCommand } from '../slices/feeds';
 import { initCommand } from '../slices/global';
 import store, { RootState } from '../store';
 
@@ -17,13 +17,16 @@ export const storageMiddleware: Middleware<
         const loadedState = await loadState();
 
         if (loadedState !== undefined) {
-            middlewareApi.dispatch(feedsSlice.actions.extensionLoaded(loadedState.feeds));
+            middlewareApi.dispatch(feedsSlice.actions.extensionStateLoaded(loadedState.feeds));
         }
 
         // setup persistence
         store.subscribe(async () => {
             await saveState(store.getState());
         });
+
+        // update feeds when extension is loaded
+        middlewareApi.dispatch(fetchAllFeedsCommand());
     }
 
     return next(action);
