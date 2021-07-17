@@ -1,23 +1,24 @@
-import styled from "@emotion/styled";
-import { Button } from ".";
-import { colors } from "./colors";
+import styled from '@emotion/styled';
+
+import { Button } from '.';
+import { colors } from './colors';
 
 export const ToolbarButton = styled(Button)`
-  width: 32px;
-  height: 32px;
+    width: 32px;
+    height: 32px;
 
-  padding: 4px;
-  margin: 0;
+    padding: 4px;
+    margin: 0;
 
-  background-color: ${colors.toolbarBackground};
+    background-color: ${colors.toolbarBackground};
 
-  :hover {
-    background-color: ${colors.toolbarButtonHoverBackground};
-  }
+    :hover {
+        background-color: ${colors.toolbarButtonHoverBackground};
+    }
 
-  :active {
-    background-color: ${colors.toolbarButtonActiveBackgroudn};
-  }
+    :active {
+        background-color: ${colors.toolbarButtonActiveBackground};
+    }
 
-  border-radius: 4px;
+    border-radius: 4px;
 `;
