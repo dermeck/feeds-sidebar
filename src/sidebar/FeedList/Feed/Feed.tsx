@@ -78,7 +78,6 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                     props.onFeedTitleClick();
                 }}
                 onBlur={() => {
-                    console.log('blurrr');
                     setFocus(false);
                 }}>
                 <ToggleIndicator>{expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</ToggleIndicator>
