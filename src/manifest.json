@@ -1,28 +1,35 @@
 {
-  "manifest_version": 2,
-  "version": "0.1",
-  "name": "YTRSS",
+    "manifest_version": 2,
+    "version": "0.1",
+    "name": "YTRSS",
 
-  "icons": {
-    "48": "rss.svg"
-  },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{cdd1ddb6-e12a-4c19-a0fc-4d8e304a3a1e}",
+            "strict_min_version": "89.0"
+        }
+    },
 
-  "permissions": ["alarms", "<all_urls>"],
+    "icons": {
+        "48": "rss.svg"
+    },
 
-  "background": {
-    "scripts": ["background.js"]
-  },
+    "permissions": ["alarms", "<all_urls>", "storage"],
 
-  "sidebar_action": {
-    "default_title": "YTRSS",
-    "default_panel": "/sidebar/sidebar.html",
-    "default_icon": "rss.svg",
-    "browser_style": true
-  },
+    "background": {
+        "scripts": ["background.js"]
+    },
 
-  "browser_action": {
-    "browser_style": true,
-    "default_icon": "rss.svg",
-    "default_title": "YTRSS"
-  }
+    "sidebar_action": {
+        "default_title": "YTRSS",
+        "default_panel": "/sidebar/sidebar.html",
+        "default_icon": "rss.svg",
+        "browser_style": true
+    },
+
+    "browser_action": {
+        "browser_style": true,
+        "default_icon": "rss.svg",
+        "default_title": "YTRSS"
+    }
 }

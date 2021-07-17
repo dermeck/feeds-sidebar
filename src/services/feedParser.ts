@@ -45,8 +45,8 @@ const mapFeedItem = (item: Item): FeedItem => ({
     id: item.guid || item.link,
     url: item.link,
     title: item.title,
-    published: item.pubdate || undefined,
-    lastModified: item.date || undefined,
+    published: item.pubdate?.toDateString() || undefined,
+    lastModified: item.date?.toDateString() || undefined,
 });
 
 export default parseFeed;

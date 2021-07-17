@@ -17,8 +17,8 @@ export interface FeedItem {
     id: string;
     title: string;
     url: string;
-    published?: Date;
-    lastModified?: Date;
+    published?: string;
+    lastModified?: string;
     isRead?: boolean;
 }
 
@@ -74,6 +74,9 @@ const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
+        extensionLoaded(_state, action: PayloadAction<FeedSliceState>) {
+            return { ...action.payload };
+        },
         addFeed(state, action: PayloadAction<string>) {
             state.feeds.push({ id: action.payload, url: action.payload, items: [] });
         },

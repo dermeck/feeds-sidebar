@@ -3,7 +3,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import parseFeed from '../../services/feedParser';
 import feedsSlice, { fetchFeedByUrl, fetchAllFeedsCommand } from '../slices/feeds';
-import { initCommand } from '../slices/global';
 import { RootState } from '../store';
 
 export const feedMiddleware: Middleware<
@@ -12,7 +11,7 @@ export const feedMiddleware: Middleware<
     RootState,
     ThunkDispatch<RootState, undefined, AnyAction>
 > = (storeApi) => (next) => async (action) => {
-    if (fetchAllFeedsCommand.match(action) || initCommand.match(action)) {
+    if (fetchAllFeedsCommand.match(action)) {
         storeApi.getState().feeds.feeds.forEach((feed) => {
             storeApi.dispatch(fetchFeedByUrl(feed.url));
         });
