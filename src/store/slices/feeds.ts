@@ -24,6 +24,8 @@ export interface FeedItem {
 
 export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 
+export const addNewFeedCommand = createAction<string>('feeds/addNewFeedCommand');
+
 const initialState: FeedSliceState = {
     feeds: [
         {
@@ -32,6 +34,7 @@ const initialState: FeedSliceState = {
             url: 'https://ourworldindata.org/atom.xml',
             items: [],
         },
+        /*
         {
             // sample RSS 1.0 / RDF Feed
             // https://www.w3schools.com/xml/xml_rdf.asp
@@ -61,14 +64,23 @@ const initialState: FeedSliceState = {
             url: 'https://www.quarks.de/feed/',
             items: [],
         },
+        */
     ],
     selectedFeedId: '',
 };
 
 export const fetchFeedByUrl = createAsyncThunk<string, string>('feeds/fetchByUrl', async (url) => {
+    return await fetchFeed(url);
+});
+
+export const addNewFeedByUrl = createAsyncThunk<string, string>('feeds/addNewFeedByUrl', async (url) => {
+    return await fetchFeed(url);
+});
+
+const fetchFeed = async (url: string) => {
     const response = await fetch(url);
     return await response.text();
-});
+};
 
 const feedsSlice = createSlice({
     name: 'feeds',
@@ -77,8 +89,11 @@ const feedsSlice = createSlice({
         extensionStateLoaded(_state, action: PayloadAction<FeedSliceState>) {
             return { ...action.payload };
         },
-        addFeed(state, action: PayloadAction<string>) {
-            state.feeds.push({ id: action.payload, url: action.payload, items: [] });
+        addFeed(state, action: PayloadAction<Feed>) {
+            return {
+                ...state,
+                feeds: [...state.feeds, action.payload],
+            };
         },
         selectFeed(state, action: PayloadAction<string>) {
             state.selectedFeedId = action.payload;
