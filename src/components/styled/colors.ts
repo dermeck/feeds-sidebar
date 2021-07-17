@@ -1,11 +1,12 @@
 export const colors = {
     highlightBackgroundColor1: '#48b9c7',
     highlightColor1: '#FFF',
+    highlightBackgroundColorNoFocus: '#E2E2E2',
 
     toolbarFont: '#292929',
     toolbarBackground: '#F6F6F6',
     toolbarButtonHoverBackground: '#D4D4D4',
-    toolbarButtonActiveBackgroudn: '#B8B8B8',
+    toolbarButtonActiveBackground: '#B8B8B8',
 };
 
 interface RGB {

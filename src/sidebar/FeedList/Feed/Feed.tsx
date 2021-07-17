@@ -11,14 +11,23 @@ const FeedContainer = styled.ul`
     margin: 0 0 0.2rem 0;
 `;
 
+interface FeedTitleContainerProps {
+    highlight: boolean;
+    focus: boolean;
+}
+
 const FeedTitleContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
 
-    background-color: ${(props: { highlight: boolean }) =>
-        props.highlight ? rgba(colors.highlightBackgroundColor1, 0.9) : 'inherit'};
-    color: ${(props: { highlight: boolean }) => (props.highlight ? colors.highlightColor1 : 'inherit')};
+    background-color: ${(props: FeedTitleContainerProps) =>
+        props.highlight
+            ? props.focus
+                ? rgba(colors.highlightBackgroundColor1, 0.9)
+                : colors.highlightBackgroundColorNoFocus
+            : 'inherit'};
+    color: ${(props: FeedTitleContainerProps) => (props.highlight && props.focus ? colors.highlightColor1 : 'inherit')};
 
     padding: 0.05rem 0 0.2rem 0.5rem;
 `;
@@ -55,14 +64,22 @@ const renderItem = (item: FeedItemType, props: Props) => (
 
 const Feed: FunctionComponent<Props> = (props: Props) => {
     const [expanded, setExpanded] = useState<boolean>(true);
+    const [focus, setFocus] = useState<boolean>(false);
 
     return (
         <Fragment>
             <FeedTitleContainer
+                tabIndex={0}
                 highlight={props.isSelected}
+                focus={focus}
                 onClick={() => {
                     setExpanded(!expanded);
+                    setFocus(true);
                     props.onFeedTitleClick();
+                }}
+                onBlur={() => {
+                    console.log('blurrr');
+                    setFocus(false);
                 }}>
                 <ToggleIndicator>{expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</ToggleIndicator>
                 <Folder size={16} />
