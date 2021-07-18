@@ -54,7 +54,7 @@ const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
 
-    const [newFeedUrl, setNewFeedUrl] = useState('https://uebermedien.de/author/samira-el-ouassil/feed/');
+    const [newFeedUrl, setNewFeedUrl] = useState('');
 
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
 
