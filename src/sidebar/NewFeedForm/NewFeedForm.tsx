@@ -42,11 +42,19 @@ interface Props {
     onCancel: () => void;
 }
 
+const isValidURL = (str: string) => {
+    const res = str.match(
+        /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g,
+    );
+    return res !== null;
+};
+
 const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
+    const newFeeds = useAppSelector((state) => state.session.newFeeds);
 
-    const [newFeedUrl, setNewFeedUrl] = useState('');
+    const [newFeedUrl, setNewFeedUrl] = useState('https://uebermedien.de/author/samira-el-ouassil/feed/');
 
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
 
@@ -67,7 +75,11 @@ const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
                     onFocus={() => setNewFeedUrlMessage('')}></Input>
                 <AddButton
                     onClick={() => {
-                        // TODO validate url pattern
+                        if (!isValidURL(newFeedUrl)) {
+                            setNewFeedUrlMessage('The ented URL is invalid.');
+                            return;
+                        }
+
                         const existingFeed = feeds.find((x) => x.url === newFeedUrl);
 
                         if (existingFeed === undefined) {
@@ -82,7 +94,22 @@ const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
 
                 <Label>Recently added Feeds:</Label>
                 <ul>
-                    <li>TODO</li>
+                    {newFeeds.map((newFeed) => {
+                        switch (newFeed.status) {
+                            case 'loading':
+                                return <li>loading...</li>;
+                            case 'loaded': {
+                                const loadedFeed = feeds.find((f) => f.url === newFeed.url);
+                                if (loadedFeed !== undefined) {
+                                    return <li>{loadedFeed.title}</li>;
+                                } else {
+                                    return <li>{newFeed.url}</li>;
+                                }
+                            }
+                            case 'error':
+                                return <li>error: {newFeed.url}</li>;
+                        }
+                    })}
                 </ul>
             </ContentContainer>
         </Container>

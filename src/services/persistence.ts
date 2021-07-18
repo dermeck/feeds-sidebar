@@ -1,4 +1,5 @@
 import { FeedSliceState } from '../store/slices/feeds';
+import { initialState as initialSessionSliceState } from '../store/slices/session';
 import { RootState } from '../store/store';
 
 const storageKeys = {
@@ -21,6 +22,7 @@ export const loadState = async (): Promise<RootState | undefined> => {
     }
 
     return {
+        session: initialSessionSliceState,
         feeds: feeds.feedsKey as FeedSliceState,
     };
 };
