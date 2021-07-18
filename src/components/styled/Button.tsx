@@ -3,11 +3,8 @@ import styled from '@emotion/styled';
 import { colors } from './colors';
 
 export const Button = styled.button`
-    :hover {
-        background-color: rgba(207, 207, 207, 0.66);
-    }
     background-color: inherit;
-    background-color: rgba(207, 207, 207, 0.33); // TODO
+    background-color: ${colors.toolbarBackground};
     border: none;
 
     color: ${colors.toolbarFont};
@@ -18,6 +15,13 @@ export const Button = styled.button`
     line-height: 27px;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+
+    :hover {
+        background-color: ${colors.toolbarButtonHoverBackground};
+    }
+    :active {
+        background-color: ${colors.toolbarButtonActiveBackground};
+    }
 
     border-radius: 4px;
 `;
