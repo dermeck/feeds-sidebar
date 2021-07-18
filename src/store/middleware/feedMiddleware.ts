@@ -3,6 +3,7 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import parseFeed from '../../services/feedParser';
 import feedsSlice, { fetchFeedByUrl, fetchAllFeedsCommand, addNewFeedByUrl, addNewFeedCommand } from '../slices/feeds';
+import sessionSlice from '../slices/session';
 import { RootState } from '../store';
 
 export const feedMiddleware: Middleware<
@@ -22,21 +23,31 @@ export const feedMiddleware: Middleware<
     }
 
     if (fetchFeedByUrl.fulfilled.match(action)) {
-        const parsedFeed = await parseFeed({
-            feedUrl: action.meta.arg,
-            feedData: action.payload,
-        });
+        try {
+            const parsedFeed = await parseFeed({
+                feedUrl: action.meta.arg,
+                feedData: action.payload,
+            });
 
-        middlewareApi.dispatch(feedsSlice.actions.updateFeed(parsedFeed));
+            middlewareApi.dispatch(feedsSlice.actions.updateFeed(parsedFeed));
+        } catch {
+            // response is not a feed
+            middlewareApi.dispatch(sessionSlice.actions.feedParseError(action.meta.arg));
+        }
     }
 
     if (addNewFeedByUrl.fulfilled.match(action)) {
-        const parsedFeed = await parseFeed({
-            feedUrl: action.meta.arg,
-            feedData: action.payload,
-        });
+        try {
+            const parsedFeed = await parseFeed({
+                feedUrl: action.meta.arg,
+                feedData: action.payload,
+            });
 
-        middlewareApi.dispatch(feedsSlice.actions.addFeed(parsedFeed));
+            middlewareApi.dispatch(feedsSlice.actions.addFeed(parsedFeed));
+        } catch {
+            // response is not a feed
+            middlewareApi.dispatch(sessionSlice.actions.feedParseError(action.meta.arg));
+        }
     }
 
     return next(action);

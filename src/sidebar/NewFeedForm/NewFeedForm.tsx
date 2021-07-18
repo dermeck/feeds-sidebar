@@ -6,6 +6,7 @@ import { Button, ToolbarContainer, Input, ToolbarButton } from '../../components
 import { colors } from '../../components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addNewFeedCommand } from '../../store/slices/feeds';
+import NewFeedsList from './NewFeedsList/NewFeedsList';
 
 const Container = styled.div``;
 
@@ -52,7 +53,6 @@ const isValidURL = (str: string) => {
 const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
-    const newFeeds = useAppSelector((state) => state.session.newFeeds);
 
     const [newFeedUrl, setNewFeedUrl] = useState('https://uebermedien.de/author/samira-el-ouassil/feed/');
 
@@ -92,25 +92,7 @@ const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
                 </AddButton>
                 <MessageBox show={newFeedUrlMessage !== ''}>{newFeedUrlMessage}</MessageBox>
 
-                <Label>Recently added Feeds:</Label>
-                <ul>
-                    {newFeeds.map((newFeed) => {
-                        switch (newFeed.status) {
-                            case 'loading':
-                                return <li>loading...</li>;
-                            case 'loaded': {
-                                const loadedFeed = feeds.find((f) => f.url === newFeed.url);
-                                if (loadedFeed !== undefined) {
-                                    return <li>{loadedFeed.title}</li>;
-                                } else {
-                                    return <li>{newFeed.url}</li>;
-                                }
-                            }
-                            case 'error':
-                                return <li>error: {newFeed.url}</li>;
-                        }
-                    })}
-                </ul>
+                <NewFeedsList />
             </ContentContainer>
         </Container>
     );
