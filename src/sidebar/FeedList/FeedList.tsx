@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { ScrollContainer } from '../../components/styled';
+import { FullHeightScrollContainer } from '../../components/styled';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
 import Feed from './Feed/Feed';
@@ -22,7 +22,7 @@ const FeedList: FunctionComponent = () => {
     };
 
     return (
-        <ScrollContainer height={window.innerHeight}>
+        <FullHeightScrollContainer>
             {feeds.feeds.map((feed) => (
                 <Feed
                     key={feed.id}
@@ -32,7 +32,7 @@ const FeedList: FunctionComponent = () => {
                     onItemClick={handleFeedItemClick}
                 />
             ))}
-        </ScrollContainer>
+        </FullHeightScrollContainer>
     );
 };
 

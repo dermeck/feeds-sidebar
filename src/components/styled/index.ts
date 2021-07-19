@@ -3,6 +3,6 @@ export { Drawer } from './Drawer';
 export { Fade } from './Fade';
 export { Input } from './Input';
 export { Label } from './Label';
-export { ScrollContainer } from './ScrollContainer';
+export { FullHeightScrollContainer } from './FullHeightScrollContainer';
 export { ToolbarButton } from './ToolbarButton';
-export { ToolbarContainer } from './ToolbarContainer';
+export { ToolbarContainer, toolbarContainerheight } from './ToolbarContainer';
