@@ -5,7 +5,7 @@ import feedsSlice, { addNewFeedByUrl } from './feeds';
 type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
 export type SessionSliceState = {
-    newFeeds: ReadonlyArray<{ url: string; status?: FeedFetchStatus }>;
+    newFeeds: ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
 };
 
 export const initialState: SessionSliceState = {
