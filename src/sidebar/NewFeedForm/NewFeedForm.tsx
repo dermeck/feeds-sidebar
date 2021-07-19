@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React, { FunctionComponent, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 
-import { Button, ToolbarContainer, Input, ToolbarButton } from '../../components/styled';
+import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../components/styled';
 import { colors } from '../../components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addNewFeedCommand } from '../../store/slices/feeds';
@@ -21,12 +21,6 @@ const Title = styled.h1`
     font-size: 1.1rem;
     font-weight: 600;
     margin: auto;
-`;
-
-const Label = styled.label`
-    font-size: 1rem;
-    line-height: 1.8rem;
-    font-weight: 600;
 `;
 
 const MessageBox = styled.div`

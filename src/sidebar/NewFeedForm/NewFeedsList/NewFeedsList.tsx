@@ -1,19 +1,13 @@
-import styled from '@emotion/styled';
 import React, { Fragment, FunctionComponent } from 'react';
 
+import { Label } from '../../../components/styled';
 import { useAppSelector } from '../../../store/hooks';
-
-// TODO duplicate
-const Label = styled.label`
-    font-size: 1rem;
-    line-height: 1.8rem;
-    font-weight: 600;
-`;
 
 const NewFeedsList: FunctionComponent = () => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
     const newFeeds = useAppSelector((state) => state.session.newFeeds);
 
+    // TODO add icons
     return (
         <Fragment>
             <Label>Recently added Feeds:</Label>
