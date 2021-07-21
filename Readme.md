@@ -1,10 +1,7 @@
 # YTRSS
 (**Y**et ano**T**her **RSS** Feed Reader)
 
-A Firefox Extensions with a configurable UI (in the future) which lives in the Sidebar.
-
-### Tests
-https://lusito.github.io/mockzilla-webextension/
+A Firefox Extensions to manage web feeds in the Sidebar.
 
 ---
 ## How to test manually (temporary installation)
