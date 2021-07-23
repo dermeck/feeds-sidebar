@@ -10,8 +10,8 @@ export const ToolbarButton = styled(Button)`
     padding: 4px;
     margin: 0;
 
-    background-color: ${colors.toolbarBackground};
-
+    background-color: ${(props: { active?: boolean }) =>
+        props.active ? colors.toolbarButtonActiveBackground : colors.toolbarBackground};
     :hover {
         background-color: ${colors.toolbarButtonHoverBackground};
     }

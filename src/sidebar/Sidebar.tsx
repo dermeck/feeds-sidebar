@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FunctionComponent, useState } from 'react';
-import { Plus, RefreshCw } from 'react-feather';
+import { Folder, Plus, RefreshCw } from 'react-feather';
 
 import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../components/styled';
 import { useAppDispatch } from '../store/hooks';
@@ -17,7 +17,7 @@ const SidebarContainer = styled.div`
 
 const Header = styled(ToolbarContainer)`
     display: grid;
-    grid-template-columns: 32px 1fr 32px;
+    grid-template-columns: 32px 1fr 32px 32px;
     grid-column-gap: 4px;
     align-items: center;
 `;
@@ -27,8 +27,13 @@ const FetchAllButton = styled(ToolbarButton)({
     padding: '7px',
 });
 
-const NavigateToAddViewButton = styled(ToolbarButton)({
+const ShowFeedTitleButton = styled(ToolbarButton)({
     gridColumn: '3',
+    padding: '7px',
+});
+
+const NavigateToAddViewButton = styled(ToolbarButton)({
+    gridColumn: '4',
 });
 
 const FilterInput = styled(Input)({
@@ -40,6 +45,7 @@ export type View = 'feeds' | 'newFeed';
 const Sidebar: FunctionComponent = () => {
     const dispatch = useAppDispatch();
     const [view, setView] = useState<View>('feeds');
+    const [showFeedTitles, setShowFeedTitles] = useState<boolean>(true);
 
     return (
         <SidebarContainer>
@@ -48,11 +54,14 @@ const Sidebar: FunctionComponent = () => {
                     <RefreshCw size={18} />
                 </FetchAllButton>
                 <FilterInput></FilterInput>
+                <ShowFeedTitleButton onClick={() => setShowFeedTitles(!showFeedTitles)} active={showFeedTitles}>
+                    <Folder size={18} />
+                </ShowFeedTitleButton>
                 <NavigateToAddViewButton onClick={() => setView('newFeed')}>
                     <Plus />
                 </NavigateToAddViewButton>
             </Header>
-            <FeedList />
+            <FeedList showFeedTitles={showFeedTitles} />
 
             <Drawer show={view === 'newFeed'}>
                 <NewFeedForm onCancel={() => setView('feeds')} />

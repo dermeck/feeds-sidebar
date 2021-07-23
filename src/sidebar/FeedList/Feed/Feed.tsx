@@ -7,7 +7,7 @@ import { Feed as FeedType, FeedItem as FeedItemType } from '../../../store/slice
 import FeedItem from './FeedItem/FeedItem';
 
 const FeedContainer = styled.ul`
-    padding-left: 2rem;
+    padding-left: ${(props: { indented: boolean }) => (props.indented ? '2rem' : '0.5rem')};
     margin: 0 0 0.2rem 0;
 `;
 
@@ -47,6 +47,7 @@ interface Props {
     isSelected: boolean;
     onFeedTitleClick: () => void;
     onItemClick: (payload: { feedId: string; itemId: string }) => void;
+    showTitle: boolean;
 }
 
 const renderItem = (item: FeedItemType, props: Props) => (
@@ -68,25 +69,31 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <Fragment>
-            <FeedTitleContainer
-                tabIndex={0}
-                highlight={props.isSelected}
-                focus={focus}
-                onClick={() => {
-                    setExpanded(!expanded);
-                    setFocus(true);
-                    props.onFeedTitleClick();
-                }}
-                onBlur={() => {
-                    setFocus(false);
-                }}>
-                <ToggleIndicator>{expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</ToggleIndicator>
-                <Folder size={16} />
-                <FeedTitle>{props.feed.title || props.feed.url}</FeedTitle>
-            </FeedTitleContainer>
+            {props.showTitle && (
+                <FeedTitleContainer
+                    tabIndex={0}
+                    highlight={props.isSelected}
+                    focus={focus}
+                    onClick={() => {
+                        setExpanded(!expanded);
+                        setFocus(true);
+                        props.onFeedTitleClick();
+                    }}
+                    onBlur={() => {
+                        setFocus(false);
+                    }}>
+                    <ToggleIndicator>
+                        {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                    </ToggleIndicator>
+                    <Folder size={16} />
+                    <FeedTitle>{props.feed.title || props.feed.url}</FeedTitle>
+                </FeedTitleContainer>
+            )}
 
-            {expanded && (
-                <FeedContainer>{props.feed.items.map((item) => !item.isRead && renderItem(item, props))}</FeedContainer>
+            {(expanded || !props.showTitle) && (
+                <FeedContainer indented={props.showTitle}>
+                    {props.feed.items.map((item) => !item.isRead && renderItem(item, props))}
+                </FeedContainer>
             )}
         </Fragment>
     );

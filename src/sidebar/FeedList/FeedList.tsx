@@ -5,7 +5,11 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
 import Feed from './Feed/Feed';
 
-const FeedList: FunctionComponent = () => {
+interface Props {
+    showFeedTitles: boolean;
+}
+
+const FeedList: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds);
 
@@ -30,6 +34,7 @@ const FeedList: FunctionComponent = () => {
                     feed={feed}
                     onFeedTitleClick={() => handleFeedTitleClick(feed.id)}
                     onItemClick={handleFeedItemClick}
+                    showTitle={props.showFeedTitles}
                 />
             ))}
         </FullHeightScrollContainer>
