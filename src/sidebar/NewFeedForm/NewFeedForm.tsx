@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useRef, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 
 import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../components/styled';
@@ -45,12 +45,15 @@ const isValidURL = (str: string) => {
 };
 
 const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
+    const addButtonRef = useRef<HTMLButtonElement>(null);
+
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
 
     const [newFeedUrl, setNewFeedUrl] = useState('');
 
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
+    const [addButtonActive, setAddButtonActive] = useState(false);
 
     return (
         <Container>
@@ -66,8 +69,23 @@ const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
                     placeholder="https://blog.mozilla.org/en/feed/"
                     value={newFeedUrl}
                     onChange={(e) => setNewFeedUrl(e.target.value)}
-                    onFocus={() => setNewFeedUrlMessage('')}></Input>
+                    onFocus={() => setNewFeedUrlMessage('')}
+                    onKeyDown={(e) => {
+                        if (e.code === 'Enter') {
+                            setAddButtonActive(true);
+                            addButtonRef.current?.click();
+                        }
+                    }}
+                    onKeyUp={(e) => {
+                        if (e.code === 'Enter') {
+                            setAddButtonActive(false);
+                        }
+                    }}
+                />
+
                 <AddButton
+                    ref={addButtonRef}
+                    active={addButtonActive}
                     onClick={() => {
                         if (!isValidURL(newFeedUrl)) {
                             setNewFeedUrlMessage('The ented URL is invalid.');

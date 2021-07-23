@@ -4,7 +4,8 @@ import { colors } from './colors';
 
 export const Button = styled.button`
     background-color: inherit;
-    background-color: ${colors.toolbarBackground};
+    background-color: ${(props: { active?: boolean }) =>
+        props.active ? colors.toolbarButtonActiveBackground : colors.toolbarBackground};
     border: none;
 
     color: ${colors.toolbarFont};
