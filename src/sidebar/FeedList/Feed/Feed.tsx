@@ -48,6 +48,7 @@ interface Props {
     onFeedTitleClick: () => void;
     onItemClick: (payload: { feedId: string; itemId: string }) => void;
     showTitle: boolean;
+    filterString: string;
 }
 
 const renderItem = (item: FeedItemType, props: Props) => (
@@ -92,7 +93,12 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
 
             {(expanded || !props.showTitle) && (
                 <FeedContainer indented={props.showTitle}>
-                    {props.feed.items.map((item) => !item.isRead && renderItem(item, props))}
+                    {props.feed.items.map(
+                        (item) =>
+                            !item.isRead &&
+                            item.title.toLowerCase().includes(props.filterString.toLowerCase()) &&
+                            renderItem(item, props),
+                    )}
                 </FeedContainer>
             )}
         </Fragment>

@@ -45,7 +45,8 @@ export type View = 'feeds' | 'newFeed';
 const Sidebar: FunctionComponent = () => {
     const dispatch = useAppDispatch();
     const [view, setView] = useState<View>('feeds');
-    const [showFeedTitles, setShowFeedTitles] = useState<boolean>(true);
+    const [showFolders, setShowFeedTitles] = useState<boolean>(true);
+    const [filterString, setFilterString] = useState<string>('');
 
     return (
         <SidebarContainer>
@@ -53,15 +54,15 @@ const Sidebar: FunctionComponent = () => {
                 <FetchAllButton onClick={() => dispatch(fetchAllFeedsCommand())}>
                     <RefreshCw size={18} />
                 </FetchAllButton>
-                <FilterInput></FilterInput>
-                <ShowFeedTitleButton onClick={() => setShowFeedTitles(!showFeedTitles)} active={showFeedTitles}>
+                <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
+                <ShowFeedTitleButton onClick={() => setShowFeedTitles(!showFolders)} active={showFolders}>
                     <Folder size={18} />
                 </ShowFeedTitleButton>
                 <NavigateToAddViewButton onClick={() => setView('newFeed')}>
                     <Plus />
                 </NavigateToAddViewButton>
             </Header>
-            <FeedList showFeedTitles={showFeedTitles} />
+            <FeedList showFeedTitles={showFolders && filterString.trim() === ''} filterString={filterString.trim()} />
 
             <Drawer show={view === 'newFeed'}>
                 <NewFeedForm onCancel={() => setView('feeds')} />

@@ -7,6 +7,7 @@ import Feed from './Feed/Feed';
 
 interface Props {
     showFeedTitles: boolean;
+    filterString: string;
 }
 
 const FeedList: FunctionComponent<Props> = (props: Props) => {
@@ -35,6 +36,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                     onFeedTitleClick={() => handleFeedTitleClick(feed.id)}
                     onItemClick={handleFeedItemClick}
                     showTitle={props.showFeedTitles}
+                    filterString={props.filterString}
                 />
             ))}
         </FullHeightScrollContainer>
