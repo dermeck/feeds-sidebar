@@ -51,7 +51,7 @@ const ContextMenu: FunctionComponent = () => {
     const dispatch = useAppDispatch();
 
     const hideMenu = (e: MouseEvent) => {
-        e.preventDefault(); // TODO make sure that click only causes blur and does not trigger click events on feed items etc
+        // e.preventDefault(); // TODO this does not work as intended (items cannpt be opened even if the menu is not shown) make sure that click only causes blur and does not trigger click events on feed items etc
         dispatch(sessionSlice.actions.hideMenu());
     };
 
