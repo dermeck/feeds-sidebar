@@ -1,6 +1,9 @@
 export const colors = {
+    defaultBackgroundColor: '#FFFFFF',
+    defaultColor: '#38383d',
+
     highlightBackgroundColor1: '#48b9c7',
-    highlightColor1Light: '#FFF',
+    highlightColor1Light: '#FFFFFF',
     highlightColor1Dark: '#292929',
     highlightBackgroundColorNoFocus: '#E2E2E2',
 

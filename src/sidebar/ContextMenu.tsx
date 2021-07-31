@@ -27,8 +27,8 @@ const MenuContainer = styled.div`
 
     width: 200px;
 
-    background-color: white; // TODO
-    color: #38383d; // TODO
+    background-color: ${colors.defaultBackgroundColor};
+    color: ${colors.defaultColor};
 
     padding: 1px;
     border: 1px solid ${colors.menuBorder};
