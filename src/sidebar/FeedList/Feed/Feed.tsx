@@ -64,6 +64,12 @@ const renderItem = (item: FeedItemType, props: Props) => (
     />
 );
 
+const showContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault();
+    // TODO show custom context menu
+    console.log(e);
+};
+
 const Feed: FunctionComponent<Props> = (props: Props) => {
     const [expanded, setExpanded] = useState<boolean>(true);
     const [focus, setFocus] = useState<boolean>(false);
@@ -82,6 +88,9 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                     }}
                     onBlur={() => {
                         setFocus(false);
+                    }}
+                    onContextMenu={(e) => {
+                        showContextMenu(e);
                     }}>
                     <ToggleIndicator>
                         {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
