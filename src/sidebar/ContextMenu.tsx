@@ -8,6 +8,13 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import feedsSlice from '../store/slices/feeds';
 import sessionSlice from '../store/slices/session';
 
+const Backdrop = styled.div`
+    position: absolute;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+`;
 interface MenuContainerProps {
     anchorTop: number;
     anchorLeft: number;
@@ -22,7 +29,10 @@ const MenuContainer = styled.div`
 
     background-color: white; // TODO
     color: #38383d; // TODO
-    border: 2px solid ${colors.menuBorder};
+
+    padding: 1px;
+    border: 1px solid ${colors.menuBorder};
+    border-radius: 2px;
 `;
 
 const MenuList = styled.ul`
@@ -50,8 +60,7 @@ const ContextMenu: FunctionComponent = () => {
 
     const dispatch = useAppDispatch();
 
-    const hideMenu = (e: MouseEvent) => {
-        // e.preventDefault(); // TODO this does not work as intended (items cannpt be opened even if the menu is not shown) make sure that click only causes blur and does not trigger click events on feed items etc
+    const hideMenu = () => {
         dispatch(sessionSlice.actions.hideMenu());
     };
 
@@ -61,8 +70,11 @@ const ContextMenu: FunctionComponent = () => {
 
     useEffect(() => {
         document.addEventListener('click', hideMenu);
+        document.addEventListener('mousedown', hideMenu);
+
         return () => {
             document.removeEventListener('click', hideMenu);
+            document.removeEventListener('mousedown', hideMenu);
         };
     });
 
@@ -72,11 +84,13 @@ const ContextMenu: FunctionComponent = () => {
 
     // TODO open menu to the left if x coordinate is to far right
     return (
-        <MenuContainer anchorTop={context.anchorPoint.y} anchorLeft={context.anchorPoint.x}>
-            <MenuList>
-                <MenuItem onClick={deleteSelectedFeed}>Delete Feed</MenuItem>
-            </MenuList>
-        </MenuContainer>
+        <Backdrop onClick={(e) => e.preventDefault()} onContextMenu={(e) => e.preventDefault()}>
+            <MenuContainer anchorTop={context.anchorPoint.y} anchorLeft={context.anchorPoint.x}>
+                <MenuList>
+                    <MenuItem onClick={deleteSelectedFeed}>Delete Feed</MenuItem>
+                </MenuList>
+            </MenuContainer>
+        </Backdrop>
     );
 };
 

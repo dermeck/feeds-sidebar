@@ -4,7 +4,7 @@ export const colors = {
     highlightColor1Dark: '#292929',
     highlightBackgroundColorNoFocus: '#E2E2E2',
 
-    menuBorder: '#F6F6F6',
+    menuBorder: '#D4D4D4',
 
     toolbarFont: '#292929',
     toolbarBackground: '#F6F6F6',

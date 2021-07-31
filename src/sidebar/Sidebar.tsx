@@ -49,7 +49,7 @@ const Sidebar: FunctionComponent = () => {
     const [filterString, setFilterString] = useState<string>('');
 
     return (
-        <SidebarContainer>
+        <SidebarContainer onContextMenu={(e) => e.preventDefault()}>
             <Header>
                 <FetchAllButton onClick={() => dispatch(fetchAllFeedsCommand())}>
                     <RefreshCw size={18} />
