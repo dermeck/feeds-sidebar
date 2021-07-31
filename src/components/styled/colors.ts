@@ -1,7 +1,10 @@
 export const colors = {
     highlightBackgroundColor1: '#48b9c7',
-    highlightColor1: '#FFF',
+    highlightColor1Light: '#FFF',
+    highlightColor1Dark: '#292929',
     highlightBackgroundColorNoFocus: '#E2E2E2',
+
+    menuBorder: '#F6F6F6',
 
     toolbarFont: '#292929',
     toolbarBackground: '#F6F6F6',

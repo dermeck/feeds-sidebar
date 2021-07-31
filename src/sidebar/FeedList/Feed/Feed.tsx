@@ -4,6 +4,7 @@ import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
 import { colors, rgba } from '../../../components/styled/colors';
 import { Feed as FeedType, FeedItem as FeedItemType } from '../../../store/slices/feeds';
+import { Point } from '../../../store/slices/session';
 import FeedItem from './FeedItem/FeedItem';
 
 const FeedContainer = styled.ul`
@@ -27,7 +28,8 @@ const FeedTitleContainer = styled.div`
                 ? rgba(colors.highlightBackgroundColor1, 0.9)
                 : colors.highlightBackgroundColorNoFocus
             : 'inherit'};
-    color: ${(props: FeedTitleContainerProps) => (props.highlight && props.focus ? colors.highlightColor1 : 'inherit')};
+    color: ${(props: FeedTitleContainerProps) =>
+        props.highlight && props.focus ? colors.highlightColor1Light : 'inherit'};
 
     padding: 0.05rem 0 0.2rem 0.5rem;
 `;
@@ -47,6 +49,7 @@ interface Props {
     isSelected: boolean;
     onFeedTitleClick: () => void;
     onItemClick: (payload: { feedId: string; itemId: string }) => void;
+    onContextMenu: (payload: { anchorPoint: Point }) => void;
     showTitle: boolean;
     filterString: string;
 }
@@ -63,12 +66,6 @@ const renderItem = (item: FeedItemType, props: Props) => (
         }
     />
 );
-
-const showContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.preventDefault();
-    // TODO show custom context menu
-    console.log(e);
-};
 
 const Feed: FunctionComponent<Props> = (props: Props) => {
     const [expanded, setExpanded] = useState<boolean>(true);
@@ -90,7 +87,8 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                         setFocus(false);
                     }}
                     onContextMenu={(e) => {
-                        showContextMenu(e);
+                        e.preventDefault();
+                        props.onContextMenu({ anchorPoint: { x: e.clientX, y: e.clientY } });
                     }}>
                     <ToggleIndicator>
                         {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}

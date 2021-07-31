@@ -4,12 +4,26 @@ import feedsSlice, { addNewFeedByUrl } from './feeds';
 
 type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
+type MenuType = 'contextMenu';
+
+export interface Point {
+    x: number;
+    y: number;
+}
+
+interface MenuContext {
+    type: MenuType;
+    anchorPoint: Point;
+}
+
 export type SessionSliceState = {
     newFeeds: ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
+    menuContext: MenuContext | undefined;
 };
 
 export const initialState: SessionSliceState = {
     newFeeds: [],
+    menuContext: undefined,
 };
 
 const sessionSlice = createSlice({
@@ -24,6 +38,15 @@ const sessionSlice = createSlice({
             } else {
                 state.newFeeds.push({ url: action.payload, status: 'error' });
             }
+        },
+        showContextMenu(state, action: PayloadAction<Point>) {
+            state.menuContext = {
+                type: 'contextMenu',
+                anchorPoint: action.payload,
+            };
+        },
+        hideMenu(state) {
+            state.menuContext = undefined;
         },
     },
     extraReducers: (builder) => {

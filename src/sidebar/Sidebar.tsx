@@ -11,8 +11,8 @@ import FeedList from './FeedList/FeedList';
 import NewFeedForm from './NewFeedForm/NewFeedForm';
 
 const SidebarContainer = styled.div`
-    background-color: #fff;
-    color: #38383d;
+    background-color: #fff; // TODO
+    color: #38383d; // TODO
 `;
 
 const Header = styled(ToolbarContainer)`
