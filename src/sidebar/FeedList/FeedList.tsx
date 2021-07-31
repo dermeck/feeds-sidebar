@@ -27,8 +27,10 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
         dispatch(feedsSlice.actions.selectFeed(feedId));
     };
 
-    const handleOnContextMenu = (payload: { anchorPoint: Point }) => {
-        dispatch(sessionSlice.actions.showContextMenu(payload.anchorPoint));
+    const handleOnContextMenu = (anchorPoint: Point, feedId: string) => {
+        dispatch(sessionSlice.actions.showContextMenu(anchorPoint));
+        dispatch(feedsSlice.actions.selectFeed(feedId));
+        // TODO also set Focus (track focused feed in redux)
     };
 
     return (
@@ -40,7 +42,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                     feed={feed}
                     onFeedTitleClick={() => handleFeedTitleClick(feed.id)}
                     onItemClick={handleFeedItemClick}
-                    onContextMenu={handleOnContextMenu}
+                    onContextMenu={(anchorPoint: Point) => handleOnContextMenu(anchorPoint, feed.id)}
                     showTitle={props.showFeedTitles}
                     filterString={props.filterString}
                 />

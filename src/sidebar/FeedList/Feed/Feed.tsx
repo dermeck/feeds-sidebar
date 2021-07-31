@@ -49,7 +49,7 @@ interface Props {
     isSelected: boolean;
     onFeedTitleClick: () => void;
     onItemClick: (payload: { feedId: string; itemId: string }) => void;
-    onContextMenu: (payload: { anchorPoint: Point }) => void;
+    onContextMenu: (anchorPoint: Point) => void;
     showTitle: boolean;
     filterString: string;
 }
@@ -88,7 +88,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                     }}
                     onContextMenu={(e) => {
                         e.preventDefault();
-                        props.onContextMenu({ anchorPoint: { x: e.clientX, y: e.clientY } });
+                        props.onContextMenu({ x: e.clientX, y: e.clientY });
                     }}>
                     <ToggleIndicator>
                         {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
