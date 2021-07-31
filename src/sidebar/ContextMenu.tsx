@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
-import { FunctionComponent, useEffect } from 'react';
+import { FunctionComponent } from 'react';
 
 import { colors } from '../components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -68,23 +68,13 @@ const ContextMenu: FunctionComponent = () => {
         dispatch(feedsSlice.actions.deleteSelectedFeed());
     };
 
-    useEffect(() => {
-        document.addEventListener('click', hideMenu);
-        document.addEventListener('mousedown', hideMenu);
-
-        return () => {
-            document.removeEventListener('click', hideMenu);
-            document.removeEventListener('mousedown', hideMenu);
-        };
-    });
-
     if (context === undefined) {
         return null;
     }
 
     // TODO open menu to the left if x coordinate is to far right
     return (
-        <Backdrop onClick={(e) => e.preventDefault()} onContextMenu={(e) => e.preventDefault()}>
+        <Backdrop onClick={hideMenu} onMouseDown={hideMenu} onContextMenu={(e) => e.preventDefault()}>
             <MenuContainer anchorTop={context.anchorPoint.y} anchorLeft={context.anchorPoint.x}>
                 <MenuList>
                     <MenuItem onClick={deleteSelectedFeed}>Delete Feed</MenuItem>
