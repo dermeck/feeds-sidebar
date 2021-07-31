@@ -5,6 +5,7 @@ import { FunctionComponent, useEffect } from 'react';
 
 import { colors } from '../components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import feedsSlice from '../store/slices/feeds';
 import sessionSlice from '../store/slices/session';
 
 interface MenuContainerProps {
@@ -54,6 +55,10 @@ const ContextMenu: FunctionComponent = () => {
         dispatch(sessionSlice.actions.hideMenu());
     };
 
+    const deleteSelectedFeed = () => {
+        dispatch(feedsSlice.actions.deleteSelectedFeed());
+    };
+
     useEffect(() => {
         document.addEventListener('click', hideMenu);
         return () => {
@@ -66,14 +71,10 @@ const ContextMenu: FunctionComponent = () => {
     }
 
     // TODO open menu to the left if x coordinate is to far right
-
     return (
         <MenuContainer anchorTop={context.anchorPoint.y} anchorLeft={context.anchorPoint.x}>
             <MenuList>
-                <MenuItem>moepItem</MenuItem>
-                <MenuItem>moepItem</MenuItem>
-                <MenuItem>moepItem</MenuItem>
-                <MenuItem>moepItem</MenuItem>
+                <MenuItem onClick={deleteSelectedFeed}>Delete Feed</MenuItem>
             </MenuList>
         </MenuContainer>
     );

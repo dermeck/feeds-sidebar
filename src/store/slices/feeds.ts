@@ -42,6 +42,7 @@ const initialState: FeedSliceState = {
             url: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
             items: [],
         },
+        */
         {
             // sample RSS 2.0 Feed
             id: 'https://www.tagesschau.de/xml/rss2/',
@@ -64,7 +65,6 @@ const initialState: FeedSliceState = {
             url: 'https://www.quarks.de/feed/',
             items: [],
         },
-        */
     ],
     selectedFeedId: '',
 };
@@ -103,6 +103,22 @@ const feedsSlice = createSlice({
                 ...state,
                 feeds: [...updateFeed(state, action.payload)],
             };
+        },
+        deleteSelectedFeed(state) {
+            // index of the feed that gets deleted
+            const selectedIndex = state.feeds.findIndex((f) => f.id === state.selectedFeedId);
+
+            // delete
+            state.feeds = state.feeds.filter((f) => f.id !== state.selectedFeedId);
+
+            // if possible select the the next feed
+            // TODO also set focus
+            state.selectedFeedId =
+                state.feeds.length === 0
+                    ? ''
+                    : state.feeds.length > selectedIndex
+                    ? state.feeds[selectedIndex].id
+                    : state.feeds[selectedIndex - 1].id;
         },
         itemRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             return {
