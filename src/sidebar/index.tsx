@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { Store } from 'webext-redux';
 
-import ContextMenu from './ContextMenu';
+import Menu from './Menu/Menu';
 import Sidebar from './Sidebar';
 
 const store = new Store();
@@ -12,7 +12,7 @@ store.ready().then(() => {
     render(
         <Provider store={store}>
             <Sidebar />
-            <ContextMenu />
+            <Menu />
         </Provider>,
         document.getElementById('sidebar-root'),
     );
