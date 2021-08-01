@@ -56,7 +56,7 @@ interface Props {
 
 const renderItem = (item: FeedItemType, props: Props) => (
     <FeedItem
-        key={item.id}
+        key={item.id + item.title}
         item={item}
         onClick={() =>
             props.onItemClick({
