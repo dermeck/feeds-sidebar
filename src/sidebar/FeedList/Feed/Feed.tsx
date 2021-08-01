@@ -8,7 +8,7 @@ import { Point } from '../../../store/slices/session';
 import FeedItem from './FeedItem/FeedItem';
 
 const FeedContainer = styled.ul`
-    padding-left: ${(props: { indented: boolean }) => (props.indented ? '2rem' : '0.5rem')};
+    padding-left: ${(props: { indented: boolean }) => (props.indented ? '2rem' : '1.5rem')};
     margin: 0 0 0.2rem 0;
 `;
 
