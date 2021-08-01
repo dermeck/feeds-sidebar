@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent } from 'react';
 
 import { MenuBackdrop } from '../../components/styled';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
