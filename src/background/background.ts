@@ -5,7 +5,7 @@ import store from '../store/store';
 
 wrapStore(store);
 
-browser.browserAction.onClicked.addListener((e) => {
+browser.browserAction.onClicked.addListener(() => {
     browser.sidebarAction.open();
 });
 

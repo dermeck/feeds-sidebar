@@ -8,7 +8,7 @@
     "scripts": {
         "start": "webpack --mode development --watch",
         "build": "webpack --mode production",
-        "lint": "eslint .eslintrc.json",
+        "lint": "eslint .eslintrc.json src/",
         "package": "web-ext build --source-dir dist",
         "start-hotreload": "web-ext run --source-dir dist",
         "prettier": "prettier --write '**/*.{ts,js,css,html}'"
