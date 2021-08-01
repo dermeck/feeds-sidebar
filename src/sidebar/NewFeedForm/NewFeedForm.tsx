@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 
-import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../components/styled';
-import { colors } from '../../components/styled/colors';
+import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../base-components';
+import { colors } from '../../base-components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addNewFeedCommand } from '../../store/slices/feeds';
 import NewFeedsList from './NewFeedsList/NewFeedsList';

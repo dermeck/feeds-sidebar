@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/react';
 import { FunctionComponent } from 'react';
 
-import { MenuContainer, MenuItem, MenuList } from '../../components/styled';
+import { MenuContainer, MenuItem, MenuList } from '../../base-components';
 import { useAppDispatch } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
 import { Point } from '../../store/slices/session';

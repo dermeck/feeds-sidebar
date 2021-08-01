@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/react';
 import { FunctionComponent } from 'react';
 
-import { MenuBackdrop } from '../../components/styled';
+import { MenuBackdrop } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import sessionSlice from '../../store/slices/session';
 import ContextMenu from './ContextMenu';

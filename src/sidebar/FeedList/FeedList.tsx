@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { FullHeightScrollContainer } from '../../components/styled';
+import { FullHeightScrollContainer } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
 import sessionSlice, { Point } from '../../store/slices/session';

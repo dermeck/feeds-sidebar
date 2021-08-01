@@ -4,8 +4,8 @@ import styled from '@emotion/styled';
 import { FunctionComponent, useState } from 'react';
 import { Folder, Plus, RefreshCw } from 'react-feather';
 
-import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../components/styled';
-import { colors } from '../components/styled/colors';
+import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../base-components';
+import { colors } from '../base-components/styled/colors';
 import { useAppDispatch } from '../store/hooks';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
 import FeedList from './FeedList/FeedList';

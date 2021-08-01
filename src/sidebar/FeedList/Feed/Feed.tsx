@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
-import { colors, rgba } from '../../../components/styled/colors';
+import { colors, rgba } from '../../../base-components/styled/colors';
 import { Feed as FeedType, FeedItem as FeedItemType } from '../../../store/slices/feeds';
 import { Point } from '../../../store/slices/session';
 import FeedItem from './FeedItem/FeedItem';
