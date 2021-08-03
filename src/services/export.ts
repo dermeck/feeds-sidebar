@@ -1,3 +1,5 @@
+import { encode } from 'html-entities';
+
 import { Feed } from '../store/slices/feeds';
 
 const exportFilename = 'ytrss-export.xml';
@@ -10,7 +12,8 @@ const opmlExport = (feeds: ReadonlyArray<Feed>): void => {
     triggerDownload(new Blob([xmlString], { type: 'text/xml' }));
 };
 
-const createOutlineForFeed = (feed: Feed): string => `<outline text="${feed.title}" xmlUrl="${feed.url}" />`;
+const createOutlineForFeed = (feed: Feed): string =>
+    `<outline text="${encode(feed.title)}" xmlUrl="${encode(feed.url)}" />`;
 
 const triggerDownload = (content: Blob) => {
     const link = document.createElement('a');
