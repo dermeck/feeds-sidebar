@@ -26,6 +26,8 @@ export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 
 export const addNewFeedCommand = createAction<string>('feeds/addNewFeedCommand');
 
+export const importFeedsCommand = createAction<ReadonlyArray<Feed>>('feeds/importFeedsCommand');
+
 const initialState: FeedSliceState = {
     feeds: [
         {
@@ -42,7 +44,7 @@ const initialState: FeedSliceState = {
             url: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
             items: [],
         },
-        */
+        
         {
             // sample RSS 2.0 Feed
             id: 'https://www.tagesschau.de/xml/rss2/',
@@ -65,6 +67,7 @@ const initialState: FeedSliceState = {
             url: 'https://www.quarks.de/feed/',
             items: [],
         },
+        */
     ],
     selectedFeedId: '',
 };

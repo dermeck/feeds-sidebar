@@ -2,7 +2,13 @@ import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import parseFeed from '../../services/feedParser';
-import feedsSlice, { fetchFeedByUrl, fetchAllFeedsCommand, addNewFeedByUrl, addNewFeedCommand } from '../slices/feeds';
+import feedsSlice, {
+    fetchFeedByUrl,
+    fetchAllFeedsCommand,
+    addNewFeedByUrl,
+    addNewFeedCommand,
+    importFeedsCommand,
+} from '../slices/feeds';
 import sessionSlice from '../slices/session';
 import { RootState } from '../store';
 
@@ -20,6 +26,14 @@ export const feedMiddleware: Middleware<
 
     if (addNewFeedCommand.match(action)) {
         middlewareApi.dispatch(addNewFeedByUrl(action.payload));
+    }
+
+    if (importFeedsCommand.match(action)) {
+        action.payload.forEach((importedFeed) => {
+            if (!middlewareApi.getState().feeds.feeds.some((f) => f.url === importedFeed.url)) {
+                middlewareApi.dispatch(addNewFeedByUrl(importedFeed.url));
+            }
+        });
     }
 
     if (fetchFeedByUrl.fulfilled.match(action)) {
