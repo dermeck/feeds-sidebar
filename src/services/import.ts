@@ -23,7 +23,7 @@ const parseXml = (fileContent: string): ReadonlyArray<Feed> => {
         const id = feedNode.getAttribute('text');
         const url = feedNode.getAttribute('xmlUrl');
 
-        if (id !== null && url !== null) {
+        if (id !== null && url !== null && !parsedFeeds.some((x) => x.id === id)) {
             parsedFeeds.push({
                 id,
                 url,
