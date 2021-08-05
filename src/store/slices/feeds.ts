@@ -26,6 +26,10 @@ export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 
 export const addNewFeedCommand = createAction<string>('feeds/addNewFeedCommand');
 
+export const deleteSelectedFeedCommand = createAction('feeds/deleteSelectedFeedCommand');
+
+export const importFeedsCommand = createAction<ReadonlyArray<Feed>>('feeds/importFeedsCommand');
+
 const initialState: FeedSliceState = {
     feeds: [
         {
@@ -42,7 +46,7 @@ const initialState: FeedSliceState = {
             url: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
             items: [],
         },
-        */
+        
         {
             // sample RSS 2.0 Feed
             id: 'https://www.tagesschau.de/xml/rss2/',
@@ -65,6 +69,7 @@ const initialState: FeedSliceState = {
             url: 'https://www.quarks.de/feed/',
             items: [],
         },
+        */
     ],
     selectedFeedId: '',
 };
@@ -104,21 +109,23 @@ const feedsSlice = createSlice({
                 feeds: [...updateFeed(state, action.payload)],
             };
         },
-        deleteSelectedFeed(state) {
+        deleteFeed(state, action: PayloadAction<string>) {
             // index of the feed that gets deleted
-            const selectedIndex = state.feeds.findIndex((f) => f.id === state.selectedFeedId);
+            const selectedIndex = state.feeds.findIndex((f) => f.id === action.payload);
 
             // delete
-            state.feeds = state.feeds.filter((f) => f.id !== state.selectedFeedId);
+            state.feeds = state.feeds.filter((f) => f.id !== action.payload);
 
-            // if possible select the the next feed
-            // TODO also set focus
-            state.selectedFeedId =
-                state.feeds.length === 0
-                    ? ''
-                    : state.feeds.length > selectedIndex
-                    ? state.feeds[selectedIndex].id
-                    : state.feeds[selectedIndex - 1].id;
+            if (action.payload === state.selectedFeedId) {
+                // if possible select the the next feed
+                // TODO also set focus
+                state.selectedFeedId =
+                    state.feeds.length === 0
+                        ? ''
+                        : state.feeds.length > selectedIndex
+                        ? state.feeds[selectedIndex].id
+                        : state.feeds[selectedIndex - 1].id;
+            }
         },
         itemRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             return {
