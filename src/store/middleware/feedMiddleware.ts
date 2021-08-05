@@ -8,6 +8,7 @@ import feedsSlice, {
     addNewFeedByUrl,
     addNewFeedCommand,
     importFeedsCommand,
+    deleteSelectedFeedCommand,
 } from '../slices/feeds';
 import sessionSlice from '../slices/session';
 import { RootState } from '../store';
@@ -34,6 +35,10 @@ export const feedMiddleware: Middleware<
                 middlewareApi.dispatch(addNewFeedByUrl(importedFeed.url));
             }
         });
+    }
+
+    if (deleteSelectedFeedCommand.match(action)) {
+        middlewareApi.dispatch(feedsSlice.actions.deleteFeed(middlewareApi.getState().feeds.selectedFeedId));
     }
 
     if (fetchFeedByUrl.fulfilled.match(action)) {

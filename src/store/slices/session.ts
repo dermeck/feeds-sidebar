@@ -78,6 +78,12 @@ const sessionSlice = createSlice({
                 state.newFeeds.push({ url: action.meta.arg, status: 'error' });
             }
         });
+        builder.addCase(feedsSlice.actions.deleteFeed, (state, action) => {
+            return {
+                ...state,
+                newFeeds: state.newFeeds.filter((x) => x.url !== action.payload),
+            };
+        });
     },
 });
 
