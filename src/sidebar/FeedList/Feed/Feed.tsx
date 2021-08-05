@@ -103,7 +103,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                     {props.feed.items.map(
                         (item) =>
                             !item.isRead &&
-                            item.title.toLowerCase().includes(props.filterString.toLowerCase()) &&
+                            item.title?.toLowerCase().includes(props.filterString.toLowerCase()) &&
                             renderItem(item, props),
                     )}
                 </FeedContainer>
