@@ -68,11 +68,11 @@ const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
                 <ToolbarButton onClick={props.onCancel}>
                     <ArrowLeft />
                 </ToolbarButton>
-                <ToolbarButton onClick={() => opmlExport(feeds)}>
-                    <ArrowDownCircle />
-                </ToolbarButton>
-                <ToolbarButton onClick={() => inputFileRef.current?.click()}>
+                <ToolbarButton onClick={() => opmlExport(feeds)} title="Export">
                     <ArrowUpCircle />
+                </ToolbarButton>
+                <ToolbarButton onClick={() => inputFileRef.current?.click()} title="Import">
+                    <ArrowDownCircle />
                     <ImportInput
                         ref={inputFileRef}
                         type="file"
