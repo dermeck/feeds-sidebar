@@ -4,14 +4,17 @@ import feedsSlice, { addNewFeedByUrl } from './feeds';
 
 type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
-type MenuType = 'contextMenu';
+export const enum MenuType {
+    contextMenu,
+    moreMenu,
+}
 
 export interface Point {
     x: number;
     y: number;
 }
 
-interface MenuContext {
+export interface MenuContext {
     type: MenuType;
     anchorPoint: Point;
 }
@@ -41,7 +44,13 @@ const sessionSlice = createSlice({
         },
         showContextMenu(state, action: PayloadAction<Point>) {
             state.menuContext = {
-                type: 'contextMenu',
+                type: MenuType.contextMenu,
+                anchorPoint: action.payload,
+            };
+        },
+        showMoreMenu(state, action: PayloadAction<Point>) {
+            state.menuContext = {
+                type: MenuType.moreMenu,
                 anchorPoint: action.payload,
             };
         },

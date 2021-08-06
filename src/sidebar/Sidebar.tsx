@@ -2,12 +2,15 @@
 import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FunctionComponent, useState } from 'react';
-import { Folder, Plus, RefreshCw } from 'react-feather';
+import { Folder, MoreHorizontal, RefreshCw } from 'react-feather';
 
 import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../base-components';
+import { menuWidthInPx } from '../base-components/styled/Menu';
+import { toolbarButtonPaddingInPx, toolbarButtonSideLengthInPx } from '../base-components/styled/ToolbarButton';
 import { colors } from '../base-components/styled/colors';
-import { useAppDispatch } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
+import sessionSlice, { MenuType } from '../store/slices/session';
 import FeedList from './FeedList/FeedList';
 import NewFeedForm from './NewFeedForm/NewFeedForm';
 
@@ -33,7 +36,7 @@ const ShowFeedTitleButton = styled(ToolbarButton)({
     padding: '7px',
 });
 
-const NavigateToAddViewButton = styled(ToolbarButton)({
+const MoreMenuButton = styled(ToolbarButton)({
     gridColumn: '4',
 });
 
@@ -45,6 +48,8 @@ export type View = 'feeds' | 'newFeed';
 
 const Sidebar: FunctionComponent = () => {
     const dispatch = useAppDispatch();
+    const moerMenuVisible = useAppSelector((state) => state.session.menuContext?.type === MenuType.moreMenu);
+
     const [view, setView] = useState<View>('feeds');
     const [showFolders, setShowFeedTitles] = useState<boolean>(true);
     const [filterString, setFilterString] = useState<string>('');
@@ -55,13 +60,33 @@ const Sidebar: FunctionComponent = () => {
                 <FetchAllButton onClick={() => dispatch(fetchAllFeedsCommand())}>
                     <RefreshCw size={18} />
                 </FetchAllButton>
+
                 <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
+
                 <ShowFeedTitleButton onClick={() => setShowFeedTitles(!showFolders)} active={showFolders}>
                     <Folder size={18} />
                 </ShowFeedTitleButton>
-                <NavigateToAddViewButton onClick={() => setView('newFeed')}>
+
+                <MoreMenuButton active={moerMenuVisible}>
+                    <MoreHorizontal
+                        onClick={(e) => {
+                            const offsetHeight = e.currentTarget.parentElement?.offsetHeight;
+                            const offsetLeft = e.currentTarget.parentElement?.offsetLeft;
+
+                            if (offsetHeight !== undefined && offsetLeft !== undefined) {
+                                dispatch(
+                                    sessionSlice.actions.showMoreMenu({
+                                        x: offsetLeft - menuWidthInPx + toolbarButtonSideLengthInPx,
+                                        y: offsetHeight + 2 * toolbarButtonPaddingInPx,
+                                    }),
+                                );
+                            }
+                        }}
+                    />
+                </MoreMenuButton>
+                {/*<NavigateToAddViewButton onClick={() => setView('newFeed')}>
                     <Plus />
-                </NavigateToAddViewButton>
+                </NavigateToAddViewButton>*/}
             </Header>
             <FeedList showFeedTitles={showFolders && filterString.trim() === ''} filterString={filterString.trim()} />
 
