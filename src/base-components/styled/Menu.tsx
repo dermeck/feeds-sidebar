@@ -37,17 +37,3 @@ export const MenuList = styled.ul`
     padding: 0;
     margin: 0;
 `;
-
-export const MenuItem = styled.li`
-    display: flex;
-    flex-direction: row;
-    list-style: none;
-    padding: 0.4rem;
-
-    &:hover {
-        color: ${colors.highlightColor1Dark};
-        background-color: ${colors.highlightBackgroundColor1};
-    }
-
-    padding-left: 24px;
-`;
