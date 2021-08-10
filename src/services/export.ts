@@ -2,7 +2,7 @@ import { encode } from 'html-entities';
 
 import { Feed } from '../store/slices/feeds';
 
-const exportFilename = 'ytrss-export.xml';
+const exportFilename = 'ytrss-export.opml';
 
 const opmlExport = (feeds: ReadonlyArray<Feed>): void => {
     const xmlString = `<?xml version="1.0" encoding="UTF-8"?><opml version="1.0"><body>
