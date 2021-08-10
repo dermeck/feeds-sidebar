@@ -36,7 +36,7 @@ const Menu: FunctionComponent = () => {
     }
 
     return (
-        <MenuBackdrop onClick={hideMenu} onMouseDown={hideMenu} onContextMenu={(e) => e.preventDefault()}>
+        <MenuBackdrop onMouseDown={hideMenu} onContextMenu={(e) => e.preventDefault()}>
             {renderMenu(context)}
         </MenuBackdrop>
     );
