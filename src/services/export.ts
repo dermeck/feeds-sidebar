@@ -13,7 +13,7 @@ const opmlExport = (feeds: ReadonlyArray<Feed>): void => {
 };
 
 const createOutlineForFeed = (feed: Feed): string =>
-    `<outline text="${encode(feed.title)}" xmlUrl="${encode(feed.url)}" />`;
+    `<outline text="${encode(feed.title)}" title="${encode(feed.title)}"  xmlUrl="${encode(feed.url)}" />`;
 
 const triggerDownload = (content: Blob) => {
     const link = document.createElement('a');
