@@ -20,7 +20,13 @@ const parseXml = (fileContent: string): ReadonlyArray<Feed> => {
     const xml = parser.parseFromString(fileContent, 'application/xml');
 
     xml.querySelectorAll('outline[xmlUrl]').forEach((feedNode) => {
-        const id = feedNode.getAttribute('text');
+        let id = feedNode.getAttribute('text');
+        if (id === null) {
+            // use title as fallback if text is not preset
+            // though it should be there (http://dev.opml.org/spec2.html#textAttribute)
+            id = feedNode.getAttribute('title');
+        }
+
         const url = feedNode.getAttribute('xmlUrl');
 
         if (id !== null && url !== null && !parsedFeeds.some((x) => x.id === id)) {
