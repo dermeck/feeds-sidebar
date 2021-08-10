@@ -24,9 +24,6 @@ export const storageMiddleware: Middleware<
         store.subscribe(async () => {
             await saveState(store.getState());
         });
-
-        // update feeds when extension is loaded
-        middlewareApi.dispatch(fetchAllFeedsCommand());
     }
 
     return next(action);
