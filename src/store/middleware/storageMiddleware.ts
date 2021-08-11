@@ -2,7 +2,7 @@ import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { loadState, saveState } from '../../services/persistence';
-import feedsSlice, { fetchAllFeedsCommand } from '../slices/feeds';
+import feedsSlice from '../slices/feeds';
 import { initCommand } from '../slices/global';
 import store, { RootState } from '../store';
 
