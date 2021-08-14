@@ -68,7 +68,7 @@ const renderItem = (item: FeedItemType, props: Props) => (
 );
 
 const Feed: FunctionComponent<Props> = (props: Props) => {
-    const [expanded, setExpanded] = useState<boolean>(true);
+    const [expanded, setExpanded] = useState<boolean>(false);
     const [focus, setFocus] = useState<boolean>(false);
 
     return (

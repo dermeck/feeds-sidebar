@@ -1,4 +1,5 @@
 import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Semaphore } from 'async-mutex';
 
 export type FeedSliceState = {
     feeds: ReadonlyArray<Feed>;
@@ -82,9 +83,16 @@ export const addNewFeedByUrl = createAsyncThunk<string, string>('feeds/addNewFee
     return await fetchFeed(url);
 });
 
+// TODO make this configurable
+const fetchFeedSemaphore = new Semaphore(3);
+
 const fetchFeed = async (url: string) => {
-    const response = await fetch(url);
-    return await response.text();
+    return new Promise<string>((resolve) => {
+        fetchFeedSemaphore.runExclusive(async () => {
+            const response = await fetch(url);
+            resolve(await response.text());
+        });
+    });
 };
 
 const feedsSlice = createSlice({

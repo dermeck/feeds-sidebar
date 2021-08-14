@@ -25,6 +25,13 @@ export const feedMiddleware: Middleware<
         });
     }
 
+    if (feedsSlice.actions.extensionStateLoaded.match(action)) {
+        // update feeds when extension is loaded
+        action.payload.feeds.forEach((feed) => {
+            middlewareApi.dispatch(fetchFeedByUrl(feed.url));
+        });
+    }
+
     if (addNewFeedCommand.match(action)) {
         middlewareApi.dispatch(addNewFeedByUrl(action.payload));
     }
