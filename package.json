@@ -9,7 +9,7 @@
         "start": "webpack --mode development --watch",
         "build": "webpack --mode production",
         "lint": "eslint .eslintrc.json src/",
-        "stylelint": "stylelint ./src --config stylelintrc.json",
+        "stylelint": "stylelint '**/*.tsx' --config stylelintrc.json",
         "package": "web-ext build --source-dir dist",
         "start-hotreload": "web-ext run --source-dir dist",
         "prettier": "prettier --write '**/*.{ts,js,css,html}'"
