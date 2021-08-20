@@ -8,10 +8,11 @@
     "scripts": {
         "start": "webpack --mode development --watch",
         "build": "webpack --mode production",
-        "lint": "eslint .eslintrc.json src/",
-        "stylelint": "stylelint '**/*.tsx' --config stylelintrc.json",
+        "lint": "yarn run lint:js && yarn run lint:styles",
+        "lint:js": "eslint .eslintrc.json src/",
+        "lint:styles": "stylelint '**/*.tsx' --config stylelintrc.json",
         "package": "web-ext build --source-dir dist",
-        "start-hotreload": "web-ext run --source-dir dist",
+        "start:hotreload": "web-ext run --source-dir dist",
         "prettier": "prettier --write '**/*.{ts,js,css,html}'"
     },
     "devDependencies": {
