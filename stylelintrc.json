@@ -1,4 +1,9 @@
 {
     "processors": ["stylelint-processor-styled-components"],
-    "extends": ["stylelint-config-standard", "stylelint-config-prettier"]
+    "extends": ["stylelint-config-standard", "stylelint-config-prettier"],
+    "rules": {
+        "no-empty-source": null,
+        "declaration-empty-line-before": null,
+        "no-missing-end-of-source-newline": null
+    }
 }
