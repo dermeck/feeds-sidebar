@@ -3,19 +3,20 @@ import styled from '@emotion/styled';
 import { colors } from './colors';
 
 export const Button = styled.button`
+    padding-right: 20px;
+    padding-left: 20px;
+    border: none;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+
     background-color: inherit;
     background-color: ${(props: { active?: boolean }) =>
         props.active ? colors.toolbarButtonActiveBackground : colors.toolbarBackground};
-    border: none;
-
+    border-radius: 4px;
     color: ${colors.toolbarFont};
-
     font-size: 13px;
-    padding-inline-start: 20px;
-    padding-inline-end: 20px;
+
     line-height: 27px;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
 
     :hover {
         background-color: ${colors.toolbarButtonHoverBackground};
@@ -23,8 +24,6 @@ export const Button = styled.button`
     :active {
         background-color: ${colors.toolbarButtonActiveBackground};
     }
-
-    border-radius: 4px;
 `;
 
 export const ToolbarButton = styled(Button)`

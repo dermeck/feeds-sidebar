@@ -5,13 +5,13 @@ interface DrawerProps {
 }
 
 export const Drawer = styled.div`
-    background-color: #fff;
     position: absolute;
     top: 0;
-    height: 100%;
 
     width: ${(props: DrawerProps) => (props.show ? '100%' : '0')};
+    height: 100%;
     margin-left: ${(props: DrawerProps) => (props.show ? '0' : '-500px')};
 
+    background-color: #fff;
     transition: all 0.5s cubic-bezier(0.62, 0.28, 0.23, 0.99); ;
 `;

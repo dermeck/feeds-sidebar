@@ -1,0 +1,11 @@
+{
+    "processors": ["stylelint-processor-styled-components"],
+    "extends": ["stylelint-config-standard", "stylelint-config-idiomatic-order", "stylelint-config-prettier"],
+    "plugins": ["stylelint-declaration-block-no-ignored-properties"],
+    "rules": {
+        "no-empty-source": null,
+        "declaration-empty-line-before": null,
+        "no-missing-end-of-source-newline": null,
+        "plugin/declaration-block-no-ignored-properties": true
+    }
+}
