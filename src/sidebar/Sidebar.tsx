@@ -18,9 +18,9 @@ const SidebarContainer = styled.div`
 
 const Header = styled(ToolbarContainer)`
     display: grid;
-    grid-template-columns: 32px 1fr 32px 32px;
-    grid-column-gap: 4px;
     align-items: center;
+    grid-column-gap: 4px;
+    grid-template-columns: 32px 1fr 32px 32px;
 `;
 
 const FetchAllButton = styled(ToolbarButton)({

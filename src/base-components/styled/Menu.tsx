@@ -21,31 +21,31 @@ export const MenuContainer = styled.div`
     left: ${(props: MenuContainerProps) => `${props.anchorLeft}px`};
 
     width: 200px;
-
-    background-color: ${colors.defaultBackgroundColor};
-    color: ${colors.defaultColor};
-
     padding: 1px;
+
     border: 1px solid ${colors.menuBorder};
+    background-color: ${colors.defaultBackgroundColor};
     border-radius: 2px;
+    color: ${colors.defaultColor};
 `;
 
 export const MenuList = styled.ul`
-    list-style: none;
     padding: 0;
     margin: 0;
+
+    list-style: none;
 `;
 
 export const MenuItem = styled.li`
     display: flex;
     flex-direction: row;
-    list-style: none;
     padding: 0.4rem;
+    padding-left: 24px;
+
+    list-style: none;
 
     &:hover {
-        color: ${colors.highlightColor1Dark};
         background-color: ${colors.highlightBackgroundColor1};
+        color: ${colors.highlightColor1Dark};
     }
-
-    padding-left: 24px;
 `;

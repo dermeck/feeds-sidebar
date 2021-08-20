@@ -1,6 +1,6 @@
 {
     "processors": ["stylelint-processor-styled-components"],
-    "extends": ["stylelint-config-standard", "stylelint-config-prettier"],
+    "extends": ["stylelint-config-standard", "stylelint-config-idiomatic-order", "stylelint-config-prettier"],
     "plugins": ["stylelint-declaration-block-no-ignored-properties"],
     "rules": {
         "no-empty-source": null,

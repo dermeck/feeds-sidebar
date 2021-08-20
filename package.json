@@ -41,6 +41,7 @@
         "react-feather": "^2.0.9",
         "react-redux": "^7.2.4",
         "stylelint": "^13.13.1",
+        "stylelint-config-idiomatic-order": "^8.1.0",
         "stylelint-config-prettier": "^8.0.2",
         "stylelint-config-standard": "^22.0.0",
         "stylelint-declaration-block-no-ignored-properties": "^2.4.0",

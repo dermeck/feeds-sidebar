@@ -7,23 +7,23 @@ import { FeedItem as FeedItemType } from '../../../../store/slices/feeds';
 const Container = styled.li`
     display: flex;
     flex-direction: row;
-    list-style: none;
     padding: 0.4rem;
+    list-style: none;
 `;
 
 const Link = styled.a`
-    color: inherit;
-    text-decoration: none;
+    overflow: hidden;
     width: 100%;
     margin-left: 0.25rem;
+
+    color: inherit;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     &:hover {
         text-decoration: underline;
     }
-
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 `;
 
 interface Props {
