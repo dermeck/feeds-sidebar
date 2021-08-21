@@ -21,6 +21,7 @@ const FeedTitleContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    padding: 0.05rem 0 0.2rem 0.5rem;
 
     background-color: ${(props: FeedTitleContainerProps) =>
         props.highlight
@@ -30,13 +31,11 @@ const FeedTitleContainer = styled.div`
             : 'inherit'};
     color: ${(props: FeedTitleContainerProps) =>
         props.highlight && props.focus ? colors.highlightColor1Light : 'inherit'};
-
-    padding: 0.05rem 0 0.2rem 0.5rem;
 `;
 
 const FeedTitle = styled.label`
-    margin-left: 0.25rem;
     padding-top: 4px;
+    margin-left: 0.25rem;
 `;
 
 const ToggleIndicator = styled.div`

@@ -6,6 +6,7 @@ module.exports = {
     entry: {
         'sidebar/sidebar': './src/sidebar/index.tsx',
         background: './src/background/background.ts',
+        'stand-alone/sidebar': './src/stand-alone/index.tsx',
     },
 
     output: {

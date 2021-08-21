@@ -20,9 +20,10 @@ const ContentContainer = styled.div`
 
 const Title = styled.h1`
     align-self: center;
+    margin: auto;
+
     font-size: 1.1rem;
     font-weight: 600;
-    margin: auto;
 `;
 
 const MessageBox = styled.div`

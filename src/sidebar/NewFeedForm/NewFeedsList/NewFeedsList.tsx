@@ -11,12 +11,13 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
-    list-style: none;
     padding: 0.3rem;
 
+    list-style: none;
+
     & > svg {
-        vertical-align: middle;
         margin-right: 0.5rem;
+        vertical-align: middle;
     }
 `;
 
