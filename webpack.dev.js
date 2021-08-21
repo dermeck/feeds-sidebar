@@ -4,8 +4,6 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = {
     entry: {
-        'sidebar/sidebar': './src/sidebar/index.tsx',
-        background: './src/background/background.ts',
         'stand-alone/sidebar': './src/stand-alone/index.tsx',
     },
 
@@ -45,4 +43,12 @@ module.exports = {
         // TODO only add required polyfills
         new NodePolyfillPlugin(),
     ],
+    devServer: {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+            'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+        },
+        port: 8090,
+    },
 };

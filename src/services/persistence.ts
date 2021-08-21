@@ -11,10 +11,13 @@ export const saveState = (state: RootState): Promise<void> => {
         [storageKeys.feeds]: state.feeds,
     };
 
+    // return new Promise(() => undefined);
+
     return browser.storage.local.set(localStorageData);
 };
 
 export const loadState = async (): Promise<RootState | undefined> => {
+    // return new Promise(() => undefined);
     const feeds = await browser.storage.local.get(storageKeys.feeds);
 
     if (Object.keys(feeds).length === 0) {
