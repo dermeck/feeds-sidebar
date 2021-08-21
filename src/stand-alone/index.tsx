@@ -11,5 +11,5 @@ render(
         <Sidebar />
         <Menu />
     </Provider>,
-    document.getElementById('sidebar-root'),
+    document.getElementById('stand-alone-root'),
 );

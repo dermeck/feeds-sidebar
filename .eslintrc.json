@@ -15,5 +15,5 @@
     "plugins": ["react", "@typescript-eslint"],
     "rules": {},
     "settings": { "react": { "version": "detect" } },
-    "ignorePatterns": ["webpack.config.js", "webpack.dev.js"]
+    "ignorePatterns": ["webpack.config.js", "webpack.stand-alone.js"]
 }

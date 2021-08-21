@@ -14,7 +14,7 @@
         "package": "web-ext build --source-dir dist",
         "start:hotreload": "web-ext run --source-dir dist",
         "prettier": "prettier --write '**/*.{ts,js,css,html}'",
-        "serve": "webpack serve --config webpack.dev.js --mode development"
+        "serve": "webpack serve --config webpack.stand-alone.js --mode development"
     },
     "devDependencies": {
         "@emotion/css": "^11.1.3",
