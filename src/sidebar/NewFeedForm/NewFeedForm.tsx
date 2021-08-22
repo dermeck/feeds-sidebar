@@ -1,13 +1,11 @@
 import styled from '@emotion/styled';
 import React, { FunctionComponent, useRef, useState } from 'react';
-import { ArrowDownCircle, ArrowLeft, ArrowUpCircle } from 'react-feather';
+import { ArrowLeft } from 'react-feather';
 
 import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../base-components';
 import { colors } from '../../base-components/styled/colors';
-import opmlExport from '../../services/export';
-import { readOpmlFile } from '../../services/import';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addNewFeedCommand, importFeedsCommand } from '../../store/slices/feeds';
+import { addNewFeedCommand } from '../../store/slices/feeds';
 import sessionSlice, { View } from '../../store/slices/session';
 import NewFeedsList from './NewFeedsList/NewFeedsList';
 
@@ -64,23 +62,6 @@ const NewFeedForm: FunctionComponent = () => {
             <ToolbarContainer>
                 <ToolbarButton onClick={() => dispatch(sessionSlice.actions.changeView(View.feedList))}>
                     <ArrowLeft />
-                </ToolbarButton>
-                <ToolbarButton onClick={() => opmlExport(feeds)} title="Export">
-                    <ArrowUpCircle />
-                </ToolbarButton>
-                <ToolbarButton onClick={() => inputFileRef.current?.click()} title="Import">
-                    <ArrowDownCircle />
-                    <ImportInput
-                        ref={inputFileRef}
-                        type="file"
-                        onChange={async (e) => {
-                            if (e.target.files === null) {
-                                return;
-                            }
-
-                            dispatch(importFeedsCommand(await readOpmlFile(e.target.files[0])));
-                        }}
-                    />
                 </ToolbarButton>
                 <Title>Add New Feed</Title>
             </ToolbarContainer>
