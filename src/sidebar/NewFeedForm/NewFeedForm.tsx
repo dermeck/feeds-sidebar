@@ -1,13 +1,12 @@
 import styled from '@emotion/styled';
 import React, { FunctionComponent, useRef, useState } from 'react';
-import { ArrowDownCircle, ArrowLeft, ArrowUpCircle } from 'react-feather';
+import { ArrowLeft } from 'react-feather';
 
 import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../base-components';
 import { colors } from '../../base-components/styled/colors';
-import opmlExport from '../../services/export';
-import { readOpmlFile } from '../../services/import';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addNewFeedCommand, importFeedsCommand } from '../../store/slices/feeds';
+import { addNewFeedCommand } from '../../store/slices/feeds';
+import sessionSlice, { View } from '../../store/slices/session';
 import NewFeedsList from './NewFeedsList/NewFeedsList';
 
 const Container = styled.div``;
@@ -34,15 +33,7 @@ const MessageBox = styled.div`
     border-radius: 4px;
 `;
 
-const ImportInput = styled.input`
-    visibility: hidden;
-`;
-
 const AddButton = styled(Button)({ alignSelf: 'flex-end' });
-
-interface Props {
-    onCancel: () => void;
-}
 
 const isValidURL = (str: string) => {
     const res = str.match(
@@ -51,40 +42,21 @@ const isValidURL = (str: string) => {
     return res !== null;
 };
 
-const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
+const NewFeedForm: FunctionComponent = () => {
     const addButtonRef = useRef<HTMLButtonElement>(null);
-    const inputFileRef = useRef<HTMLInputElement>(null);
 
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
 
     const [newFeedUrl, setNewFeedUrl] = useState('');
-
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
     const [addButtonActive, setAddButtonActive] = useState(false);
 
     return (
         <Container>
             <ToolbarContainer>
-                <ToolbarButton onClick={props.onCancel}>
+                <ToolbarButton onClick={() => dispatch(sessionSlice.actions.changeView(View.feedList))}>
                     <ArrowLeft />
-                </ToolbarButton>
-                <ToolbarButton onClick={() => opmlExport(feeds)} title="Export">
-                    <ArrowUpCircle />
-                </ToolbarButton>
-                <ToolbarButton onClick={() => inputFileRef.current?.click()} title="Import">
-                    <ArrowDownCircle />
-                    <ImportInput
-                        ref={inputFileRef}
-                        type="file"
-                        onChange={async (e) => {
-                            if (e.target.files === null) {
-                                return;
-                            }
-
-                            dispatch(importFeedsCommand(await readOpmlFile(e.target.files[0])));
-                        }}
-                    />
                 </ToolbarButton>
                 <Title>Add New Feed</Title>
             </ToolbarContainer>
