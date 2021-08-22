@@ -54,6 +54,7 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
             <ImportInput
                 ref={inputFileRef}
                 type="file"
+                accept=".xml,.opml"
                 onChange={async (e) => {
                     if (e.target.files === null) {
                         return;
