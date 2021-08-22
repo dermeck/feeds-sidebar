@@ -33,10 +33,6 @@ const MessageBox = styled.div`
     border-radius: 4px;
 `;
 
-const ImportInput = styled.input`
-    visibility: hidden;
-`;
-
 const AddButton = styled(Button)({ alignSelf: 'flex-end' });
 
 const isValidURL = (str: string) => {
@@ -48,7 +44,6 @@ const isValidURL = (str: string) => {
 
 const NewFeedForm: FunctionComponent = () => {
     const addButtonRef = useRef<HTMLButtonElement>(null);
-    const inputFileRef = useRef<HTMLInputElement>(null);
 
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);

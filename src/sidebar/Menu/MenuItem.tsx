@@ -18,23 +18,24 @@ interface Props {
 export const StyledListItem = styled.li`
     display: flex;
     flex-direction: row;
-    list-style: none;
     align-items: center;
+
     padding: 0.4rem;
+    padding-left: ${(props: { hasIcon: boolean }) => (props.hasIcon ? '4px' : '24px')};
+
+    list-style: none;
 
     &:hover {
-        color: ${colors.highlightColor1Dark};
         background-color: ${colors.highlightBackgroundColor1};
+        color: ${colors.highlightColor1Dark};
     }
-
-    padding-left: ${(props: { hasIcon: boolean }) => (props.hasIcon ? '4px' : '24px')};
 `;
 
 const IconContainer = styled.div`
-    // center the icon
+    /* center the icon */
+    width: 24px;
     height: 16px;
     padding-left: 4px;
-    width: 24px;
 `;
 
 const renderIcon = (key: IconKeys) => {
