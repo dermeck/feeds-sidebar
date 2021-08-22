@@ -19,12 +19,19 @@ export interface MenuContext {
     anchorPoint: Point;
 }
 
+export const enum View {
+    feedList,
+    subscribe,
+}
+
 export type SessionSliceState = {
+    activeView: View;
     newFeeds: ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
     menuContext: MenuContext | undefined;
 };
 
 export const initialState: SessionSliceState = {
+    activeView: View.feedList,
     newFeeds: [],
     menuContext: undefined,
 };
@@ -33,6 +40,9 @@ const sessionSlice = createSlice({
     name: 'session',
     initialState,
     reducers: {
+        changeView(state, action: PayloadAction<View>) {
+            state.activeView = action.payload;
+        },
         feedParseError(state, action: PayloadAction<string>) {
             const entry = state.newFeeds.find((x) => x.url === action.payload);
 

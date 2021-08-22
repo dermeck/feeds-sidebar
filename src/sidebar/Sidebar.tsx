@@ -10,7 +10,7 @@ import { toolbarButtonPaddingInPx, toolbarButtonSideLengthInPx } from '../base-c
 import { colors } from '../base-components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
-import sessionSlice, { MenuType } from '../store/slices/session';
+import sessionSlice, { MenuType, View } from '../store/slices/session';
 import FeedList from './FeedList/FeedList';
 import NewFeedForm from './NewFeedForm/NewFeedForm';
 
@@ -44,13 +44,11 @@ const FilterInput = styled(Input)({
     gridColumn: '2',
 });
 
-export type View = 'feeds' | 'newFeed';
-
 const Sidebar: FunctionComponent = () => {
     const dispatch = useAppDispatch();
-    const moerMenuVisible = useAppSelector((state) => state.session.menuContext?.type === MenuType.moreMenu);
+    const moreMenuVisible = useAppSelector((state) => state.session.menuContext?.type === MenuType.moreMenu);
+    const activeView = useAppSelector((state) => state.session.activeView);
 
-    const [view, setView] = useState<View>('feeds');
     const [showFolders, setShowFeedTitles] = useState<boolean>(true);
     const [filterString, setFilterString] = useState<string>('');
 
@@ -67,7 +65,7 @@ const Sidebar: FunctionComponent = () => {
                     <Folder size={18} />
                 </ShowFeedTitleButton>
 
-                <MoreMenuButton active={moerMenuVisible}>
+                <MoreMenuButton active={moreMenuVisible}>
                     <MoreHorizontal
                         onClick={(e) => {
                             const offsetHeight = e.currentTarget.parentElement?.offsetHeight;
@@ -84,14 +82,11 @@ const Sidebar: FunctionComponent = () => {
                         }}
                     />
                 </MoreMenuButton>
-                {/*<NavigateToAddViewButton onClick={() => setView('newFeed')}>
-                    <Plus />
-                </NavigateToAddViewButton>*/}
             </Header>
             <FeedList showFeedTitles={showFolders && filterString.trim() === ''} filterString={filterString.trim()} />
 
-            <Drawer show={view === 'newFeed'}>
-                <NewFeedForm onCancel={() => setView('feeds')} />
+            <Drawer show={activeView === View.subscribe}>
+                <NewFeedForm />
             </Drawer>
         </SidebarContainer>
     );

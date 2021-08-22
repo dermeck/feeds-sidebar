@@ -8,6 +8,7 @@ import opmlExport from '../../services/export';
 import { readOpmlFile } from '../../services/import';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addNewFeedCommand, importFeedsCommand } from '../../store/slices/feeds';
+import sessionSlice, { View } from '../../store/slices/session';
 import NewFeedsList from './NewFeedsList/NewFeedsList';
 
 const Container = styled.div``;
@@ -40,10 +41,6 @@ const ImportInput = styled.input`
 
 const AddButton = styled(Button)({ alignSelf: 'flex-end' });
 
-interface Props {
-    onCancel: () => void;
-}
-
 const isValidURL = (str: string) => {
     const res = str.match(
         /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
@@ -51,7 +48,7 @@ const isValidURL = (str: string) => {
     return res !== null;
 };
 
-const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
+const NewFeedForm: FunctionComponent = () => {
     const addButtonRef = useRef<HTMLButtonElement>(null);
     const inputFileRef = useRef<HTMLInputElement>(null);
 
@@ -59,14 +56,13 @@ const NewFeedForm: FunctionComponent<Props> = (props: Props) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
 
     const [newFeedUrl, setNewFeedUrl] = useState('');
-
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
     const [addButtonActive, setAddButtonActive] = useState(false);
 
     return (
         <Container>
             <ToolbarContainer>
-                <ToolbarButton onClick={props.onCancel}>
+                <ToolbarButton onClick={() => dispatch(sessionSlice.actions.changeView(View.feedList))}>
                     <ArrowLeft />
                 </ToolbarButton>
                 <ToolbarButton onClick={() => opmlExport(feeds)} title="Export">
