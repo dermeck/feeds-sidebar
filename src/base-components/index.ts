@@ -6,4 +6,4 @@ export { Label } from './styled/Label';
 export { FullHeightScrollContainer } from './styled/FullHeightScrollContainer';
 export { ToolbarButton } from './styled/ToolbarButton';
 export { ToolbarContainer, toolbarContainerheight } from './styled/ToolbarContainer';
-export { MenuBackdrop, MenuContainer, MenuList, MenuItem } from './styled/Menu';
+export { MenuBackdrop, MenuContainer, MenuList } from './styled/Menu';

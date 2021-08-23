@@ -21,8 +21,6 @@ const triggerDownload = (content: Blob) => {
     link.href = URL.createObjectURL(content);
     link.download = exportFilename;
     link.click();
-
-    document.removeChild(link);
 };
 
 export default opmlExport;

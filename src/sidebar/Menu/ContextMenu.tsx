@@ -2,10 +2,11 @@
 import { jsx } from '@emotion/react';
 import { FunctionComponent } from 'react';
 
-import { MenuContainer, MenuItem, MenuList } from '../../base-components';
+import { MenuContainer, MenuList } from '../../base-components';
 import { useAppDispatch } from '../../store/hooks';
 import { deleteSelectedFeedCommand } from '../../store/slices/feeds';
 import { Point } from '../../store/slices/session';
+import MenuItem from './MenuItem';
 
 interface Props {
     anchorPoint: Point;

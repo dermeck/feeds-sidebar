@@ -4,8 +4,23 @@ import { FunctionComponent } from 'react';
 
 import { MenuBackdrop } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import sessionSlice from '../../store/slices/session';
+import sessionSlice, { MenuContext, MenuType } from '../../store/slices/session';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import ContextMenu from './ContextMenu';
+import MoreMenu from './MoreMenu';
+
+const renderMenu = (context: MenuContext) => {
+    switch (context.type) {
+        case MenuType.contextMenu:
+            return <ContextMenu anchorPoint={context.anchorPoint} />;
+
+        case MenuType.moreMenu:
+            return <MoreMenu anchorPoint={context.anchorPoint} />;
+
+        default:
+            throw new UnreachableCaseError(context.type);
+    }
+};
 
 const Menu: FunctionComponent = () => {
     const context = useAppSelector((state) => state.session.menuContext);
@@ -21,8 +36,8 @@ const Menu: FunctionComponent = () => {
     }
 
     return (
-        <MenuBackdrop onClick={hideMenu} onMouseDown={hideMenu} onContextMenu={(e) => e.preventDefault()}>
-            <ContextMenu anchorPoint={context.anchorPoint} />
+        <MenuBackdrop onMouseDown={hideMenu} onContextMenu={(e) => e.preventDefault()}>
+            {renderMenu(context)}
         </MenuBackdrop>
     );
 };

@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 
 import { colors } from './colors';
 
+export const menuWidthInPx = 200;
+
 export const MenuBackdrop = styled.div`
     position: absolute;
     top: 0;
@@ -20,7 +22,7 @@ export const MenuContainer = styled.div`
     top: ${(props: MenuContainerProps) => `${props.anchorTop}px`};
     left: ${(props: MenuContainerProps) => `${props.anchorLeft}px`};
 
-    width: 200px;
+    width: ${menuWidthInPx}px;
     padding: 1px;
 
     border: 1px solid ${colors.menuBorder};
