@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
@@ -110,5 +111,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
         </Fragment>
     );
 };
+
+Feed.whyDidYouRender = true;
 
 export default Feed;
