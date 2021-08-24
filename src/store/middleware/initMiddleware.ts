@@ -8,7 +8,7 @@ import store, { RootState } from '../store';
 
 const feedsAutoUpdateKey = 'feedsAutoUpdate';
 
-export const storageMiddleware: Middleware<
+export const initMiddleware: Middleware<
     // eslint-disable-next-line @typescript-eslint/ban-types
     {},
     RootState,
