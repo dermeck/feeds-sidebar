@@ -37,5 +37,12 @@ export const initMiddleware: Middleware<
         );
     }
 
+    if (feedsSlice.actions.extensionStateLoaded.match(action)) {
+        // update feeds when extension is loaded
+        action.payload.feeds.forEach((feed) => {
+            middlewareApi.dispatch(fetchFeedByUrl(feed.url));
+        });
+    }
+
     return next(action);
 };
