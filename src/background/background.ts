@@ -10,7 +10,3 @@ browser.browserAction.onClicked.addListener(() => {
 });
 
 store.dispatch(initCommand());
-
-// TODO
-// browser.alarms.create("fetchFeedsCycle", { periodInMinutes: 1 });
-// browser.alarms.onAlarm.addListener(() => console.log("fetchFeedsCylce"));
