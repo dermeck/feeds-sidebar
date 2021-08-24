@@ -28,9 +28,10 @@ export const storageMiddleware: Middleware<
         });
 
         // setup cyclic update of all feeds
-        browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes: 1 });
+        const state = middlewareApi.getState();
+        browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes: state.options.feedUpdatePeriodInMinutes });
         browser.alarms.onAlarm.addListener(() =>
-            middlewareApi.getState().feeds.feeds.forEach((feed) => {
+            state.feeds.feeds.forEach((feed) => {
                 middlewareApi.dispatch(fetchFeedByUrl(feed.url));
             }),
         );
