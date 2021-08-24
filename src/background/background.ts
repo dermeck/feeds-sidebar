@@ -1,6 +1,6 @@
 import { wrapStore } from 'webext-redux';
 
-import { initCommand } from '../store/slices/global';
+import { initCommand } from '../store/actions';
 import store from '../store/store';
 
 wrapStore(store);

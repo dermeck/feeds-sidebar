@@ -2,8 +2,8 @@ import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { loadState, saveState } from '../../services/persistence';
+import { initCommand } from '../actions';
 import feedsSlice, { fetchFeedByUrl } from '../slices/feeds';
-import { initCommand } from '../slices/global';
 import store, { RootState } from '../store';
 
 const feedsAutoUpdateKey = 'feedsAutoUpdate';
