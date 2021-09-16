@@ -1,4 +1,5 @@
 import { FeedSliceState } from '../store/slices/feeds';
+import { initialState as initialOptionsSliceState } from '../store/slices/options';
 import { initialState as initialSessionSliceState } from '../store/slices/session';
 import { RootState } from '../store/store';
 
@@ -22,7 +23,8 @@ export const loadState = async (): Promise<RootState | undefined> => {
     }
 
     return {
-        session: initialSessionSliceState,
         feeds: feeds.feedsKey as FeedSliceState,
+        options: initialOptionsSliceState, // TODO save/load this as well
+        session: initialSessionSliceState,
     };
 };
