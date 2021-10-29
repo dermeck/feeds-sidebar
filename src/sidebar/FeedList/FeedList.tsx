@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, memo } from 'react';
 
 import { FullHeightScrollContainer } from '../../base-components';
 import { useAppSelector } from '../../store/hooks';
@@ -27,4 +27,8 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
     );
 };
 
-export default FeedList;
+const MemoizedFeedList = memo(FeedList);
+
+FeedList.whyDidYouRender = true;
+
+export default MemoizedFeedList;
