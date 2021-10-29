@@ -4,8 +4,9 @@ import React, { Fragment, FunctionComponent, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
 import { colors, rgba } from '../../../base-components/styled/colors';
-import { Feed as FeedType, FeedItem as FeedItemType } from '../../../store/slices/feeds';
-import { Point } from '../../../store/slices/session';
+import { useAppDispatch } from '../../../store/hooks';
+import feedsSlice, { Feed as FeedType, FeedItem as FeedItemType } from '../../../store/slices/feeds';
+import sessionSlice, { Point } from '../../../store/slices/session';
 import FeedItem from './FeedItem/FeedItem';
 
 const FeedContainer = styled.ul`
@@ -47,19 +48,20 @@ const ToggleIndicator = styled.div`
 interface Props {
     feed: FeedType;
     isSelected: boolean;
-    onFeedTitleClick: () => void;
-    onItemClick: (payload: { feedId: string; itemId: string }) => void;
-    onContextMenu: (anchorPoint: Point) => void;
     showTitle: boolean;
     filterString: string;
 }
 
-const renderItem = (item: FeedItemType, props: Props) => (
+const renderItem = (
+    item: FeedItemType,
+    props: Props,
+    onItemClick: (payload: { feedId: string; itemId: string }) => void,
+) => (
     <FeedItem
         key={item.id + item.title}
         item={item}
         onClick={() =>
-            props.onItemClick({
+            onItemClick({
                 feedId: props.feed.id,
                 itemId: item.id,
             })
@@ -68,6 +70,26 @@ const renderItem = (item: FeedItemType, props: Props) => (
 );
 
 const Feed: FunctionComponent<Props> = (props: Props) => {
+    const dispatch = useAppDispatch();
+
+    const handleFeedItemClick = (payload: { feedId: string; itemId: string }) =>
+        dispatch(
+            feedsSlice.actions.itemRead({
+                feedId: payload.feedId,
+                itemId: payload.itemId,
+            }),
+        );
+
+    const handleFeedTitleClick = () => {
+        dispatch(feedsSlice.actions.selectFeed(props.feed.id));
+    };
+
+    const handleOnContextMenu = (anchorPoint: Point) => {
+        dispatch(sessionSlice.actions.showContextMenu(anchorPoint));
+        dispatch(feedsSlice.actions.selectFeed(props.feed.id));
+        // TODO also set Focus (track focused feed in redux)
+    };
+
     const [expanded, setExpanded] = useState<boolean>(false);
     const [focus, setFocus] = useState<boolean>(false);
 
@@ -81,14 +103,14 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                     onClick={() => {
                         setExpanded(!expanded);
                         setFocus(true);
-                        props.onFeedTitleClick();
+                        handleFeedTitleClick();
                     }}
                     onBlur={() => {
                         setFocus(false);
                     }}
                     onContextMenu={(e) => {
                         e.preventDefault();
-                        props.onContextMenu({ x: e.clientX, y: e.clientY });
+                        handleOnContextMenu({ x: e.clientX, y: e.clientY });
                     }}>
                     <ToggleIndicator>
                         {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -104,7 +126,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                         (item) =>
                             !item.isRead &&
                             item.title?.toLowerCase().includes(props.filterString.toLowerCase()) &&
-                            renderItem(item, props),
+                            renderItem(item, props, handleFeedItemClick),
                     )}
                 </FeedContainer>
             )}
