@@ -60,7 +60,19 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
                         return;
                     }
 
-                    dispatch(importFeedsCommand(await readOpmlFile(e.target.files[0])));
+                    const filenName = e.target.files[0];
+                    const fileContent = await readOpmlFile(filenName);
+                    if (fileContent === undefined) {
+                        // TODO UI feedback without notification
+                        browser.notifications.create({
+                            type: 'basic',
+                            title: 'YTRSS Error',
+                            message: `An error occured while parsing file ${filenName}`,
+                        });
+                    } else {
+                        dispatch(importFeedsCommand(fileContent));
+                    }
+
                     dispatch(sessionSlice.actions.hideMenu());
                 }}
             />
