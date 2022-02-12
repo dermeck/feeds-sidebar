@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-
 import React, { Fragment, FunctionComponent, memo, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
@@ -90,7 +89,8 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
         // TODO also set Focus (track focused feed in redux)
     };
 
-    const [expanded, setExpanded] = useState<boolean>(false);
+    const [expanded, setExpanded] = useState<boolean>(true);
+
     const [focus, setFocus] = useState<boolean>(false);
 
     return (
