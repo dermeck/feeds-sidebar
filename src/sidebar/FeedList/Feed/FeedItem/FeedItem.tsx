@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+
 import React, { FunctionComponent } from 'react';
 import { Globe } from 'react-feather';
 
@@ -59,5 +60,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
         </Container>
     );
 };
+
+FeedItem.whyDidYouRender = true;
 
 export default FeedItem;
