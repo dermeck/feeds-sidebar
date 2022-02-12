@@ -1,6 +1,6 @@
 import { Feed } from '../store/slices/feeds';
 
-export const readOpmlFile = async (file: File): Promise<ReadonlyArray<Feed>> => {
+export const readOpmlFile = async (file: File): Promise<ReadonlyArray<Feed> | undefined> => {
     const reader = new FileReader();
 
     return new Promise((resolve) => {
@@ -13,11 +13,17 @@ export const readOpmlFile = async (file: File): Promise<ReadonlyArray<Feed>> => 
     });
 };
 
-const parseXml = (fileContent: string): ReadonlyArray<Feed> => {
+const parseXml = (fileContent: string): ReadonlyArray<Feed> | undefined => {
     const parsedFeeds: Feed[] = [];
     const parser = new DOMParser();
 
     const xml = parser.parseFromString(fileContent, 'application/xml');
+
+    const errorNode = xml.querySelector('parsererror');
+    if (errorNode) {
+        console.error('error while parsing file: ', errorNode.textContent);
+        return undefined;
+    }
 
     xml.querySelectorAll('outline[xmlUrl]').forEach((feedNode) => {
         let id = feedNode.getAttribute('text');
