@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
+
 import { FunctionComponent, useState } from 'react';
 import { Folder, MoreHorizontal, RefreshCw } from 'react-feather';
 
@@ -91,5 +92,7 @@ const Sidebar: FunctionComponent = () => {
         </SidebarContainer>
     );
 };
+
+Sidebar.whyDidYouRender = true; // TODO remove wdyr from all components
 
 export default Sidebar;

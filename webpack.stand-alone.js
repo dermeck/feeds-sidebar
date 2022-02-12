@@ -1,4 +1,5 @@
 const path = require('path');
+var webpack = require('webpack');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = {
@@ -25,6 +26,9 @@ module.exports = {
     plugins: [
         // TODO only add required polyfills
         new NodePolyfillPlugin(),
+        new webpack.DefinePlugin({
+            STAND_ALONE: JSON.stringify(true),
+        }),
     ],
     devServer: {
         headers: {
