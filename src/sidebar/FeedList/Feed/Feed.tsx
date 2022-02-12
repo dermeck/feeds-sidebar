@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import React, { Fragment, FunctionComponent, memo, useState } from 'react';
+import React, { Fragment, FunctionComponent, memo, useCallback, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
 import { colors, rgba } from '../../../base-components/styled/colors';
@@ -52,33 +52,12 @@ interface Props {
     filterString: string;
 }
 
-const renderItem = (
-    item: FeedItemType,
-    props: Props,
-    onItemClick: (payload: { feedId: string; itemId: string }) => void,
-) => (
-    <FeedItem
-        key={item.id + item.title}
-        item={item}
-        onClick={() =>
-            onItemClick({
-                feedId: props.feed.id,
-                itemId: item.id,
-            })
-        }
-    />
+const renderItem = (item: FeedItemType, props: Props) => (
+    <FeedItem key={item.id + item.title} feedId={props.feed.id} item={item} />
 );
 
 const Feed: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
-
-    const handleFeedItemClick = (payload: { feedId: string; itemId: string }) =>
-        dispatch(
-            feedsSlice.actions.itemRead({
-                feedId: payload.feedId,
-                itemId: payload.itemId,
-            }),
-        );
 
     const handleFeedTitleClick = () => {
         dispatch(feedsSlice.actions.selectFeed(props.feed.id));
@@ -127,7 +106,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                         (item) =>
                             !item.isRead &&
                             item.title?.toLowerCase().includes(props.filterString.toLowerCase()) &&
-                            renderItem(item, props, handleFeedItemClick),
+                            renderItem(item, props),
                     )}
                 </FeedContainer>
             )}
