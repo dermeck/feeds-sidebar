@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import React, { Fragment, FunctionComponent, memo, useCallback, useState } from 'react';
+import React, { Fragment, FunctionComponent, memo, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
 import { colors, rgba } from '../../../base-components/styled/colors';
