@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
+
 import React, { Fragment, FunctionComponent } from 'react';
 import { AlertTriangle, Check, Loader } from 'react-feather';
 
-import { Label } from '../../../base-components';
-import { useAppSelector } from '../../../store/hooks';
+import { Label } from '../../base-components';
+import { useAppSelector } from '../../store/hooks';
 
 const List = styled.ul`
     padding-left: 1rem;

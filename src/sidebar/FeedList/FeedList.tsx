@@ -2,7 +2,7 @@ import React, { FunctionComponent, memo } from 'react';
 
 import { FullHeightScrollContainer } from '../../base-components';
 import { useAppSelector } from '../../store/hooks';
-import Feed from './Feed/Feed';
+import Feed from './Feed';
 
 interface Props {
     showFeedTitles: boolean;

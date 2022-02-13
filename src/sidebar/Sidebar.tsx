@@ -12,8 +12,8 @@ import { colors } from '../base-components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
 import sessionSlice, { MenuType, View } from '../store/slices/session';
-import FeedList from './FeedList/FeedList';
-import NewFeedForm from './NewFeedForm/NewFeedForm';
+import FeedList from './FeedList';
+import NewFeedForm from './NewFeedForm';
 
 const SidebarContainer = styled.div`
     background-color: ${colors.defaultBackgroundColor};

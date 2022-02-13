@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 
@@ -7,7 +8,7 @@ import { colors } from '../../base-components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addNewFeedCommand } from '../../store/slices/feeds';
 import sessionSlice, { View } from '../../store/slices/session';
-import NewFeedsList from './NewFeedsList/NewFeedsList';
+import NewFeedsList from './NewFeedsList';
 
 const Container = styled.div``;
 

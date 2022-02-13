@@ -3,8 +3,8 @@ import styled from '@emotion/styled';
 import React, { FunctionComponent, memo } from 'react';
 import { Globe } from 'react-feather';
 
-import { useAppDispatch } from '../../../../store/hooks';
-import feedsSlice, { FeedItem as FeedItemType } from '../../../../store/slices/feeds';
+import { useAppDispatch } from '../../store/hooks';
+import feedsSlice, { FeedItem as FeedItemType } from '../../store/slices/feeds';
 
 const Container = styled.li`
     display: flex;
