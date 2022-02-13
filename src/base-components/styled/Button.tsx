@@ -21,6 +21,7 @@ export const Button = styled.button`
     :hover {
         background-color: ${colors.toolbarButtonHoverBackground};
     }
+
     :active {
         background-color: ${colors.toolbarButtonActiveBackground};
     }
