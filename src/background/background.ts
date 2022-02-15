@@ -9,4 +9,7 @@ browser.browserAction.onClicked.addListener(() => {
     browser.sidebarAction.open();
 });
 
+browser.browserAction.setBadgeBackgroundColor({ color: '#dd2e44' });
+browser.browserAction.setBadgeTextColor({ color: '#ffffff' });
+
 store.dispatch(initCommand());

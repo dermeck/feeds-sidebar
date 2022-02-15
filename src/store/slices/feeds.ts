@@ -1,5 +1,8 @@
 import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { Semaphore } from 'async-mutex';
+
+import { RootState } from '../store';
 
 export type FeedSliceState = {
     feeds: ReadonlyArray<Feed>;
@@ -47,7 +50,7 @@ const initialState: FeedSliceState = {
             url: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
             items: [],
         },
-        
+
         {
             // sample RSS 2.0 Feed
             id: 'https://www.tagesschau.de/xml/rss2/',
@@ -94,6 +97,11 @@ const fetchFeed = async (url: string) => {
         });
     });
 };
+
+export const selectTotalUnreadItems = (state: RootState) =>
+    state.feeds.feeds
+        .map((feed) => feed.items.filter((i) => !i.isRead).length)
+        .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
 
 const feedsSlice = createSlice({
     name: 'feeds',
