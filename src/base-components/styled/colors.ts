@@ -13,6 +13,9 @@ export const colors = {
     toolbarBackground: '#F6F6F6',
     toolbarButtonHoverBackground: '#D4D4D4',
     toolbarButtonActiveBackground: '#B8B8B8',
+
+    badgeBackgroundColor: '#DD2E44',
+    badgeTextColor: '#FFFFFF',
 };
 
 interface RGB {
