@@ -1,5 +1,6 @@
 import { wrapStore } from 'webext-redux';
 
+import { colors } from '../base-components/styled/colors';
 import { initCommand } from '../store/actions';
 import store from '../store/store';
 
@@ -9,7 +10,7 @@ browser.browserAction.onClicked.addListener(() => {
     browser.sidebarAction.open();
 });
 
-browser.browserAction.setBadgeBackgroundColor({ color: '#dd2e44' });
-browser.browserAction.setBadgeTextColor({ color: '#ffffff' });
+browser.browserAction.setBadgeBackgroundColor({ color: colors.badgeBackgroundColor });
+browser.browserAction.setBadgeTextColor({ color: colors.badgeTextColor });
 
 store.dispatch(initCommand());
