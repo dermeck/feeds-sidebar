@@ -11,9 +11,16 @@ import feedsSlice, {
     addNewFeedCommand,
     importFeedsCommand,
     deleteSelectedFeedCommand,
+    selectTotalUnreadItems,
 } from '../slices/feeds';
 import sessionSlice from '../slices/session';
 import { RootState } from '../store';
+
+const updateBadge = (state: RootState) => {
+    // TODO dont check all feeds every time (performance)
+    const totalUnreadReadItems = selectTotalUnreadItems(state);
+    browser.browserAction.setBadgeText({ text: totalUnreadReadItems.toString() });
+};
 
 export const feedMiddleware: Middleware<
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -41,6 +48,7 @@ export const feedMiddleware: Middleware<
 
     if (deleteSelectedFeedCommand.match(action)) {
         middlewareApi.dispatch(feedsSlice.actions.deleteFeed(middlewareApi.getState().feeds.selectedFeedId));
+        updateBadge(middlewareApi.getState());
     }
 
     if (fetchFeedByUrl.fulfilled.match(action)) {
@@ -54,6 +62,7 @@ export const feedMiddleware: Middleware<
 
             if (!deepEqual(prevFeed, parsedFeed)) {
                 middlewareApi.dispatch(feedsSlice.actions.updateFeed(parsedFeed));
+                updateBadge(middlewareApi.getState());
             }
         } catch {
             // response is not a feed
@@ -69,11 +78,17 @@ export const feedMiddleware: Middleware<
             });
 
             middlewareApi.dispatch(feedsSlice.actions.addFeed(parsedFeed));
+            updateBadge(middlewareApi.getState());
         } catch {
             // response is not a feed
             middlewareApi.dispatch(sessionSlice.actions.feedParseError(action.meta.arg));
         }
     }
 
-    return next(action);
+    await next(action);
+
+    // reducers must run befor this code
+    if (feedsSlice.actions.itemRead.match(action)) {
+        updateBadge(middlewareApi.getState());
+    }
 };
