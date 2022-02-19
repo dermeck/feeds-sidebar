@@ -1,3 +1,5 @@
+import deepEqual from 'fast-deep-equal';
+
 import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -48,7 +50,11 @@ export const feedMiddleware: Middleware<
                 feedData: action.payload,
             });
 
-            middlewareApi.dispatch(feedsSlice.actions.updateFeed(parsedFeed));
+            const prevFeed = middlewareApi.getState().feeds.feeds.find((f) => f.url === parsedFeed.url);
+
+            if (!deepEqual(prevFeed, parsedFeed)) {
+                middlewareApi.dispatch(feedsSlice.actions.updateFeed(parsedFeed));
+            }
         } catch {
             // response is not a feed
             middlewareApi.dispatch(sessionSlice.actions.feedParseError(action.meta.arg));
