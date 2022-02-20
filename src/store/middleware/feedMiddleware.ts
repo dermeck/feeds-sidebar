@@ -52,6 +52,8 @@ export const feedMiddleware: Middleware<
     }
 
     if (fetchFeedByUrl.fulfilled.match(action)) {
+        // TODO this results in a lot of state changes - it may be better to fetch all feeds before making state changes
+        // this should be possible with sagas https://stackoverflow.com/questions/46569278/how-to-wait-for-all-dynamic-number-of-forks-to-complete-with-redux-saga
         try {
             const parsedFeed = await parseFeed({
                 feedUrl: action.meta.arg,
@@ -87,7 +89,7 @@ export const feedMiddleware: Middleware<
 
     await next(action);
 
-    // reducers must run befor this code
+    // reducers must run before this code
     if (feedsSlice.actions.itemRead.match(action)) {
         updateBadge(middlewareApi.getState());
     }
