@@ -111,6 +111,12 @@ const feedsSlice = createSlice({
         extensionStateLoaded(_state, action: PayloadAction<FeedSliceState>) {
             return { ...action.payload };
         },
+        markAllAsRead(state) {
+            return {
+                ...state,
+                feeds: state.feeds.map((feed) => markAllItemsOfFeedRead(feed)),
+            };
+        },
         addFeed(state, action: PayloadAction<Feed>) {
             return {
                 ...state,
@@ -200,17 +206,20 @@ const markItemAsRead = (feeds: ReadonlyArray<Feed>, feedId: string, itemId: stri
         };
     });
 
-const markFeedAsRead = (feeds: ReadonlyArray<Feed>, readFeedId: string): ReadonlyArray<Feed> => {
-    return feeds.map((feed) => {
+const markFeedAsRead = (feeds: ReadonlyArray<Feed>, readFeedId: string): ReadonlyArray<Feed> =>
+    feeds.map((feed) => {
         if (feed.id !== readFeedId) {
             return feed;
         }
 
-        return {
-            ...feed,
-            items: feed.items.map((item) => ({ ...item, isRead: true })),
-        };
+        return markAllItemsOfFeedRead(feed);
     });
+
+const markAllItemsOfFeedRead = (feed: Feed): Feed => {
+    return {
+        ...feed,
+        items: feed.items.map((item) => ({ ...item, isRead: true })),
+    };
 };
 
 export default feedsSlice;

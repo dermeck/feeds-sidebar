@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
+
 import { FunctionComponent, useRef } from 'react';
 
 import { MenuContainer, MenuList } from '../../base-components';
@@ -8,7 +9,7 @@ import { Divider } from '../../base-components/styled/Divider';
 import opmlExport from '../../services/export';
 import { readOpmlFile } from '../../services/import';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { importFeedsCommand } from '../../store/slices/feeds';
+import feedsSlice, { importFeedsCommand } from '../../store/slices/feeds';
 import sessionSlice, { Point, View } from '../../store/slices/session';
 import MenuItem from './MenuItem';
 
@@ -37,11 +38,16 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
                     Add New Feeds
                 </MenuItem>
 
+                <MenuItem icon="check-square" onMouseDown={() => dispatch(feedsSlice.actions.markAllAsRead())}>
+                    Mark All Read
+                </MenuItem>
+
                 <Divider />
 
                 <MenuItem icon="arrowUp-circle" onMouseDown={() => opmlExport(feeds)}>
                     Export
                 </MenuItem>
+
                 <MenuItem
                     icon="arrowDown-circle"
                     onMouseDown={(e) => {
