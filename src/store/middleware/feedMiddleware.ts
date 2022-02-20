@@ -12,6 +12,7 @@ import feedsSlice, {
     importFeedsCommand,
     deleteSelectedFeedCommand,
     selectTotalUnreadItems,
+    markSelectedFeedAsReadCommand,
 } from '../slices/feeds';
 import sessionSlice from '../slices/session';
 import { RootState } from '../store';
@@ -48,6 +49,11 @@ export const feedMiddleware: Middleware<
 
     if (deleteSelectedFeedCommand.match(action)) {
         middlewareApi.dispatch(feedsSlice.actions.deleteFeed(middlewareApi.getState().feeds.selectedFeedId));
+        updateBadge(middlewareApi.getState());
+    }
+
+    if (markSelectedFeedAsReadCommand.match(action)) {
+        middlewareApi.dispatch(feedsSlice.actions.markFeedAsRead(middlewareApi.getState().feeds.selectedFeedId));
         updateBadge(middlewareApi.getState());
     }
 

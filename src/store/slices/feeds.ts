@@ -32,6 +32,8 @@ export const addNewFeedCommand = createAction<string>('feeds/addNewFeedCommand')
 
 export const deleteSelectedFeedCommand = createAction('feeds/deleteSelectedFeedCommand');
 
+export const markSelectedFeedAsReadCommand = createAction('feeds/markSelectedFeedAsReadCommand');
+
 export const importFeedsCommand = createAction<ReadonlyArray<Feed>>('feeds/importFeedsCommand');
 
 const initialState: FeedSliceState = {
@@ -42,7 +44,7 @@ const initialState: FeedSliceState = {
             url: 'https://ourworldindata.org/atom.xml',
             items: [],
         },
-        /*
+
         {
             // sample RSS 1.0 / RDF Feed
             // https://www.w3schools.com/xml/xml_rdf.asp
@@ -73,7 +75,6 @@ const initialState: FeedSliceState = {
             url: 'https://www.quarks.de/feed/',
             items: [],
         },
-        */
     ],
     selectedFeedId: '',
 };
@@ -122,7 +123,13 @@ const feedsSlice = createSlice({
         updateFeed(state, action: PayloadAction<Feed>) {
             return {
                 ...state,
-                feeds: [...updateFeed(state, action.payload)],
+                feeds: [...updateFeed(state.feeds, action.payload)],
+            };
+        },
+        markFeedAsRead(state, action: PayloadAction<string>) {
+            return {
+                ...state,
+                feeds: [...markFeedAsRead(state.feeds, action.payload)],
             };
         },
         deleteFeed(state, action: PayloadAction<string>) {
@@ -146,14 +153,14 @@ const feedsSlice = createSlice({
         itemRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             return {
                 ...state,
-                feeds: [...markItemAsRead(state, action.payload.feedId, action.payload.itemId)],
+                feeds: [...markItemAsRead(state.feeds, action.payload.feedId, action.payload.itemId)],
             };
         },
     },
 });
 
-const updateFeed = (state: FeedSliceState, updatedFeed: Feed): ReadonlyArray<Feed> =>
-    state.feeds.map((feed) => {
+const updateFeed = (feeds: ReadonlyArray<Feed>, updatedFeed: Feed): ReadonlyArray<Feed> =>
+    feeds.map((feed) => {
         if (feed.url !== updatedFeed.url) {
             return feed;
         }
@@ -181,8 +188,8 @@ const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
     };
 };
 
-const markItemAsRead = (state: FeedSliceState, feedId: string, itemId: string) =>
-    state.feeds.map((feed) => {
+const markItemAsRead = (feeds: ReadonlyArray<Feed>, feedId: string, itemId: string) =>
+    feeds.map((feed) => {
         if (feed.id !== feedId) {
             return feed;
         }
@@ -192,5 +199,18 @@ const markItemAsRead = (state: FeedSliceState, feedId: string, itemId: string) =
             items: feed.items.map((item) => (item.id !== itemId ? item : { ...item, isRead: true })),
         };
     });
+
+const markFeedAsRead = (feeds: ReadonlyArray<Feed>, readFeedId: string): ReadonlyArray<Feed> => {
+    return feeds.map((feed) => {
+        if (feed.id !== readFeedId) {
+            return feed;
+        }
+
+        return {
+            ...feed,
+            items: feed.items.map((item) => ({ ...item, isRead: true })),
+        };
+    });
+};
 
 export default feedsSlice;
