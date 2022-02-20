@@ -2,8 +2,6 @@ import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@red
 
 import { Semaphore } from 'async-mutex';
 
-import { RootState } from '../store';
-
 export type FeedSliceState = {
     feeds: ReadonlyArray<Feed>;
     selectedFeedId: Feed['id'];
@@ -99,8 +97,8 @@ const fetchFeed = async (url: string) => {
     });
 };
 
-export const selectTotalUnreadItems = (state: RootState) =>
-    state.feeds.feeds
+export const selectTotalUnreadItems = (state: FeedSliceState) =>
+    state.feeds
         .map((feed) => feed.items.filter((i) => !i.isRead).length)
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
 
