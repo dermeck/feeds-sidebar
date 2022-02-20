@@ -22,7 +22,7 @@ const updateBadge = (feedSliceState: FeedSliceState) => {
     // TODO dont check all feeds every time (performance)
     const totalUnreadReadItems = selectTotalUnreadItems(feedSliceState);
 
-    browser.browserAction.setBadgeText({ text: totalUnreadReadItems !== 0 ? totalUnreadReadItems.toString() : null });
+    browser.browserAction.setBadgeText({ text: totalUnreadReadItems !== 0 ? totalUnreadReadItems.toString() : '' });
 };
 
 export const feedMiddleware: Middleware<
