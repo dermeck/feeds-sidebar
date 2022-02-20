@@ -10,6 +10,7 @@ export const loggerMiddleware: Middleware<
     RootState,
     ThunkDispatch<RootState, undefined, AnyAction>
 > = (storeApi) => (next) => (action) => {
+    return next(action);
     if (STAND_ALONE) {
         // skip logging since redux devtools are avaiable in that mode
         return next(action);
