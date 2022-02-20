@@ -1,13 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
+
 import { FunctionComponent, MouseEventHandler } from 'react';
-import { ArrowDownCircle, ArrowUpCircle, Plus } from 'react-feather';
+import { ArrowDownCircle, ArrowUpCircle, CheckSquare, Plus } from 'react-feather';
 
 import { colors } from '../../base-components/styled/colors';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 
-type IconKeys = 'plus' | 'arrowDown-circle' | 'arrowUp-circle';
+type IconKeys = 'plus' | 'arrowDown-circle' | 'arrowUp-circle' | 'check-square';
 
 interface Props {
     icon?: IconKeys;
@@ -50,6 +51,9 @@ const renderIcon = (key: IconKeys) => {
 
         case 'arrowUp-circle':
             return <ArrowUpCircle size={size} />;
+
+        case 'check-square':
+            return <CheckSquare size={size} />;
 
         default:
             throw new UnreachableCaseError(key);
