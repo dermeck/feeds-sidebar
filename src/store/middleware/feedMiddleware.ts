@@ -13,14 +13,16 @@ import feedsSlice, {
     deleteSelectedFeedCommand,
     selectTotalUnreadItems,
     markSelectedFeedAsReadCommand,
+    FeedSliceState,
 } from '../slices/feeds';
 import sessionSlice from '../slices/session';
 import { RootState } from '../store';
 
-const updateBadge = (state: RootState) => {
+const updateBadge = (feedSliceState: FeedSliceState) => {
     // TODO dont check all feeds every time (performance)
-    const totalUnreadReadItems = selectTotalUnreadItems(state);
-    browser.browserAction.setBadgeText({ text: totalUnreadReadItems.toString() });
+    const totalUnreadReadItems = selectTotalUnreadItems(feedSliceState);
+
+    browser.browserAction.setBadgeText({ text: totalUnreadReadItems !== 0 ? totalUnreadReadItems.toString() : null });
 };
 
 export const feedMiddleware: Middleware<
@@ -28,7 +30,7 @@ export const feedMiddleware: Middleware<
     {},
     RootState,
     ThunkDispatch<RootState, undefined, AnyAction>
-> = (middlewareApi) => (next) => async (action) => {
+> = (middlewareApi) => (next) => async (action: AnyAction) => {
     if (fetchAllFeedsCommand.match(action)) {
         middlewareApi.getState().feeds.feeds.forEach((feed) => {
             middlewareApi.dispatch(fetchFeedByUrl(feed.url));
@@ -49,12 +51,10 @@ export const feedMiddleware: Middleware<
 
     if (deleteSelectedFeedCommand.match(action)) {
         middlewareApi.dispatch(feedsSlice.actions.deleteFeed(middlewareApi.getState().feeds.selectedFeedId));
-        updateBadge(middlewareApi.getState());
     }
 
     if (markSelectedFeedAsReadCommand.match(action)) {
         middlewareApi.dispatch(feedsSlice.actions.markFeedAsRead(middlewareApi.getState().feeds.selectedFeedId));
-        updateBadge(middlewareApi.getState());
     }
 
     if (fetchFeedByUrl.fulfilled.match(action)) {
@@ -70,7 +70,6 @@ export const feedMiddleware: Middleware<
 
             if (!deepEqual(prevFeed, parsedFeed)) {
                 middlewareApi.dispatch(feedsSlice.actions.updateFeed(parsedFeed));
-                updateBadge(middlewareApi.getState());
             }
         } catch {
             // response is not a feed
@@ -86,7 +85,6 @@ export const feedMiddleware: Middleware<
             });
 
             middlewareApi.dispatch(feedsSlice.actions.addFeed(parsedFeed));
-            updateBadge(middlewareApi.getState());
         } catch {
             // response is not a feed
             middlewareApi.dispatch(sessionSlice.actions.feedParseError(action.meta.arg));
@@ -96,7 +94,14 @@ export const feedMiddleware: Middleware<
     await next(action);
 
     // reducers must run before this code
-    if (feedsSlice.actions.itemRead.match(action)) {
-        updateBadge(middlewareApi.getState());
+    if (
+        feedsSlice.actions.addFeed ||
+        feedsSlice.actions.updateFeed ||
+        feedsSlice.actions.itemRead.match(action) ||
+        feedsSlice.actions.markFeedAsRead.match(action) ||
+        feedsSlice.actions.markAllAsRead.match(action) ||
+        deleteSelectedFeedCommand.match(action)
+    ) {
+        updateBadge(middlewareApi.getState().feeds);
     }
 };
