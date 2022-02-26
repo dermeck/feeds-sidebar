@@ -1,7 +1,6 @@
 import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { STAND_ALONE } from '../../globals';
 import { RootState } from '../store';
 
 export const loggerMiddleware: Middleware<
@@ -10,9 +9,12 @@ export const loggerMiddleware: Middleware<
     RootState,
     ThunkDispatch<RootState, undefined, AnyAction>
 > = (storeApi) => (next) => (action) => {
-    return next(action);
-    if (STAND_ALONE) {
-        // skip logging since redux devtools are avaiable in that mode
+    if (process.env.MODE !== 'dev') {
+        return next(action);
+    }
+
+    if (process.env.STAND_ALONE) {
+        // skip logging since redux devtools are avaiable here
         return next(action);
     }
 

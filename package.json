@@ -6,7 +6,7 @@
     "author": "dermeck <dermeck@posteo.de>",
     "license": "MIT",
     "scripts": {
-        "start": "webpack --mode development --watch",
+        "start": "webpack --mode development --watch --env mode=dev",
         "build": "webpack --mode production",
         "lint": "yarn run lint:js && yarn run lint:styles",
         "lint:js": "eslint .eslintrc.json src/",
@@ -14,7 +14,7 @@
         "package": "web-ext build --source-dir dist",
         "start:hotreload": "web-ext run --source-dir dist",
         "prettier": "prettier --write '**/*.{ts,js,css,html}'",
-        "start:stand-alone": "webpack serve --config webpack.stand-alone.js --mode development"
+        "start:stand-alone": "webpack serve --config webpack.stand-alone.js --mode development --env mode=dev"
     },
     "devDependencies": {
         "@emotion/css": "^11.7.1",

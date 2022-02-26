@@ -116,6 +116,8 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
 
 const MemoizedFeed = memo(Feed);
 
-Feed.whyDidYouRender = true;
+if (process.env.MODE === 'dev') {
+    Feed.whyDidYouRender = true;
+}
 
 export default MemoizedFeed;

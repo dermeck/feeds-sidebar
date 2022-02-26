@@ -2,7 +2,7 @@ const path = require('path');
 var webpack = require('webpack');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
-module.exports = {
+module.exports = (env) => ({
     entry: {
         'stand-alone/sidebar': './src/stand-alone/index.tsx',
     },
@@ -27,7 +27,8 @@ module.exports = {
         // TODO only add required polyfills
         new NodePolyfillPlugin(),
         new webpack.DefinePlugin({
-            STAND_ALONE: JSON.stringify(true),
+            'process.env.STAND_ALONE': JSON.stringify(true),
+            'process.env.MODE': JSON.stringify(env.mode),
         }),
     ],
     devServer: {
@@ -40,4 +41,4 @@ module.exports = {
             directory: path.join(__dirname, 'src/stand-alone'),
         },
     },
-};
+});

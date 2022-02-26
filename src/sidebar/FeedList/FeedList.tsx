@@ -33,6 +33,8 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
 
 const MemoizedFeedList = memo(FeedList);
 
-FeedList.whyDidYouRender = true;
+if (process.env.MODE === 'dev') {
+    FeedList.whyDidYouRender = true;
+}
 
 export default MemoizedFeedList;

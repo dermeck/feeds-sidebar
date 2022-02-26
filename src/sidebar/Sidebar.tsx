@@ -93,6 +93,8 @@ const Sidebar: FunctionComponent = () => {
     );
 };
 
-Sidebar.whyDidYouRender = true; // TODO remove wdyr from all components
+if (process.env.MODE === 'dev') {
+    Sidebar.whyDidYouRender = true;
+}
 
 export default Sidebar;

@@ -3,7 +3,7 @@ var webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
-module.exports = {
+module.exports = (env) => ({
     entry: {
         'sidebar/sidebar': './src/sidebar/index.tsx',
         background: './src/background/background.ts',
@@ -46,6 +46,7 @@ module.exports = {
         new NodePolyfillPlugin(),
         new webpack.DefinePlugin({
             STAND_ALONE: JSON.stringify(false),
+            'process.env.MODE': JSON.stringify(env.mode),
         }),
     ],
-};
+});

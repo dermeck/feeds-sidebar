@@ -75,6 +75,8 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
 
 const MemoizedFeedItem = memo(FeedItem);
 
-MemoizedFeedItem.whyDidYouRender = true;
+if (process.env.MODE === 'dev') {
+    MemoizedFeedItem.whyDidYouRender = true;
+}
 
 export default MemoizedFeedItem;
