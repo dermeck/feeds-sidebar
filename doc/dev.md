@@ -22,7 +22,6 @@ It is intended for debugging with the React and Redux DevTools.
 ## Self hosted xpi (permanent installation)
 - increase the version number in `src/manifest.json`
 - perform webpack prod build with `yarn build`
-- (optional) remove the `*.js.map` (TODO do this with rimraf)files and the `stand-alone` folder to reduce size
 
 To create an installable `.xpi` file the extension must be [signed](https://extensionworkshop.com/documentation/develop/web-ext-command-reference/#web-ext_sign).
 

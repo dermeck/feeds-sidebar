@@ -8,7 +8,7 @@
     "scripts": {
         "start": "webpack --mode development --watch --env enableLoggerMiddleware=true",
         "start:stand-alone": "webpack serve --config webpack.stand-alone.js --mode development",
-        "build": "webpack --mode production",
+        "build": "rimraf dist && webpack --mode production && rimraf dist/stand-alone dist/**/*.js.map",
         "sign": "web-ext sign --source-dir=dist --api-key=$npm_config_ffaddon_api_key --api-secret=$npm_config_ffaddon_api_secret",
         "lint": "yarn run lint:js && yarn run lint:styles",
         "lint:js": "eslint .eslintrc.json src/",
@@ -45,6 +45,7 @@
         "react-dom": "^17.0.2",
         "react-feather": "^2.0.9",
         "react-redux": "^7.2.6",
+        "rimraf": "^3.0.2",
         "stylelint": "^13.13.1",
         "stylelint-config-idiomatic-order": "^8.1.0",
         "stylelint-config-prettier": "^9.0.3",
