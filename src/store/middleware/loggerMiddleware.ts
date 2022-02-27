@@ -9,12 +9,7 @@ export const loggerMiddleware: Middleware<
     RootState,
     ThunkDispatch<RootState, undefined, AnyAction>
 > = (storeApi) => (next) => (action) => {
-    if (process.env.MODE !== 'dev') {
-        return next(action);
-    }
-
-    if (process.env.STAND_ALONE) {
-        // skip logging since redux devtools are avaiable here
+    if (!process.env.ENABLE_LOGGER_MIDDLEWARE || process.env.STAND_ALONE || process.env.NODE_ENV !== 'development') {
         return next(action);
     }
 

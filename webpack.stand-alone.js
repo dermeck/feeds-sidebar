@@ -28,7 +28,7 @@ module.exports = (env) => ({
         new NodePolyfillPlugin(),
         new webpack.DefinePlugin({
             'process.env.STAND_ALONE': JSON.stringify(true),
-            'process.env.MODE': JSON.stringify(env.mode),
+            'process.env.ENABLE_LOGGER_MIDDLEWARE': JSON.stringify(env.enableLoggerMiddleware),
         }),
     ],
     devServer: {

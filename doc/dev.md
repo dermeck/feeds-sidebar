@@ -22,11 +22,15 @@ It is intended for debugging with the React and Redux DevTools.
 ## Self hosted xpi (permanent installation)
 - increase the version number in `src/manifest.json`
 - perform webpack prod build with `yarn build`
-- (optional) remove the `*.js.map` files and the `stand-alone` folder to reduce size
+- (optional) remove the `*.js.map` (TODO do this with rimraf)files and the `stand-alone` folder to reduce size
 
 To create an installable `.xpi` file the extension must be [signed](https://extensionworkshop.com/documentation/develop/web-ext-command-reference/#web-ext_sign).
 
-`yarn run web-ext sign --source-dir=dist --api-key=user:xxxxxxx:xxx --api-secret=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+```
+yarn run web-ext sign --source-dir=dist --api-key=user:xxxxxxx:xxx --api-secret=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+or `yarn sign` (if the variables were set `yarn config set ffaddon-api-secret xyz`)
 
 This will create the `.xpi` file in `/web-ext-artifacts`
 
