@@ -25,9 +25,9 @@ export const enum View {
 }
 
 export type SessionSliceState = {
-    activeView: View;
+    activeView: View; // TODO use Context API instead of global state
     newFeeds: ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
-    menuContext: MenuContext | undefined;
+    menuContext: MenuContext | undefined; // TODO use Context API instead of global state
 };
 
 export const initialState: SessionSliceState = {
