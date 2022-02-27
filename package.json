@@ -8,7 +8,7 @@
     "scripts": {
         "start": "webpack --mode development --watch --env enableLoggerMiddleware=true",
         "start:stand-alone": "webpack serve --config webpack.stand-alone.js --mode development",
-        "build": "rimraf dist && webpack --mode production && rimraf dist/stand-alone dist/**/*.js.map",
+        "build": "rimraf dist && webpack --mode production && rimraf dist/stand-alone  **/*.js.map **/**/*.js.map",
         "sign": "web-ext sign --source-dir=dist --api-key=$npm_config_ffaddon_api_key --api-secret=$npm_config_ffaddon_api_secret",
         "lint": "yarn run lint:js && yarn run lint:styles",
         "lint:js": "eslint .eslintrc.json src/",
