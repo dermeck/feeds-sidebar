@@ -3,7 +3,7 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { loadState, saveState } from '../../services/persistence';
 import { initCommand } from '../actions';
-import feedsSlice, { fetchFeedByUrl, fetchFeedsCommand } from '../slices/feeds';
+import { fetchFeedByUrl, fetchFeedsCommand } from '../slices/feeds';
 import store, { RootState } from '../store';
 
 const feedsAutoUpdateKey = 'feedsAutoUpdate';
