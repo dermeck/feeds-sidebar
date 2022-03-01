@@ -2,6 +2,8 @@ import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@red
 
 import { Semaphore } from 'async-mutex';
 
+import { RootState } from '../store';
+
 export type FeedSliceState = {
     feeds: ReadonlyArray<Feed>;
     selectedFeedId: Feed['id'];
@@ -24,7 +26,7 @@ export interface FeedItem {
     isRead?: boolean;
 }
 
-export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
+export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
 
 export const addNewFeedCommand = createAction<string>('feeds/addNewFeedCommand');
 
@@ -102,13 +104,12 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
         .map((feed) => feed.items.filter((i) => !i.isRead).length)
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
 
+export const selectFeeds = (state: RootState) => state.feeds.feeds;
+
 const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
-        extensionStateLoaded(_state, action: PayloadAction<FeedSliceState>) {
-            return { ...action.payload };
-        },
         markAllAsRead(state) {
             return {
                 ...state,
