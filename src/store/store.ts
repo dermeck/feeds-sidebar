@@ -2,10 +2,10 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import createSagaMiddleware from 'redux-saga';
 
-import { rootSaga } from '../sagas';
 import { feedMiddleware } from './middleware/feedMiddleware';
 import { initMiddleware } from './middleware/initMiddleware';
 import { loggerMiddleware } from './middleware/loggerMiddleware';
+import { rootSaga } from './sagas';
 import feedsSlice, { FeedSliceState } from './slices/feeds';
 import optionsSlice, { OptionsSliceState } from './slices/options';
 import sessionSlice, { SessionSliceState } from './slices/session';

@@ -4,10 +4,10 @@ import deepEqual from 'fast-deep-equal';
 import { Task } from 'redux-saga';
 import { takeEvery, call, fork, join, put, select } from 'redux-saga/effects';
 
-import { fetchFeed, FetchFeedResult } from '../services/api';
-import parseFeed from '../services/feedParser';
-import feedsSlice, { fetchFeedsCommand, Feed, selectFeeds } from '../store/slices/feeds';
-import sessionSlice from '../store/slices/session';
+import { fetchFeed, FetchFeedResult } from '../../services/api';
+import parseFeed from '../../services/feedParser';
+import feedsSlice, { fetchFeedsCommand, Feed, selectFeeds } from '../slices/feeds';
+import sessionSlice from '../slices/session';
 
 export function* watchfetchFeedsSaga() {
     yield takeEvery(fetchFeedsCommand.type, fetchFeeds);
