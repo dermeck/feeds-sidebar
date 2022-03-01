@@ -3,7 +3,7 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { loadState, saveState } from '../../services/persistence';
 import { initCommand } from '../actions';
-import { fetchFeedByUrl, fetchFeedsCommand } from '../slices/feeds';
+import { fetchFeedsCommand } from '../slices/feeds';
 import store, { RootState } from '../store';
 
 const feedsAutoUpdateKey = 'feedsAutoUpdate';
@@ -31,10 +31,7 @@ export const initMiddleware: Middleware<
         const state = middlewareApi.getState();
         browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes: state.options.feedUpdatePeriodInMinutes });
         browser.alarms.onAlarm.addListener(() =>
-            state.feeds.feeds.forEach((feed) => {
-                // TODO fetchFeedsCommand and remove thunk
-                middlewareApi.dispatch(fetchFeedByUrl(feed.url));
-            }),
+            middlewareApi.dispatch(fetchFeedsCommand(state.feeds.feeds.map((x) => x.url))),
         );
     }
 

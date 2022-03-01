@@ -79,10 +79,7 @@ const initialState: FeedSliceState = {
     selectedFeedId: '',
 };
 
-export const fetchFeedByUrl = createAsyncThunk<string, string>('feeds/fetchByUrl', async (url) => {
-    return await fetchFeed(url);
-});
-
+// TODO remove this and use FetchFeed Saga instead (decide in reducer if it is an add or an update)
 export const addNewFeedByUrl = createAsyncThunk<string, string>('feeds/addNewFeedByUrl', async (url) => {
     return await fetchFeed(url);
 });
