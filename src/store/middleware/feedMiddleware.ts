@@ -44,9 +44,11 @@ export const feedMiddleware: Middleware<
     }
 
     if (markSelectedFeedAsReadCommand.match(action)) {
+        // TODO command should not be needed, reduce should be able to handle action without payload
         middlewareApi.dispatch(feedsSlice.actions.markFeedAsRead(middlewareApi.getState().feeds.selectedFeedId));
     }
 
+    // TODO use saga instead
     if (addNewFeedByUrl.fulfilled.match(action)) {
         try {
             const parsedFeed = await parseFeed({
@@ -67,7 +69,7 @@ export const feedMiddleware: Middleware<
     if (
         feedsSlice.actions.addFeed ||
         feedsSlice.actions.updateFeed ||
-        feedsSlice.actions.itemRead.match(action) ||
+        feedsSlice.actions.markItemAsRead.match(action) ||
         feedsSlice.actions.markFeedAsRead.match(action) ||
         feedsSlice.actions.markAllAsRead.match(action) ||
         deleteSelectedFeedCommand.match(action)
