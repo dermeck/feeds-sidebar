@@ -155,6 +155,7 @@ const feedsSlice = createSlice({
             // index of the feed that gets deleted
             const selectedIndex = state.feeds.findIndex((f) => f.id === action.payload);
 
+            console.log('selected', selectedIndex);
             // delete
             state.feeds = state.feeds.filter((f) => f.id !== action.payload);
 
