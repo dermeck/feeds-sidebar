@@ -43,7 +43,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
 
     const handleFeedItemClick = (feedId: string, itemId: string) =>
         dispatch(
-            feedsSlice.actions.itemRead({
+            feedsSlice.actions.markItemAsRead({
                 feedId: feedId,
                 itemId: itemId,
             }),
