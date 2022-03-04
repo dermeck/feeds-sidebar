@@ -107,12 +107,6 @@ const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
-        markAllAsRead(state) {
-            return {
-                ...state,
-                feeds: state.feeds.map((feed) => markAllItemsOfFeedRead(feed)),
-            };
-        },
         addFeed(state, action: PayloadAction<Feed>) {
             return {
                 ...state,
@@ -120,12 +114,18 @@ const feedsSlice = createSlice({
             };
         },
         selectFeed(state, action: PayloadAction<string>) {
-            state.selectedFeedId = action.payload;
+            const feedId = action.payload;
+
+            if (!state.feeds.some((x) => x.id === feedId)) {
+                throw new Error(`feed with id: ${feedId} does not exist`);
+            }
+
+            state.selectedFeedId = feedId;
         },
-        updateFeed(state, action: PayloadAction<Feed>) {
+        markItemAsRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             return {
                 ...state,
-                feeds: [...updateFeed(state.feeds, action.payload)],
+                feeds: [...markItemAsRead(state.feeds, action.payload.feedId, action.payload.itemId)],
             };
         },
         markFeedAsRead(state, action: PayloadAction<string>) {
@@ -134,6 +134,19 @@ const feedsSlice = createSlice({
                 feeds: [...markFeedAsRead(state.feeds, action.payload)],
             };
         },
+        markAllAsRead(state) {
+            return {
+                ...state,
+                feeds: state.feeds.map((feed) => markAllItemsOfFeedRead(feed)),
+            };
+        },
+        updateFeed(state, action: PayloadAction<Feed>) {
+            return {
+                ...state,
+                feeds: [...updateFeed(state.feeds, action.payload)],
+            };
+        },
+
         deleteFeed(state, action: PayloadAction<string>) {
             // index of the feed that gets deleted
             const selectedIndex = state.feeds.findIndex((f) => f.id === action.payload);
@@ -152,12 +165,6 @@ const feedsSlice = createSlice({
                         : state.feeds[selectedIndex - 1].id;
             }
         },
-        itemRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
-            return {
-                ...state,
-                feeds: [...markItemAsRead(state.feeds, action.payload.feedId, action.payload.itemId)],
-            };
-        },
     },
 });
 
@@ -172,6 +179,7 @@ const updateFeed = (feeds: ReadonlyArray<Feed>, updatedFeed: Feed): ReadonlyArra
         };
     });
 
+// keep old items, update existing items, add new items
 const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
     const newItems = updatedFeed.items.filter((item) => {
         if (previous.items.some((x) => x.id === item.id)) {
