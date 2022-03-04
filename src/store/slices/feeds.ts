@@ -84,6 +84,12 @@ export const addNewFeedByUrl = createAsyncThunk<string, string>('feeds/addNewFee
     return await fetchFeed(url);
 });
 
+const throwIfNonExistent = (feeds: ReadonlyArray<Feed>, feedId: string) => {
+    if (!feeds.some((x) => x.id === feedId)) {
+        throw new Error(`feed with id: ${feedId} does not exist`);
+    }
+};
+
 // TODO make this configurable
 const fetchFeedSemaphore = new Semaphore(3);
 
@@ -116,9 +122,7 @@ const feedsSlice = createSlice({
         selectFeed(state, action: PayloadAction<string>) {
             const feedId = action.payload;
 
-            if (!state.feeds.some((x) => x.id === feedId)) {
-                throw new Error(`feed with id: ${feedId} does not exist`);
-            }
+            throwIfNonExistent(state.feeds, feedId);
 
             state.selectedFeedId = feedId;
         },
@@ -170,6 +174,7 @@ const feedsSlice = createSlice({
 
 const updateFeed = (feeds: ReadonlyArray<Feed>, updatedFeed: Feed): ReadonlyArray<Feed> =>
     feeds.map((feed) => {
+        // TODO use id?
         if (feed.url !== updatedFeed.url) {
             return feed;
         }
@@ -189,9 +194,10 @@ const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
         }
     });
 
+    // TODO re-evluate if id AND url are needed
     return {
         id: updatedFeed.id,
-        url: updatedFeed.url,
+        url: previous.url,
         title: previous.title !== undefined ? previous.title : updatedFeed.title,
         link: updatedFeed.link,
         items: [...previous.items, ...newItems],
