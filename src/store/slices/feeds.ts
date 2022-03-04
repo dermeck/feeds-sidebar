@@ -144,10 +144,10 @@ const feedsSlice = createSlice({
                 feeds: state.feeds.map((feed) => markAllItemsOfFeedRead(feed)),
             };
         },
-        updateFeed(state, action: PayloadAction<Feed>) {
+        updateFeeds(state, action: PayloadAction<ReadonlyArray<Feed>>) {
             return {
                 ...state,
-                feeds: [...updateFeed(state.feeds, action.payload)],
+                feeds: [...updateFeeds(state.feeds, action.payload)],
             };
         },
 
@@ -173,10 +173,11 @@ const feedsSlice = createSlice({
     },
 });
 
-const updateFeed = (feeds: ReadonlyArray<Feed>, updatedFeed: Feed): ReadonlyArray<Feed> =>
+const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> =>
     feeds.map((feed) => {
+        const updatedFeed = updatedFeeds.find((x) => x.url === feed.url);
         // TODO use id?
-        if (feed.url !== updatedFeed.url) {
+        if (updatedFeed === undefined) {
             return feed;
         }
 

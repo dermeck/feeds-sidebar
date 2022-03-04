@@ -173,14 +173,14 @@ describe('markAllAsRead action', () => {
     });
 });
 
-describe('updateFeed action', () => {
+describe('updateFeeds action', () => {
     it('does not change existing feeds if feedId does not match', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             feeds: [feed1Fixture],
         };
 
-        const action = feedsSlice.actions.updateFeed(feed2Fixture);
+        const action = feedsSlice.actions.updateFeeds([feed2Fixture]);
 
         expect(feedsSlice.reducer(prevState, action).feeds[0]).toStrictEqual(feed1Fixture);
     });
@@ -192,7 +192,7 @@ describe('updateFeed action', () => {
             feeds: [feed1Fixture],
         };
 
-        const action = feedsSlice.actions.updateFeed(feed2Fixture);
+        const action = feedsSlice.actions.updateFeeds([feed2Fixture]);
 
         const newState = feedsSlice.reducer(prevState, action);
 
@@ -209,11 +209,13 @@ describe('updateFeed action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeed({
-                    ...feed1Fixture,
-                    id: 'newId',
-                    link: 'thenewlink',
-                }),
+                feedsSlice.actions.updateFeeds([
+                    {
+                        ...feed1Fixture,
+                        id: 'newId',
+                        link: 'thenewlink',
+                    },
+                ]),
             );
 
             expect(newState.feeds[0].id).toBe('newId');
@@ -228,10 +230,12 @@ describe('updateFeed action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeed({
-                    ...feed1Fixture,
-                    title: 'updatedTitle',
-                }),
+                feedsSlice.actions.updateFeeds([
+                    {
+                        ...feed1Fixture,
+                        title: 'updatedTitle',
+                    },
+                ]),
             );
 
             expect(newState.feeds[0].title).toBe('updatedTitle');
@@ -245,10 +249,12 @@ describe('updateFeed action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeed({
-                    ...feed1Fixture,
-                    title: 'updatedTitle?',
-                }),
+                feedsSlice.actions.updateFeeds([
+                    {
+                        ...feed1Fixture,
+                        title: 'updatedTitle?',
+                    },
+                ]),
             );
 
             expect(newState.feeds[0].title).toBe('theOldTitle');
@@ -262,10 +268,12 @@ describe('updateFeed action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeed({
-                    ...feed1Fixture,
-                    items: [itemFixture('id1'), itemFixture('id2')],
-                }),
+                feedsSlice.actions.updateFeeds([
+                    {
+                        ...feed1Fixture,
+                        items: [itemFixture('id1'), itemFixture('id2')],
+                    },
+                ]),
             );
 
             expect(newState.feeds[0].items).toHaveLength(2);
@@ -296,19 +304,21 @@ describe('updateFeed action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeed({
-                    ...feed1Fixture,
-                    items: [
-                        {
-                            id: 'id1',
-                            title: 'newTitle',
-                            url: 'new.url',
-                            published: '2022-03-03',
-                            lastModified: '2022-03-03',
-                            isRead: true,
-                        },
-                    ],
-                }),
+                feedsSlice.actions.updateFeeds([
+                    {
+                        ...feed1Fixture,
+                        items: [
+                            {
+                                id: 'id1',
+                                title: 'newTitle',
+                                url: 'new.url',
+                                published: '2022-03-03',
+                                lastModified: '2022-03-03',
+                                isRead: true,
+                            },
+                        ],
+                    },
+                ]),
             );
 
             expect(newState.feeds[0].items[0]).toStrictEqual({
@@ -329,15 +339,44 @@ describe('updateFeed action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeed({
-                    ...feed1Fixture,
-                    items: [itemFixture('id3')],
-                }),
+                feedsSlice.actions.updateFeeds([
+                    {
+                        ...feed1Fixture,
+                        items: [itemFixture('id3')],
+                    },
+                ]),
             );
 
             expect(newState.feeds[0].items).toHaveLength(3);
             expect(newState.feeds[0].items[0].id).toBe('id1');
             expect(newState.feeds[0].items[1].id).toBe('id2');
+        });
+
+        it('updates multiple feeds', () => {
+            const prevState: FeedSliceState = {
+                ...feedsSlice.getInitialState(),
+                feeds: [
+                    { ...feed1Fixture, items: [] },
+                    { ...feed2Fixture, items: [] },
+                ],
+            };
+
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.updateFeeds([
+                    {
+                        ...feed1Fixture,
+                        items: [itemFixture('id1'), itemFixture('id2')],
+                    },
+                    {
+                        ...feed2Fixture,
+                        items: [itemFixture('id3'), itemFixture('id4')],
+                    },
+                ]),
+            );
+
+            expect(newState.feeds[0].items).toHaveLength(2);
+            expect(newState.feeds[1].items).toHaveLength(2);
         });
     });
 });

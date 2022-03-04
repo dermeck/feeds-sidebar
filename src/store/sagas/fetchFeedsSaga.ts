@@ -35,7 +35,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
 
             if (!deepEqual(prevFeed, parsedFeed)) {
                 // TODO adapt to dispatch batch update action instead if many single updates
-                yield put(feedsSlice.actions.updateFeed(parsedFeed));
+                yield put(feedsSlice.actions.updateFeeds([parsedFeed]));
             }
         } catch (e) {
             // response is not a feed
