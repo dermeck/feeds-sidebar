@@ -10,7 +10,6 @@ import feedsSlice, {
 import { RootState } from '../store';
 
 const updateBadge = (feedSliceState: FeedSliceState) => {
-    // TODO dont check all feeds every time (performance)
     const totalUnreadReadItems = selectTotalUnreadItems(feedSliceState);
 
     browser.browserAction.setBadgeText({ text: totalUnreadReadItems !== 0 ? totalUnreadReadItems.toString() : '' });
@@ -36,7 +35,7 @@ export const feedMiddleware: Middleware<
 
     // reducers must run before this code
     if (
-        feedsSlice.actions.updateFeeds ||
+        feedsSlice.actions.updateFeeds.match(action) ||
         feedsSlice.actions.markItemAsRead.match(action) ||
         feedsSlice.actions.markFeedAsRead.match(action) ||
         feedsSlice.actions.markAllAsRead.match(action) ||
