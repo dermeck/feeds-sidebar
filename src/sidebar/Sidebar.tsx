@@ -10,7 +10,7 @@ import { menuWidthInPx } from '../base-components/styled/Menu';
 import { toolbarButtonPaddingInPx, toolbarButtonSideLengthInPx } from '../base-components/styled/ToolbarButton';
 import { colors } from '../base-components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchAllFeedsCommand } from '../store/slices/feeds';
+import { fetchFeedsCommand } from '../store/slices/feeds';
 import sessionSlice, { MenuType, View } from '../store/slices/session';
 import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
@@ -49,6 +49,7 @@ const Sidebar: FunctionComponent = () => {
     const dispatch = useAppDispatch();
     const moreMenuVisible = useAppSelector((state) => state.session.menuContext?.type === MenuType.moreMenu);
     const activeView = useAppSelector((state) => state.session.activeView);
+    const feeds = useAppSelector((state) => state.feeds.feeds);
 
     const [showFolders, setShowFeedTitles] = useState<boolean>(true);
     const [filterString, setFilterString] = useState<string>('');
@@ -56,7 +57,7 @@ const Sidebar: FunctionComponent = () => {
     return (
         <SidebarContainer onContextMenu={(e) => e.preventDefault()}>
             <Header>
-                <FetchAllButton onClick={() => dispatch(fetchAllFeedsCommand())}>
+                <FetchAllButton onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.url)))}>
                     <RefreshCw size={18} />
                 </FetchAllButton>
 

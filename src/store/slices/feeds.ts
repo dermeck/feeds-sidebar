@@ -1,6 +1,6 @@
-import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Semaphore } from 'async-mutex';
+import { RootState } from '../store';
 
 export type FeedSliceState = {
     feeds: ReadonlyArray<Feed>;
@@ -24,15 +24,11 @@ export interface FeedItem {
     isRead?: boolean;
 }
 
-export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
-
-export const addNewFeedCommand = createAction<string>('feeds/addNewFeedCommand');
+export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
 
 export const deleteSelectedFeedCommand = createAction('feeds/deleteSelectedFeedCommand');
 
 export const markSelectedFeedAsReadCommand = createAction('feeds/markSelectedFeedAsReadCommand');
-
-export const importFeedsCommand = createAction<ReadonlyArray<Feed>>('feeds/importFeedsCommand');
 
 const initialState: FeedSliceState = {
     feeds: [
@@ -42,7 +38,7 @@ const initialState: FeedSliceState = {
             url: 'https://ourworldindata.org/atom.xml',
             items: [],
         },
-
+        /*
         {
             // sample RSS 1.0 / RDF Feed
             // https://www.w3schools.com/xml/xml_rdf.asp
@@ -73,28 +69,15 @@ const initialState: FeedSliceState = {
             url: 'https://www.quarks.de/feed/',
             items: [],
         },
+        */
     ],
     selectedFeedId: '',
 };
 
-export const fetchFeedByUrl = createAsyncThunk<string, string>('feeds/fetchByUrl', async (url) => {
-    return await fetchFeed(url);
-});
-
-export const addNewFeedByUrl = createAsyncThunk<string, string>('feeds/addNewFeedByUrl', async (url) => {
-    return await fetchFeed(url);
-});
-
-// TODO make this configurable
-const fetchFeedSemaphore = new Semaphore(3);
-
-const fetchFeed = async (url: string) => {
-    return new Promise<string>((resolve) => {
-        fetchFeedSemaphore.runExclusive(async () => {
-            const response = await fetch(url);
-            resolve(await response.text());
-        });
-    });
+const throwIfNonExistent = (feeds: ReadonlyArray<Feed>, feedId: string) => {
+    if (!feeds.some((x) => x.id === feedId)) {
+        throw new Error(`feed with id: ${feedId} does not exist`);
+    }
 };
 
 export const selectTotalUnreadItems = (state: FeedSliceState) =>
@@ -102,32 +85,23 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
         .map((feed) => feed.items.filter((i) => !i.isRead).length)
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
 
+export const selectFeeds = (state: RootState) => state.feeds.feeds;
+
 const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
-        extensionStateLoaded(_state, action: PayloadAction<FeedSliceState>) {
-            return { ...action.payload };
-        },
-        markAllAsRead(state) {
-            return {
-                ...state,
-                feeds: state.feeds.map((feed) => markAllItemsOfFeedRead(feed)),
-            };
-        },
-        addFeed(state, action: PayloadAction<Feed>) {
-            return {
-                ...state,
-                feeds: [...state.feeds, action.payload],
-            };
-        },
         selectFeed(state, action: PayloadAction<string>) {
-            state.selectedFeedId = action.payload;
+            const feedId = action.payload;
+
+            throwIfNonExistent(state.feeds, feedId);
+
+            state.selectedFeedId = feedId;
         },
-        updateFeed(state, action: PayloadAction<Feed>) {
+        markItemAsRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             return {
                 ...state,
-                feeds: [...updateFeed(state.feeds, action.payload)],
+                feeds: [...markItemAsRead(state.feeds, action.payload.feedId, action.payload.itemId)],
             };
         },
         markFeedAsRead(state, action: PayloadAction<string>) {
@@ -136,6 +110,19 @@ const feedsSlice = createSlice({
                 feeds: [...markFeedAsRead(state.feeds, action.payload)],
             };
         },
+        markAllAsRead(state) {
+            return {
+                ...state,
+                feeds: state.feeds.map((feed) => markAllItemsOfFeedRead(feed)),
+            };
+        },
+        updateFeeds(state, action: PayloadAction<ReadonlyArray<Feed>>) {
+            return {
+                ...state,
+                feeds: [...updateFeeds(state.feeds, action.payload)],
+            };
+        },
+
         deleteFeed(state, action: PayloadAction<string>) {
             // index of the feed that gets deleted
             const selectedIndex = state.feeds.findIndex((f) => f.id === action.payload);
@@ -154,18 +141,16 @@ const feedsSlice = createSlice({
                         : state.feeds[selectedIndex - 1].id;
             }
         },
-        itemRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
-            return {
-                ...state,
-                feeds: [...markItemAsRead(state.feeds, action.payload.feedId, action.payload.itemId)],
-            };
-        },
     },
 });
 
-const updateFeed = (feeds: ReadonlyArray<Feed>, updatedFeed: Feed): ReadonlyArray<Feed> =>
-    feeds.map((feed) => {
-        if (feed.url !== updatedFeed.url) {
+const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> => {
+    const newFeeds = updatedFeeds.filter((updatedFeed) => !feeds.some((x) => x.url === updatedFeed.url));
+
+    updatedFeeds = feeds.map((feed) => {
+        const updatedFeed = updatedFeeds.find((x) => x.url === feed.url);
+        // TODO use id?
+        if (updatedFeed === undefined) {
             return feed;
         }
 
@@ -174,6 +159,10 @@ const updateFeed = (feeds: ReadonlyArray<Feed>, updatedFeed: Feed): ReadonlyArra
         };
     });
 
+    return updatedFeeds.concat(newFeeds);
+};
+
+// keep old items, update existing items, add new items
 const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
     const newItems = updatedFeed.items.filter((item) => {
         if (previous.items.some((x) => x.id === item.id)) {
@@ -183,9 +172,10 @@ const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
         }
     });
 
+    // TODO re-evluate if id AND url are needed
     return {
         id: updatedFeed.id,
-        url: updatedFeed.url,
+        url: previous.url,
         title: previous.title !== undefined ? previous.title : updatedFeed.title,
         link: updatedFeed.link,
         items: [...previous.items, ...newItems],

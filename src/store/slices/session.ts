@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import feedsSlice, { addNewFeedByUrl } from './feeds';
-
 type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
 export const enum MenuType {
@@ -26,7 +24,10 @@ export const enum View {
 
 export type SessionSliceState = {
     activeView: View; // TODO use Context API instead of global state
-    newFeeds: ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
+    // feedStatus is managed separately because it can contain entries that have no corresponding feed in feedSlice
+    // (recently added and not successfully fetched or parsed)
+    feedStatus: ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
+    newFeeds: ReadonlyArray<{ url: string; status: FeedFetchStatus }>; // TODO is this needed?
     menuContext: MenuContext | undefined; // TODO use Context API instead of global state
 };
 
@@ -34,6 +35,7 @@ export const initialState: SessionSliceState = {
     activeView: View.feedList,
     newFeeds: [],
     menuContext: undefined,
+    feedStatus: [],
 };
 
 const sessionSlice = createSlice({
@@ -67,42 +69,34 @@ const sessionSlice = createSlice({
         hideMenu(state) {
             state.menuContext = undefined;
         },
-    },
-    extraReducers: (builder) => {
-        builder.addCase(addNewFeedByUrl.pending, (state, action) => {
-            const entry = state.newFeeds.find((x) => x.url === action.meta.arg);
+        changeFeedsStatus(
+            state,
+            action: PayloadAction<{ newStatus: FeedFetchStatus; feedUrls: ReadonlyArray<string> }>,
+        ) {
+            const { feedUrls, newStatus } = action.payload;
 
-            if (entry !== undefined) {
-                entry.status = 'loading';
-            } else {
-                state.newFeeds.push({ url: action.meta.arg, status: 'loading' });
-            }
-        });
-        builder.addCase(feedsSlice.actions.addFeed, (state, action) => {
-            // don't act on .fulfilled because the parser could have thrown an error
-            const entry = state.newFeeds.find((x) => x.url === action.payload.url);
+            const updated = state.feedStatus.map((f) =>
+                feedUrls.some((url) => url === f.url)
+                    ? {
+                          ...f,
+                          status: newStatus,
+                      }
+                    : f,
+            );
 
-            if (entry !== undefined) {
-                entry.status = 'loaded';
-            } else {
-                state.newFeeds.push({ url: action.payload.url, status: 'loaded' });
-            }
-        });
-        builder.addCase(addNewFeedByUrl.rejected, (state, action) => {
-            const entry = state.newFeeds.find((x) => x.url === action.meta.arg);
+            const newEntries = feedUrls
+                .map((url) =>
+                    state.feedStatus.find((entry) => entry.url === url)
+                        ? undefined
+                        : {
+                              url: url,
+                              status: newStatus,
+                          },
+                )
+                .filter((i) => i !== undefined) as ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
 
-            if (entry !== undefined) {
-                entry.status = 'error';
-            } else {
-                state.newFeeds.push({ url: action.meta.arg, status: 'error' });
-            }
-        });
-        builder.addCase(feedsSlice.actions.deleteFeed, (state, action) => {
-            return {
-                ...state,
-                newFeeds: state.newFeeds.filter((x) => x.url !== action.payload),
-            };
-        });
+            state.feedStatus = [...updated, ...newEntries];
+        },
     },
 });
 

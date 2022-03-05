@@ -2,7 +2,24 @@ import FeedParser, { Item } from 'feedparser';
 
 import { Feed, FeedItem } from '../store/slices/feeds';
 
-const parseFeed = async (input: { feedUrl: string; feedData: string }): Promise<Feed> => {
+interface FeedParserInput {
+    feedUrl: string;
+    feedData: string;
+}
+
+interface ParseFeedResultSuccess {
+    type: 'success';
+    parsedFeed: Feed;
+}
+
+interface ParseFeedResultError {
+    url: string;
+    type: 'error';
+}
+
+export type ParseFeedResult = ParseFeedResultSuccess | ParseFeedResultError;
+
+const callFeedParser = async (input: FeedParserInput): Promise<Feed> => {
     const parser = new FeedParser({});
     const parsedFeed: Feed = {
         id: input.feedUrl,
@@ -48,5 +65,20 @@ const mapFeedItem = (item: Item): FeedItem => ({
     published: item.pubdate?.toDateString() || undefined,
     lastModified: item.date?.toDateString() || undefined,
 });
+
+const parseFeed = async (input: FeedParserInput): Promise<ParseFeedResult> => {
+    try {
+        const parsedFeed = await callFeedParser(input);
+
+        return {
+            type: 'success',
+            parsedFeed,
+        };
+    } catch (e) {
+        console.log('error');
+        // response is not a feed
+        return { type: 'error', url: input.feedUrl };
+    }
+};
 
 export default parseFeed;
