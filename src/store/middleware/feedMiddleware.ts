@@ -49,6 +49,7 @@ export const feedMiddleware: Middleware<
     }
 
     // TODO use saga instead
+
     if (addNewFeedByUrl.fulfilled.match(action)) {
         try {
             const parsedFeed = await parseFeed({
@@ -56,7 +57,12 @@ export const feedMiddleware: Middleware<
                 feedData: action.payload,
             });
 
-            middlewareApi.dispatch(feedsSlice.actions.addFeed(parsedFeed));
+            if (parsedFeed.type === 'success') {
+                middlewareApi.dispatch(feedsSlice.actions.addFeed(parsedFeed.parsedFeed));
+            } else if (parsedFeed.type === 'error') {
+                // response is not a feed
+                middlewareApi.dispatch(sessionSlice.actions.feedParseError(action.meta.arg));
+            }
         } catch {
             // response is not a feed
             middlewareApi.dispatch(sessionSlice.actions.feedParseError(action.meta.arg));
@@ -68,7 +74,7 @@ export const feedMiddleware: Middleware<
     // reducers must run before this code
     if (
         feedsSlice.actions.addFeed ||
-        feedsSlice.actions.updateFeed ||
+        feedsSlice.actions.updateFeeds ||
         feedsSlice.actions.markItemAsRead.match(action) ||
         feedsSlice.actions.markFeedAsRead.match(action) ||
         feedsSlice.actions.markAllAsRead.match(action) ||

@@ -66,11 +66,8 @@ const mapFeedItem = (item: Item): FeedItem => ({
 });
 
 const parseFeed = async (input: FeedParserInput): Promise<ParseFeedResult> => {
-    console.log('parseFeed');
     try {
         const parsedFeed = await callFeedParser(input);
-
-        console.log('success', parsedFeed);
 
         return {
             type: 'success',
