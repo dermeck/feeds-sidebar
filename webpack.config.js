@@ -28,6 +28,8 @@ module.exports = (env) => ({
 
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
+        // node polyfills
+        fallback: { stream: require.resolve('stream-browserify'), buffer: require.resolve('buffer-browserify') },
     },
 
     plugins: [
@@ -42,8 +44,13 @@ module.exports = (env) => ({
                 },
             ],
         }),
-        // TODO only add required polyfills
-        new NodePolyfillPlugin(),
+
+        // node polyfills
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+            Buffer: ['buffer', 'Buffer'],
+        }),
+
         new webpack.DefinePlugin({
             STAND_ALONE: JSON.stringify(false),
             'process.env.ENABLE_LOGGER_MIDDLEWARE': JSON.stringify(env.enableLoggerMiddleware),
