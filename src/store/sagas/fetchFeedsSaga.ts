@@ -45,8 +45,6 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
 
     const parseResults: ReadonlyArray<ParseFeedResult> = yield join([...parseFeedTasks]);
 
-    // TODO handle errors!
-
     const updatePayload = parseResults
         .map((x) => {
             if (x.type === 'success') {
@@ -58,12 +56,14 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
         .filter((y) => y !== undefined) as Feed[];
 
     yield put(feedsSlice.actions.updateFeeds(updatePayload));
+
     yield put(
         sessionSlice.actions.changeFeedsStatus({
             newStatus: 'loaded',
             feedUrls: updatePayload.map((feed) => feed.url),
         }),
     );
+
     yield put(
         sessionSlice.actions.changeFeedsStatus({
             newStatus: 'error',
