@@ -123,6 +123,22 @@ describe('markFeedAsRead action', () => {
     });
 });
 
+describe('markSelectedFeedAsRead action', () => {
+    it('marks all items of selected feed as read', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: feedsFixture,
+            selectedFeedId: feed1Fixture.id,
+        };
+
+        const action = feedsSlice.actions.markSelectedFeedAsRead();
+
+        expect(feedsSlice.reducer(prevState, action).feeds[0].items[0].isRead).toBe(true);
+        expect(feedsSlice.reducer(prevState, action).feeds[0].items[1].isRead).toBe(true);
+        expect(feedsSlice.reducer(prevState, action).feeds[1].items[0].isRead).toBe(false);
+    });
+});
+
 describe('markAllAsRead action', () => {
     it('marks all items of all feeds as read', () => {
         const prevState: FeedSliceState = {

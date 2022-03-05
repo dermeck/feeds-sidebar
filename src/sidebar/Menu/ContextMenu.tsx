@@ -5,7 +5,7 @@ import { FunctionComponent } from 'react';
 
 import { MenuContainer, MenuList } from '../../base-components';
 import { useAppDispatch } from '../../store/hooks';
-import feedsSlice, { markSelectedFeedAsReadCommand } from '../../store/slices/feeds';
+import feedsSlice from '../../store/slices/feeds';
 import { Point } from '../../store/slices/session';
 import MenuItem from './MenuItem';
 
@@ -21,7 +21,9 @@ const ContextMenu: FunctionComponent<Props> = (props: Props) => {
         <MenuContainer anchorTop={props.anchorPoint.y} anchorLeft={props.anchorPoint.x}>
             <MenuList>
                 <MenuItem onMouseDown={() => dispatch(feedsSlice.actions.deleteSelectedFeed())}>Delete Feed</MenuItem>
-                <MenuItem onMouseDown={() => dispatch(markSelectedFeedAsReadCommand())}>Mark as Read</MenuItem>
+                <MenuItem onMouseDown={() => dispatch(feedsSlice.actions.markSelectedFeedAsRead())}>
+                    Mark as Read
+                </MenuItem>
             </MenuList>
         </MenuContainer>
     );

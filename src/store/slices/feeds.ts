@@ -1,4 +1,4 @@
-import { Action, createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from '../store';
 
@@ -25,8 +25,6 @@ export interface FeedItem {
 }
 
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
-
-export const markSelectedFeedAsReadCommand = createAction('feeds/markSelectedFeedAsReadCommand');
 
 const initialState: FeedSliceState = {
     feeds: [
@@ -108,6 +106,12 @@ const feedsSlice = createSlice({
                 feeds: [...markFeedAsRead(state.feeds, action.payload)],
             };
         },
+        markSelectedFeedAsRead(state) {
+            return {
+                ...state,
+                feeds: [...markFeedAsRead(state.feeds, state.selectedFeedId)],
+            };
+        },
         markAllAsRead(state) {
             return {
                 ...state,
@@ -121,7 +125,7 @@ const feedsSlice = createSlice({
             };
         },
 
-        deleteSelectedFeed(state, action: Action) {
+        deleteSelectedFeed(state) {
             // index of the feed that gets deleted
             const selectedFeedId = state.selectedFeedId;
 

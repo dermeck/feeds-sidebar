@@ -1,7 +1,7 @@
 import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import feedsSlice, { selectTotalUnreadItems, markSelectedFeedAsReadCommand, FeedSliceState } from '../slices/feeds';
+import feedsSlice, { selectTotalUnreadItems, FeedSliceState } from '../slices/feeds';
 import { RootState } from '../store';
 
 const updateBadge = (feedSliceState: FeedSliceState) => {
@@ -16,11 +16,6 @@ export const feedMiddleware: Middleware<
     RootState,
     ThunkDispatch<RootState, undefined, AnyAction>
 > = (middlewareApi) => (next) => async (action: AnyAction) => {
-    if (markSelectedFeedAsReadCommand.match(action)) {
-        // TODO command should not be needed, reduce should be able to handle action without payload
-        middlewareApi.dispatch(feedsSlice.actions.markFeedAsRead(middlewareApi.getState().feeds.selectedFeedId));
-    }
-
     await next(action);
 
     // reducers must run before this code
