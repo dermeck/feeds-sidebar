@@ -5,4 +5,5 @@ A Firefox Extensions to manage web feeds in the Sidebar.
 
 ---
 
+
 It is under development and not functional.
