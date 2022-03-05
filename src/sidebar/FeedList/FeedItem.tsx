@@ -60,11 +60,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                         handleFeedItemClick(props.feedId, props.item.id);
                     }
                 }}
-                onContextMenu={
-                    // TODO create custom context menu (open in new tab etc)
-                    // or find a way to track if item is opened in standard context menu to mark it as read
-                    (e) => e.preventDefault()
-                }
+                onContextMenu={(e) => e.preventDefault()}
                 onClick={() => handleFeedItemClick(props.feedId, props.item.id)}
                 onDragStart={(e) => e.preventDefault()}>
                 {props.item.title}

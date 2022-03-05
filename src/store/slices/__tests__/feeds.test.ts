@@ -261,7 +261,6 @@ describe('updateFeeds action', () => {
             expect(newState.feeds[0].items[1].id).toBe('id2');
         });
 
-        // TODO should old items be updated (corrected title etc?)
         it('does not update items that already existed', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
