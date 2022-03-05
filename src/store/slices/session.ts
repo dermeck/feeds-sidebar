@@ -27,7 +27,7 @@ export type SessionSliceState = {
     // feedStatus is managed separately because it can contain entries that have no corresponding feed in feedSlice
     // (recently added and not successfully fetched or parsed)
     feedStatus: ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
-    newFeeds: ReadonlyArray<{ url: string; status: FeedFetchStatus }>; // TODO is this needed?
+    newFeeds: ReadonlyArray<{ url: string; status: FeedFetchStatus }>; // TODO is this needed?!
     menuContext: MenuContext | undefined; // TODO use Context API instead of global state
 };
 

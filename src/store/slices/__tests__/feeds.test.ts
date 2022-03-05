@@ -345,58 +345,57 @@ describe('updateFeeds action', () => {
     });
 });
 
-describe('deleteFeed action', () => {
-    it('deletes the specified feed', () => {
+describe('deleteSelectedFeed action', () => {
+    it('deletes the selected feed', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             feeds: [feed1Fixture, feed2Fixture],
+            selectedFeedId: feed1Fixture.id,
         };
 
-        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteFeed(feed1Fixture.id));
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedFeed());
 
         expect(newState.feeds).toHaveLength(1);
         expect(newState.feeds[0]).toStrictEqual(feed2Fixture);
     });
 
-    describe('when selected feed is deleted', () => {
-        it('clears selectedFeedId if it was the only existing feed', () => {
-            const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
-                feeds: [feed1Fixture],
-                selectedFeedId: feed1Fixture.id,
-            };
+    it('clears selectedFeedId if it was the only existing feed', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [feed1Fixture],
+            selectedFeedId: feed1Fixture.id,
+        };
 
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteFeed(feed1Fixture.id));
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedFeed());
 
-            expect(newState.feeds).toHaveLength(0);
-            expect(newState.selectedFeedId).toBe('');
-        });
+        expect(newState.feeds).toHaveLength(0);
+        expect(newState.selectedFeedId).toBe('');
+    });
 
-        it('selects the previuous feed if the deleted feed was the last one', () => {
-            const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
-                feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
-                selectedFeedId: feed3Fixture.id,
-            };
+    it('selects the previuous feed if the deleted feed was the last one', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
+            selectedFeedId: feed3Fixture.id,
+        };
 
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteFeed(feed3Fixture.id));
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedFeed());
 
-            expect(newState.feeds).toHaveLength(2);
-            expect(newState.selectedFeedId).toBe(feed2Fixture.id);
-        });
+        expect(newState.feeds).toHaveLength(2);
+        expect(newState.selectedFeedId).toBe(feed2Fixture.id);
+    });
 
-        it('selects the subsequent feed if the deleted feed was not the last one', () => {
-            const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
-                feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
-                selectedFeedId: feed2Fixture.id,
-            };
+    it('selects the subsequent feed if the deleted feed was not the last one', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
+            selectedFeedId: feed2Fixture.id,
+        };
 
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteFeed(feed2Fixture.id));
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedFeed());
 
-            expect(newState.feeds).toHaveLength(2);
-            expect(newState.selectedFeedId).toBe(feed3Fixture.id);
-        });
+        expect(newState.feeds).toHaveLength(2);
+        expect(newState.selectedFeedId).toBe(feed3Fixture.id);
     });
 });
 

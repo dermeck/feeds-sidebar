@@ -1,4 +1,4 @@
-import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Action, createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from '../store';
 
@@ -25,8 +25,6 @@ export interface FeedItem {
 }
 
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
-
-export const deleteSelectedFeedCommand = createAction('feeds/deleteSelectedFeedCommand');
 
 export const markSelectedFeedAsReadCommand = createAction('feeds/markSelectedFeedAsReadCommand');
 
@@ -123,23 +121,23 @@ const feedsSlice = createSlice({
             };
         },
 
-        deleteFeed(state, action: PayloadAction<string>) {
+        deleteSelectedFeed(state, action: Action) {
             // index of the feed that gets deleted
-            const selectedIndex = state.feeds.findIndex((f) => f.id === action.payload);
+            const selectedFeedId = state.selectedFeedId;
+
+            const selectedIndex = state.feeds.findIndex((f) => f.id === selectedFeedId);
 
             // delete
-            state.feeds = state.feeds.filter((f) => f.id !== action.payload);
+            state.feeds = state.feeds.filter((f) => f.id !== selectedFeedId);
 
-            if (action.payload === state.selectedFeedId) {
-                // if possible select the the next feed
-                // TODO also set focus
-                state.selectedFeedId =
-                    state.feeds.length === 0
-                        ? ''
-                        : state.feeds.length > selectedIndex
-                        ? state.feeds[selectedIndex].id
-                        : state.feeds[selectedIndex - 1].id;
-            }
+            // if possible select the the next feed
+            // TODO also set focus
+            state.selectedFeedId =
+                state.feeds.length === 0
+                    ? ''
+                    : state.feeds.length > selectedIndex
+                    ? state.feeds[selectedIndex].id
+                    : state.feeds[selectedIndex - 1].id;
         },
     },
 });
