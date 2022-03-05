@@ -13,11 +13,8 @@ export const loggerMiddleware: Middleware<
         return next(action);
     }
 
-    console.groupCollapsed(typeof action !== 'function' ? `action type: ${action.type}` : 'thunk');
     const result = next(action);
-    console.log('action', action);
-    console.log('next state', storeApi.getState());
-    console.groupEnd();
+    console.log('action', action.type, action.payload, storeApi.getState());
 
     return result;
 };
