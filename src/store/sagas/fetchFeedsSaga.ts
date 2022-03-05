@@ -1,13 +1,12 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import deepEqual from 'fast-deep-equal';
 
 import { Task } from 'redux-saga';
-import { takeEvery, call, fork, join, put, select } from 'redux-saga/effects';
+import { takeEvery, fork, join, put } from 'redux-saga/effects';
 
 import { fetchFeed, FetchFeedResult } from '../../services/api';
-import parseFeed from '../../services/feedParser';
-import feedsSlice, { fetchFeedsCommand, Feed, selectFeeds } from '../slices/feeds';
-import sessionSlice from '../slices/session';
+import parseFeed, { ParseFeedResult } from '../../services/feedParser';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
+import feedsSlice, { fetchFeedsCommand, Feed } from '../slices/feeds';
 
 export function* watchfetchFeedsSaga() {
     yield takeEvery(fetchFeedsCommand.type, fetchFeeds);
@@ -20,26 +19,36 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
         fetchTasks.push(yield fork(fetchFeed, url));
     }
 
-    const results: ReadonlyArray<FetchFeedResult> = yield join([...fetchTasks]);
+    const fetchResults: ReadonlyArray<FetchFeedResult> = yield join([...fetchTasks]);
+    const parseFeedTasks: Task[] = [];
 
-    for (const result of results) {
-        if (result.type === 'error') {
-            yield put(sessionSlice.actions.feedParseError(result.url)); // TODO Fetch Error
-            return;
-        }
+    for (const fetchResult of fetchResults) {
+        switch (fetchResult.type) {
+            case 'success':
+                parseFeedTasks.push(
+                    yield fork(parseFeed, { feedUrl: fetchResult.url, feedData: fetchResult.response }),
+                );
 
-        try {
-            const parsedFeed: Feed = yield call(parseFeed, { feedUrl: result.url, feedData: result.response });
-            const feeds: ReadonlyArray<Feed> = yield select(selectFeeds);
-            const prevFeed = feeds.find((f) => f.url === parsedFeed.url);
+                break;
 
-            if (!deepEqual(prevFeed, parsedFeed)) {
-                // TODO adapt to dispatch batch update action instead if many single updates
-                yield put(feedsSlice.actions.updateFeeds([parsedFeed]));
-            }
-        } catch (e) {
-            // response is not a feed
-            yield put(sessionSlice.actions.feedParseError(result.url));
+            case 'error':
+                // TODO handler error
+                break;
+
+            default:
+                throw new UnreachableCaseError(fetchResult);
         }
     }
+
+    const parseResults: ReadonlyArray<ParseFeedResult> = yield join([...parseFeedTasks]);
+
+    const updatePayload = parseResults
+        .map((x) => {
+            if (x.type === 'success') {
+                return x.parsedFeed;
+            }
+        })
+        .filter((y) => y !== undefined) as Feed[];
+
+    yield put(feedsSlice.actions.updateFeeds(updatePayload));
 }
