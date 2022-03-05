@@ -13,6 +13,7 @@ interface ParseFeedResultSuccess {
 }
 
 interface ParseFeedResultError {
+    url: string;
     type: 'error';
 }
 
@@ -76,7 +77,7 @@ const parseFeed = async (input: FeedParserInput): Promise<ParseFeedResult> => {
     } catch (e) {
         console.log('error');
         // response is not a feed
-        return { type: 'error' };
+        return { type: 'error', url: input.feedUrl };
     }
 };
 

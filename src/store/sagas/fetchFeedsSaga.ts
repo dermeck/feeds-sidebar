@@ -1,6 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 
-import { X } from 'react-feather';
 import { Task } from 'redux-saga';
 import { takeEvery, fork, join, put } from 'redux-saga/effects';
 
@@ -25,6 +24,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
 
     const fetchResults: ReadonlyArray<FetchFeedResult> = yield join([...fetchTasks]);
     const parseFeedTasks: Task[] = [];
+    const fetchFeedErrorUrls: string[] = [];
 
     for (const fetchResult of fetchResults) {
         switch (fetchResult.type) {
@@ -32,12 +32,10 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
                 parseFeedTasks.push(
                     yield fork(parseFeed, { feedUrl: fetchResult.url, feedData: fetchResult.response }),
                 );
-
                 break;
 
             case 'error':
-                // TODO handler error
-                // remotestate changed
+                fetchFeedErrorUrls.push(fetchResult.url);
                 break;
 
             default:
@@ -47,12 +45,15 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
 
     const parseResults: ReadonlyArray<ParseFeedResult> = yield join([...parseFeedTasks]);
 
-    // TODO handle errors
+    // TODO handle errors!
+
     const updatePayload = parseResults
         .map((x) => {
             if (x.type === 'success') {
                 return x.parsedFeed;
             }
+
+            fetchFeedErrorUrls.push(x.url);
         })
         .filter((y) => y !== undefined) as Feed[];
 
@@ -61,6 +62,12 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
         sessionSlice.actions.changeFeedsStatus({
             newStatus: 'loaded',
             feedUrls: updatePayload.map((feed) => feed.url),
+        }),
+    );
+    yield put(
+        sessionSlice.actions.changeFeedsStatus({
+            newStatus: 'error',
+            feedUrls: fetchFeedErrorUrls,
         }),
     );
 }
