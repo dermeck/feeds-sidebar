@@ -173,8 +173,10 @@ const feedsSlice = createSlice({
     },
 });
 
-const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> =>
-    feeds.map((feed) => {
+const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> => {
+    const newFeeds = updatedFeeds.filter((updatedFeed) => !feeds.some((x) => x.url === updatedFeed.url));
+
+    updatedFeeds = feeds.map((feed) => {
         const updatedFeed = updatedFeeds.find((x) => x.url === feed.url);
         // TODO use id?
         if (updatedFeed === undefined) {
@@ -185,6 +187,9 @@ const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Fee
             ...mergeFeed(feed, updatedFeed),
         };
     });
+
+    return updatedFeeds.concat(newFeeds);
+};
 
 // keep old items, update existing items, add new items
 const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {

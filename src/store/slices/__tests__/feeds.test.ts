@@ -185,8 +185,7 @@ describe('updateFeeds action', () => {
         expect(feedsSlice.reducer(prevState, action).feeds[0]).toStrictEqual(feed1Fixture);
     });
 
-    // TODO this should work later
-    it.skip('does add a new feed if feedId does not match any existing feed', () => {
+    it('does add a new feed if feedId does not match any existing feed', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             feeds: [feed1Fixture],
