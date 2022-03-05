@@ -6,7 +6,7 @@ import { ArrowLeft } from 'react-feather';
 import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../base-components';
 import { colors } from '../../base-components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addNewFeedCommand } from '../../store/slices/feeds';
+import { fetchFeedsCommand } from '../../store/slices/feeds';
 import sessionSlice, { View } from '../../store/slices/session';
 import NewFeedsList from './NewFeedsList';
 
@@ -52,6 +52,7 @@ const NewFeedForm: FunctionComponent = () => {
     const [newFeedUrl, setNewFeedUrl] = useState('');
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
     const [addButtonActive, setAddButtonActive] = useState(false);
+    const [addedFeedUrls, setAddedFeedUrls] = useState<string[]>([]);
 
     return (
         <Container>
@@ -93,7 +94,8 @@ const NewFeedForm: FunctionComponent = () => {
                         const existingFeed = feeds.find((x) => x.url === newFeedUrl);
 
                         if (existingFeed === undefined) {
-                            dispatch(addNewFeedCommand(newFeedUrl));
+                            setAddedFeedUrls((oldItems) => [...oldItems, newFeedUrl]);
+                            dispatch(fetchFeedsCommand([newFeedUrl]));
                         } else {
                             setNewFeedUrlMessage(`You are already subscribed to that feed (${existingFeed.title})`);
                         }
@@ -102,7 +104,7 @@ const NewFeedForm: FunctionComponent = () => {
                 </AddButton>
                 <MessageBox show={newFeedUrlMessage !== ''}>{newFeedUrlMessage}</MessageBox>
 
-                <NewFeedsList />
+                <NewFeedsList newFeedUrls={addedFeedUrls} />
             </ContentContainer>
         </Container>
     );

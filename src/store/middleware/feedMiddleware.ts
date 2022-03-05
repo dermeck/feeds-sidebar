@@ -1,17 +1,14 @@
 import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import parseFeed from '../../services/feedParser';
 import feedsSlice, {
-    addNewFeedByUrl,
-    addNewFeedCommand,
     importFeedsCommand,
     deleteSelectedFeedCommand,
     selectTotalUnreadItems,
     markSelectedFeedAsReadCommand,
     FeedSliceState,
+    fetchFeedsCommand,
 } from '../slices/feeds';
-import sessionSlice from '../slices/session';
 import { RootState } from '../store';
 
 const updateBadge = (feedSliceState: FeedSliceState) => {
@@ -27,14 +24,10 @@ export const feedMiddleware: Middleware<
     RootState,
     ThunkDispatch<RootState, undefined, AnyAction>
 > = (middlewareApi) => (next) => async (action: AnyAction) => {
-    if (addNewFeedCommand.match(action)) {
-        middlewareApi.dispatch(addNewFeedByUrl(action.payload));
-    }
-
     if (importFeedsCommand.match(action)) {
         action.payload.forEach((importedFeed) => {
             if (!middlewareApi.getState().feeds.feeds.some((f) => f.url === importedFeed.url)) {
-                middlewareApi.dispatch(addNewFeedByUrl(importedFeed.url));
+                middlewareApi.dispatch(fetchFeedsCommand([importedFeed.url])); // TODO batch
             }
         });
     }
@@ -48,32 +41,10 @@ export const feedMiddleware: Middleware<
         middlewareApi.dispatch(feedsSlice.actions.markFeedAsRead(middlewareApi.getState().feeds.selectedFeedId));
     }
 
-    // TODO use saga instead
-
-    if (addNewFeedByUrl.fulfilled.match(action)) {
-        try {
-            const parsedFeed = await parseFeed({
-                feedUrl: action.meta.arg,
-                feedData: action.payload,
-            });
-
-            if (parsedFeed.type === 'success') {
-                middlewareApi.dispatch(feedsSlice.actions.addFeed(parsedFeed.parsedFeed));
-            } else if (parsedFeed.type === 'error') {
-                // response is not a feed
-                middlewareApi.dispatch(sessionSlice.actions.feedParseError(action.meta.arg));
-            }
-        } catch {
-            // response is not a feed
-            middlewareApi.dispatch(sessionSlice.actions.feedParseError(action.meta.arg));
-        }
-    }
-
     await next(action);
 
     // reducers must run before this code
     if (
-        feedsSlice.actions.addFeed ||
         feedsSlice.actions.updateFeeds ||
         feedsSlice.actions.markItemAsRead.match(action) ||
         feedsSlice.actions.markFeedAsRead.match(action) ||

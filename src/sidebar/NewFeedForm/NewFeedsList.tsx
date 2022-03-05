@@ -5,6 +5,7 @@ import { AlertTriangle, Check, Loader } from 'react-feather';
 
 import { Label } from '../../base-components';
 import { useAppSelector } from '../../store/hooks';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 
 const List = styled.ul`
     padding-left: 1rem;
@@ -22,16 +23,26 @@ const ListItem = styled.li`
     }
 `;
 
-const NewFeedsList: FunctionComponent = () => {
+interface Props {
+    newFeedUrls: ReadonlyArray<string>;
+}
+
+const NewFeedsList: FunctionComponent<Props> = (props: Props) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
-    const newFeeds = useAppSelector((state) => state.session.newFeeds);
+    const feedStatus = useAppSelector((state) => state.session.feedStatus);
 
     return (
         <Fragment>
             <Label>Recently added Feeds:</Label>
             <List>
-                {newFeeds.map((newFeed) => {
-                    switch (newFeed.status) {
+                {props.newFeedUrls.map((newFeedUrl) => {
+                    const status = feedStatus.find((s) => s.url === newFeedUrl)?.status;
+
+                    if (status === undefined) {
+                        return;
+                    }
+
+                    switch (status) {
                         case 'loading':
                             return (
                                 <ListItem>
@@ -39,8 +50,9 @@ const NewFeedsList: FunctionComponent = () => {
                                     loading...
                                 </ListItem>
                             );
+
                         case 'loaded': {
-                            const loadedFeed = feeds.find((f) => f.url === newFeed.url);
+                            const loadedFeed = feeds.find((f) => f.url === newFeedUrl);
                             if (loadedFeed !== undefined) {
                                 return (
                                     <ListItem>
@@ -49,15 +61,19 @@ const NewFeedsList: FunctionComponent = () => {
                                     </ListItem>
                                 );
                             } else {
-                                return <li>{newFeed.url}</li>;
+                                return <li>{newFeedUrl}</li>;
                             }
                         }
+
                         case 'error':
                             return (
                                 <ListItem>
-                                    <AlertTriangle size={16} /> {newFeed.url}
+                                    <AlertTriangle size={16} /> {newFeedUrl}
                                 </ListItem>
                             );
+
+                        default:
+                            throw new UnreachableCaseError(status);
                     }
                 })}
             </List>

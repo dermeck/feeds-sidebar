@@ -1,5 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 
+import { X } from 'react-feather';
 import { Task } from 'redux-saga';
 import { takeEvery, fork, join, put } from 'redux-saga/effects';
 
@@ -7,6 +8,7 @@ import { fetchFeed, FetchFeedResult } from '../../services/api';
 import parseFeed, { ParseFeedResult } from '../../services/feedParser';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import feedsSlice, { fetchFeedsCommand, Feed } from '../slices/feeds';
+import sessionSlice from '../slices/session';
 
 export function* watchfetchFeedsSaga() {
     yield takeEvery(fetchFeedsCommand.type, fetchFeeds);
@@ -14,6 +16,8 @@ export function* watchfetchFeedsSaga() {
 
 function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
     const fetchTasks: Task[] = [];
+
+    yield put(sessionSlice.actions.changeFeedsStatus({ newStatus: 'loading', feedUrls: action.payload }));
 
     for (const url of action.payload) {
         fetchTasks.push(yield fork(fetchFeed, url));
@@ -33,6 +37,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
 
             case 'error':
                 // TODO handler error
+                // remotestate changed
                 break;
 
             default:
@@ -42,6 +47,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
 
     const parseResults: ReadonlyArray<ParseFeedResult> = yield join([...parseFeedTasks]);
 
+    // TODO handle errors
     const updatePayload = parseResults
         .map((x) => {
             if (x.type === 'success') {
@@ -51,4 +57,10 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
         .filter((y) => y !== undefined) as Feed[];
 
     yield put(feedsSlice.actions.updateFeeds(updatePayload));
+    yield put(
+        sessionSlice.actions.changeFeedsStatus({
+            newStatus: 'loaded',
+            feedUrls: updatePayload.map((feed) => feed.url),
+        }),
+    );
 }

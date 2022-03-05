@@ -1,6 +1,4 @@
-import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-import { Semaphore } from 'async-mutex';
+import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from '../store';
 
@@ -27,8 +25,6 @@ export interface FeedItem {
 }
 
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
-
-export const addNewFeedCommand = createAction<string>('feeds/addNewFeedCommand');
 
 export const deleteSelectedFeedCommand = createAction('feeds/deleteSelectedFeedCommand');
 
@@ -79,27 +75,10 @@ const initialState: FeedSliceState = {
     selectedFeedId: '',
 };
 
-// TODO remove this and use FetchFeed Saga instead (decide in reducer if it is an add or an update)
-export const addNewFeedByUrl = createAsyncThunk<string, string>('feeds/addNewFeedByUrl', async (url) => {
-    return await fetchFeed(url);
-});
-
 const throwIfNonExistent = (feeds: ReadonlyArray<Feed>, feedId: string) => {
     if (!feeds.some((x) => x.id === feedId)) {
         throw new Error(`feed with id: ${feedId} does not exist`);
     }
-};
-
-// TODO make this configurable
-const fetchFeedSemaphore = new Semaphore(3);
-
-const fetchFeed = async (url: string) => {
-    return new Promise<string>((resolve) => {
-        fetchFeedSemaphore.runExclusive(async () => {
-            const response = await fetch(url);
-            resolve(await response.text());
-        });
-    });
 };
 
 export const selectTotalUnreadItems = (state: FeedSliceState) =>
@@ -113,12 +92,6 @@ const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
-        addFeed(state, action: PayloadAction<Feed>) {
-            return {
-                ...state,
-                feeds: [...state.feeds, action.payload],
-            };
-        },
         selectFeed(state, action: PayloadAction<string>) {
             const feedId = action.payload;
 
@@ -155,7 +128,6 @@ const feedsSlice = createSlice({
             // index of the feed that gets deleted
             const selectedIndex = state.feeds.findIndex((f) => f.id === action.payload);
 
-            console.log('selected', selectedIndex);
             // delete
             state.feeds = state.feeds.filter((f) => f.id !== action.payload);
 

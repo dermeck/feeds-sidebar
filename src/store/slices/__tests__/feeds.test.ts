@@ -1,6 +1,6 @@
-import feedsSlice, { FeedSliceState, selectTotalUnreadItems } from '../feeds';
+import feedsSlice, { Feed, FeedSliceState, selectTotalUnreadItems } from '../feeds';
 
-const feed1Fixture = {
+const feed1Fixture: Feed = {
     id: 'feedId1',
     url: 'http://feedId1.url',
     items: [
@@ -19,7 +19,7 @@ const feed1Fixture = {
     ],
 };
 
-const feed2Fixture = {
+const feed2Fixture: Feed = {
     id: 'feedId2',
     url: 'http://feedId2.url',
     items: [
@@ -38,7 +38,7 @@ const feed2Fixture = {
     ],
 };
 
-const feed3Fixture = {
+const feed3Fixture: Feed = {
     id: 'feedId3',
     url: 'http://feedId3.url',
     items: [
@@ -65,41 +65,6 @@ const itemFixture = (id: string) => ({
 });
 
 const feedsFixture = [feed1Fixture, feed2Fixture];
-
-describe('addFeed action', () => {
-    it('adds the feed', () => {
-        const prevState: FeedSliceState = {
-            ...feedsSlice.getInitialState(),
-            feeds: [],
-        };
-
-        const action = feedsSlice.actions.addFeed({
-            id: 'feedId1',
-            url: 'http://feedId1.url',
-            items: [
-                {
-                    id: 'http://feedId1.url/item1',
-                    url: 'http://feedId1.url/item1',
-                    title: 'item1',
-                },
-            ],
-        });
-
-        expect(feedsSlice.reducer(prevState, action).feeds).toEqual([
-            {
-                id: 'feedId1',
-                url: 'http://feedId1.url',
-                items: [
-                    {
-                        id: 'http://feedId1.url/item1',
-                        url: 'http://feedId1.url/item1',
-                        title: 'item1',
-                    },
-                ],
-            },
-        ]);
-    });
-});
 
 describe('selectFeed action', () => {
     it('sets selectedFeedId if feed exists', () => {
