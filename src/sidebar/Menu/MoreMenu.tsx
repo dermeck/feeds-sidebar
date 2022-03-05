@@ -66,15 +66,10 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
                         return;
                     }
 
-                    const filenName = e.target.files[0];
-                    const fileContent = await readOpmlFile(filenName);
+                    const file = e.target.files[0];
+                    const fileContent = await readOpmlFile(file);
                     if (fileContent === undefined) {
-                        // TODO UI feedback without notification
-                        browser.notifications.create({
-                            type: 'basic',
-                            title: 'YTRSS Error',
-                            message: `An error occured while parsing file ${filenName}`,
-                        });
+                        alert(`An error occured while parsing file "${file.name}".`);
                     } else {
                         dispatch(fetchFeedsCommand(fileContent.map((f) => f.url)));
                     }

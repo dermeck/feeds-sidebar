@@ -14,7 +14,7 @@
         "48": "rss.svg"
     },
 
-    "permissions": ["alarms", "<all_urls>", "storage", "notifications"],
+    "permissions": ["alarms", "<all_urls>", "storage"],
 
     "background": {
         "scripts": ["background.js"]
