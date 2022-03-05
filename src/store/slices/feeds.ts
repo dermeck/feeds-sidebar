@@ -30,8 +30,6 @@ export const deleteSelectedFeedCommand = createAction('feeds/deleteSelectedFeedC
 
 export const markSelectedFeedAsReadCommand = createAction('feeds/markSelectedFeedAsReadCommand');
 
-export const importFeedsCommand = createAction<ReadonlyArray<Feed>>('feeds/importFeedsCommand');
-
 const initialState: FeedSliceState = {
     feeds: [
         {
@@ -40,7 +38,7 @@ const initialState: FeedSliceState = {
             url: 'https://ourworldindata.org/atom.xml',
             items: [],
         },
-
+        /*
         {
             // sample RSS 1.0 / RDF Feed
             // https://www.w3schools.com/xml/xml_rdf.asp
@@ -71,6 +69,7 @@ const initialState: FeedSliceState = {
             url: 'https://www.quarks.de/feed/',
             items: [],
         },
+        */
     ],
     selectedFeedId: '',
 };

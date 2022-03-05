@@ -9,7 +9,7 @@ import { Divider } from '../../base-components/styled/Divider';
 import opmlExport from '../../services/export';
 import { readOpmlFile } from '../../services/import';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import feedsSlice, { importFeedsCommand } from '../../store/slices/feeds';
+import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import sessionSlice, { Point, View } from '../../store/slices/session';
 import MenuItem from './MenuItem';
 
@@ -76,7 +76,7 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
                             message: `An error occured while parsing file ${filenName}`,
                         });
                     } else {
-                        dispatch(importFeedsCommand(fileContent));
+                        dispatch(fetchFeedsCommand(fileContent.map((f) => f.url)));
                     }
 
                     dispatch(sessionSlice.actions.hideMenu());

@@ -2,12 +2,10 @@ import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import feedsSlice, {
-    importFeedsCommand,
     deleteSelectedFeedCommand,
     selectTotalUnreadItems,
     markSelectedFeedAsReadCommand,
     FeedSliceState,
-    fetchFeedsCommand,
 } from '../slices/feeds';
 import { RootState } from '../store';
 
@@ -24,15 +22,8 @@ export const feedMiddleware: Middleware<
     RootState,
     ThunkDispatch<RootState, undefined, AnyAction>
 > = (middlewareApi) => (next) => async (action: AnyAction) => {
-    if (importFeedsCommand.match(action)) {
-        action.payload.forEach((importedFeed) => {
-            if (!middlewareApi.getState().feeds.feeds.some((f) => f.url === importedFeed.url)) {
-                middlewareApi.dispatch(fetchFeedsCommand([importedFeed.url])); // TODO batch
-            }
-        });
-    }
-
     if (deleteSelectedFeedCommand.match(action)) {
+        // TODO command should not be needed, reduce should be able to handle action without payload
         middlewareApi.dispatch(feedsSlice.actions.deleteFeed(middlewareApi.getState().feeds.selectedFeedId));
     }
 
