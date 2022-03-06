@@ -70,6 +70,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
     };
 
     const handleOnContextMenu = (anchorPoint: Point) => {
+        setFocus(true);
         dispatch(sessionSlice.actions.showContextMenu(anchorPoint));
         dispatch(feedsSlice.actions.selectFeed(props.feed.id));
     };
@@ -92,6 +93,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                     }}
                     onBlur={() => {
                         setFocus(false);
+                        dispatch(sessionSlice.actions.hideMenu()); // TODO only if visible
                     }}
                     onContextMenu={(e) => {
                         e.preventDefault();
