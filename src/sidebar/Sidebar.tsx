@@ -67,7 +67,7 @@ const Sidebar: FunctionComponent = () => {
                     <Folder size={18} />
                 </ShowFeedTitleButton>
 
-                <MoreMenuButton active={moreMenuVisible}>
+                <MoreMenuButton active={moreMenuVisible} onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
                     <MoreHorizontal
                         onClick={(e) => {
                             const offsetHeight = e.currentTarget.parentElement?.offsetHeight;
