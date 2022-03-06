@@ -34,7 +34,7 @@ const initialState: FeedSliceState = {
             url: 'https://ourworldindata.org/atom.xml',
             items: [],
         },
-        /*
+
         {
             // sample RSS 1.0 / RDF Feed
             // https://www.w3schools.com/xml/xml_rdf.asp
@@ -65,7 +65,6 @@ const initialState: FeedSliceState = {
             url: 'https://www.quarks.de/feed/',
             items: [],
         },
-        */
     ],
     selectedFeedId: '',
 };
@@ -128,14 +127,12 @@ const feedsSlice = createSlice({
         deleteSelectedFeed(state) {
             // index of the feed that gets deleted
             const selectedFeedId = state.selectedFeedId;
-
             const selectedIndex = state.feeds.findIndex((f) => f.id === selectedFeedId);
 
             // delete
             state.feeds = state.feeds.filter((f) => f.id !== selectedFeedId);
 
             // if possible select the the next feed
-            // TODO also set focus
             state.selectedFeedId =
                 state.feeds.length === 0
                     ? ''

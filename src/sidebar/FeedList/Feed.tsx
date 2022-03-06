@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import React, { Fragment, FunctionComponent, memo, useState } from 'react';
+import React, { Fragment, FunctionComponent, memo, useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
 import { colors, rgba } from '../../base-components/styled/colors';
@@ -59,6 +59,12 @@ const renderItem = (item: FeedItemType, props: Props) => (
 const Feed: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
+    useEffect(() => {
+        if (props.isSelected) {
+            setFocus(true);
+        }
+    }, [props.isSelected]);
+
     const handleFeedTitleClick = () => {
         dispatch(feedsSlice.actions.selectFeed(props.feed.id));
     };
@@ -66,7 +72,6 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
     const handleOnContextMenu = (anchorPoint: Point) => {
         dispatch(sessionSlice.actions.showContextMenu(anchorPoint));
         dispatch(feedsSlice.actions.selectFeed(props.feed.id));
-        // TODO also set Focus (track focused feed in redux)
     };
 
     const [expanded, setExpanded] = useState<boolean>(true);
