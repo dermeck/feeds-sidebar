@@ -1,5 +1,6 @@
 /coverage
 /node_modules
 /dist
+/draft
 /web-ext-artifacts
 /yarn-error.log
