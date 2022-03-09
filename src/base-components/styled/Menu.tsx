@@ -47,7 +47,7 @@ export const MenuItem = styled.li`
     list-style: none;
 
     &:hover {
-        background-color: ${colors.highlightBackgroundColor1};
-        color: ${colors.highlightColor1Dark};
+        background-color: 'Highlight';
+        color: red;
     }
 `;

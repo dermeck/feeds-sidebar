@@ -26,11 +26,7 @@ const FeedTitleContainer = styled.div`
     padding: 0.05rem 0 0.2rem 0.5rem;
 
     background-color: ${(props: FeedTitleContainerProps) =>
-        props.highlight
-            ? props.focus
-                ? rgba(colors.highlightBackgroundColor1, 0.9)
-                : colors.highlightBackgroundColorNoFocus
-            : 'inherit'};
+        props.highlight ? (props.focus ? 'Highlight' : colors.highlightBackgroundColorNoFocus) : 'inherit'};
     color: ${(props: FeedTitleContainerProps) =>
         props.highlight && props.focus ? colors.highlightColor1Light : 'inherit'};
 `;
