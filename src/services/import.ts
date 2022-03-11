@@ -28,7 +28,7 @@ const parseXml = (fileContent: string): ReadonlyArray<Feed> | undefined => {
     xml.querySelectorAll('outline[xmlUrl]').forEach((feedNode) => {
         let id = feedNode.getAttribute('text');
         if (id === null) {
-            // use title as fallback if text is not preset
+            // use title as fallback if text is not present
             // though it should be there (http://dev.opml.org/spec2.html#textAttribute)
             id = feedNode.getAttribute('title');
         }

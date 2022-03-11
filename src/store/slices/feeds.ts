@@ -148,7 +148,6 @@ const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Fee
 
     updatedFeeds = feeds.map((feed) => {
         const updatedFeed = updatedFeeds.find((x) => x.url === feed.url);
-        // TODO use id?
         if (updatedFeed === undefined) {
             return feed;
         }
@@ -171,7 +170,6 @@ const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
         }
     });
 
-    // TODO re-evluate if id AND url are needed
     return {
         id: updatedFeed.id,
         url: previous.url,
