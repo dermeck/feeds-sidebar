@@ -55,7 +55,9 @@ const Sidebar: FunctionComponent = () => {
     const [filterString, setFilterString] = useState<string>('');
 
     return (
-        <SidebarContainer onContextMenu={(e) => e.preventDefault()}>
+        <SidebarContainer
+            onContextMenu={(e) => e.preventDefault()}
+            onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
             <Header>
                 <FetchAllButton onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.url)))}>
                     <RefreshCw size={18} />
