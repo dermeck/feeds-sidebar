@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import React, { FunctionComponent, useRef, useState } from 'react';
+import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 
 import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../base-components';
@@ -10,11 +10,14 @@ import { fetchFeedsCommand } from '../../store/slices/feeds';
 import sessionSlice, { View } from '../../store/slices/session';
 import NewFeedsList from './NewFeedsList';
 
-const Container = styled.div``;
+const Container = styled.div`
+    height: 100%;
+`;
 
 const ContentContainer = styled.div`
     display: flex;
     flex-direction: column;
+    height: 100%;
     padding: 0.5rem;
 `;
 
@@ -43,7 +46,11 @@ const isValidURL = (str: string) => {
     return res !== null;
 };
 
-const NewFeedForm: FunctionComponent = () => {
+interface NewFeedFormProps {
+    urlInputRef: RefObject<HTMLInputElement>;
+}
+
+const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
     const addButtonRef = useRef<HTMLButtonElement>(null);
 
     const dispatch = useAppDispatch();
@@ -65,6 +72,7 @@ const NewFeedForm: FunctionComponent = () => {
             <ContentContainer>
                 <Label>Feed URL</Label>
                 <Input
+                    ref={props.urlInputRef}
                     placeholder="https://blog.mozilla.org/en/feed/"
                     value={newFeedUrl}
                     onChange={(e) => setNewFeedUrl(e.target.value)}
