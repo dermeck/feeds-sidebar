@@ -1,4 +1,5 @@
 import React, { FunctionComponent, memo } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 
 import { FullHeightScrollContainer } from '../../base-components';
 import { useAppSelector } from '../../store/hooks';
@@ -14,15 +15,18 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <FullHeightScrollContainer>
-            {feeds.feeds.map((feed) => (
-                <Feed
-                    key={feed.id}
-                    isSelected={feeds.selectedFeedId === feed.id}
-                    feed={feed}
-                    showTitle={props.showFeedTitles}
-                    filterString={props.filterString}
-                />
-            ))}
+            <Virtuoso
+                data={feeds.feeds}
+                itemContent={(index, feed) => (
+                    <Feed
+                        key={feed.id}
+                        isSelected={feeds.selectedFeedId === feed.id}
+                        feed={feed}
+                        showTitle={props.showFeedTitles}
+                        filterString={props.filterString}
+                    />
+                )}
+            />
         </FullHeightScrollContainer>
     );
 };
