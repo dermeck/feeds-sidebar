@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
 
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useRef, useState } from 'react';
 import { Folder, MoreHorizontal, RefreshCw } from 'react-feather';
 
 import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../base-components';
@@ -47,6 +47,8 @@ const FilterInput = styled(Input)({
 
 const Sidebar: FunctionComponent = () => {
     const dispatch = useAppDispatch();
+    const urlInputRef = useRef<HTMLInputElement>(null);
+
     const moreMenuVisible = useAppSelector((state) => state.session.menuContext?.type === MenuType.moreMenu);
     const activeView = useAppSelector((state) => state.session.activeView);
     const feeds = useAppSelector((state) => state.feeds.feeds);
@@ -56,7 +58,11 @@ const Sidebar: FunctionComponent = () => {
 
     return (
         <SidebarContainer
-            onContextMenu={(e) => e.preventDefault()}
+            onContextMenu={(e) => {
+                if (urlInputRef.current !== e.target) {
+                    e.preventDefault();
+                }
+            }}
             onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
             <Header>
                 <FetchAllButton onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.url)))}>
@@ -90,7 +96,7 @@ const Sidebar: FunctionComponent = () => {
             <FeedList showFeedTitles={showFolders && filterString.trim() === ''} filterString={filterString.trim()} />
 
             <Drawer show={activeView === View.subscribe}>
-                <NewFeedForm />
+                <NewFeedForm urlInputRef={urlInputRef} />
             </Drawer>
         </SidebarContainer>
     );
