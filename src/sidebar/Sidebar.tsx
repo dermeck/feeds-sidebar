@@ -95,7 +95,7 @@ const Sidebar: FunctionComponent = () => {
             </Header>
             <FeedList showFeedTitles={showFolders && filterString.trim() === ''} filterString={filterString.trim()} />
 
-            <Drawer show={activeView === View.subscribe}>
+            <Drawer visible={activeView === View.subscribe}>
                 <NewFeedForm urlInputRef={urlInputRef} />
             </Drawer>
         </SidebarContainer>
