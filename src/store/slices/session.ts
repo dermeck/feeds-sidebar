@@ -23,17 +23,21 @@ export const enum View {
 }
 
 export type SessionSliceState = {
-    activeView: View; // TODO use Context API instead of global state
+    activeView: View;
     // feedStatus is managed separately because it can contain entries that have no corresponding feed in feedSlice
     // (recently added and not successfully fetched or parsed)
     feedStatus: ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
-    menuContext: MenuContext | undefined; // TODO use Context API instead of global state
+
+    menuContext?: MenuContext;
+    menuVisible: boolean;
 };
 
 export const initialState: SessionSliceState = {
     activeView: View.feedList,
-    menuContext: undefined,
     feedStatus: [],
+
+    menuContext: undefined,
+    menuVisible: false,
 };
 
 const sessionSlice = createSlice({
@@ -49,15 +53,17 @@ const sessionSlice = createSlice({
                 type: MenuType.contextMenu,
                 anchorPoint: action.payload,
             };
+            state.menuVisible = true;
         },
         showMoreMenu(state, action: PayloadAction<Point>) {
             state.menuContext = {
                 type: MenuType.moreMenu,
                 anchorPoint: action.payload,
             };
+            state.menuVisible = true;
         },
         hideMenu(state) {
-            state.menuContext = undefined;
+            state.menuVisible = false;
         },
         changeFeedsStatus(
             state,

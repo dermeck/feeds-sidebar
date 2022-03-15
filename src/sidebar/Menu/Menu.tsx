@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
+
 import { FunctionComponent } from 'react';
 
 import { MenuBackdrop } from '../../base-components';
@@ -24,6 +25,7 @@ const renderMenu = (context: MenuContext) => {
 
 const Menu: FunctionComponent = () => {
     const context = useAppSelector((state) => state.session.menuContext);
+    const visible = useAppSelector((state) => state.session.menuVisible);
 
     const dispatch = useAppDispatch();
 
@@ -36,7 +38,7 @@ const Menu: FunctionComponent = () => {
     }
 
     return (
-        <MenuBackdrop onMouseDown={hideMenu} onContextMenu={(e) => e.preventDefault()}>
+        <MenuBackdrop visible={visible} onMouseDown={hideMenu} onContextMenu={(e) => e.preventDefault()}>
             {renderMenu(context)}
         </MenuBackdrop>
     );
