@@ -4,12 +4,19 @@ import { colors } from './colors';
 
 export const menuWidthInPx = 200;
 
+interface MenuBackdropProps {
+    visible: boolean;
+}
+
 export const MenuBackdrop = styled.div`
     position: absolute;
     top: 0;
 
     width: 100%;
     height: 100%;
+
+    visibility: ${(props: MenuBackdropProps) => (props.visible ? 'visible' : 'hidden')};
+    z-index: ${(props: MenuBackdropProps) => (props.visible ? 0 : -1)}; ;
 `;
 
 interface MenuContainerProps {
