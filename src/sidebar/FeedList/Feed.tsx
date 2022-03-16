@@ -105,7 +105,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                 </FeedTitleContainer>
             )}
 
-            {(expanded || !props.showTitle) && props.feed.items.length !== 0 && (
+            {(expanded || !props.showTitle) && props.feed.items.some((x) => !x.isRead) && (
                 <FeedContainer indented={props.showTitle}>
                     {props.feed.items.map(
                         (item) =>
