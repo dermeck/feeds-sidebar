@@ -48,8 +48,10 @@ const FilterInput = styled(Input)({
 const Sidebar: FunctionComponent = () => {
     const dispatch = useAppDispatch();
     const urlInputRef = useRef<HTMLInputElement>(null);
+    const moreMenuVisible = useAppSelector(
+        (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
+    );
 
-    const moreMenuVisible = useAppSelector((state) => state.session.menuContext?.type === MenuType.moreMenu);
     const activeView = useAppSelector((state) => state.session.activeView);
     const feeds = useAppSelector((state) => state.feeds.feeds);
 
