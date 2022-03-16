@@ -90,6 +90,9 @@ const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
+        extensionStateLoaded(_state, action: PayloadAction<FeedSliceState>) {
+            return { ...action.payload };
+        },
         selectFeed(state, action: PayloadAction<string>) {
             const feedId = action.payload;
 
