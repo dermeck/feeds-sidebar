@@ -3,7 +3,7 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { loadState, saveState } from '../../services/persistence';
 import { initCommand } from '../actions';
-import { fetchFeedsCommand } from '../slices/feeds';
+import feedsSlice, { fetchFeedsCommand } from '../slices/feeds';
 import store, { RootState } from '../store';
 
 const feedsAutoUpdateKey = 'feedsAutoUpdate';
@@ -19,6 +19,7 @@ export const initMiddleware: Middleware<
         const loadedState = await loadState();
 
         if (loadedState !== undefined) {
+            middlewareApi.dispatch(feedsSlice.actions.extensionStateLoaded(loadedState.feeds));
             middlewareApi.dispatch(fetchFeedsCommand(loadedState.feeds.feeds.map((x) => x.url)));
         }
 
