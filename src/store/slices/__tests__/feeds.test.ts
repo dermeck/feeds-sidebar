@@ -66,6 +66,25 @@ const itemFixture = (id: string) => ({
 
 const feedsFixture = [feed1Fixture, feed2Fixture];
 
+describe('extensionStateLoaded action', () => {
+    it('replaces previous state with payload', () => {
+        const prevState: FeedSliceState = {
+            feeds: [feed1Fixture],
+            selectedFeedId: '1',
+        };
+
+        const action = feedsSlice.actions.extensionStateLoaded({
+            feeds: [feed2Fixture],
+            selectedFeedId: '',
+        });
+
+        expect(feedsSlice.reducer(prevState, action)).toStrictEqual({
+            feeds: [feed2Fixture],
+            selectedFeedId: '',
+        });
+    });
+});
+
 describe('selectFeed action', () => {
     it('sets selectedFeedId if feed exists', () => {
         const prevState: FeedSliceState = {
