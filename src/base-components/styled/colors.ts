@@ -1,6 +1,6 @@
 import { colorKeywordToHex, rgba } from '../../utils/colorUtils';
 
-export const sidebarBackgroundColor = 'Field';
+export const sidebarBackgroundColor = 'Field'; // TODO adapt for dark mode (Canvas)
 export const sideBarTextColor = 'FieldText';
 
 export const buttonBackgroundColor = 'ButtonFace';
