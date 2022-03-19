@@ -1,7 +1,4 @@
 export const colors = {
-    // -moz-CellHighlight #e1e1e1 -moz-html-CellHighlight
-    highlightBackgroundColorNoFocus: '#E2E2E2',
-
     // -moz-DialogText rgb(41,41,41) #292929
     toolbarFont: '#292929',
 
@@ -28,6 +25,9 @@ export const highlightBackgroundColor1 = 'Highlight';
 export const menuHoverBackgroundColor = '-moz-MenuHover';
 export const menuHoverTextColor = '-moz-MenuHoverText';
 export const menuBorderColor = 'ButtonFace';
+
+export const messageBackgroundColor = '-moz-CellHighlight'; // TODO reevaluate if this is appropiate
+export const messageTextColor = '-moz-CellHighlightText';
 
 interface RGB {
     r: number;

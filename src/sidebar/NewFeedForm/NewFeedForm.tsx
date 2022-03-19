@@ -4,7 +4,7 @@ import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 
 import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../base-components';
-import { colors } from '../../base-components/styled/colors';
+import { messageBackgroundColor, messageTextColor } from '../../base-components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchFeedsCommand } from '../../store/slices/feeds';
 import sessionSlice, { View } from '../../store/slices/session';
@@ -32,8 +32,8 @@ const Title = styled.h1`
 const MessageBox = styled.div`
     min-height: 2.2rem;
     padding: 0.5rem 1rem;
-    background-color: ${(props: { show: boolean }) =>
-        props.show ? colors.highlightBackgroundColorNoFocus : 'inherit'};
+    color: ${messageTextColor};
+    background-color: ${(props: { show: boolean }) => (props.show ? messageBackgroundColor : 'inherit')};
     border-radius: 4px;
 `;
 
