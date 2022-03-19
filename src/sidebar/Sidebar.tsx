@@ -12,6 +12,7 @@ import { sidebarBackgroundColor, sideBarTextColor } from '../base-components/sty
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand } from '../store/slices/feeds';
 import sessionSlice, { MenuType, View } from '../store/slices/session';
+import usePrefersColorSchemeDark from '../utils/hooks/usePrefersColorSchemeDark';
 import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
 
@@ -57,6 +58,9 @@ const Sidebar: FunctionComponent = () => {
 
     const [showFolders, setShowFeedTitles] = useState<boolean>(true);
     const [filterString, setFilterString] = useState<string>('');
+
+    const darkMode = usePrefersColorSchemeDark();
+    console.log(darkMode);
 
     return (
         <SidebarContainer
