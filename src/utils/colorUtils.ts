@@ -13,11 +13,7 @@ export const colorKeywordToHex = (colorKeyword: string) => {
 
     canvasContext.fillStyle = colorKeyword;
 
-    const colorInHex = canvasContext.fillStyle;
-
-    console.log(colorInHex);
-
-    return colorInHex;
+    return canvasContext.fillStyle;
 };
 
 export const rgba = (hexColor: string, opacity: number): string => {
