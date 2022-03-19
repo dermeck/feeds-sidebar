@@ -1,49 +1,28 @@
-export const colors = {
-    defaultBackgroundColor: '#FFFFFF',
-    defaultColor: '#38383d',
+import { colorKeywordToHex, rgba } from '../../utils/colorUtils';
 
-    highlightBackgroundColor1: '#48b9c7',
-    highlightColor1Light: '#FFFFFF',
-    highlightColor1Dark: '#292929',
-    highlightBackgroundColorNoFocus: '#E2E2E2',
+export const sidebarBackgroundColor = 'Field'; // TODO adapt for dark mode (Canvas)
+export const sideBarTextColor = 'FieldText';
 
-    menuBorder: '#D4D4D4',
+export const buttonBackgroundColor = 'ButtonFace';
+export const buttonTextColor = 'ButtonText';
+export const buttonHoverBackgroundColor = '-moz-ButtonHoverFace';
+export const buttonHoverTextColor = '-moz-ButtonHoverText';
+export const buttonActiveBackgroundColor = '-moz-ButtonHoverFace';
+export const buttonActiveTextColor = '-moz-ButtonHoverText';
 
-    toolbarFont: '#292929',
-    toolbarBackground: '#F6F6F6',
-    toolbarButtonHoverBackground: '#D4D4D4',
-    toolbarButtonActiveBackground: '#B8B8B8',
+export const toolbarBackgroundColor = '-moz-Dialog';
+export const toolbarTextColor = '-moz-DialogText';
+export const toolbarButtonHoverBackground = rgba(colorKeywordToHex(toolbarTextColor), 0.17);
+export const toolbarButtonActiveBackground = rgba(colorKeywordToHex(toolbarTextColor), 0.3);
 
-    badgeBackgroundColor: '#DD2E44',
-    badgeTextColor: '#FFFFFF',
-};
+export const selectedItemBackgroundColor = 'SelectedItem';
+export const selectedItemTextColor = 'SelectedItemText';
+export const selectedItemNoFocusBackgroundColor = '-moz-CellHighlight';
+export const selectedItemNoFocusTextColor = '-moz-CellHighlightText';
 
-interface RGB {
-    r: number;
-    g: number;
-    b: number;
-}
+export const menuHoverBackgroundColor = '-moz-MenuHover';
+export const menuHoverTextColor = '-moz-MenuHoverText';
+export const menuBorderColor = 'ButtonFace';
 
-export const rgba = (hexColor: string, opacity: number): string => {
-    if (opacity < 0 || opacity > 1) {
-        throw new Error(`Invalid opacity '${opacity}'. Only values between 0. and 1.0 are allowed.`);
-    }
-
-    const rgb = hexToRgb(hexColor);
-
-    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
-};
-
-const hexToRgb = (hex: string): RGB => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-
-    if (!result) {
-        throw new Error(`Error converting hex string '${hex}' to RGB.`);
-    }
-
-    return {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-    };
-};
+export const messageBackgroundColor = '-moz-Dialog';
+export const messageTextColor = '-moz-DialogText';

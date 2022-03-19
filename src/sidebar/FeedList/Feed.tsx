@@ -3,7 +3,12 @@ import styled from '@emotion/styled';
 import React, { Fragment, FunctionComponent, memo, useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
-import { colors, rgba } from '../../base-components/styled/colors';
+import {
+    selectedItemBackgroundColor,
+    selectedItemNoFocusBackgroundColor,
+    selectedItemNoFocusTextColor,
+    selectedItemTextColor,
+} from '../../base-components/styled/colors';
 import { useAppDispatch } from '../../store/hooks';
 import feedsSlice, { Feed as FeedType, FeedItem as FeedItemType } from '../../store/slices/feeds';
 import sessionSlice, { Point } from '../../store/slices/session';
@@ -12,10 +17,11 @@ import FeedItem from './FeedItem';
 const FeedContainer = styled.ul`
     padding-left: ${(props: { indented: boolean }) => (props.indented ? '2.25rem' : '1.5rem')};
     margin: 0 0 0.2rem 0;
+    opacity: 0.9;
 `;
 
 interface FeedTitleContainerProps {
-    highlight: boolean;
+    selected: boolean;
     focus: boolean;
 }
 
@@ -26,13 +32,10 @@ const FeedTitleContainer = styled.div`
     padding: 0.05rem 0 0.2rem 0.5rem;
 
     background-color: ${(props: FeedTitleContainerProps) =>
-        props.highlight
-            ? props.focus
-                ? rgba(colors.highlightBackgroundColor1, 0.9)
-                : colors.highlightBackgroundColorNoFocus
-            : 'inherit'};
+        props.selected ? (props.focus ? selectedItemBackgroundColor : selectedItemNoFocusBackgroundColor) : 'inherit'};
     color: ${(props: FeedTitleContainerProps) =>
-        props.highlight && props.focus ? colors.highlightColor1Light : 'inherit'};
+        props.selected ? (props.focus ? selectedItemTextColor : selectedItemNoFocusTextColor) : 'inherit'};
+    opacity: 0.9;
 `;
 
 const FeedTitle = styled.label`
@@ -83,7 +86,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
             {props.showTitle && (
                 <FeedTitleContainer
                     tabIndex={0}
-                    highlight={props.isSelected}
+                    selected={props.isSelected}
                     focus={focus}
                     onClick={() => {
                         setExpanded(!expanded);

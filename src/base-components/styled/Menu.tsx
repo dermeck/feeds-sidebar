@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { colors } from './colors';
+import { menuBorderColor, sidebarBackgroundColor, sideBarTextColor } from './colors';
 
 export const menuWidthInPx = 200;
 
@@ -32,10 +32,10 @@ export const MenuContainer = styled.div`
     width: ${menuWidthInPx}px;
     padding: 1px;
 
-    border: 1px solid ${colors.menuBorder};
-    background-color: ${colors.defaultBackgroundColor};
+    border: 1px solid ${menuBorderColor};
+    background-color: ${sidebarBackgroundColor};
     border-radius: 2px;
-    color: ${colors.defaultColor};
+    color: ${sideBarTextColor};
 `;
 
 export const MenuList = styled.ul`
@@ -43,18 +43,4 @@ export const MenuList = styled.ul`
     margin: 0;
 
     list-style: none;
-`;
-
-export const MenuItem = styled.li`
-    display: flex;
-    flex-direction: row;
-    padding: 0.4rem;
-    padding-left: 24px;
-
-    list-style: none;
-
-    &:hover {
-        background-color: ${colors.highlightBackgroundColor1};
-        color: ${colors.highlightColor1Dark};
-    }
 `;

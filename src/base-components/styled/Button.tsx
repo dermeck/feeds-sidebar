@@ -1,6 +1,13 @@
 import styled from '@emotion/styled';
 
-import { colors } from './colors';
+import {
+    buttonActiveBackgroundColor,
+    buttonActiveTextColor,
+    buttonBackgroundColor,
+    buttonHoverBackgroundColor,
+    buttonHoverTextColor,
+    buttonTextColor,
+} from './colors';
 
 export const Button = styled.button`
     padding-right: 20px;
@@ -9,40 +16,24 @@ export const Button = styled.button`
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 
-    background-color: inherit;
     background-color: ${(props: { active?: boolean }) =>
-        props.active ? colors.toolbarButtonActiveBackground : colors.toolbarBackground};
+        props.active ? buttonActiveBackgroundColor : buttonBackgroundColor};
     border-radius: 4px;
-    color: ${colors.toolbarFont};
+    color: ${buttonTextColor};
     font-size: 13px;
 
     line-height: 27px;
 
     :hover {
-        background-color: ${colors.toolbarButtonHoverBackground};
+        color: ${buttonHoverTextColor};
+        background-color: ${buttonHoverBackgroundColor};
+        opacity: 0.9;
     }
 
     :active {
-        background-color: ${colors.toolbarButtonActiveBackground};
+        // button is clicked
+        color: ${buttonActiveTextColor};
+        background-color: ${buttonActiveBackgroundColor};
+        opacity: 1;
     }
-`;
-
-export const ToolbarButton = styled(Button)`
-    width: 32px;
-    height: 32px;
-
-    padding: 4px;
-    margin: 0;
-
-    background-color: ${colors.toolbarBackground};
-
-    :hover {
-        background-color: ${colors.toolbarButtonHoverBackground};
-    }
-
-    :active {
-        background-color: ${colors.toolbarButtonActiveBackground};
-    }
-
-    border-radius: 4px;
 `;

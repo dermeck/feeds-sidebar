@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { FunctionComponent, MouseEventHandler } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, CheckSquare, Plus } from 'react-feather';
 
-import { colors } from '../../base-components/styled/colors';
+import { menuHoverBackgroundColor, menuHoverTextColor } from '../../base-components/styled/colors';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 
 type IconKeys = 'plus' | 'arrowDown-circle' | 'arrowUp-circle' | 'check-square';
@@ -27,8 +27,8 @@ export const StyledListItem = styled.li`
     list-style: none;
 
     &:hover {
-        background-color: ${colors.highlightBackgroundColor1};
-        color: ${colors.highlightColor1Dark};
+        background-color: ${menuHoverBackgroundColor};
+        color: ${menuHoverTextColor};
     }
 `;
 
