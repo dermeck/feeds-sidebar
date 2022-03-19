@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import { menuBorderColor, sidebarBackgroundColor, sideBarTextColor } from './colors';
+import { menuBorderColor } from './colors';
 
 export const menuWidthInPx = 200;
 
@@ -33,9 +33,9 @@ export const MenuContainer = styled.div`
     padding: 1px;
 
     border: 1px solid ${menuBorderColor};
-    background-color: ${sidebarBackgroundColor};
+    background-color: ${(props) => props.theme.colors.sidebarBackground};
     border-radius: 2px;
-    color: ${sideBarTextColor};
+    color: ${(props) => props.theme.colors.sideBarText};
 `;
 
 export const MenuList = styled.ul`

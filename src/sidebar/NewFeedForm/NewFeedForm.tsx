@@ -1,10 +1,10 @@
+import { Theme, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 
 import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../base-components';
-import { messageBackgroundColor, messageTextColor } from '../../base-components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchFeedsCommand } from '../../store/slices/feeds';
 import sessionSlice, { View } from '../../store/slices/session';
@@ -32,8 +32,9 @@ const Title = styled.h1`
 const MessageBox = styled.div`
     min-height: 2.2rem;
     padding: 0.5rem 1rem;
-    color: ${messageTextColor};
-    background-color: ${(props: { show: boolean }) => (props.show ? messageBackgroundColor : 'inherit')};
+    color: ${(props) => props.theme.colors.messageTextColor};
+    background-color: ${(props: { show: boolean; theme: Theme }) =>
+        props.show ? props.theme.colors.messageBackgroundColor : 'inherit'};
     border-radius: 4px;
 `;
 
@@ -52,6 +53,7 @@ interface NewFeedFormProps {
 
 const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
     const addButtonRef = useRef<HTMLButtonElement>(null);
+    const theme = useTheme();
 
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
@@ -110,7 +112,9 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                     }}>
                     Add New Feed
                 </AddButton>
-                <MessageBox show={newFeedUrlMessage !== ''}>{newFeedUrlMessage}</MessageBox>
+                <MessageBox theme={theme} show={newFeedUrlMessage !== ''}>
+                    {newFeedUrlMessage}
+                </MessageBox>
 
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
             </ContentContainer>

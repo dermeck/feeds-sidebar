@@ -1,8 +1,5 @@
 import { colorKeywordToHex, rgba } from '../../utils/colorUtils';
 
-export const sidebarBackgroundColor = 'Field'; // TODO adapt for dark mode (Canvas)
-export const sideBarTextColor = 'FieldText';
-
 export const buttonBackgroundColor = 'ButtonFace';
 export const buttonTextColor = 'ButtonText';
 export const buttonHoverBackgroundColor = '-moz-ButtonHoverFace';
@@ -23,6 +20,3 @@ export const selectedItemNoFocusTextColor = '-moz-CellHighlightText';
 export const menuHoverBackgroundColor = '-moz-MenuHover';
 export const menuHoverTextColor = '-moz-MenuHoverText';
 export const menuBorderColor = 'ButtonFace';
-
-export const messageBackgroundColor = '-moz-Dialog';
-export const messageTextColor = '-moz-DialogText';
