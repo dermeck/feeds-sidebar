@@ -1,6 +1,13 @@
 import styled from '@emotion/styled';
 
-import { colors } from './colors';
+import {
+    buttonActiveBackgroundColor,
+    buttonActiveTextColor,
+    buttonBackgroundColor,
+    buttonHoverBackgroundColor,
+    buttonHoverTextColor,
+    buttonTextColor,
+} from './colors';
 
 export const Button = styled.button`
     padding-right: 20px;
@@ -10,19 +17,23 @@ export const Button = styled.button`
     margin-bottom: 0.5rem;
 
     background-color: ${(props: { active?: boolean }) =>
-        props.active ? colors.toolbarButtonActiveBackground : colors.toolbarBackground}; // TODO
+        props.active ? buttonActiveBackgroundColor : buttonBackgroundColor};
     border-radius: 4px;
-    color: ${colors.toolbarFont};
+    color: ${buttonTextColor};
     font-size: 13px;
 
     line-height: 27px;
 
     :hover {
-        background-color: ${colors.toolbarButtonHoverBackground}; // TODO
+        color: ${buttonHoverTextColor};
+        background-color: ${buttonHoverBackgroundColor};
+        opacity: 0.9;
     }
 
     :active {
         // button is clicked
-        background-color: ${colors.toolbarButtonActiveBackground};
+        color: ${buttonActiveTextColor};
+        background-color: ${buttonActiveBackgroundColor};
+        opacity: 1;
     }
 `;
