@@ -8,7 +8,7 @@ import { Folder, MoreHorizontal, RefreshCw } from 'react-feather';
 import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../base-components';
 import { menuWidthInPx } from '../base-components/styled/Menu';
 import { toolbarButtonPaddingInPx, toolbarButtonSideLengthInPx } from '../base-components/styled/ToolbarButton';
-import { colors } from '../base-components/styled/colors';
+import { sidebarBackgroundColor, sideBarTextColor } from '../base-components/styled/colors';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand } from '../store/slices/feeds';
 import sessionSlice, { MenuType, View } from '../store/slices/session';
@@ -16,8 +16,8 @@ import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
 
 const SidebarContainer = styled.div`
-    background-color: ${colors.defaultBackgroundColor};
-    color: ${colors.defaultColor};
+    background-color: ${sidebarBackgroundColor};
+    color: ${sideBarTextColor};
 `;
 
 const Header = styled(ToolbarContainer)`
