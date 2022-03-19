@@ -27,8 +27,6 @@ export const selectedItemTextColor = 'SelectedItemText';
 export const selectedItemNoFocusBackgroundColor = '-moz-CellHighlight';
 export const selectedItemNoFocusTextColor = '-moz-CellHighlightText';
 
-export const highlightBackgroundColor1 = 'Highlight';
-
 export const menuHoverBackgroundColor = '-moz-MenuHover';
 export const menuHoverTextColor = '-moz-MenuHoverText';
 export const menuBorderColor = 'ButtonFace';
