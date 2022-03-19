@@ -1,13 +1,6 @@
 export const colors = {
-
-    //-moz-DialogText rgb(41,41,41)
-    highlightColor1Dark: '#292929',
-
     // -moz-CellHighlight #e1e1e1 -moz-html-CellHighlight
     highlightBackgroundColorNoFocus: '#E2E2E2',
-
-    // ButtonFace #e9e9ed
-    menuBorder: '#D4D4D4',
 
     // -moz-DialogText rgb(41,41,41) #292929
     toolbarFont: '#292929',
@@ -20,9 +13,6 @@ export const colors = {
 
     // rgba(41, 41, 41, 0.3) // current color 30% -moz-DialogText
     toolbarButtonActiveBackground: '#B8B8B8',
-
-    badgeBackgroundColor: '#DD2E44',
-    badgeTextColor: '#FFFFFF',
 };
 
 export const sidebarBackgroundColor = 'Field';
@@ -35,12 +25,17 @@ export const selectedItemNoFocusTextColor = '-moz-CellHighlightText';
 
 export const highlightBackgroundColor1 = 'Highlight';
 
+export const menuHoverBackgroundColor = '-moz-MenuHover';
+export const menuHoverTextColor = '-moz-MenuHoverText';
+export const menuBorderColor = 'ButtonFace';
+
 interface RGB {
     r: number;
     g: number;
     b: number;
 }
 
+// colorUtils / converter
 export const rgba = (hexColor: string, opacity: number): string => {
     if (opacity < 0 || opacity > 1) {
         throw new Error(`Invalid opacity '${opacity}'. Only values between 0. and 1.0 are allowed.`);
