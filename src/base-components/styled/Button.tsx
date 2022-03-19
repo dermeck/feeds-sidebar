@@ -9,9 +9,8 @@ export const Button = styled.button`
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 
-    background-color: inherit;
     background-color: ${(props: { active?: boolean }) =>
-        props.active ? colors.toolbarButtonActiveBackground : colors.toolbarBackground};
+        props.active ? colors.toolbarButtonActiveBackground : colors.toolbarBackground}; // TODO
     border-radius: 4px;
     color: ${colors.toolbarFont};
     font-size: 13px;
@@ -19,30 +18,11 @@ export const Button = styled.button`
     line-height: 27px;
 
     :hover {
-        background-color: ${colors.toolbarButtonHoverBackground};
+        background-color: ${colors.toolbarButtonHoverBackground}; // TODO
     }
 
     :active {
+        // button is clicked
         background-color: ${colors.toolbarButtonActiveBackground};
     }
-`;
-
-export const ToolbarButton = styled(Button)`
-    width: 32px;
-    height: 32px;
-
-    padding: 4px;
-    margin: 0;
-
-    background-color: ${colors.toolbarBackground};
-
-    :hover {
-        background-color: ${colors.toolbarButtonHoverBackground};
-    }
-
-    :active {
-        background-color: ${colors.toolbarButtonActiveBackground};
-    }
-
-    border-radius: 4px;
 `;
