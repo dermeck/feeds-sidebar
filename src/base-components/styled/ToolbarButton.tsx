@@ -27,7 +27,8 @@ export const ToolbarButton = styled(Button)`
     line-height: 27px;
 
     :hover {
-        background-color: ${toolbarButtonHoverBackground}; // TODO dont show hover color if active
+        background-color: ${(props: { active?: boolean }) =>
+            props.active ? toolbarButtonActiveBackground : toolbarButtonHoverBackground};
     }
 
     :active {
