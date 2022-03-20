@@ -21,8 +21,8 @@
     },
     "devDependencies": {
         "@emotion/css": "^11.7.1",
-        "@emotion/react": "^11.7.1",
-        "@emotion/styled": "^11.6.0",
+        "@emotion/react": "^11.8.2",
+        "@emotion/styled": "^11.8.1",
         "@reduxjs/toolkit": "^1.7.2",
         "@trivago/prettier-plugin-sort-imports": "^3.2.0",
         "@types/feedparser": "^2.2.5",
