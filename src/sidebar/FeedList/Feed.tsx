@@ -3,12 +3,6 @@ import styled from '@emotion/styled';
 import React, { Fragment, FunctionComponent, memo, useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
-import {
-    selectedItemBackgroundColor,
-    selectedItemNoFocusBackgroundColor,
-    selectedItemNoFocusTextColor,
-    selectedItemTextColor,
-} from '../../base-components/styled/colors';
 import { useAppDispatch } from '../../store/hooks';
 import feedsSlice, { Feed as FeedType, FeedItem as FeedItemType } from '../../store/slices/feeds';
 import sessionSlice, { Point } from '../../store/slices/session';
@@ -25,16 +19,24 @@ interface FeedTitleContainerProps {
     focus: boolean;
 }
 
-const FeedTitleContainer = styled.div`
+const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
     display: flex;
     flex-direction: row;
     align-items: center;
     padding: 0.05rem 0 0.2rem 0.5rem;
 
-    background-color: ${(props: FeedTitleContainerProps) =>
-        props.selected ? (props.focus ? selectedItemBackgroundColor : selectedItemNoFocusBackgroundColor) : 'inherit'};
-    color: ${(props: FeedTitleContainerProps) =>
-        props.selected ? (props.focus ? selectedItemTextColor : selectedItemNoFocusTextColor) : 'inherit'};
+    background-color: ${(props) =>
+        props.selected
+            ? props.focus
+                ? props.theme.colors.selectedItemBackgroundColor
+                : props.theme.colors.selectedItemNoFocusBackgroundColor
+            : 'inherit'};
+    color: ${(props) =>
+        props.selected
+            ? props.focus
+                ? props.theme.colors.selectedItemTextColor
+                : props.theme.colors.selectedItemNoFocusTextColor
+            : 'inherit'};
     opacity: 0.9;
 `;
 
