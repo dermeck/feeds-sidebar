@@ -8,15 +8,15 @@ interface MenuBackdropProps {
     visible: boolean;
 }
 
-export const MenuBackdrop = styled.div`
+export const MenuBackdrop = styled.div<MenuBackdropProps>`
     position: absolute;
     top: 0;
 
     width: 100%;
     height: 100%;
 
-    visibility: ${(props: MenuBackdropProps) => (props.visible ? 'visible' : 'hidden')};
-    z-index: ${(props: MenuBackdropProps) => (props.visible ? 0 : -1)}; ;
+    visibility: ${(props) => (props.visible ? 'visible' : 'hidden')};
+    z-index: ${(props) => (props.visible ? 0 : -1)}; ;
 `;
 
 interface MenuContainerProps {
@@ -24,10 +24,10 @@ interface MenuContainerProps {
     anchorLeft: number;
 }
 
-export const MenuContainer = styled.div`
+export const MenuContainer = styled.div<MenuContainerProps>`
     position: absolute;
-    top: ${(props: MenuContainerProps) => `${props.anchorTop}px`};
-    left: ${(props: MenuContainerProps) => `${props.anchorLeft}px`};
+    top: ${(props) => `${props.anchorTop}px`};
+    left: ${(props) => `${props.anchorLeft}px`};
 
     width: ${menuWidthInPx}px;
     padding: 1px;

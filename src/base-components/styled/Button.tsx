@@ -1,6 +1,10 @@
 import styled from '@emotion/styled';
 
-export const Button = styled.button<{ active?: boolean }>`
+interface ButtonProps {
+    active?: boolean;
+}
+
+export const Button = styled.button<ButtonProps>`
     padding-right: 20px;
     padding-left: 20px;
     border: none;

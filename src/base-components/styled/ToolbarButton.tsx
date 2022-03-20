@@ -18,8 +18,7 @@ export const ToolbarButton = styled(Button)`
     padding: ${toolbarButtonPaddingInPx}px;
     margin: 0;
 
-    background-color: ${(props: { active?: boolean }) =>
-        props.active ? toolbarButtonActiveBackground : toolbarBackgroundColor};
+    background-color: ${(props) => (props.active ? toolbarButtonActiveBackground : toolbarBackgroundColor)};
     border-radius: 4px;
     color: ${toolbarTextColor};
     font-size: 13px;
@@ -27,8 +26,7 @@ export const ToolbarButton = styled(Button)`
     line-height: 27px;
 
     :hover {
-        background-color: ${(props: { active?: boolean }) =>
-            props.active ? toolbarButtonActiveBackground : toolbarButtonHoverBackground};
+        background-color: ${(props) => (props.active ? toolbarButtonActiveBackground : toolbarButtonHoverBackground)};
     }
 
     :active {

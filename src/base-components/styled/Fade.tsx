@@ -39,7 +39,7 @@ interface FadeProps {
     in?: boolean;
 }
 
-export const Fade = styled.div`
-    display: ${(props: FadeProps) => (props.in ? 'block' : 'none')};
-    animation: ${(props: FadeProps) => (props.in ? fadeIn : fadeOut)} 0.5s ease-out;
+export const Fade = styled.div<FadeProps>`
+    display: ${(props) => (props.in ? 'block' : 'none')};
+    animation: ${(props) => (props.in ? fadeIn : fadeOut)} 0.5s ease-out;
 `;
