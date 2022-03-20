@@ -16,8 +16,8 @@ const Container = styled.div`
 
 const ContentContainer = styled.div`
     display: flex;
-    flex-direction: column;
     height: 100%;
+    flex-direction: column;
     padding: 0.5rem;
 `;
 
@@ -32,10 +32,11 @@ const Title = styled.h1`
 const MessageBox = styled.div`
     min-height: 2.2rem;
     padding: 0.5rem 1rem;
-    color: ${(props) => props.theme.colors.messageTextColor};
+
     background-color: ${(props: { show: boolean; theme: Theme }) =>
         props.show ? props.theme.colors.messageBackgroundColor : 'inherit'};
     border-radius: 4px;
+    color: ${(props) => props.theme.colors.messageTextColor};
 `;
 
 const AddButton = styled(Button)({ alignSelf: 'flex-end' });

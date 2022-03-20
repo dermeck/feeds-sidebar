@@ -28,7 +28,7 @@ export const ToolbarButton = styled(Button)`
     }
 
     :active {
-        // button is clicked
+        /* button is clicked */
         background-color: ${(props) => props.theme.colors.toolbarButtonActiveBackground};
     }
 `;

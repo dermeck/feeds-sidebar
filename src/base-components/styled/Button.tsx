@@ -20,15 +20,15 @@ export const Button = styled.button<ButtonProps>`
     line-height: 27px;
 
     :hover {
-        color: ${(props) => props.theme.colors.buttonHoverTextColor};
         background-color: ${(props) => props.theme.colors.buttonHoverBackgroundColor};
+        color: ${(props) => props.theme.colors.buttonHoverTextColor};
         opacity: 0.9;
     }
 
     :active {
-        // button is clicked
-        color: ${(props) => props.theme.colors.buttonActiveTextColor};
+        /* button is clicked */
         background-color: ${(props) => props.theme.colors.buttonActiveBackgroundColor};
+        color: ${(props) => props.theme.colors.buttonActiveTextColor};
         opacity: 1;
     }
 `;

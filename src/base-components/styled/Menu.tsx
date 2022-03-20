@@ -8,13 +8,13 @@ interface MenuBackdropProps {
 
 export const MenuBackdrop = styled.div<MenuBackdropProps>`
     position: absolute;
+    z-index: ${(props) => (props.visible ? 0 : -1)};
     top: 0;
 
     width: 100%;
     height: 100%;
 
     visibility: ${(props) => (props.visible ? 'visible' : 'hidden')};
-    z-index: ${(props) => (props.visible ? 0 : -1)}; ;
 `;
 
 interface MenuContainerProps {
