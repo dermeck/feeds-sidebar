@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, ThemeProvider } from '@emotion/react';
+import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
 
 import { FunctionComponent, useRef, useState } from 'react';
@@ -11,8 +11,6 @@ import { toolbarButtonPaddingInPx, toolbarButtonSideLengthInPx } from '../base-c
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand } from '../store/slices/feeds';
 import sessionSlice, { MenuType, View } from '../store/slices/session';
-import { darkTheme, lightTheme } from '../theme';
-import usePrefersColorSchemeDark from '../utils/hooks/usePrefersColorSchemeDark';
 import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
 
@@ -59,58 +57,49 @@ const Sidebar: FunctionComponent = () => {
     const [showFolders, setShowFeedTitles] = useState<boolean>(true);
     const [filterString, setFilterString] = useState<string>('');
 
-    const darkMode = usePrefersColorSchemeDark();
-
-    console.log(darkMode);
-
     return (
-        <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-            <SidebarContainer
-                onContextMenu={(e) => {
-                    if (urlInputRef.current !== e.target) {
-                        e.preventDefault();
-                    }
-                }}
-                onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
-                <Header>
-                    <FetchAllButton onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.url)))}>
-                        <RefreshCw size={18} />
-                    </FetchAllButton>
+        <SidebarContainer
+            onContextMenu={(e) => {
+                if (urlInputRef.current !== e.target) {
+                    e.preventDefault();
+                }
+            }}
+            onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
+            <Header>
+                <FetchAllButton onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.url)))}>
+                    <RefreshCw size={18} />
+                </FetchAllButton>
 
-                    <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
+                <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
 
-                    <ShowFeedTitleButton onClick={() => setShowFeedTitles(!showFolders)} active={showFolders}>
-                        <Folder size={18} />
-                    </ShowFeedTitleButton>
+                <ShowFeedTitleButton onClick={() => setShowFeedTitles(!showFolders)} active={showFolders}>
+                    <Folder size={18} />
+                </ShowFeedTitleButton>
 
-                    <MoreMenuButton active={moreMenuVisible}>
-                        <MoreHorizontal
-                            onClick={(e) => {
-                                const offsetHeight = e.currentTarget.parentElement?.offsetHeight;
-                                const offsetLeft = e.currentTarget.parentElement?.offsetLeft;
+                <MoreMenuButton active={moreMenuVisible}>
+                    <MoreHorizontal
+                        onClick={(e) => {
+                            const offsetHeight = e.currentTarget.parentElement?.offsetHeight;
+                            const offsetLeft = e.currentTarget.parentElement?.offsetLeft;
 
-                                if (offsetHeight !== undefined && offsetLeft !== undefined) {
-                                    dispatch(
-                                        sessionSlice.actions.showMoreMenu({
-                                            x: offsetLeft - menuWidthInPx + toolbarButtonSideLengthInPx,
-                                            y: offsetHeight + 2 * toolbarButtonPaddingInPx,
-                                        }),
-                                    );
-                                }
-                            }}
-                        />
-                    </MoreMenuButton>
-                </Header>
-                <FeedList
-                    showFeedTitles={showFolders && filterString.trim() === ''}
-                    filterString={filterString.trim()}
-                />
+                            if (offsetHeight !== undefined && offsetLeft !== undefined) {
+                                dispatch(
+                                    sessionSlice.actions.showMoreMenu({
+                                        x: offsetLeft - menuWidthInPx + toolbarButtonSideLengthInPx,
+                                        y: offsetHeight + 2 * toolbarButtonPaddingInPx,
+                                    }),
+                                );
+                            }
+                        }}
+                    />
+                </MoreMenuButton>
+            </Header>
+            <FeedList showFeedTitles={showFolders && filterString.trim() === ''} filterString={filterString.trim()} />
 
-                <Drawer visible={activeView === View.subscribe}>
-                    <NewFeedForm urlInputRef={urlInputRef} />
-                </Drawer>
-            </SidebarContainer>
-        </ThemeProvider>
+            <Drawer visible={activeView === View.subscribe}>
+                <NewFeedForm urlInputRef={urlInputRef} />
+            </Drawer>
+        </SidebarContainer>
     );
 };
 
