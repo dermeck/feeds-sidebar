@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
 
-import { toolbarBackgroundColor, toolbarTextColor } from './colors';
-
 export const toolbarContainerheight = '3.6rem';
 
 export const ToolbarContainer = styled.div`
@@ -12,6 +10,6 @@ export const ToolbarContainer = styled.div`
     padding-left: 0.3rem;
     margin-bottom: 0.8rem;
 
-    background-color: ${toolbarBackgroundColor};
-    color: ${toolbarTextColor}; // TODO is this needed?
+    background-color: ${(props) => props.theme.colors.toolbarBackgroundColor};
+    color: ${(props) => props.theme.colors.toolbarTextColor};
 `;
