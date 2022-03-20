@@ -1,39 +1,34 @@
 import styled from '@emotion/styled';
 
-import {
-    buttonActiveBackgroundColor,
-    buttonActiveTextColor,
-    buttonBackgroundColor,
-    buttonHoverBackgroundColor,
-    buttonHoverTextColor,
-    buttonTextColor,
-} from './colors';
+interface ButtonProps {
+    active?: boolean;
+}
 
-export const Button = styled.button`
+export const Button = styled.button<ButtonProps>`
     padding-right: 20px;
     padding-left: 20px;
     border: none;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 
-    background-color: ${(props: { active?: boolean }) =>
-        props.active ? buttonActiveBackgroundColor : buttonBackgroundColor};
+    background-color: ${(props) =>
+        props.active ? props.theme.colors.buttonActiveBackgroundColor : props.theme.colors.buttonBackgroundColor};
     border-radius: 4px;
-    color: ${buttonTextColor};
+    color: ${(props) => (props.active ? props.theme.colors.buttonActiveTextColor : props.theme.colors.buttonTextColor)};
     font-size: 13px;
 
     line-height: 27px;
 
     :hover {
-        color: ${buttonHoverTextColor};
-        background-color: ${buttonHoverBackgroundColor};
+        background-color: ${(props) => props.theme.colors.buttonHoverBackgroundColor};
+        color: ${(props) => props.theme.colors.buttonHoverTextColor};
         opacity: 0.9;
     }
 
     :active {
-        // button is clicked
-        color: ${buttonActiveTextColor};
-        background-color: ${buttonActiveBackgroundColor};
+        /* button is clicked */
+        background-color: ${(props) => props.theme.colors.buttonActiveBackgroundColor};
+        color: ${(props) => props.theme.colors.buttonActiveTextColor};
         opacity: 1;
     }
 `;

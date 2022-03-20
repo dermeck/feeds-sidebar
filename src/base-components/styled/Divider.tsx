@@ -1,9 +1,7 @@
 import styled from '@emotion/styled';
 
-import { menuBorderColor } from './colors';
-
 export const Divider = styled.hr`
-    border-color: ${menuBorderColor};
+    border-color: ${(props) => props.theme.colors.menuBorderColor};
     border-right: none;
     border-bottom: none;
     border-left: none;

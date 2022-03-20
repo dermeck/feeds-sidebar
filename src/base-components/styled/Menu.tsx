@@ -1,22 +1,20 @@
 import styled from '@emotion/styled';
 
-import { menuBorderColor, sidebarBackgroundColor, sideBarTextColor } from './colors';
-
 export const menuWidthInPx = 200;
 
 interface MenuBackdropProps {
     visible: boolean;
 }
 
-export const MenuBackdrop = styled.div`
+export const MenuBackdrop = styled.div<MenuBackdropProps>`
     position: absolute;
+    z-index: ${(props) => (props.visible ? 0 : -1)};
     top: 0;
 
     width: 100%;
     height: 100%;
 
-    visibility: ${(props: MenuBackdropProps) => (props.visible ? 'visible' : 'hidden')};
-    z-index: ${(props: MenuBackdropProps) => (props.visible ? 0 : -1)}; ;
+    visibility: ${(props) => (props.visible ? 'visible' : 'hidden')};
 `;
 
 interface MenuContainerProps {
@@ -24,18 +22,18 @@ interface MenuContainerProps {
     anchorLeft: number;
 }
 
-export const MenuContainer = styled.div`
+export const MenuContainer = styled.div<MenuContainerProps>`
     position: absolute;
-    top: ${(props: MenuContainerProps) => `${props.anchorTop}px`};
-    left: ${(props: MenuContainerProps) => `${props.anchorLeft}px`};
+    top: ${(props) => `${props.anchorTop}px`};
+    left: ${(props) => `${props.anchorLeft}px`};
 
     width: ${menuWidthInPx}px;
     padding: 1px;
 
-    border: 1px solid ${menuBorderColor};
-    background-color: ${sidebarBackgroundColor};
+    border: 1px solid ${(props) => props.theme.colors.menuBorderColor};
+    background-color: ${(props) => props.theme.colors.sidebarBackground};
     border-radius: 2px;
-    color: ${sideBarTextColor};
+    color: ${(props) => props.theme.colors.sideBarText};
 `;
 
 export const MenuList = styled.ul`
