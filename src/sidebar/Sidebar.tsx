@@ -42,6 +42,7 @@ const MoreMenuButton = styled(ToolbarButton)({
 
 const FilterInput = styled(Input)({
     gridColumn: '2',
+    width: '100%',
 });
 
 const Sidebar: FunctionComponent = () => {
