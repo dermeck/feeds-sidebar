@@ -42,12 +42,12 @@ const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
 
 const FeedTitle = styled.label`
     padding-top: 4px;
-    margin-left: 0.25rem;
+    margin-left: 4px;
 `;
 
 const ToggleIndicator = styled.div`
-    margin-right: 0.25rem;
-    margin-bottom: -8px;
+    margin-right: 4px;
+    margin-bottom: -6px;
 `;
 
 interface Props {
