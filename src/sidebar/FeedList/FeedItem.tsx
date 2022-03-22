@@ -1,22 +1,34 @@
 import styled from '@emotion/styled';
 
 import React, { FunctionComponent, memo } from 'react';
-import { Globe } from 'react-feather';
+import { Globe, X } from 'react-feather';
 
+import { ToolbarButton } from '../../base-components';
 import { useAppDispatch } from '../../store/hooks';
 import feedsSlice, { FeedItem as FeedItemType } from '../../store/slices/feeds';
 
 const Container = styled.li`
-    display: flex;
-    flex-direction: row;
-    padding: 0.4rem;
     list-style: none;
 `;
 
+const GridContainer = styled.div`
+    display: grid;
+    align-items: center;
+    grid-column-gap: 4px;
+    grid-template-columns: 16px 1fr 16px;
+    width: 100%;
+    padding-right: 0.4rem;
+`;
+
+const GlobeButton = styled.div`
+    padding: 0.25rem 0;
+    grid-column: '1';
+`;
+
 const Link = styled.a`
+    grid-column: '2';
     overflow: hidden;
     width: 100%;
-    margin-left: 0.25rem;
 
     color: inherit;
     text-decoration: none;
@@ -27,6 +39,17 @@ const Link = styled.a`
         text-decoration: underline;
     }
 `;
+
+const XButton = styled(ToolbarButton)({
+    width: '18px',
+    height: '18px',
+    gridColumn: '3',
+    padding: 0,
+
+    ':hover': {
+        cursor: 'pointer',
+    },
+});
 
 interface Props {
     item: FeedItemType;
@@ -51,20 +74,27 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <Container key={props.item.id}>
-            <Globe size={16} />
-            <Link
-                href={props.item.url}
-                onAuxClick={(e) => {
-                    if (e.button === AuxButton.middleMousButton) {
-                        // mark item as read if middle mouse button is clicked
-                        handleFeedItemClick(props.feedId, props.item.id);
-                    }
-                }}
-                onContextMenu={(e) => e.preventDefault()}
-                onClick={() => handleFeedItemClick(props.feedId, props.item.id)}
-                onDragStart={(e) => e.preventDefault()}>
-                {props.item.title}
-            </Link>
+            <GridContainer>
+                <GlobeButton>
+                    <Globe size={16} />
+                </GlobeButton>
+                <Link
+                    href={props.item.url}
+                    onAuxClick={(e) => {
+                        if (e.button === AuxButton.middleMousButton) {
+                            // mark item as read if middle mouse button is clicked
+                            handleFeedItemClick(props.feedId, props.item.id);
+                        }
+                    }}
+                    onContextMenu={(e) => e.preventDefault()}
+                    onClick={() => handleFeedItemClick(props.feedId, props.item.id)}
+                    onDragStart={(e) => e.preventDefault()}>
+                    {props.item.title}
+                </Link>
+                <XButton>
+                    <X size={18} />
+                </XButton>
+            </GridContainer>
         </Container>
     );
 };
