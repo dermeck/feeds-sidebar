@@ -40,6 +40,7 @@ const Link = styled.a`
     }
 `;
 
+// TODO only show on hover
 const XButton = styled(ToolbarButton)({
     width: '18px',
     height: '18px',
@@ -91,7 +92,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     onDragStart={(e) => e.preventDefault()}>
                     {props.item.title}
                 </Link>
-                <XButton>
+                <XButton onClick={() => handleFeedItemClick(props.feedId, props.item.id)}>
                     <X size={18} />
                 </XButton>
             </GridContainer>
