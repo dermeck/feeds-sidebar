@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-import React, { FunctionComponent, memo } from 'react';
+import React, { FunctionComponent, memo, useState } from 'react';
 import { Globe, X } from 'react-feather';
 
 import { ToolbarButton } from '../../base-components';
@@ -40,7 +40,6 @@ const Link = styled.a`
     }
 `;
 
-// TODO only show on hover
 const XButton = styled(ToolbarButton)({
     width: '18px',
     height: '18px',
@@ -65,6 +64,8 @@ const enum AuxButton {
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
+    const [showXButton, setShowXButton] = useState(false);
+
     const handleFeedItemClick = (feedId: string, itemId: string) =>
         dispatch(
             feedsSlice.actions.markItemAsRead({
@@ -74,7 +75,16 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
         );
 
     return (
-        <Container key={props.item.id}>
+        <Container
+            key={props.item.id}
+            onMouseEnter={() => {
+                if (!showXButton) {
+                    setShowXButton(true);
+                }
+            }}
+            onMouseLeave={() => {
+                setShowXButton(false);
+            }}>
             <GridContainer>
                 <GlobeButton>
                     <Globe size={16} />
@@ -92,9 +102,11 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     onDragStart={(e) => e.preventDefault()}>
                     {props.item.title}
                 </Link>
-                <XButton onClick={() => handleFeedItemClick(props.feedId, props.item.id)}>
-                    <X size={18} />
-                </XButton>
+                {showXButton && (
+                    <XButton onClick={() => handleFeedItemClick(props.feedId, props.item.id)}>
+                        <X size={18} />
+                    </XButton>
+                )}
             </GridContainer>
         </Container>
     );
