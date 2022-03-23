@@ -22,11 +22,11 @@ const GridContainer = styled.div`
 
 const GlobeButton = styled.div`
     padding: 0.25rem 0;
-    grid-column: '1';
+    grid: '1';
 `;
 
-const Link = styled.a`
-    grid-column: '2';
+const Link = styled.a<{ xButtonVisible: boolean }>`
+    grid-column: ${(props) => (props.xButtonVisible ? 2 : '2 / span 2')};
     overflow: hidden;
     width: 100%;
 
@@ -90,6 +90,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     <Globe size={16} />
                 </GlobeButton>
                 <Link
+                    xButtonVisible={showXButton}
                     href={props.item.url}
                     onAuxClick={(e) => {
                         if (e.button === AuxButton.middleMousButton) {
