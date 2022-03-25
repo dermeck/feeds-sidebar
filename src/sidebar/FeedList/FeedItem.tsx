@@ -15,13 +15,13 @@ const GridContainer = styled.div`
     display: grid;
     align-items: center;
     grid-column-gap: 4px;
-    grid-template-columns: 16px 1fr 16px;
+    grid-template-columns: 16px 1fr 22px;
     width: 100%;
-    padding-right: 0.4rem;
+    padding-right: 6px;
 `;
 
 const GlobeButton = styled.div`
-    padding: 0.25rem 0;
+    padding: 4px 0;
     grid: '1';
 `;
 
@@ -41,11 +41,10 @@ const Link = styled.a<{ xButtonVisible: boolean }>`
 `;
 
 const XButton = styled(ToolbarButton)({
-    width: '18px',
-    height: '18px',
+    width: '22px',
+    height: '22px',
     gridColumn: '3',
     padding: 0,
-
     ':hover': {
         cursor: 'pointer',
     },
@@ -105,7 +104,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                 </Link>
                 {showXButton && (
                     <XButton onClick={() => handleFeedItemClick(props.feedId, props.item.id)}>
-                        <X size={18} />
+                        <X size={22} />
                     </XButton>
                 )}
             </GridContainer>
