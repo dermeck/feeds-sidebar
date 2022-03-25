@@ -8,8 +8,8 @@ import feedsSlice, { Feed as FeedType, FeedItem as FeedItemType } from '../../st
 import sessionSlice, { Point } from '../../store/slices/session';
 import FeedItem from './FeedItem';
 
-const FeedContainer = styled.ul`
-    padding-left: ${(props: { indented: boolean }) => (props.indented ? '2.25rem' : '1.5rem')};
+const FeedContainer = styled.ul<{ indented: boolean }>`
+    padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};
     margin: 0 0 0.2rem 0;
     opacity: 0.9;
 `;
@@ -42,12 +42,12 @@ const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
 
 const FeedTitle = styled.label`
     padding-top: 4px;
-    margin-left: 0.25rem;
+    margin-left: 4px;
 `;
 
 const ToggleIndicator = styled.div`
-    margin-right: 0.25rem;
-    margin-bottom: -8px;
+    margin-right: 4px;
+    margin-bottom: -6px;
 `;
 
 interface Props {

@@ -29,12 +29,11 @@ const Title = styled.h1`
     font-weight: 600;
 `;
 
-const MessageBox = styled.div`
+const MessageBox = styled.div<{ show: boolean }>`
     min-height: 2.2rem;
     padding: 0.5rem 1rem;
 
-    background-color: ${(props: { show: boolean; theme: Theme }) =>
-        props.show ? props.theme.colors.messageBackgroundColor : 'inherit'};
+    background-color: ${(props) => (props.show ? props.theme.colors.messageBackgroundColor : 'inherit')};
     border-radius: 4px;
     color: ${(props) => props.theme.colors.messageTextColor};
 `;
