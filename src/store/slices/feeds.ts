@@ -107,12 +107,6 @@ const feedsSlice = createSlice({
                 feeds: [...markItemAsRead(state.feeds, action.payload.feedId, action.payload.itemId)],
             };
         },
-        markFeedAsRead(state, action: PayloadAction<string>) {
-            return {
-                ...state,
-                feeds: [...markFeedAsRead(state.feeds, action.payload)],
-            };
-        },
         markSelectedFeedAsRead(state) {
             return {
                 ...state,

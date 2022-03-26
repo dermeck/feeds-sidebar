@@ -35,7 +35,7 @@ export const feedMiddleware: Middleware<
     if (
         feedsSlice.actions.updateFeeds.match(action) ||
         feedsSlice.actions.markItemAsRead.match(action) ||
-        feedsSlice.actions.markFeedAsRead.match(action) ||
+        feedsSlice.actions.markSelectedFeedAsRead.match(action) ||
         feedsSlice.actions.markAllAsRead.match(action) ||
         feedsSlice.actions.deleteSelectedFeed.match(action)
     ) {
