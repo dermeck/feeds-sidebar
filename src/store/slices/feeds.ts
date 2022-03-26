@@ -24,6 +24,7 @@ export interface FeedItem {
     isRead?: boolean;
 }
 
+export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
 
 const initialState: FeedSliceState = {

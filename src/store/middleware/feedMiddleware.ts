@@ -1,7 +1,12 @@
 import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import feedsSlice, { selectTotalUnreadItems, FeedSliceState } from '../slices/feeds';
+import feedsSlice, {
+    selectTotalUnreadItems,
+    FeedSliceState,
+    fetchAllFeedsCommand,
+    fetchFeedsCommand,
+} from '../slices/feeds';
 import { RootState } from '../store';
 
 const updateBadge = (feedSliceState: FeedSliceState) => {
@@ -16,6 +21,14 @@ export const feedMiddleware: Middleware<
     RootState,
     ThunkDispatch<RootState, undefined, AnyAction>
 > = (middlewareApi) => (next) => async (action: AnyAction) => {
+    if (fetchAllFeedsCommand.match(action)) {
+        const feedsTofetch = middlewareApi.getState().feeds.feeds.map((x) => x.url);
+
+        if (feedsTofetch.length > 0) {
+            middlewareApi.dispatch(fetchFeedsCommand(feedsTofetch));
+        }
+    }
+
     await next(action);
 
     // reducers must run before this code
