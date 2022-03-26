@@ -40,6 +40,8 @@ export const initialState: SessionSliceState = {
     menuVisible: false,
 };
 
+export const selectIsLoadingFeeds = (state: SessionSliceState) => state.feedStatus.some((x) => x.status === 'loading');
+
 const sessionSlice = createSlice({
     name: 'session',
     initialState,
