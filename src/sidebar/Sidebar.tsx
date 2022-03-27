@@ -8,9 +8,10 @@ import { Folder, MoreHorizontal, RefreshCw } from 'react-feather';
 import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../base-components';
 import { menuWidthInPx } from '../base-components/styled/Menu';
 import { toolbarButtonPaddingInPx, toolbarButtonSideLengthInPx } from '../base-components/styled/ToolbarButton';
+import { spin } from '../base-components/styled/animations';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand } from '../store/slices/feeds';
-import sessionSlice, { MenuType, View } from '../store/slices/session';
+import sessionSlice, { MenuType, selectIsLoadingFeeds, View } from '../store/slices/session';
 import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
 
@@ -45,6 +46,16 @@ const FilterInput = styled(Input)({
     width: '100%',
 });
 
+const FetchAllButtonIcon = styled(RefreshCw, {
+    // prevent "Warning: Received `true` for a non-boolean attribute `spin`."
+    shouldForwardProp: (props) => props !== 'spin',
+})<{ spin: boolean }>`
+    animation: ${(props) => (props.spin ? spin : 'none')};
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+`;
+
 const Sidebar: FunctionComponent = () => {
     const dispatch = useAppDispatch();
     const urlInputRef = useRef<HTMLInputElement>(null);
@@ -54,8 +65,9 @@ const Sidebar: FunctionComponent = () => {
 
     const activeView = useAppSelector((state) => state.session.activeView);
     const feeds = useAppSelector((state) => state.feeds.feeds);
+    const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
 
-    const [showFolders, setShowFeedTitles] = useState<boolean>(true);
+    const [showFolders, setShowFolders] = useState<boolean>(true);
     const [filterString, setFilterString] = useState<string>('');
 
     return (
@@ -68,12 +80,12 @@ const Sidebar: FunctionComponent = () => {
             onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
             <Header>
                 <FetchAllButton onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.url)))}>
-                    <RefreshCw size={18} />
+                    <FetchAllButtonIcon size={18} spin={isLoading} />
                 </FetchAllButton>
 
                 <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
 
-                <ShowFeedTitleButton onClick={() => setShowFeedTitles(!showFolders)} active={showFolders}>
+                <ShowFeedTitleButton onClick={() => setShowFolders(!showFolders)} active={showFolders}>
                     <Folder size={18} />
                 </ShowFeedTitleButton>
 
