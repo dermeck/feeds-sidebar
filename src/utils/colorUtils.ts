@@ -8,7 +8,9 @@ export const colorKeywordToHex = (colorKeyword: string) => {
     const canvasContext = document.createElement('canvas').getContext('2d');
 
     if (!canvasContext) {
-        throw new Error('Could not read system color');
+        throw new Error(
+            `Could convert color keyword "${colorKeyword}" to its hex representation. Canvas 2d context is null.`,
+        );
     }
 
     canvasContext.fillStyle = colorKeyword;
