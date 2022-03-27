@@ -1,6 +1,6 @@
 import FeedParser, { Item } from 'feedparser';
 
-import { Feed, FeedItem } from '../store/slices/feeds';
+import { Feed, FeedItem } from '../../store/slices/feeds';
 import { FeedParserInput } from './feedParser';
 
 self.onmessage = async (e: MessageEvent<FeedParserInput>) => {

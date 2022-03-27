@@ -1,4 +1,4 @@
-import { Feed } from '../store/slices/feeds';
+import { Feed } from '../../store/slices/feeds';
 
 export interface FeedParserInput {
     feedUrl: string;
@@ -18,7 +18,7 @@ interface ParseFeedResultError {
 export type ParseFeedResult = ParseFeedResultSuccess | ParseFeedResultError;
 
 const parseFeed = async (input: FeedParserInput): Promise<ParseFeedResult> => {
-    const worker = new Worker(new URL('./feedParserWorker.ts', import.meta.url));
+    const worker = new Worker(new URL('./worker.ts', import.meta.url));
 
     worker.postMessage(input);
 
