@@ -20,7 +20,6 @@ const SidebarContainer = styled.div`
     color: ${(props) => props.theme.colors.sideBarText};
 `;
 
-// TODO move Header to separate component
 const Header = styled(ToolbarContainer)`
     display: grid;
     align-items: center;
@@ -65,7 +64,7 @@ const Sidebar: FunctionComponent = () => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
     const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
 
-    const [showFolders, setShowFeedTitles] = useState<boolean>(true);
+    const [showFolders, setShowFolders] = useState<boolean>(true);
     const [filterString, setFilterString] = useState<string>('');
 
     return (
@@ -83,7 +82,7 @@ const Sidebar: FunctionComponent = () => {
 
                 <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
 
-                <ShowFeedTitleButton onClick={() => setShowFeedTitles(!showFolders)} active={showFolders}>
+                <ShowFeedTitleButton onClick={() => setShowFolders(!showFolders)} active={showFolders}>
                     <Folder size={18} />
                 </ShowFeedTitleButton>
 
