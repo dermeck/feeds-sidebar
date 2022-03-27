@@ -46,7 +46,10 @@ const FilterInput = styled(Input)({
     width: '100%',
 });
 
-const FetchAllButtonIcon = styled(RefreshCw)<{ spin: boolean }>`
+const FetchAllButtonIcon = styled(RefreshCw, {
+    // prevent "Warning: Received `true` for a non-boolean attribute `spin`."
+    shouldForwardProp: (props) => props !== 'spin',
+})<{ spin: boolean }>`
     animation: ${(props) => (props.spin ? spin : 'none')};
     animation-duration: 1s;
     animation-timing-function: linear;
