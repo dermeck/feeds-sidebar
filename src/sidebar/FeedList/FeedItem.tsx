@@ -7,8 +7,9 @@ import { ToolbarButton } from '../../base-components';
 import { useAppDispatch } from '../../store/hooks';
 import feedsSlice, { FeedItem as FeedItemType } from '../../store/slices/feeds';
 
-const Container = styled.li`
+const Container = styled.li<{ indented: boolean }>`
     list-style: none;
+    padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};
 `;
 
 const GridContainer = styled.div`
@@ -53,6 +54,7 @@ const XButton = styled(ToolbarButton)({
 interface Props {
     item: FeedItemType;
     feedId: string;
+    indented: boolean;
 }
 
 const enum AuxButton {
@@ -79,6 +81,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
     return (
         <Container
             key={props.item.id}
+            indented={props.indented}
             onMouseEnter={() => {
                 if (!showXButton) {
                     setShowXButton(true);

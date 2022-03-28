@@ -8,8 +8,8 @@ import feedsSlice, { Feed as FeedType, FeedItem as FeedItemType } from '../../st
 import sessionSlice, { Point } from '../../store/slices/session';
 import FeedItem from './FeedItem';
 
-const FeedContainer = styled.ul<{ indented: boolean }>`
-    padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};
+const FeedContainer = styled.ul`
+    padding-left: 0;
     margin: 0 0 0.2rem 0;
     opacity: 0.9;
 `;
@@ -58,7 +58,7 @@ interface Props {
 }
 
 const renderItem = (item: FeedItemType, props: Props) => (
-    <FeedItem key={item.id + item.title} feedId={props.feed.id} item={item} />
+    <FeedItem key={item.id + item.title} feedId={props.feed.id} item={item} indented={props.showTitle} />
 );
 
 const Feed: FunctionComponent<Props> = (props: Props) => {
@@ -111,7 +111,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
             )}
 
             {(expanded || !props.showTitle) && props.feed.items.some((x) => !x.isRead) && (
-                <FeedContainer indented={props.showTitle}>
+                <FeedContainer>
                     {props.feed.items.map(
                         (item) =>
                             !item.isRead &&
