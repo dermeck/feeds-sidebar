@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 
 import React, { FunctionComponent, memo, useState } from 'react';
 import { Globe, X } from 'react-feather';
+import { offsetOf } from 'react-virtuoso/dist/sizeSystem';
 
 import { ToolbarButton } from '../../base-components';
 import { useAppDispatch } from '../../store/hooks';
@@ -66,6 +67,10 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
     const [showXButton, setShowXButton] = useState(false);
+
+    if (props.item.isRead) {
+        return null;
+    }
 
     const handleFeedItemClick = (feedId: string, itemId: string) => {
         dispatch(feedsSlice.actions.selectItem(props.item.id));
