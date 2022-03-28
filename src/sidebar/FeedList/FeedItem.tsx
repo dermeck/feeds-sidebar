@@ -65,13 +65,16 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
 
     const [showXButton, setShowXButton] = useState(false);
 
-    const handleFeedItemClick = (feedId: string, itemId: string) =>
+    const handleFeedItemClick = (feedId: string, itemId: string) => {
+        dispatch(feedsSlice.actions.selectItem(props.item.id));
+
         dispatch(
             feedsSlice.actions.markItemAsRead({
                 feedId: feedId,
                 itemId: itemId,
             }),
         );
+    };
 
     return (
         <Container

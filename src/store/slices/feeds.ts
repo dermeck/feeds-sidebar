@@ -5,6 +5,7 @@ import { RootState } from '../store';
 export type FeedSliceState = {
     feeds: ReadonlyArray<Feed>;
     selectedFeedId: Feed['id'];
+    selectedItemId: string;
 };
 
 export interface Feed {
@@ -72,6 +73,7 @@ const initialState: FeedSliceState = {
               ]
             : [],
     selectedFeedId: '',
+    selectedItemId: '',
 };
 
 const throwIfNonExistent = (feeds: ReadonlyArray<Feed>, feedId: string) => {
@@ -100,6 +102,9 @@ const feedsSlice = createSlice({
             throwIfNonExistent(state.feeds, feedId);
 
             state.selectedFeedId = feedId;
+        },
+        selectItem(state, action: PayloadAction<string>) {
+            state.selectedItemId = action.payload;
         },
         markItemAsRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             return {

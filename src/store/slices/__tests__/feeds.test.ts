@@ -71,16 +71,19 @@ describe('extensionStateLoaded action', () => {
         const prevState: FeedSliceState = {
             feeds: [feed1Fixture],
             selectedFeedId: '1',
+            selectedItemId: '',
         };
 
         const action = feedsSlice.actions.extensionStateLoaded({
             feeds: [feed2Fixture],
             selectedFeedId: '',
+            selectedItemId: '',
         });
 
         expect(feedsSlice.reducer(prevState, action)).toStrictEqual({
             feeds: [feed2Fixture],
             selectedFeedId: '',
+            selectedItemId: '',
         });
     });
 });
