@@ -80,8 +80,7 @@ describe('extensionStateLoaded action', () => {
 
         expect(feedsSlice.reducer(prevState, action)).toStrictEqual({
             feeds: [feed2Fixture],
-            selectedFeedId: '',
-            selectedItemId: '',
+            selectedId: '',
         });
     });
 });
