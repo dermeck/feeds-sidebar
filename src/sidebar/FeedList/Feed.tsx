@@ -70,6 +70,10 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
         }
     }, [props.isSelected]);
 
+    const [expanded, setExpanded] = useState<boolean>(true);
+
+    const [focus, setFocus] = useState<boolean>(false);
+
     const handleFeedTitleClick = () => {
         dispatch(feedsSlice.actions.selectFeed(props.feed.id));
     };
@@ -78,10 +82,6 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
         dispatch(sessionSlice.actions.showContextMenu(anchorPoint));
         dispatch(feedsSlice.actions.selectFeed(props.feed.id));
     };
-
-    const [expanded, setExpanded] = useState<boolean>(true);
-
-    const [focus, setFocus] = useState<boolean>(false);
 
     return (
         <Fragment>
