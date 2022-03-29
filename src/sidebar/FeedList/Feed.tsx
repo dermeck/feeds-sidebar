@@ -70,7 +70,6 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
     }, [props.isSelected]);
 
     const [expanded, setExpanded] = useState<boolean>(true);
-
     const [focus, setFocus] = useState<boolean>(false);
 
     const handleFeedTitleClick = () => {
