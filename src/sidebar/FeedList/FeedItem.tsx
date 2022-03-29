@@ -7,7 +7,6 @@ import { ToolbarButton } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { FeedItem as FeedItemType } from '../../store/slices/feeds';
 
-// TODO feed title should have same height as feed item (items are to high)
 const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean }>`
     list-style: none;
     padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};
@@ -36,7 +35,7 @@ const GridContainer = styled.div`
 `;
 
 const GlobeButton = styled.div`
-    padding: 4px 0;
+    padding: 2px 0;
     grid: '1';
 `;
 

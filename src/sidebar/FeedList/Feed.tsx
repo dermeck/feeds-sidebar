@@ -23,7 +23,7 @@ const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0.05rem 0 0.2rem 0.5rem;
+    padding: 2px 0 3px 8px;
 
     background-color: ${(props) =>
         props.selected
@@ -41,7 +41,6 @@ const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
 `;
 
 const FeedTitle = styled.label`
-    padding-top: 4px;
     margin-left: 4px;
 `;
 
