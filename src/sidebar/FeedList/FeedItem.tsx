@@ -5,7 +5,7 @@ import { Globe, X } from 'react-feather';
 import { offsetOf } from 'react-virtuoso/dist/sizeSystem';
 
 import { ToolbarButton } from '../../base-components';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { FeedItem as FeedItemType } from '../../store/slices/feeds';
 
 const Container = styled.li<{ indented: boolean }>`
@@ -65,6 +65,7 @@ const enum AuxButton {
 
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
+    const isSelected = useAppSelector((state) => state.feeds.selectedId) === props.item.id;
 
     const [showXButton, setShowXButton] = useState(false);
 
