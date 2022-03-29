@@ -1,16 +1,29 @@
 import styled from '@emotion/styled';
 
-import React, { FunctionComponent, memo, useState } from 'react';
+import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 import { Globe, X } from 'react-feather';
-import { offsetOf } from 'react-virtuoso/dist/sizeSystem';
 
 import { ToolbarButton } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { FeedItem as FeedItemType } from '../../store/slices/feeds';
 
-const Container = styled.li<{ indented: boolean }>`
+// TODO feed title should have same height as feed item (items are to high)
+const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean }>`
     list-style: none;
     padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};
+
+    background-color: ${(props) =>
+        props.selected
+            ? props.focus
+                ? props.theme.colors.selectedItemBackgroundColor
+                : props.theme.colors.selectedItemNoFocusBackgroundColor
+            : 'inherit'};
+    color: ${(props) =>
+        props.selected
+            ? props.focus
+                ? props.theme.colors.selectedItemTextColor
+                : props.theme.colors.selectedItemNoFocusTextColor
+            : 'inherit'};
 `;
 
 const GridContainer = styled.div`
@@ -65,11 +78,19 @@ const enum AuxButton {
 
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
+
     const isSelected = useAppSelector((state) => state.feeds.selectedId) === props.item.id;
 
+    useEffect(() => {
+        if (isSelected) {
+            setFocus(true);
+        }
+    }, [isSelected]);
+
+    const [focus, setFocus] = useState<boolean>(false);
     const [showXButton, setShowXButton] = useState(false);
 
-    if (props.item.isRead) {
+    if (props.item.isRead && !isSelected) {
         return null;
     }
 
@@ -88,6 +109,12 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
         <Container
             key={props.item.id}
             indented={props.indented}
+            selected={isSelected}
+            focus={focus}
+            onClick={() => setFocus(true)}
+            onBlur={() => {
+                setFocus(false);
+            }}
             onMouseEnter={() => {
                 if (!showXButton) {
                     setShowXButton(true);
