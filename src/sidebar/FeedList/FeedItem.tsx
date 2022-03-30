@@ -43,6 +43,8 @@ const Link = styled.a<{ xButtonVisible: boolean }>`
     grid-column: ${(props) => (props.xButtonVisible ? 2 : '2 / span 2')};
     overflow: hidden;
     width: 100%;
+    height: 100%;
+    padding-top: 4.5px;
 
     color: inherit;
     text-decoration: none;
