@@ -90,8 +90,9 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
 
     const [focus, setFocus] = useState<boolean>(false);
     const [showXButton, setShowXButton] = useState(false);
+    const [xButtonClicked, setXButtonClicked] = useState(false);
 
-    if (props.item.isRead && !isSelected) {
+    if ((props.item.isRead && !isSelected) || xButtonClicked) {
         return null;
     }
 
@@ -104,6 +105,17 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                 itemId: itemId,
             }),
         );
+    };
+
+    const handleXButtonClick = (feedId: string, itemId: string) => {
+        dispatch(
+            feedsSlice.actions.markItemAsRead({
+                feedId: feedId,
+                itemId: itemId,
+            }),
+        );
+
+        setXButtonClicked(true);
     };
 
     return (
@@ -143,7 +155,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     {props.item.title}
                 </Link>
                 {showXButton && (
-                    <XButton onClick={() => handleFeedItemClick(props.feedId, props.item.id)}>
+                    <XButton onClick={() => handleXButtonClick(props.feedId, props.item.id)}>
                         <X size={22} />
                     </XButton>
                 )}
