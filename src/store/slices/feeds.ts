@@ -74,12 +74,6 @@ const initialState: FeedSliceState = {
     selectedId: '',
 };
 
-const throwIfNonExistent = (feeds: ReadonlyArray<Feed>, feedId: string) => {
-    if (!feeds.some((x) => x.id === feedId)) {
-        throw new Error(`feed with id: ${feedId} does not exist`);
-    }
-};
-
 export const selectTotalUnreadItems = (state: FeedSliceState) =>
     state.feeds
         .map((feed) => feed.items.filter((i) => !i.isRead).length)
@@ -94,15 +88,7 @@ const feedsSlice = createSlice({
         extensionStateLoaded(_state, action: PayloadAction<FeedSliceState>) {
             return { ...action.payload };
         },
-        selectFeed(state, action: PayloadAction<string>) {
-            const feedId = action.payload;
-
-            throwIfNonExistent(state.feeds, feedId);
-
-            state.selectedId = feedId;
-        },
-        selectItem(state, action: PayloadAction<string>) {
-            // TODO consolidate with selectFeed
+        select(state, action: PayloadAction<string>) {
             state.selectedId = action.payload;
         },
         markItemAsRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {

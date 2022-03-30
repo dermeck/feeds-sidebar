@@ -85,29 +85,16 @@ describe('extensionStateLoaded action', () => {
     });
 });
 
-describe('selectFeed action', () => {
-    it('sets selectedFeedId if feed exists', () => {
+describe('select action', () => {
+    it('sets selectedId', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             feeds: feedsFixture,
         };
 
-        const action = feedsSlice.actions.selectFeed('feedId2');
+        const action = feedsSlice.actions.select('feedId2');
 
         expect(feedsSlice.reducer(prevState, action).selectedId).toBe('feedId2');
-    });
-
-    it('throws if selected feed does not exist', () => {
-        const prevState: FeedSliceState = {
-            ...feedsSlice.getInitialState(),
-            feeds: [],
-        };
-
-        const action = feedsSlice.actions.selectFeed('feedId2');
-
-        expect(() => feedsSlice.reducer(prevState, action).selectedId).toThrowError(
-            'feed with id: feedId2 does not exist',
-        );
     });
 });
 

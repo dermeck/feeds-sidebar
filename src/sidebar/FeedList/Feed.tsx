@@ -73,12 +73,12 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
     const [focus, setFocus] = useState<boolean>(false);
 
     const handleFeedTitleClick = () => {
-        dispatch(feedsSlice.actions.selectFeed(props.feed.id));
+        dispatch(feedsSlice.actions.select(props.feed.id));
     };
 
     const handleOnContextMenu = (anchorPoint: Point) => {
         dispatch(sessionSlice.actions.showContextMenu(anchorPoint));
-        dispatch(feedsSlice.actions.selectFeed(props.feed.id));
+        dispatch(feedsSlice.actions.select(props.feed.id));
     };
 
     return (
