@@ -20,7 +20,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                 itemContent={(index, feed) => (
                     <Feed
                         key={feed.id}
-                        isSelected={feeds.selectedFeedId === feed.id}
+                        isSelected={feeds.selectedId === feed.id}
                         feed={feed}
                         showTitle={props.showFeedTitles}
                         filterString={props.filterString}

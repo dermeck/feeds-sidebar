@@ -4,7 +4,7 @@ import { RootState } from '../store';
 
 export type FeedSliceState = {
     feeds: ReadonlyArray<Feed>;
-    selectedFeedId: Feed['id'];
+    selectedId: string;
 };
 
 export interface Feed {
@@ -71,13 +71,7 @@ const initialState: FeedSliceState = {
                   */
               ]
             : [],
-    selectedFeedId: '',
-};
-
-const throwIfNonExistent = (feeds: ReadonlyArray<Feed>, feedId: string) => {
-    if (!feeds.some((x) => x.id === feedId)) {
-        throw new Error(`feed with id: ${feedId} does not exist`);
-    }
+    selectedId: '',
 };
 
 export const selectTotalUnreadItems = (state: FeedSliceState) =>
@@ -94,12 +88,8 @@ const feedsSlice = createSlice({
         extensionStateLoaded(_state, action: PayloadAction<FeedSliceState>) {
             return { ...action.payload };
         },
-        selectFeed(state, action: PayloadAction<string>) {
-            const feedId = action.payload;
-
-            throwIfNonExistent(state.feeds, feedId);
-
-            state.selectedFeedId = feedId;
+        select(state, action: PayloadAction<string>) {
+            state.selectedId = action.payload;
         },
         markItemAsRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             return {
@@ -110,7 +100,7 @@ const feedsSlice = createSlice({
         markSelectedFeedAsRead(state) {
             return {
                 ...state,
-                feeds: [...markFeedAsRead(state.feeds, state.selectedFeedId)],
+                feeds: [...markFeedAsRead(state.feeds, state.selectedId)],
             };
         },
         markAllAsRead(state) {
@@ -128,14 +118,14 @@ const feedsSlice = createSlice({
 
         deleteSelectedFeed(state) {
             // index of the feed that gets deleted
-            const selectedFeedId = state.selectedFeedId;
+            const selectedFeedId = state.selectedId;
             const selectedIndex = state.feeds.findIndex((f) => f.id === selectedFeedId);
 
             // delete
             state.feeds = state.feeds.filter((f) => f.id !== selectedFeedId);
 
             // if possible select the the next feed
-            state.selectedFeedId =
+            state.selectedId =
                 state.feeds.length === 0
                     ? ''
                     : state.feeds.length > selectedIndex

@@ -8,8 +8,8 @@ import feedsSlice, { Feed as FeedType, FeedItem as FeedItemType } from '../../st
 import sessionSlice, { Point } from '../../store/slices/session';
 import FeedItem from './FeedItem';
 
-const FeedContainer = styled.ul<{ indented: boolean }>`
-    padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};
+const FeedContainer = styled.ul`
+    padding-left: 0;
     margin: 0 0 0.2rem 0;
     opacity: 0.9;
 `;
@@ -23,7 +23,7 @@ const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0.05rem 0 0.2rem 0.5rem;
+    padding: 2px 0 3px 8px;
 
     background-color: ${(props) =>
         props.selected
@@ -41,7 +41,6 @@ const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
 `;
 
 const FeedTitle = styled.label`
-    padding-top: 4px;
     margin-left: 4px;
 `;
 
@@ -58,7 +57,7 @@ interface Props {
 }
 
 const renderItem = (item: FeedItemType, props: Props) => (
-    <FeedItem key={item.id + item.title} feedId={props.feed.id} item={item} />
+    <FeedItem key={item.id + item.title} feedId={props.feed.id} item={item} indented={props.showTitle} />
 );
 
 const Feed: FunctionComponent<Props> = (props: Props) => {
@@ -70,18 +69,17 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
         }
     }, [props.isSelected]);
 
+    const [expanded, setExpanded] = useState<boolean>(true);
+    const [focus, setFocus] = useState<boolean>(false);
+
     const handleFeedTitleClick = () => {
-        dispatch(feedsSlice.actions.selectFeed(props.feed.id));
+        dispatch(feedsSlice.actions.select(props.feed.id));
     };
 
     const handleOnContextMenu = (anchorPoint: Point) => {
         dispatch(sessionSlice.actions.showContextMenu(anchorPoint));
-        dispatch(feedsSlice.actions.selectFeed(props.feed.id));
+        dispatch(feedsSlice.actions.select(props.feed.id));
     };
-
-    const [expanded, setExpanded] = useState<boolean>(true);
-
-    const [focus, setFocus] = useState<boolean>(false);
 
     return (
         <Fragment>
@@ -111,10 +109,9 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
             )}
 
             {(expanded || !props.showTitle) && props.feed.items.some((x) => !x.isRead) && (
-                <FeedContainer indented={props.showTitle}>
+                <FeedContainer>
                     {props.feed.items.map(
                         (item) =>
-                            !item.isRead &&
                             item.title?.toLowerCase().includes(props.filterString.toLowerCase()) &&
                             renderItem(item, props),
                     )}

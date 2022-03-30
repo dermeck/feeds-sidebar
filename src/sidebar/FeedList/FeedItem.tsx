@@ -1,14 +1,28 @@
 import styled from '@emotion/styled';
 
-import React, { FunctionComponent, memo, useState } from 'react';
+import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 import { Globe, X } from 'react-feather';
 
 import { ToolbarButton } from '../../base-components';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { FeedItem as FeedItemType } from '../../store/slices/feeds';
 
-const Container = styled.li`
+const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean }>`
     list-style: none;
+    padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};
+
+    background-color: ${(props) =>
+        props.selected
+            ? props.focus
+                ? props.theme.colors.selectedItemBackgroundColor
+                : props.theme.colors.selectedItemNoFocusBackgroundColor
+            : 'inherit'};
+    color: ${(props) =>
+        props.selected
+            ? props.focus
+                ? props.theme.colors.selectedItemTextColor
+                : props.theme.colors.selectedItemNoFocusTextColor
+            : 'inherit'};
 `;
 
 const GridContainer = styled.div`
@@ -21,7 +35,7 @@ const GridContainer = styled.div`
 `;
 
 const GlobeButton = styled.div`
-    padding: 4px 0;
+    padding: 2px 0;
     grid: '1';
 `;
 
@@ -29,6 +43,8 @@ const Link = styled.a<{ xButtonVisible: boolean }>`
     grid-column: ${(props) => (props.xButtonVisible ? 2 : '2 / span 2')};
     overflow: hidden;
     width: 100%;
+    height: 100%;
+    padding-top: 4.5px;
 
     color: inherit;
     text-decoration: none;
@@ -53,6 +69,7 @@ const XButton = styled(ToolbarButton)({
 interface Props {
     item: FeedItemType;
     feedId: string;
+    indented: boolean;
 }
 
 const enum AuxButton {
@@ -63,9 +80,34 @@ const enum AuxButton {
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
-    const [showXButton, setShowXButton] = useState(false);
+    const isSelected = useAppSelector((state) => state.feeds.selectedId) === props.item.id;
 
-    const handleFeedItemClick = (feedId: string, itemId: string) =>
+    useEffect(() => {
+        if (isSelected) {
+            setFocus(true);
+        }
+    }, [isSelected]);
+
+    const [focus, setFocus] = useState<boolean>(false);
+    const [showXButton, setShowXButton] = useState(false);
+    const [xButtonClicked, setXButtonClicked] = useState(false);
+
+    if ((props.item.isRead && !isSelected) || xButtonClicked) {
+        return null;
+    }
+
+    const handleFeedItemClick = (feedId: string, itemId: string) => {
+        dispatch(feedsSlice.actions.select(props.item.id));
+
+        dispatch(
+            feedsSlice.actions.markItemAsRead({
+                feedId: feedId,
+                itemId: itemId,
+            }),
+        );
+    };
+
+    const handleXButtonClick = (feedId: string, itemId: string) => {
         dispatch(
             feedsSlice.actions.markItemAsRead({
                 feedId: feedId,
@@ -73,9 +115,19 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
             }),
         );
 
+        setXButtonClicked(true);
+    };
+
     return (
         <Container
             key={props.item.id}
+            indented={props.indented}
+            selected={isSelected}
+            focus={focus}
+            onClick={() => setFocus(true)}
+            onBlur={() => {
+                setFocus(false);
+            }}
             onMouseEnter={() => {
                 if (!showXButton) {
                     setShowXButton(true);
@@ -103,7 +155,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     {props.item.title}
                 </Link>
                 {showXButton && (
-                    <XButton onClick={() => handleFeedItemClick(props.feedId, props.item.id)}>
+                    <XButton onClick={() => handleXButtonClick(props.feedId, props.item.id)}>
                         <X size={22} />
                     </XButton>
                 )}
