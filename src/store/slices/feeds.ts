@@ -4,7 +4,7 @@ import { RootState } from '../store';
 
 export type FeedSliceState = {
     feeds: ReadonlyArray<Feed>;
-    selectedId: string; // TODO specific types for Feed or FeedItem
+    selectedId: string;
 };
 
 export interface Feed {
