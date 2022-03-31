@@ -38,9 +38,9 @@ const callFeedParser = async (input: FeedParserInput): Promise<Feed> => {
         items: [],
     };
 
-    const parsedItems: Array<FeedItem> = [];
-
     return new Promise((resolve, reject) => {
+        const parsedItems: Array<FeedItem> = [];
+
         parser.on('meta', () => {
             parsedFeed.title = parser.meta.title || '';
             parsedFeed.link = parser.meta.link || '';
