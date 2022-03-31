@@ -51,7 +51,7 @@ const ToggleIndicator = styled.div`
 
 interface Props {
     feed: FeedType;
-    isSelected: boolean;
+    selectedId: string;
     showTitle: boolean;
     filterString: string;
 }
@@ -64,10 +64,10 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (props.isSelected) {
+        if (props.selectedId === props.feed.id) {
             setFocus(true);
         }
-    }, [props.isSelected]);
+    }, [props.selectedId]);
 
     const [expanded, setExpanded] = useState<boolean>(true);
     const [focus, setFocus] = useState<boolean>(false);
@@ -86,7 +86,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
             {props.showTitle && (
                 <FeedTitleContainer
                     tabIndex={0}
-                    selected={props.isSelected}
+                    selected={props.selectedId === props.feed.id}
                     focus={focus}
                     onClick={() => {
                         setExpanded(!expanded);
@@ -108,7 +108,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                 </FeedTitleContainer>
             )}
 
-            {(expanded || !props.showTitle) && props.feed.items.some((x) => !x.isRead) && (
+            {(expanded || !props.showTitle) && props.feed.items.some((x) => !x.isRead || x.id === props.selectedId) && (
                 <FeedContainer>
                     {props.feed.items.map(
                         (item) =>
