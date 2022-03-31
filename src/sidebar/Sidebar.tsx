@@ -52,8 +52,8 @@ const FetchAllButtonIcon = styled(RefreshCw, {
 })<{ spin: boolean }>`
     animation: ${(props) => (props.spin ? spin : 'none')};
     animation-duration: 1s;
-    animation-timing-function: linear;
     animation-iteration-count: infinite;
+    animation-timing-function: linear;
 `;
 
 const Sidebar: FunctionComponent = () => {

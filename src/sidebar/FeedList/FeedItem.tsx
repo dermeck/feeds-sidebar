@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { FeedItem as FeedItemType } from '../../store/slices/feeds';
 
 const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean }>`
-    list-style: none;
     padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};
 
     background-color: ${(props) =>
@@ -23,15 +22,16 @@ const Container = styled.li<{ focus: boolean; indented: boolean; selected: boole
                 ? props.theme.colors.selectedItemTextColor
                 : props.theme.colors.selectedItemNoFocusTextColor
             : 'inherit'};
+    list-style: none;
 `;
 
 const GridContainer = styled.div`
     display: grid;
+    width: 100%;
     align-items: center;
+    padding-right: 6px;
     grid-column-gap: 4px;
     grid-template-columns: 16px 1fr 22px;
-    width: 100%;
-    padding-right: 6px;
 `;
 
 const GlobeButton = styled.div`
@@ -40,13 +40,13 @@ const GlobeButton = styled.div`
 `;
 
 const Link = styled.a<{ xButtonVisible: boolean }>`
-    grid-column: ${(props) => (props.xButtonVisible ? 2 : '2 / span 2')};
     overflow: hidden;
     width: 100%;
     height: 100%;
     padding-top: 4.5px;
 
     color: inherit;
+    grid-column: ${(props) => (props.xButtonVisible ? 2 : '2 / span 2')};
     text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
