@@ -1,15 +1,16 @@
-interface RGB {
+interface RGBA {
     r: number;
     g: number;
     b: number;
+    a: number;
 }
 
-export const colorKeywordToHex = (colorKeyword: string) => {
+export const resolveColorKeyword = (colorKeyword: string) => {
     const canvasContext = document.createElement('canvas').getContext('2d');
 
     if (!canvasContext) {
         throw new Error(
-            `Could convert color keyword "${colorKeyword}" to its hex representation. Canvas 2d context is null.`,
+            `Could not convert color keyword "${colorKeyword}" to its hex representation. Canvas 2d context is null.`,
         );
     }
 
@@ -18,26 +19,46 @@ export const colorKeywordToHex = (colorKeyword: string) => {
     return canvasContext.fillStyle;
 };
 
-export const rgba = (hexColor: string, opacity: number): string => {
+export const rgba = (color: string, opacity: number): string => {
     if (opacity < 0 || opacity > 1) {
         throw new Error(`Invalid opacity '${opacity}'. Only values between 0. and 1.0 are allowed.`);
     }
 
-    const rgb = hexToRgb(hexColor);
+    const rgba = hexToRgba(color) ?? parseRgba(color);
 
-    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
+    if (rgba === undefined) {
+        throw new Error(`Failed to parse color code: '${color}'`);
+    }
+
+    return `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a * opacity})`;
 };
 
-const hexToRgb = (hex: string): RGB => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+const hexToRgba = (hex: string): RGBA | undefined => {
+    const matches = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 
-    if (!result) {
-        throw new Error(`Error converting hex string '${hex}' to RGB.`);
+    if (!matches) {
+        return undefined;
     }
 
     return {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
+        r: parseInt(matches[1], 16),
+        g: parseInt(matches[2], 16),
+        b: parseInt(matches[3], 16),
+        a: 1,
+    };
+};
+
+const parseRgba = (rgbaStr: string): RGBA | undefined => {
+    const matches = /^rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([01]?\.?\d*)\s*\)$/.exec(rgbaStr);
+
+    if (!matches) {
+        return undefined;
+    }
+
+    return {
+        r: parseInt(matches[1], 10),
+        g: parseInt(matches[2], 10),
+        b: parseInt(matches[3], 10),
+        a: parseFloat(matches[4]),
     };
 };
