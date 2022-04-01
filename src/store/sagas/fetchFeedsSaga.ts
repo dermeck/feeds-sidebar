@@ -10,12 +10,18 @@ export function* watchfetchFeedsSaga() {
     yield takeEvery(fetchFeedsCommand.type, fetchFeeds);
 }
 
-function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
+function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>): any {
+    // array.fill.map
     const leftToFetch = [...action.payload];
 
     yield put(sessionSlice.actions.changeFeedsStatus({ newStatus: 'loading', feedUrls: action.payload }));
 
-    const results: WorkerResponse[] = yield call(runworker, leftToFetch);
+    const results: WorkerResponse[] = (yield join([
+        yield fork(runworker, leftToFetch),
+        yield fork(runworker, leftToFetch),
+        yield fork(runworker, leftToFetch),
+        yield fork(runworker, leftToFetch),
+    ])).flat();
 
     const updatePayload = results.flatMap((r) => (r.type === 'success' ? [r.parsedFeed] : []));
     yield put(feedsSlice.actions.updateFeeds(updatePayload));
