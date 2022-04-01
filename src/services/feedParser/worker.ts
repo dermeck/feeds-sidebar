@@ -21,7 +21,6 @@ self.onmessage = async (e: MessageEvent<string>) => {
                 };
                 self.postMessage(message);
             } catch (e) {
-                console.log('error');
                 // response is not a feed
                 const message: WorkerResponse = { type: 'parseError', url: fetchResult.url };
                 self.postMessage(message);
