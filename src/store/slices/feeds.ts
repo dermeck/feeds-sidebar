@@ -1,28 +1,12 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { Feed } from '../../model/feeds';
 import { RootState } from '../store';
 
 export type FeedSliceState = {
     feeds: ReadonlyArray<Feed>;
     selectedId: string;
 };
-
-export interface Feed {
-    id: string;
-    url: string;
-    items: ReadonlyArray<FeedItem>;
-    link?: string;
-    title?: string;
-}
-
-export interface FeedItem {
-    id: string;
-    title: string;
-    url: string;
-    published?: string;
-    lastModified?: string;
-    isRead?: boolean;
-}
 
 export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');

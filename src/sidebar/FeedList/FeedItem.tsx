@@ -4,8 +4,9 @@ import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 import { Globe, X } from 'react-feather';
 
 import { ToolbarButton } from '../../base-components';
+import { FeedItem as FeedItemType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import feedsSlice, { FeedItem as FeedItemType } from '../../store/slices/feeds';
+import feedsSlice from '../../store/slices/feeds';
 
 const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean }>`
     padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};

@@ -1,6 +1,6 @@
 import { encode } from 'html-entities';
 
-import { Feed } from '../store/slices/feeds';
+import { Feed } from '../model/feeds';
 
 const exportFilename = 'ytrss-export.opml';
 

@@ -1,48 +1,19 @@
-import { Action } from '@reduxjs/toolkit';
 import FeedParser, { Item } from 'feedparser';
 
-import { eventChannel, runSaga } from 'redux-saga';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
 
-import { Feed, FeedItem } from '../../store/slices/feeds';
-import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import { fetchFeed, FetchFeedResult } from './fetchFeed';
-import { WorkerResponse } from './workerApi';
+import { Feed, FeedItem } from '../model/feeds';
+import { UnreachableCaseError } from '../utils/UnreachableCaseError';
+import { fetchFeed, FetchFeedResult } from './feedParser/fetchFeed';
+import { FetchFeedAction, WorkerResponseAction } from './workerApi';
 
 interface FeedParserInput {
     feedUrl: string;
     feedData: string;
 }
 
-const channel = eventChannel((emit) => {
-    self.onmessage = (e: MessageEvent<string>) => emit(e.data);
-    return () => {
-        throw new Error('cannot unsubscribe, haha');
-    };
-});
-
-runSaga(
-    {
-        channel,
-        dispatch(message: Action) {
-            self.postMessage(message);
-        },
-        getState() {
-            throw new Error('getState not implemented');
-        },
-    },
-    workerCommandsWatcher,
-);
-
-function* workerCommandsWatcher() {
-    yield takeEvery('worker/fetchFeed', fetchFeedSaga);
-}
-
-function* fetchFeedSaga(action: any) {
-    const feedUrl = action.payload;
-    console.log('workerSaga started', feedUrl);
-
-    const fetchResult: FetchFeedResult = yield call(fetchFeed, feedUrl);
+function* fetchFeedWorkerSaga(action: FetchFeedAction) {
+    const fetchResult: FetchFeedResult = yield call(fetchFeed, action.url);
 
     switch (fetchResult.type) {
         case 'success': {
@@ -51,16 +22,16 @@ function* fetchFeedSaga(action: any) {
                     feedUrl: fetchResult.url,
                     feedData: fetchResult.response,
                 });
-                yield put<WorkerResponse>({ type: 'success', parsedFeed });
+                yield put<WorkerResponseAction>({ type: 'success', parsedFeed });
             } catch (e) {
                 // response is not a feed
-                yield put<WorkerResponse>({ type: 'parseError', url: fetchResult.url });
+                yield put<WorkerResponseAction>({ type: 'parseError', url: fetchResult.url });
             }
             break;
         }
 
         case 'error': {
-            yield put<WorkerResponse>({ type: 'fetchError', url: fetchResult.url });
+            yield put<WorkerResponseAction>({ type: 'fetchError', url: fetchResult.url });
             break;
         }
 
@@ -115,3 +86,5 @@ const callFeedParser = async (input: FeedParserInput): Promise<Feed> => {
         });
     });
 };
+
+export default fetchFeedWorkerSaga;

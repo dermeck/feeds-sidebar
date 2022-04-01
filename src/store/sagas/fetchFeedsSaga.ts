@@ -3,7 +3,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { Task } from 'redux-saga';
 import { takeEvery, put, join, fork, select } from 'redux-saga/effects';
 
-import { WorkerResponse } from '../../services/feedParser/workerApi';
+import { WorkerRequestAction, WorkerResponseAction } from '../../worker/workerApi';
 import feedsSlice, { fetchFeedsCommand } from '../slices/feeds';
 import { OptionsSliceState, selectOptions } from '../slices/options';
 import sessionSlice from '../slices/session';
@@ -25,7 +25,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
         tasks.push(yield fork(runworker, leftToFetch));
     }
 
-    const resultSet: WorkerResponse[][] = yield join(tasks);
+    const resultSet: WorkerResponseAction[][] = yield join(tasks);
     const results = resultSet.flat();
 
     const updatePayload = results.flatMap((r) => (r.type === 'success' ? [r.parsedFeed] : []));
@@ -45,22 +45,23 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
     );
 }
 
-const runworker = async (leftToFetch: string[]): Promise<WorkerResponse[]> => {
-    const worker = new Worker(new URL('../../services/feedParser/worker.ts', import.meta.url));
+const runworker = async (leftToFetch: string[]): Promise<WorkerResponseAction[]> => {
+    const worker = new Worker(new URL('../../worker/index.ts', import.meta.url));
 
-    const results: WorkerResponse[] = [];
+    const results: WorkerResponseAction[] = [];
 
     while (leftToFetch.length > 0) {
-        const nextUrl = leftToFetch.shift();
+        const url = leftToFetch.shift();
 
-        if (nextUrl === undefined) {
+        if (url === undefined) {
             throw new Error('not reachable.');
         }
 
-        worker.postMessage({ type: 'worker/fetchFeed', payload: nextUrl });
+        const message: WorkerRequestAction = { type: 'worker/fetchFeed', url };
+        worker.postMessage(message);
 
-        const result = await new Promise<WorkerResponse>((resolve) => {
-            worker.onmessage = (e: MessageEvent<WorkerResponse>) => {
+        const result = await new Promise<WorkerResponseAction>((resolve) => {
+            worker.onmessage = (e: MessageEvent<WorkerResponseAction>) => {
                 resolve(e.data);
             };
         });
