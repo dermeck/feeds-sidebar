@@ -1,6 +1,6 @@
 import { Theme } from '@emotion/react';
 
-import { colorKeywordToHex, rgba } from '../utils/colorUtils';
+import { resolveColorKeyword, rgba } from '../utils/colorUtils';
 
 const baseTheme: Theme = {
     colors: {
@@ -16,8 +16,8 @@ const baseTheme: Theme = {
 
         toolbarBackgroundColor: '-moz-Dialog',
         toolbarTextColor: '-moz-DialogText',
-        toolbarButtonHoverBackground: rgba(colorKeywordToHex('-moz-DialogText'), 0.17),
-        toolbarButtonActiveBackground: rgba(colorKeywordToHex('-moz-DialogText'), 0.3),
+        toolbarButtonHoverBackground: rgba(resolveColorKeyword('-moz-DialogText'), 0.17),
+        toolbarButtonActiveBackground: rgba(resolveColorKeyword('-moz-DialogText'), 0.3),
 
         selectedItemBackgroundColor: 'SelectedItem',
         selectedItemTextColor: 'SelectedItemText',
