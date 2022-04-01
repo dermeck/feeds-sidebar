@@ -9,7 +9,7 @@ interface FetchFeedResultError {
     url: string;
 }
 
-type FetchFeedResult = FetchFeedResultSuccess | FetchFeedResultError;
+export type FetchFeedResult = FetchFeedResultSuccess | FetchFeedResultError;
 
 export const fetchFeed = async (url: string): Promise<FetchFeedResult> => {
     try {

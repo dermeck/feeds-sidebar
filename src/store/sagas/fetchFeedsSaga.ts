@@ -57,7 +57,7 @@ const runworker = async (leftToFetch: string[]): Promise<WorkerResponse[]> => {
             throw new Error('not reachable.');
         }
 
-        worker.postMessage(nextUrl);
+        worker.postMessage({ type: 'worker/fetchFeed', payload: nextUrl });
 
         const result = await new Promise<WorkerResponse>((resolve) => {
             worker.onmessage = (e: MessageEvent<WorkerResponse>) => {
