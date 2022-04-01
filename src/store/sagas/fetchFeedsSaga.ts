@@ -1,29 +1,32 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 
+import { Task } from 'redux-saga';
 import { takeEvery, put, join, fork, select } from 'redux-saga/effects';
 
 import { WorkerResponse } from '../../services/feedParser/workerApi';
 import feedsSlice, { fetchFeedsCommand } from '../slices/feeds';
-import { selectOptions } from '../slices/options';
+import { OptionsSliceState, selectOptions } from '../slices/options';
 import sessionSlice from '../slices/session';
 
 export function* watchfetchFeedsSaga() {
     yield takeEvery(fetchFeedsCommand.type, fetchFeeds);
 }
 
-function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>): any {
+function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
     const leftToFetch = [...action.payload];
 
     yield put(sessionSlice.actions.changeFeedsStatus({ newStatus: 'loading', feedUrls: action.payload }));
 
-    const fetchThreadsCount = Math.min((yield select(selectOptions)).fetchThreadsCount, leftToFetch.length);
-    const tasks = [];
+    const options: OptionsSliceState = yield select(selectOptions);
+    const fetchThreadsCount = Math.min(options.fetchThreadsCount, leftToFetch.length);
+    const tasks: Task[] = [];
 
     for (let i = 0; i < fetchThreadsCount; i++) {
         tasks.push(yield fork(runworker, leftToFetch));
     }
 
-    const results: WorkerResponse[] = (yield join(tasks)).flat();
+    const resultSet: WorkerResponse[][] = yield join(tasks);
+    const results = resultSet.flat();
 
     const updatePayload = results.flatMap((r) => (r.type === 'success' ? [r.parsedFeed] : []));
     yield put(feedsSlice.actions.updateFeeds(updatePayload));
