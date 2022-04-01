@@ -1,12 +1,11 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { Task } from 'redux-saga';
-import { takeEvery, fork, join, put } from 'redux-saga/effects';
+import { takeEvery, put, join, fork, select } from 'redux-saga/effects';
 
-import { fetchFeed, FetchFeedResult } from '../../services/api';
-import parseFeed, { ParseFeedResult } from '../../services/feedParser';
-import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import feedsSlice, { fetchFeedsCommand, Feed } from '../slices/feeds';
+import { WorkerResponse } from '../../services/feedParser/workerApi';
+import feedsSlice, { fetchFeedsCommand } from '../slices/feeds';
+import { OptionsSliceState, selectOptions } from '../slices/options';
 import sessionSlice from '../slices/session';
 
 export function* watchfetchFeedsSaga() {
@@ -14,49 +13,23 @@ export function* watchfetchFeedsSaga() {
 }
 
 function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
-    const fetchTasks: Task[] = [];
+    const leftToFetch = [...action.payload];
 
     yield put(sessionSlice.actions.changeFeedsStatus({ newStatus: 'loading', feedUrls: action.payload }));
 
-    for (const url of action.payload) {
-        fetchTasks.push(yield fork(fetchFeed, url));
+    const options: OptionsSliceState = yield select(selectOptions);
+    const fetchThreadsCount = Math.min(options.fetchThreadsCount, leftToFetch.length);
+    const tasks: Task[] = [];
+
+    for (let i = 0; i < fetchThreadsCount; i++) {
+        tasks.push(yield fork(runworker, leftToFetch));
     }
 
-    const fetchResults: ReadonlyArray<FetchFeedResult> = yield join([...fetchTasks]);
-    const parseFeedTasks: Task[] = [];
-    const fetchFeedErrorUrls: string[] = [];
+    const resultSet: WorkerResponse[][] = yield join(tasks);
+    const results = resultSet.flat();
 
-    for (const fetchResult of fetchResults) {
-        switch (fetchResult.type) {
-            case 'success':
-                parseFeedTasks.push(
-                    yield fork(parseFeed, { feedUrl: fetchResult.url, feedData: fetchResult.response }),
-                );
-                break;
-
-            case 'error':
-                fetchFeedErrorUrls.push(fetchResult.url);
-                break;
-
-            default:
-                throw new UnreachableCaseError(fetchResult);
-        }
-    }
-
-    const parseResults: ReadonlyArray<ParseFeedResult> = yield join([...parseFeedTasks]);
-
-    const updatePayload = parseResults
-        .map((x) => {
-            if (x.type === 'success') {
-                return x.parsedFeed;
-            }
-
-            fetchFeedErrorUrls.push(x.url);
-        })
-        .filter((y) => y !== undefined) as Feed[];
-
+    const updatePayload = results.flatMap((r) => (r.type === 'success' ? [r.parsedFeed] : []));
     yield put(feedsSlice.actions.updateFeeds(updatePayload));
-
     yield put(
         sessionSlice.actions.changeFeedsStatus({
             newStatus: 'loaded',
@@ -67,7 +40,35 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
     yield put(
         sessionSlice.actions.changeFeedsStatus({
             newStatus: 'error',
-            feedUrls: fetchFeedErrorUrls,
+            feedUrls: results.flatMap((r) => (r.type !== 'success' ? [r.url] : [])),
         }),
     );
 }
+
+const runworker = async (leftToFetch: string[]): Promise<WorkerResponse[]> => {
+    const worker = new Worker(new URL('../../services/feedParser/worker.ts', import.meta.url));
+
+    const results: WorkerResponse[] = [];
+
+    while (leftToFetch.length > 0) {
+        const nextUrl = leftToFetch.shift();
+
+        if (nextUrl === undefined) {
+            throw new Error('not reachable.');
+        }
+
+        worker.postMessage(nextUrl);
+
+        const result = await new Promise<WorkerResponse>((resolve) => {
+            worker.onmessage = (e: MessageEvent<WorkerResponse>) => {
+                resolve(e.data);
+            };
+        });
+
+        results.push(result);
+    }
+
+    worker.terminate();
+
+    return results;
+};

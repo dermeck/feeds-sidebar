@@ -1,24 +1,48 @@
 import FeedParser, { Item } from 'feedparser';
 
 import { Feed, FeedItem } from '../../store/slices/feeds';
-import { FeedParserInput } from './feedParser';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
+import { fetchFeed } from './fetchFeed';
+import { WorkerResponse } from './workerApi';
 
-self.onmessage = async (e: MessageEvent<FeedParserInput>) => {
-    console.log('worker input data', e.data);
+interface FeedParserInput {
+    feedUrl: string;
+    feedData: string;
+}
 
-    const input = e.data;
+self.onmessage = async (e: MessageEvent<string>) => {
+    const feedUrl = e.data;
 
-    try {
-        const parsedFeed = await callFeedParser(input);
+    const fetchResult = await fetchFeed(feedUrl);
 
-        self.postMessage({
-            type: 'success',
-            parsedFeed,
-        });
-    } catch (e) {
-        console.log('error');
-        // response is not a feed
-        self.postMessage({ type: 'error', url: input.feedUrl });
+    switch (fetchResult.type) {
+        case 'success': {
+            try {
+                const parsedFeed = await callFeedParser({ feedUrl: fetchResult.url, feedData: fetchResult.response });
+                const message: WorkerResponse = {
+                    type: 'success',
+                    parsedFeed,
+                };
+                self.postMessage(message);
+            } catch (e) {
+                // response is not a feed
+                const message: WorkerResponse = { type: 'parseError', url: fetchResult.url };
+                self.postMessage(message);
+            }
+            break;
+        }
+
+        case 'error': {
+            const message: WorkerResponse = {
+                type: 'fetchError',
+                url: fetchResult.url,
+            };
+            self.postMessage(message);
+            break;
+        }
+
+        default:
+            throw new UnreachableCaseError(fetchResult);
     }
 };
 
