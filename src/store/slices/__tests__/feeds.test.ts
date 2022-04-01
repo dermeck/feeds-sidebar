@@ -1,4 +1,5 @@
-import feedsSlice, { Feed, FeedSliceState, selectTotalUnreadItems } from '../feeds';
+import { Feed } from '../../../model/feeds';
+import feedsSlice, { FeedSliceState, selectTotalUnreadItems } from '../feeds';
 
 const feed1Fixture: Feed = {
     id: 'feedId1',

@@ -3,8 +3,9 @@ import styled from '@emotion/styled';
 import React, { Fragment, FunctionComponent, memo, useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
+import { Feed as FeedType, FeedItem as FeedItemType } from '../../model/feeds';
 import { useAppDispatch } from '../../store/hooks';
-import feedsSlice, { Feed as FeedType, FeedItem as FeedItemType } from '../../store/slices/feeds';
+import feedsSlice from '../../store/slices/feeds';
 import sessionSlice, { Point } from '../../store/slices/session';
 import FeedItem from './FeedItem';
 

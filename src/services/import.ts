@@ -1,4 +1,4 @@
-import { Feed } from '../store/slices/feeds';
+import { Feed } from '../model/feeds';
 
 export const readOpmlFile = async (file: File): Promise<ReadonlyArray<Feed> | undefined> => {
     const reader = new FileReader();

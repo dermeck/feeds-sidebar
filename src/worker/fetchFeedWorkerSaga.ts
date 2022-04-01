@@ -1,50 +1,44 @@
 import FeedParser, { Item } from 'feedparser';
 
-import { Feed, FeedItem } from '../../store/slices/feeds';
-import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import { fetchFeed } from './fetchFeed';
-import { WorkerResponse } from './workerApi';
+import { call, put } from 'redux-saga/effects';
+
+import { Feed, FeedItem } from '../model/feeds';
+import { UnreachableCaseError } from '../utils/UnreachableCaseError';
+import { fetchFeed, FetchFeedResult } from './feedParser/fetchFeed';
+import { FetchFeedAction, WorkerResponseAction } from './workerApi';
 
 interface FeedParserInput {
     feedUrl: string;
     feedData: string;
 }
 
-self.onmessage = async (e: MessageEvent<string>) => {
-    const feedUrl = e.data;
-
-    const fetchResult = await fetchFeed(feedUrl);
+function* fetchFeedWorkerSaga(action: FetchFeedAction) {
+    const fetchResult: FetchFeedResult = yield call(fetchFeed, action.url);
 
     switch (fetchResult.type) {
         case 'success': {
             try {
-                const parsedFeed = await callFeedParser({ feedUrl: fetchResult.url, feedData: fetchResult.response });
-                const message: WorkerResponse = {
-                    type: 'success',
-                    parsedFeed,
-                };
-                self.postMessage(message);
+                const parsedFeed: Feed = yield call(callFeedParser, {
+                    feedUrl: fetchResult.url,
+                    feedData: fetchResult.response,
+                });
+                yield put<WorkerResponseAction>({ type: 'success', parsedFeed });
             } catch (e) {
                 // response is not a feed
-                const message: WorkerResponse = { type: 'parseError', url: fetchResult.url };
-                self.postMessage(message);
+                yield put<WorkerResponseAction>({ type: 'parseError', url: fetchResult.url });
             }
             break;
         }
 
         case 'error': {
-            const message: WorkerResponse = {
-                type: 'fetchError',
-                url: fetchResult.url,
-            };
-            self.postMessage(message);
+            yield put<WorkerResponseAction>({ type: 'fetchError', url: fetchResult.url });
             break;
         }
 
         default:
             throw new UnreachableCaseError(fetchResult);
     }
-};
+}
 
 const mapFeedItem = (item: Item): FeedItem => ({
     id: item.guid || item.link,
@@ -92,3 +86,5 @@ const callFeedParser = async (input: FeedParserInput): Promise<Feed> => {
         });
     });
 };
+
+export default fetchFeedWorkerSaga;
