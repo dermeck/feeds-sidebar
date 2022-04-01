@@ -2,9 +2,13 @@ import FeedParser, { Item } from 'feedparser';
 
 import { Feed, FeedItem } from '../../store/slices/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import { fetchFeed } from '../api';
-import { FeedParserInput } from './feedParser';
+import { fetchFeed } from './fetchFeed';
 import { WorkerResponse } from './workerApi';
+
+interface FeedParserInput {
+    feedUrl: string;
+    feedData: string;
+}
 
 self.onmessage = async (e: MessageEvent<string>) => {
     const feedUrl = e.data;
