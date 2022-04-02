@@ -16,7 +16,6 @@ interface Props {
 const ContextMenu: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
-    // TODO open menu to the left if x coordinate is to far right
     return (
         <MenuContainer anchorTop={props.anchorPoint.y} anchorLeft={props.anchorPoint.x}>
             <MenuList>
