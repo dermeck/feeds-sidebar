@@ -20,7 +20,7 @@ export const StyledListItem = styled.li`
     flex-direction: row;
     align-items: center;
 
-    padding: 0.4rem;
+    padding: 6.5px;
     padding-left: ${(props: { hasIcon: boolean }) => (props.hasIcon ? '4px' : '24px')};
 
     list-style: none;

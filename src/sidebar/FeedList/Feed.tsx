@@ -3,10 +3,12 @@ import styled from '@emotion/styled';
 import React, { Fragment, FunctionComponent, memo, useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
+import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { Feed as FeedType, FeedItem as FeedItemType } from '../../model/feeds';
 import { useAppDispatch } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
-import sessionSlice, { Point } from '../../store/slices/session';
+import sessionSlice from '../../store/slices/session';
+import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import FeedItem from './FeedItem';
 
 const FeedContainer = styled.ul`
@@ -61,6 +63,9 @@ const renderItem = (item: FeedItemType, props: Props) => (
     <FeedItem key={item.id + item.title} feedId={props.feed.id} item={item} indented={props.showTitle} />
 );
 
+// TODO find a more robust way to determine menu height
+const contextMenuHeight = 64; // 2 menu items, each 32px
+
 const Feed: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
@@ -73,12 +78,22 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
     const [expanded, setExpanded] = useState<boolean>(true);
     const [focus, setFocus] = useState<boolean>(false);
 
+    const { height, width } = useWindowDimensions();
+
     const handleFeedTitleClick = () => {
         dispatch(feedsSlice.actions.select(props.feed.id));
     };
 
-    const handleOnContextMenu = (anchorPoint: Point) => {
-        dispatch(sessionSlice.actions.showContextMenu(anchorPoint));
+    const handleOnContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (width === undefined || height === undefined) {
+            console.error('Could not open context menu. Unable to determine dimensions of window.');
+            return;
+        }
+
+        const x = width - e.clientX < menuWidthInPx ? width - menuWidthInPx : e.clientX;
+        const y = height - e.clientY < contextMenuHeight ? height - contextMenuHeight : e.clientY;
+
+        dispatch(sessionSlice.actions.showContextMenu({ x, y }));
         dispatch(feedsSlice.actions.select(props.feed.id));
     };
 
@@ -99,7 +114,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                     }}
                     onContextMenu={(e) => {
                         e.preventDefault();
-                        handleOnContextMenu({ x: e.clientX, y: e.clientY });
+                        handleOnContextMenu(e);
                     }}>
                     <ToggleIndicator>
                         {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
