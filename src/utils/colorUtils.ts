@@ -9,9 +9,7 @@ export const resolveColorKeyword = (colorKeyword: string) => {
     const canvasContext = document.createElement('canvas').getContext('2d');
 
     if (!canvasContext) {
-        throw new Error(
-            `Could not convert color keyword "${colorKeyword}" to its hex representation. Canvas 2d context is null.`,
-        );
+        throw new Error(`Could not resolve color keyword "${colorKeyword}". Canvas 2d context is null.`);
     }
 
     canvasContext.fillStyle = colorKeyword;
