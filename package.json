@@ -9,14 +9,13 @@
         "start": "webpack --mode development --watch --env enableLoggerMiddleware=true",
         "test": "jest",
         "start:stand-alone": "webpack serve --config webpack.stand-alone.js --mode development",
-        "build": "yarn run lint && rimraf build && webpack --mode production && rimraf build/stand-alone  **/*.js.map **/**/*.js.map",
-        "build:zip": "yarn run build && yarn run zip-build",
         "build:xpi": "yarn run build && yarn run sign",
+        "build:zip": "yarn run build && web-ext build --source-dir=build --artifacts-dir=dist",
+        "build": "yarn run lint && rimraf build && webpack --mode production && rimraf build/stand-alone  **/*.js.map **/**/*.js.map",
         "sign": "web-ext sign --source-dir=build --artifacts-dir=dist --api-key=$npm_config_ffaddon_api_key --api-secret=$npm_config_ffaddon_api_secret",
         "lint": "yarn run lint:js && yarn run lint:styles",
         "lint:js": "eslint .eslintrc.json src/",
         "lint:styles": "stylelint '**/*.tsx' --config stylelintrc.json",
-        "package": "web-ext build --source-dir dist",
         "start:hotreload": "web-ext run --source-dir dist",
         "prettier": "prettier --write '**/*.{ts,js,css,html}'",
         "check-env": "node -e 'console.log(process.env)' | grep npm"
@@ -70,8 +69,7 @@
         "webextension-polyfill-ts": "^0.26.0",
         "webpack": "^5.70.0",
         "webpack-cli": "^4.9.2",
-        "webpack-dev-server": "^4.7.4",
-        "zip-build": "^1.6.0"
+        "webpack-dev-server": "^4.7.4"
     },
     "dependencies": {},
     "prettier": {
