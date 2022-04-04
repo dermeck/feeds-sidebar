@@ -66,7 +66,9 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
     return (
         <Container>
             <ToolbarContainer>
-                <ToolbarButton onClick={() => dispatch(sessionSlice.actions.changeView(View.feedList))}>
+                <ToolbarButton
+                    title="Back to Feed List"
+                    onClick={() => dispatch(sessionSlice.actions.changeView(View.feedList))}>
                     <ArrowLeft />
                 </ToolbarButton>
                 <Title>Add New Feed</Title>

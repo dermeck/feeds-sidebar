@@ -142,6 +142,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     <Globe size={16} />
                 </GlobeButton>
                 <Link
+                    title={`${props.item.title} \n${props.item.url}`}
                     xButtonVisible={showXButton}
                     href={props.item.url}
                     onAuxClick={(e) => {
@@ -156,7 +157,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     {props.item.title}
                 </Link>
                 {showXButton && (
-                    <XButton onClick={() => handleXButtonClick(props.feedId, props.item.id)}>
+                    <XButton title="Mark as Read" onClick={() => handleXButtonClick(props.feedId, props.item.id)}>
                         <X size={22} />
                     </XButton>
                 )}
