@@ -79,17 +79,22 @@ const Sidebar: FunctionComponent = () => {
             }}
             onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
             <Header>
-                <FetchAllButton onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.url)))}>
+                <FetchAllButton
+                    title="Fetch all Feeds"
+                    onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.url)))}>
                     <FetchAllButtonIcon size={18} spin={isLoading} />
                 </FetchAllButton>
 
                 <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
 
-                <ShowFeedTitleButton onClick={() => setShowFolders(!showFolders)} active={showFolders}>
+                <ShowFeedTitleButton
+                    title="Toggle Show Folders"
+                    onClick={() => setShowFolders(!showFolders)}
+                    active={showFolders}>
                     <Folder size={18} />
                 </ShowFeedTitleButton>
 
-                <MoreMenuButton active={moreMenuVisible}>
+                <MoreMenuButton title="More Options" active={moreMenuVisible}>
                     <MoreHorizontal
                         onClick={(e) => {
                             const offsetHeight = e.currentTarget.parentElement?.offsetHeight;
