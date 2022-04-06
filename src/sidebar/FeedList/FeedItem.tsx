@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
+import { Globe, X } from 'phosphor-react';
 
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
-import { Globe, X } from 'react-feather';
 
 import { ToolbarButton } from '../../base-components';
 import { FeedItem as FeedItemType } from '../../model/feeds';
@@ -61,7 +61,7 @@ const XButton = styled(ToolbarButton)({
     width: '22px',
     height: '22px',
     gridColumn: '3',
-    padding: 0,
+    padding: '1px',
     ':hover': {
         cursor: 'pointer',
     },
@@ -139,7 +139,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
             }}>
             <GridContainer>
                 <GlobeButton>
-                    <Globe size={16} />
+                    <Globe size={18} />
                 </GlobeButton>
                 <Link
                     title={`${props.item.title} \n${props.item.url}`}
@@ -158,7 +158,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                 </Link>
                 {showXButton && (
                     <XButton title="Mark as Read" onClick={() => handleXButtonClick(props.feedId, props.item.id)}>
-                        <X size={22} />
+                        <X size={20} weight="bold" />
                     </XButton>
                 )}
             </GridContainer>

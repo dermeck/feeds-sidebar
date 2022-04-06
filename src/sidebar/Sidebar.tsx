@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
+import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react';
 
 import { FunctionComponent, useRef, useState } from 'react';
-import { Folder, MoreHorizontal, RefreshCw } from 'react-feather';
 
 import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../base-components';
 import { menuWidthInPx } from '../base-components/styled/Menu';
@@ -29,12 +29,12 @@ const Header = styled(ToolbarContainer)`
 
 const FetchAllButton = styled(ToolbarButton)({
     gridColumn: '1',
-    padding: '7px',
+    padding: '5px',
 });
 
 const ShowFeedTitleButton = styled(ToolbarButton)({
     gridColumn: '3',
-    padding: '7px',
+    padding: '5px',
 });
 
 const MoreMenuButton = styled(ToolbarButton)({
@@ -46,7 +46,7 @@ const FilterInput = styled(Input)({
     width: '100%',
 });
 
-const FetchAllButtonIcon = styled(RefreshCw, {
+const FetchAllButtonIcon = styled(ArrowsClockwise, {
     // prevent "Warning: Received `true` for a non-boolean attribute `spin`."
     shouldForwardProp: (props) => props !== 'spin',
 })<{ spin: boolean }>`
@@ -82,7 +82,7 @@ const Sidebar: FunctionComponent = () => {
                 <FetchAllButton
                     title="Fetch all Feeds"
                     onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.url)))}>
-                    <FetchAllButtonIcon size={18} spin={isLoading} />
+                    <FetchAllButtonIcon size={22} weight="regular" spin={isLoading} />
                 </FetchAllButton>
 
                 <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
@@ -91,11 +91,13 @@ const Sidebar: FunctionComponent = () => {
                     title="Toggle Show Folders"
                     onClick={() => setShowFolders(!showFolders)}
                     active={showFolders}>
-                    <Folder size={18} />
+                    <FolderSimple size={22} />
                 </ShowFeedTitleButton>
 
                 <MoreMenuButton title="More Options" active={moreMenuVisible}>
-                    <MoreHorizontal
+                    <DotsThreeOutline
+                        size={22}
+                        weight="fill"
                         onClick={(e) => {
                             const offsetHeight = e.currentTarget.parentElement?.offsetHeight;
                             const offsetLeft = e.currentTarget.parentElement?.offsetLeft;
