@@ -2,9 +2,9 @@ import FeedParser, { Item } from 'feedparser';
 
 import { call, put } from 'redux-saga/effects';
 
-import { Feed, FeedItem } from '../model/feeds';
-import { UnreachableCaseError } from '../utils/UnreachableCaseError';
-import { fetchFeed, FetchFeedResult } from './feedParser/fetchFeed';
+import { Feed, FeedItem } from '../../../model/feeds';
+import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
+import { fetchFeed, FetchFeedResult } from './fetchFeed';
 import { FetchFeedAction, WorkerResponseAction } from './workerApi';
 
 interface FeedParserInput {

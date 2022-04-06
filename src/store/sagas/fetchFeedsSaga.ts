@@ -3,10 +3,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { Task } from 'redux-saga';
 import { takeEvery, put, join, fork, select } from 'redux-saga/effects';
 
-import { WorkerRequestAction, WorkerResponseAction } from '../../worker/workerApi';
 import feedsSlice, { fetchFeedsCommand } from '../slices/feeds';
 import { OptionsSliceState, selectOptions } from '../slices/options';
 import sessionSlice from '../slices/session';
+import { WorkerRequestAction, WorkerResponseAction } from './worker/workerApi';
 
 export function* watchfetchFeedsSaga() {
     yield takeEvery(fetchFeedsCommand.type, fetchFeeds);
@@ -46,7 +46,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
 }
 
 const runworker = async (leftToFetch: string[]): Promise<WorkerResponseAction[]> => {
-    const worker = new Worker(new URL('../../worker/index.ts', import.meta.url));
+    const worker = new Worker(new URL('./worker/index.ts', import.meta.url));
 
     const results: WorkerResponseAction[] = [];
 

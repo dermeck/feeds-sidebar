@@ -1,4 +1,4 @@
-import { Feed } from '../model/feeds';
+import { Feed } from '../../../model/feeds';
 
 export interface FetchFeedAction {
     type: 'worker/fetchFeed';
