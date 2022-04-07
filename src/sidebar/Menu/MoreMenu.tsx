@@ -44,12 +44,12 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
 
                 <Divider />
 
-                <MenuItem icon="arrowUp-circle" onMouseDown={() => opmlExport(feeds)}>
+                <MenuItem icon="export" onMouseDown={() => opmlExport(feeds)}>
                     Export
                 </MenuItem>
 
                 <MenuItem
-                    icon="arrowDown-circle"
+                    icon="import"
                     onMouseDown={(e) => {
                         e.stopPropagation();
                         inputFileRef.current?.click();

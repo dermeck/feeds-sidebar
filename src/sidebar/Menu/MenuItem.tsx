@@ -1,13 +1,13 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
+import { DownloadSimple, UploadSimple, CheckSquare, Plus } from 'phosphor-react';
 
 import { FunctionComponent, MouseEventHandler } from 'react';
-import { ArrowDownCircle, ArrowUpCircle, CheckSquare, Plus } from 'react-feather';
 
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 
-type IconKeys = 'plus' | 'arrowDown-circle' | 'arrowUp-circle' | 'check-square';
+type IconKeys = 'plus' | 'import' | 'export' | 'check-square';
 
 interface Props {
     icon?: IconKeys;
@@ -34,25 +34,26 @@ export const StyledListItem = styled.li`
 const IconContainer = styled.div`
     /* center the icon */
     width: 24px;
-    height: 16px;
+    height: 18px;
+    margin-right: 2px;
     padding-left: 4px;
 `;
 
 const renderIcon = (key: IconKeys) => {
-    const size = 16;
+    const size = 18;
 
     switch (key) {
         case 'plus':
             return <Plus size={size} />;
 
-        case 'arrowDown-circle':
-            return <ArrowDownCircle size={size} />;
+        case 'import':
+            return <DownloadSimple size={size} weight="bold" />;
 
-        case 'arrowUp-circle':
-            return <ArrowUpCircle size={size} />;
+        case 'export':
+            return <UploadSimple size={size} weight="bold" />;
 
         case 'check-square':
-            return <CheckSquare size={size} />;
+            return <CheckSquare size={size} weight="bold" />;
 
         default:
             throw new UnreachableCaseError(key);

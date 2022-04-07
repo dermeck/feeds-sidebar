@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
+import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
 import React, { Fragment, FunctionComponent, memo, useEffect, useState } from 'react';
-import { ChevronDown, ChevronRight, Folder } from 'react-feather';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { Feed as FeedType, FeedItem as FeedItemType } from '../../model/feeds';
@@ -117,9 +117,9 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                         handleOnContextMenu(e);
                     }}>
                     <ToggleIndicator>
-                        {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                        {expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
                     </ToggleIndicator>
-                    <Folder size={16} />
+                    <FolderSimple size={20} />
                     <FeedTitle>{props.feed.title || props.feed.url}</FeedTitle>
                 </FeedTitleContainer>
             )}

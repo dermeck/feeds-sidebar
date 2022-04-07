@@ -1,8 +1,8 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
+import { ArrowLeft } from 'phosphor-react';
 
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
-import { ArrowLeft } from 'react-feather';
 
 import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -69,7 +69,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                 <ToolbarButton
                     title="Back to Feed List"
                     onClick={() => dispatch(sessionSlice.actions.changeView(View.feedList))}>
-                    <ArrowLeft />
+                    <ArrowLeft size={22} />
                 </ToolbarButton>
                 <Title>Add New Feed</Title>
             </ToolbarContainer>

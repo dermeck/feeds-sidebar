@@ -1,24 +1,24 @@
 import styled from '@emotion/styled';
+import { Warning, Spinner, Check } from 'phosphor-react';
 
 import React, { Fragment, FunctionComponent } from 'react';
-import { AlertTriangle, Check, Loader } from 'react-feather';
 
 import { Label } from '../../base-components';
 import { useAppSelector } from '../../store/hooks';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 
 const List = styled.ul`
-    padding-left: 1rem;
-    margin-top: 0.5rem;
+    padding-left: 12px;
+    margin-top: 6px;
 `;
 
 const ListItem = styled.li`
-    padding: 0.3rem;
+    padding: 4px;
 
     list-style: none;
 
     & > svg {
-        margin-right: 0.5rem;
+        margin-right: 6px;
         vertical-align: middle;
     }
 `;
@@ -46,7 +46,7 @@ const NewFeedsList: FunctionComponent<Props> = (props: Props) => {
                         case 'loading':
                             return (
                                 <ListItem>
-                                    <Loader size={16} />
+                                    <Spinner size={18} />
                                     loading...
                                 </ListItem>
                             );
@@ -56,7 +56,7 @@ const NewFeedsList: FunctionComponent<Props> = (props: Props) => {
                             if (loadedFeed !== undefined) {
                                 return (
                                     <ListItem>
-                                        <Check size={16} />
+                                        <Check size={18} />
                                         {loadedFeed.title}
                                     </ListItem>
                                 );
@@ -68,7 +68,7 @@ const NewFeedsList: FunctionComponent<Props> = (props: Props) => {
                         case 'error':
                             return (
                                 <ListItem>
-                                    <AlertTriangle size={16} /> {newFeedUrl}
+                                    <Warning size={18} /> {newFeedUrl}
                                 </ListItem>
                             );
 
