@@ -44,7 +44,10 @@ const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
 `;
 
 const FeedTitle = styled.label`
+    overflow: hidden;
     margin-left: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `;
 
 const ToggleIndicator = styled.div`
