@@ -4,7 +4,7 @@ import { ArrowLeft } from 'phosphor-react';
 
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 
-import { Button, ToolbarContainer, Input, ToolbarButton, Label } from '../../base-components';
+import { Button, ToolbarContainer, Input, ToolbarButton, Label, toolbarContainerheight } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchFeedsCommand } from '../../store/slices/feeds';
 import sessionSlice, { View } from '../../store/slices/session';
@@ -16,7 +16,8 @@ const Container = styled.div`
 
 const ContentContainer = styled.div`
     display: flex;
-    height: 100%;
+    height: calc(100vh - ${toolbarContainerheight});
+
     flex-direction: column;
     padding: 0.5rem;
 `;
