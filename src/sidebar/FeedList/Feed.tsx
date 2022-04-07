@@ -44,12 +44,19 @@ const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
 `;
 
 const FeedTitle = styled.label`
+    overflow: hidden;
     margin-left: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `;
 
 const ToggleIndicator = styled.div`
     margin-right: 4px;
     margin-bottom: -6px;
+`;
+
+const FeedFolderIcon = styled(FolderSimple)`
+    flex-shrink: 0;
 `;
 
 interface Props {
@@ -119,7 +126,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                     <ToggleIndicator>
                         {expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
                     </ToggleIndicator>
-                    <FolderSimple size={20} />
+                    <FeedFolderIcon size={20} />
                     <FeedTitle>{props.feed.title || props.feed.url}</FeedTitle>
                 </FeedTitleContainer>
             )}
