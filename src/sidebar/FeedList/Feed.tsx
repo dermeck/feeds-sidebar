@@ -55,6 +55,10 @@ const ToggleIndicator = styled.div`
     margin-bottom: -6px;
 `;
 
+const FeedFolderIcon = styled(FolderSimple)`
+    flex-shrink: 0;
+`;
+
 interface Props {
     feed: FeedType;
     selectedId: string;
@@ -122,7 +126,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                     <ToggleIndicator>
                         {expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
                     </ToggleIndicator>
-                    <FolderSimple size={20} />
+                    <FeedFolderIcon size={20} />
                     <FeedTitle>{props.feed.title || props.feed.url}</FeedTitle>
                 </FeedTitleContainer>
             )}
