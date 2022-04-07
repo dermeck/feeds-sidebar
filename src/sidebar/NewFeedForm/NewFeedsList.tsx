@@ -10,10 +10,10 @@ import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 const List = styled.ul`
     flex: 1;
     padding-left: 12px;
-    margin-top: 6px;
     border: 1px solid;
-    border-radius: 4px;
     border-color: ${(props) => props.theme.colors.menuBorderColor};
+    margin-top: 6px;
+    border-radius: 4px;
     overflow-y: scroll;
 `;
 

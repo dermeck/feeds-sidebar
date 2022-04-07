@@ -35,8 +35,8 @@ const IconContainer = styled.div`
     /* center the icon */
     width: 24px;
     height: 18px;
-    margin-right: 2px;
     padding-left: 4px;
+    margin-right: 2px;
 `;
 
 const renderIcon = (key: IconKeys) => {
