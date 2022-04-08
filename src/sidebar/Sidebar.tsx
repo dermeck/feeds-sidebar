@@ -11,6 +11,7 @@ import { toolbarButtonPaddingInPx, toolbarButtonSideLengthInPx } from '../base-c
 import { spin } from '../base-components/styled/animations';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand } from '../store/slices/feeds';
+import optionsSlice, { selectOptions } from '../store/slices/options';
 import sessionSlice, { MenuType, selectIsLoadingFeeds, View } from '../store/slices/session';
 import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
@@ -62,12 +63,12 @@ const Sidebar: FunctionComponent = () => {
     const moreMenuVisible = useAppSelector(
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
+    const showFeedTitles = useAppSelector(selectOptions).showFeedTitles;
 
     const activeView = useAppSelector((state) => state.session.activeView);
     const feeds = useAppSelector((state) => state.feeds.feeds);
     const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
 
-    const [showFolders, setShowFolders] = useState<boolean>(true);
     const [filterString, setFilterString] = useState<string>('');
 
     return (
@@ -89,8 +90,8 @@ const Sidebar: FunctionComponent = () => {
 
                 <ShowFeedTitleButton
                     title="Toggle Show Folders"
-                    onClick={() => setShowFolders(!showFolders)}
-                    active={showFolders}>
+                    onClick={() => dispatch(optionsSlice.actions.toggleShowFeedTitles())}
+                    active={showFeedTitles}>
                     <FolderSimple size={22} />
                 </ShowFeedTitleButton>
 
@@ -114,7 +115,10 @@ const Sidebar: FunctionComponent = () => {
                     />
                 </MoreMenuButton>
             </Header>
-            <FeedList showFeedTitles={showFolders && filterString.trim() === ''} filterString={filterString.trim()} />
+            <FeedList
+                showFeedTitles={showFeedTitles && filterString.trim() === ''}
+                filterString={filterString.trim()}
+            />
 
             <Drawer visible={activeView === View.subscribe}>
                 <NewFeedForm urlInputRef={urlInputRef} />

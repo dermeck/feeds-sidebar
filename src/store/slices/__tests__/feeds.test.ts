@@ -1,5 +1,7 @@
 import { Feed } from '../../../model/feeds';
+import { extensionStateLoaded } from '../../actions';
 import feedsSlice, { FeedSliceState, selectTotalUnreadItems } from '../feeds';
+import { initialState as initialOptionsState } from '../options';
 
 const feed1Fixture: Feed = {
     id: 'feedId1',
@@ -67,16 +69,16 @@ const itemFixture = (id: string) => ({
 
 const feedsFixture = [feed1Fixture, feed2Fixture];
 
-describe('extensionStateLoaded action', () => {
+describe('global extensionStateLoaded action', () => {
     it('replaces previous state with payload', () => {
         const prevState: FeedSliceState = {
             feeds: [feed1Fixture],
             selectedId: '1',
         };
 
-        const action = feedsSlice.actions.extensionStateLoaded({
-            feeds: [feed2Fixture],
-            selectedId: '',
+        const action = extensionStateLoaded({
+            feeds: { feeds: [feed2Fixture], selectedId: '' },
+            options: initialOptionsState,
         });
 
         expect(feedsSlice.reducer(prevState, action)).toStrictEqual({

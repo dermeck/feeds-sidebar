@@ -1,6 +1,7 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { Feed } from '../../model/feeds';
+import { extensionStateLoaded } from '../actions';
 import { RootState } from '../store';
 
 export type FeedSliceState = {
@@ -68,9 +69,6 @@ const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
-        extensionStateLoaded(_state, action: PayloadAction<FeedSliceState>) {
-            return { ...action.payload };
-        },
         select(state, action: PayloadAction<string>) {
             state.selectedId = action.payload;
         },
@@ -115,6 +113,11 @@ const feedsSlice = createSlice({
                     ? state.feeds[selectedIndex].id
                     : state.feeds[selectedIndex - 1].id;
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(extensionStateLoaded, (state, action) => {
+            return { ...action.payload.feeds };
+        });
     },
 });
 
