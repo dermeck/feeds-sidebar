@@ -2,7 +2,7 @@ import { encode } from 'html-entities';
 
 import { Feed } from '../model/feeds';
 
-const exportFilename = 'ytrss-export.opml';
+const exportFilename = 'feeds-sidebar-export.opml';
 
 const opmlExport = (feeds: ReadonlyArray<Feed>): void => {
     const { xmlDoc, bodyNode } = createBaseDocument();
@@ -26,7 +26,7 @@ const createBaseDocument = () => {
     rootNode.setAttribute('version', '1.0');
 
     const headNode = xmlDoc.createElement('head');
-    headNode.setAttribute('title', 'YTRSS Export');
+    headNode.setAttribute('title', 'Feeds Sidebar Export');
     headNode.setAttribute('dateCreated', new Date().toLocaleDateString());
     rootNode.appendChild(headNode);
 

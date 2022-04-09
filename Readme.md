@@ -1,7 +1,6 @@
-# YTRSS
-(**Y**et ano**T**her **RSS** Feed Reader)
+# Feeds Sidebar
 
-A Firefox Extensions to manage web feeds in the Sidebar.
+A Firefox Extensions to manage Web Feeds in the Sidebar.
 
 ---
 

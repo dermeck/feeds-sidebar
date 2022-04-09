@@ -9,7 +9,7 @@ Build the extension with `yarn start`
 Load the Extension
 - in Firefox navigate to `about:debugging#/runtime/this-firefox` > `Load  Temporary Add-on...`
 - select the `manifest.json` file from the `build` folder
-- open the Firefox sidebar and select `YTRSS`
+- open the Firefox sidebar and select `Feeds`
 
 Debugging
 - `Inspect` will bring up the [Toolbox](https://extensionworkshop.com/documentation/develop/debugging/#developer-tools-toolbox) for the extension (DevTools)
