@@ -1,11 +1,16 @@
 {
     "manifest_version": 2,
     "version": "0.12",
-    "name": "YTRSS",
+    "name": "Feeds",
+    "description": "Manage your Web Feeds in the Sidebar.",
+    "developer": {
+        "name": "dermeck",
+        "url": "https://github.com/dermeck"
+    },
 
     "browser_specific_settings": {
         "gecko": {
-            "id": "{cdd1ddb6-e12a-4c19-a0fc-4d8e304a3a1e}",
+            "id": "{5ec8f44f-ecf4-44ba-aa3b-56af66c6459d}",
             "strict_min_version": "89.0"
         }
     },
@@ -21,7 +26,7 @@
     },
 
     "sidebar_action": {
-        "default_title": "YTRSS",
+        "default_title": "Feeds",
         "default_panel": "/sidebar/sidebar.html",
         "default_icon": "rss.svg",
         "browser_style": true
