@@ -2,7 +2,7 @@
     "name": "feeds",
     "version": "0.13.0",
     "description": "A Firefox extension to read RSS feeds",
-    "repository": "git@github.com:dermeck/ytrss.git",
+    "repository": "git@github.com:dermeck/feeds-sidebar.git",
     "author": "dermeck feeds-sb@dermeck.mozmail.com",
     "license": "MIT",
     "scripts": {
