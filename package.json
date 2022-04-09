@@ -1,5 +1,5 @@
 {
-    "name": "ytrss",
+    "name": "feeds",
     "version": "0.12.0",
     "description": "A Firefox extension to read RSS feeds",
     "repository": "git@github.com:dermeck/ytrss.git",
