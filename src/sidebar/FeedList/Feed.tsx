@@ -13,7 +13,8 @@ import FeedItem from './FeedItem';
 
 const FeedContainer = styled.ul`
     padding-left: 0;
-    margin: 0 0 0.2rem 0;
+    margin: 0;
+    margin-bottom: -4px;
     opacity: 0.9;
 `;
 
@@ -26,7 +27,7 @@ const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 2px 0 3px 8px;
+    padding: 3px 0 3px 8px;
 
     background-color: ${(props) =>
         props.selected
@@ -57,6 +58,7 @@ const ToggleIndicator = styled.div`
 
 const FeedFolderIcon = styled(FolderSimple)`
     flex-shrink: 0;
+    margin-top: -2px; /* align with label */
 `;
 
 interface Props {
@@ -126,7 +128,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                     <ToggleIndicator>
                         {expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
                     </ToggleIndicator>
-                    <FeedFolderIcon size={20} />
+                    <FeedFolderIcon size={20} weight="light" />
                     <FeedTitle>{props.feed.title || props.feed.url}</FeedTitle>
                 </FeedTitleContainer>
             )}
