@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Globe, X } from 'phosphor-react';
+import { GlobeSimple, X } from 'phosphor-react';
 
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
@@ -32,11 +32,10 @@ const GridContainer = styled.div`
     align-items: center;
     padding-right: 6px;
     grid-column-gap: 4px;
-    grid-template-columns: 16px 1fr 22px;
+    grid-template-columns: 18px 1fr 22px;
 `;
 
 const GlobeButton = styled.div`
-    padding: 2px 0;
     grid: '1';
 `;
 
@@ -44,7 +43,7 @@ const Link = styled.a<{ xButtonVisible: boolean }>`
     overflow: hidden;
     width: 100%;
     height: 100%;
-    padding-top: 4.5px;
+    padding-top: 2px;
 
     color: inherit;
     grid-column: ${(props) => (props.xButtonVisible ? 2 : '2 / span 2')};
@@ -139,7 +138,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
             }}>
             <GridContainer>
                 <GlobeButton>
-                    <Globe size={18} />
+                    <GlobeSimple size={20} weight="light" />
                 </GlobeButton>
                 <Link
                     title={`${props.item.title} \n${props.item.url}`}
