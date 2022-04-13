@@ -36,6 +36,7 @@ const GridContainer = styled.div`
 `;
 
 const GlobeButton = styled.div`
+    display: inherit;
     grid: '1';
 `;
 

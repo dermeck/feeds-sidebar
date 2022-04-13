@@ -14,7 +14,6 @@ import FeedItem from './FeedItem';
 const FeedContainer = styled.ul`
     padding-left: 0;
     margin: 0;
-    margin-bottom: -4px;
     opacity: 0.9;
 `;
 
