@@ -1,6 +1,6 @@
 # Feeds Sidebar
 
-A Firefox Extensions to manage Web Feeds in the Sidebar.
+A Firefox Extension to manage Web Feeds in the Sidebar.
 
 ---
 
