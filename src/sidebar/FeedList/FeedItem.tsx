@@ -41,9 +41,8 @@ const GlobeButton = styled.div`
 
 const Link = styled.a<{ xButtonVisible: boolean }>`
     overflow: hidden;
-    width: 100%;
-    height: 100%;
-    padding-top: 2px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 
     color: inherit;
     grid-column: ${(props) => (props.xButtonVisible ? 2 : '2 / span 2')};
