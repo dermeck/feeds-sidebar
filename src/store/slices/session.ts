@@ -30,6 +30,7 @@ export type SessionSliceState = {
 
     menuContext?: MenuContext;
     menuVisible: boolean;
+    newFolderEditActive: boolean;
 };
 
 export const initialState: SessionSliceState = {
@@ -38,6 +39,7 @@ export const initialState: SessionSliceState = {
 
     menuContext: undefined,
     menuVisible: false,
+    newFolderEditActive: false,
 };
 
 export const selectIsLoadingFeeds = (state: SessionSliceState) => state.feedStatus.some((x) => x.status === 'loading');
@@ -66,6 +68,9 @@ const sessionSlice = createSlice({
         },
         hideMenu(state) {
             state.menuVisible = false;
+        },
+        newFolder(state) {
+            state.newFolderEditActive = true;
         },
         changeFeedsStatus(
             state,

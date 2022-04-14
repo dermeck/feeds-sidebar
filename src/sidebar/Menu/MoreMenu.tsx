@@ -38,6 +38,10 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
                     Add New Feeds
                 </MenuItem>
 
+                <MenuItem icon="folder-plus" onMouseDown={() => dispatch(sessionSlice.actions.newFolder())}>
+                    New Folder
+                </MenuItem>
+
                 <MenuItem icon="check-square" onMouseDown={() => dispatch(feedsSlice.actions.markAllAsRead())}>
                     Mark All Read
                 </MenuItem>

@@ -64,6 +64,7 @@ const Sidebar: FunctionComponent = () => {
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
     const showFeedTitles = useAppSelector(selectOptions).showFeedTitles;
+    const showNewFolderDialog = useAppSelector((state) => state.session.newFolderEditActive);
 
     const activeView = useAppSelector((state) => state.session.activeView);
     const feeds = useAppSelector((state) => state.feeds.feeds);
@@ -115,6 +116,9 @@ const Sidebar: FunctionComponent = () => {
                     />
                 </MoreMenuButton>
             </Header>
+
+            {showNewFolderDialog && 'New Folder ...'}
+
             <FeedList
                 showFeedTitles={showFeedTitles && filterString.trim() === ''}
                 filterString={filterString.trim()}
