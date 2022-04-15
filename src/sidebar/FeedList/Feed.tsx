@@ -67,9 +67,22 @@ interface Props {
     filterString: string;
 }
 
-const renderItem = (item: FeedItemType, props: Props) => (
-    <FeedItem key={item.id + item.title} feedId={props.feed.id} item={item} indented={props.showTitle} />
-);
+const renderItems = (props: Props) =>
+    props.feed.items.some((x) => !x.isRead || x.id === props.selectedId) && (
+        <FeedContainer>
+            {props.feed.items.map(
+                (item) =>
+                    item.title?.toLowerCase().includes(props.filterString.toLowerCase()) && (
+                        <FeedItem
+                            key={item.id + item.title}
+                            feedId={props.feed.id}
+                            item={item}
+                            indented={props.showTitle}
+                        />
+                    ),
+            )}
+        </FeedContainer>
+    );
 
 // TODO find a more robust way to determine menu height
 const contextMenuHeight = 64; // 2 menu items, each 32px
@@ -105,11 +118,15 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
         dispatch(feedsSlice.actions.select(props.feed.id));
     };
 
+    if (!props.showTitle) {
+        // only show links, no folder
+        renderItems(props);
+    }
+
     return (
         <Fragment>
             {props.showTitle && (
                 <FeedTitleContainer
-                    tabIndex={0}
                     selected={props.selectedId === props.feed.id}
                     focus={focus}
                     onClick={() => {
@@ -132,15 +149,7 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
                 </FeedTitleContainer>
             )}
 
-            {(expanded || !props.showTitle) && props.feed.items.some((x) => !x.isRead || x.id === props.selectedId) && (
-                <FeedContainer>
-                    {props.feed.items.map(
-                        (item) =>
-                            item.title?.toLowerCase().includes(props.filterString.toLowerCase()) &&
-                            renderItem(item, props),
-                    )}
-                </FeedContainer>
-            )}
+            {expanded && renderItems(props)}
         </Fragment>
     );
 };
