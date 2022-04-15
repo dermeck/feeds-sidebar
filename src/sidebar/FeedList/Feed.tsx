@@ -1,63 +1,20 @@
 import styled from '@emotion/styled';
-import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
 import React, { Fragment, FunctionComponent, memo, useEffect, useState } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
-import { Feed as FeedType, FeedItem as FeedItemType } from '../../model/feeds';
+import { Feed as FeedType } from '../../model/feeds';
 import { useAppDispatch } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
 import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import FeedItem from './FeedItem';
+import Folder from './Folder';
 
 const FeedContainer = styled.ul`
     padding-left: 0;
     margin: 0;
     opacity: 0.9;
-`;
-
-interface FeedTitleContainerProps {
-    selected: boolean;
-    focus: boolean;
-}
-
-const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 3px 0 3px 8px;
-
-    background-color: ${(props) =>
-        props.selected
-            ? props.focus
-                ? props.theme.colors.selectedItemBackgroundColor
-                : props.theme.colors.selectedItemNoFocusBackgroundColor
-            : 'inherit'};
-    color: ${(props) =>
-        props.selected
-            ? props.focus
-                ? props.theme.colors.selectedItemTextColor
-                : props.theme.colors.selectedItemNoFocusTextColor
-            : 'inherit'};
-    opacity: 0.9;
-`;
-
-const FeedTitle = styled.label`
-    overflow: hidden;
-    margin-left: 4px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
-
-const ToggleIndicator = styled.div`
-    margin-right: 4px;
-    margin-bottom: -6px;
-`;
-
-const FeedFolderIcon = styled(FolderSimple)`
-    flex-shrink: 0;
-    margin-top: -2px; /* align with label */
 `;
 
 interface Props {
@@ -67,8 +24,12 @@ interface Props {
     filterString: string;
 }
 
-const renderItems = (props: Props) =>
-    props.feed.items.some((x) => !x.isRead || x.id === props.selectedId) && (
+const renderItems = (props: Props) => {
+    if (!props.feed.items.some((x) => x.isRead || x.id === props.selectedId)) {
+        return <Fragment />;
+    }
+
+    return (
         <FeedContainer>
             {props.feed.items.map(
                 (item) =>
@@ -83,6 +44,7 @@ const renderItems = (props: Props) =>
             )}
         </FeedContainer>
     );
+};
 
 // TODO find a more robust way to determine menu height
 const contextMenuHeight = 64; // 2 menu items, each 32px
@@ -105,7 +67,24 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
         dispatch(feedsSlice.actions.select(props.feed.id));
     };
 
-    const handleOnContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (!props.showTitle) {
+        // only show links, no folder
+        return renderItems(props);
+    }
+
+    const handleOnClickFolder = () => {
+        setExpanded(!expanded);
+        setFocus(true);
+        handleFeedTitleClick();
+    };
+
+    const handleOnBlurFolder = () => {
+        setFocus(false);
+    };
+
+    const handleOnContextMenuFolder = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.preventDefault();
+
         if (width === undefined || height === undefined) {
             console.error('Could not open context menu. Unable to determine dimensions of window.');
             return;
@@ -118,39 +97,17 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
         dispatch(feedsSlice.actions.select(props.feed.id));
     };
 
-    if (!props.showTitle) {
-        // only show links, no folder
-        renderItems(props);
-    }
-
     return (
-        <Fragment>
-            {props.showTitle && (
-                <FeedTitleContainer
-                    selected={props.selectedId === props.feed.id}
-                    focus={focus}
-                    onClick={() => {
-                        setExpanded(!expanded);
-                        setFocus(true);
-                        handleFeedTitleClick();
-                    }}
-                    onBlur={() => {
-                        setFocus(false);
-                    }}
-                    onContextMenu={(e) => {
-                        e.preventDefault();
-                        handleOnContextMenu(e);
-                    }}>
-                    <ToggleIndicator>
-                        {expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
-                    </ToggleIndicator>
-                    <FeedFolderIcon size={20} weight="light" />
-                    <FeedTitle>{props.feed.title || props.feed.url}</FeedTitle>
-                </FeedTitleContainer>
-            )}
-
-            {expanded && renderItems(props)}
-        </Fragment>
+        <Folder
+            label={props.feed.title || props.feed.url}
+            isSelected={props.selectedId === props.feed.id}
+            focus={focus}
+            expanded={expanded}
+            handleOnClick={handleOnClickFolder}
+            handleOnBlur={handleOnBlurFolder}
+            handleOnContextMenu={handleOnContextMenuFolder}>
+            {renderItems(props)}
+        </Folder>
     );
 };
 
