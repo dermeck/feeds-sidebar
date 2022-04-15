@@ -3,12 +3,12 @@ import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
 import React, { Fragment } from 'react';
 
-interface FeedTitleContainerProps {
+interface FolderTitleContainerProps {
     selected: boolean;
     focus: boolean;
 }
 
-const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
+const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -29,7 +29,7 @@ const FeedTitleContainer = styled.div<FeedTitleContainerProps>`
     opacity: 0.9;
 `;
 
-const FeedTitle = styled.label`
+const FolderTitle = styled.label`
     overflow: hidden;
     margin-left: 4px;
     text-overflow: ellipsis;
@@ -41,15 +41,15 @@ const ToggleIndicator = styled.div`
     margin-bottom: -6px;
 `;
 
-const FeedFolderIcon = styled(FolderSimple)`
+const FolderIcon = styled(FolderSimple)`
     flex-shrink: 0;
     margin-top: -2px; /* align with label */
 `;
 
 interface Props {
-    label: string;
+    title: string;
     children: React.ReactNode;
-    isSelected: boolean;
+    selected: boolean;
     focus: boolean;
     expanded: boolean;
     handleOnClick: () => void;
@@ -57,25 +57,27 @@ interface Props {
     handleOnContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-const Folder = (props: Props) => {
-    return (
-        <Fragment>
-            <FeedTitleContainer
-                selected={props.isSelected}
-                focus={props.focus}
-                onClick={props.handleOnClick}
-                onBlur={props.handleOnBlur}
-                onContextMenu={props.handleOnContextMenu}>
-                <ToggleIndicator>
-                    {props.expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
-                </ToggleIndicator>
-                <FeedFolderIcon size={20} weight="light" />
-                <FeedTitle>{props.label}</FeedTitle>
-            </FeedTitleContainer>
+const Folder = (props: Props) => (
+    <Fragment>
+        <FolderTitleContainer
+            selected={props.selected}
+            focus={props.focus}
+            onClick={props.handleOnClick}
+            onBlur={props.handleOnBlur}
+            onContextMenu={props.handleOnContextMenu}>
+            <ToggleIndicator>
+                {props.expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
+            </ToggleIndicator>
+            <FolderIcon size={20} weight="light" />
+            <FolderTitle>{props.title}</FolderTitle>
+        </FolderTitleContainer>
 
-            {props.expanded && props.children}
-        </Fragment>
-    );
-};
+        {props.expanded && props.children}
+    </Fragment>
+);
+
+if (process.env.MODE === 'dev') {
+    Folder.whyDidYouRender = true;
+}
 
 export default Folder;

@@ -99,8 +99,8 @@ const Feed: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <Folder
-            label={props.feed.title || props.feed.url}
-            isSelected={props.selectedId === props.feed.id}
+            title={props.feed.title || props.feed.url}
+            selected={props.selectedId === props.feed.id}
             focus={focus}
             expanded={expanded}
             handleOnClick={handleOnClickFolder}
