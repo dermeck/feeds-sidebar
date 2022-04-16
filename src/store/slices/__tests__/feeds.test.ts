@@ -72,12 +72,13 @@ const feedsFixture = [feed1Fixture, feed2Fixture];
 describe('global extensionStateLoaded action', () => {
     it('replaces previous state with payload', () => {
         const prevState: FeedSliceState = {
+            folders: [],
             feeds: [feed1Fixture],
             selectedId: '1',
         };
 
         const action = extensionStateLoaded({
-            feeds: { feeds: [feed2Fixture], selectedId: '' },
+            feeds: { folders: [], feeds: [feed2Fixture], selectedId: '' },
             options: initialOptionsState,
         });
 

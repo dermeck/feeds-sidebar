@@ -1,3 +1,10 @@
+export interface Folder {
+    parentId: string | undefined;
+    id: string;
+    title: string;
+    feedIds: ReadonlyArray<string>;
+}
+
 export interface Feed {
     id: string;
     url: string;

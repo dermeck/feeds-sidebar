@@ -1,10 +1,12 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
-import { Feed } from '../../model/feeds';
+import { Feed, Folder } from '../../model/feeds';
 import { extensionStateLoaded } from '../actions';
 import { RootState } from '../store';
 
 export type FeedSliceState = {
+    folders: ReadonlyArray<Folder>;
     feeds: ReadonlyArray<Feed>;
     selectedId: string;
 };
@@ -13,6 +15,7 @@ export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
 
 const initialState: FeedSliceState = {
+    folders: [],
     feeds:
         process.env.NODE_ENV === 'development'
             ? [
@@ -69,6 +72,14 @@ const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
+        addFolder(state, action: PayloadAction<string>) {
+            state.folders.push({
+                parentId: undefined,
+                id: uuidv4(),
+                title: action.payload,
+                feedIds: [],
+            });
+        },
         select(state, action: PayloadAction<string>) {
             state.selectedId = action.payload;
         },
@@ -116,7 +127,10 @@ const feedsSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(extensionStateLoaded, (state, action) => {
-            return { ...action.payload.feeds };
+            return {
+                ...state,
+                feeds: action.payload.feeds.feeds,
+            };
         });
     },
 });
