@@ -2,8 +2,10 @@ import React, { FunctionComponent, memo } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { FullHeightScrollContainer } from '../../base-components';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import feedsSlice from '../../store/slices/feeds';
 import Feed from './Feed';
+import Folder from './Folder';
 
 interface Props {
     showFeedTitles: boolean;
@@ -11,10 +13,17 @@ interface Props {
 }
 
 const FeedList: FunctionComponent<Props> = (props: Props) => {
+    const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds);
+
+    const handleOnEditComplete = (title: string) => {
+        dispatch(feedsSlice.actions.addFolder(title));
+    };
 
     return (
         <FullHeightScrollContainer>
+            <Folder editing={true} onEditComplete={handleOnEditComplete} />
+
             <Virtuoso
                 data={feeds.feeds}
                 itemContent={(index, feed) => (

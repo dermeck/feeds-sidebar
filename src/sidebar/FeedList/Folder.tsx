@@ -3,6 +3,8 @@ import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
 import React, { Fragment } from 'react';
 
+import FolderEdit from './FolderEdit';
+
 interface FolderTitleContainerProps {
     selected: boolean;
     focus: boolean;
@@ -31,7 +33,6 @@ const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
 
 const FolderTitle = styled.label`
     overflow: hidden;
-    margin-left: 4px;
     text-overflow: ellipsis;
     white-space: nowrap;
 `;
@@ -44,24 +45,27 @@ const ToggleIndicator = styled.div`
 const FolderIcon = styled(FolderSimple)`
     flex-shrink: 0;
     margin-top: -2px; /* align with label */
+    margin-right: 4px;
 `;
 
 interface Props {
-    title: string;
-    children: React.ReactNode;
-    selected: boolean;
-    focus: boolean;
-    expanded: boolean;
-    handleOnClick: () => void;
-    handleOnBlur: () => void;
-    handleOnContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    title?: string;
+    children?: React.ReactNode;
+    selected?: boolean;
+    focus?: boolean;
+    expanded?: boolean;
+    editing?: boolean;
+    handleOnClick?: () => void;
+    handleOnBlur?: () => void;
+    handleOnContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    onEditComplete?: (x: string) => void;
 }
 
 const Folder = (props: Props) => (
     <Fragment>
         <FolderTitleContainer
-            selected={props.selected}
-            focus={props.focus}
+            selected={!!props.selected}
+            focus={!!props.focus}
             onClick={props.handleOnClick}
             onBlur={props.handleOnBlur}
             onContextMenu={props.handleOnContextMenu}>
@@ -69,7 +73,19 @@ const Folder = (props: Props) => (
                 {props.expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
             </ToggleIndicator>
             <FolderIcon size={20} weight="light" />
-            <FolderTitle>{props.title}</FolderTitle>
+            {props.editing ? (
+                <FolderEdit
+                    initialValue={props.title ?? ''}
+                    onEditComplete={(value) => {
+                        if (props.onEditComplete === undefined) {
+                            throw new Error('onEditComplete is not defined.');
+                        }
+                        props.onEditComplete(value);
+                    }}
+                />
+            ) : (
+                <FolderTitle>{props.title}</FolderTitle>
+            )}
         </FolderTitleContainer>
 
         {props.expanded && props.children}
