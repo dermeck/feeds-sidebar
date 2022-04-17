@@ -130,6 +130,7 @@ const feedsSlice = createSlice({
         builder.addCase(extensionStateLoaded, (state, action) => {
             return {
                 ...state,
+                folders: action.payload.feeds.folders,
                 feeds: action.payload.feeds.feeds,
             };
         });
