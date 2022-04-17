@@ -1,7 +1,7 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Feed, FeedNode, Folder, FolderNode, NodeType } from '../../model/feeds';
+import { Feed, FeedNode, Folder, FolderNode, NodeType, TopLevelTreeNode } from '../../model/feeds';
 import { extensionStateLoaded } from '../actions';
 import { RootState } from '../store';
 
@@ -14,32 +14,44 @@ export type FeedSliceState = {
 export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
 
+const rootFolderId = '_root_';
+
 const initialState: FeedSliceState = {
-    folders: [
-        {
-            id: '_root_',
-            title: 'root',
-            feedIds: [
-                'https://ourworldindata.org/atom.xml',
-                'https://stackoverflow.blog/feed/',
-                'https://www.quarks.de/feed/',
-                'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
-            ],
-            subFolders: ['_news_'],
-        },
-        {
-            id: '_news_',
-            title: 'News',
-            feedIds: ['https://www.tagesschau.de/xml/rss2/'],
-            subFolders: ['_yt_'],
-        },
-        {
-            id: '_yt_',
-            title: 'YouTube',
-            feedIds: ['https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA'],
-            subFolders: [],
-        },
-    ],
+    folders:
+        process.env.NODE_ENV === 'development'
+            ? [
+                  {
+                      id: rootFolderId,
+                      title: 'root',
+                      feedIds: [
+                          'https://ourworldindata.org/atom.xml',
+                          'https://stackoverflow.blog/feed/',
+                          'https://www.quarks.de/feed/',
+                          'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
+                      ],
+                      subFolders: ['_news_'],
+                  },
+                  {
+                      id: '_news_',
+                      title: 'News',
+                      feedIds: ['https://www.tagesschau.de/xml/rss2/'],
+                      subFolders: ['_yt_'],
+                  },
+                  {
+                      id: '_yt_',
+                      title: 'YouTube',
+                      feedIds: ['https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA'],
+                      subFolders: [],
+                  },
+              ]
+            : [
+                  {
+                      id: rootFolderId, // top level node
+                      title: 'root',
+                      feedIds: [],
+                      subFolders: ['_news_'],
+                  },
+              ],
     feeds:
         process.env.NODE_ENV === 'development'
             ? [
@@ -111,7 +123,41 @@ export const selectTreeNode = (state: RootState, nodeId: string): FolderNode | F
         };
     }
 
-    throw new Error('`Node with id: ${nodeId} not found.`');
+    throw new Error(`Node with id: "${nodeId}" not found.`);
+};
+
+const folderById = (state: RootState, id: string) => {
+    const folder = state.feeds.folders.find((x) => x.id === id);
+
+    if (folder === undefined) {
+        throw new Error(`Folder with id: "${id}" not found.`);
+    }
+    return folder;
+};
+
+const feedById = (state: RootState, id: string) => {
+    const feed = state.feeds.feeds.find((x) => x.id === id);
+
+    if (feed === undefined) {
+        throw new Error(`Feed with id: "${id}" not found.`);
+    }
+    return feed;
+};
+
+export const selectTopLevelNodes = (state: RootState): ReadonlyArray<TopLevelTreeNode> => {
+    const rootFolder = folderById(state, rootFolderId);
+
+    const topLevelFolders: ReadonlyArray<FolderNode> = rootFolder.subFolders.map((subFolderId) => ({
+        nodeType: NodeType.Folder,
+        data: folderById(state, subFolderId),
+    }));
+
+    const topLevelFeeds: ReadonlyArray<FeedNode> = rootFolder.feedIds.map((feedId) => ({
+        nodeType: NodeType.Feed,
+        data: feedById(state, feedId),
+    }));
+
+    return [...topLevelFolders, ...topLevelFeeds];
 };
 
 const feedsSlice = createSlice({
