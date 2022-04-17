@@ -42,8 +42,8 @@ const FeedItems = (props: FeedItemsprops) => {
     );
 };
 
-const SubFolderWrapper = styled.div`
-    padding-left: 15px;
+const SubFolderWrapper = styled.div<{ indented: boolean }>`
+    padding-left: ${(props) => (props.indented ? '15px' : 0)};
 `;
 
 interface Props {
@@ -76,7 +76,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
             const childIds = [...node.data.subFolders, ...node.data.feedIds];
 
             return (
-                <SubFolderWrapper>
+                <SubFolderWrapper indented={showTitle}>
                     {childIds.map((childId) => {
                         return (
                             <FolderTreeNode
