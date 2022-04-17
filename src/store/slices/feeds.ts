@@ -16,39 +16,81 @@ export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetc
 
 const rootFolderId = '_root_';
 
+const sampleDataFolders = [
+    {
+        id: rootFolderId,
+        title: 'root',
+        feedIds: [
+            'https://ourworldindata.org/atom.xml',
+            'https://stackoverflow.blog/feed/',
+            'https://www.quarks.de/feed/',
+        ],
+        subFolders: ['_news_', '_abc_'],
+    },
+    {
+        id: '_news_',
+        title: 'News',
+        feedIds: ['https://www.tagesschau.de/xml/rss2/'],
+        subFolders: ['_yt_'],
+    },
+    {
+        id: '_yt_',
+        title: 'YouTube',
+        feedIds: ['https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA'],
+        subFolders: [],
+    },
+    {
+        id: '_abc_',
+        title: 'ABC',
+        feedIds: ['https://www.dragonball-multiverse.com/flux.rss.php?lang=en'],
+        subFolders: [],
+    },
+];
+
+const sampleDataFeeds = [
+    {
+        // sample Atom Feed
+        id: 'https://ourworldindata.org/atom.xml',
+        url: 'https://ourworldindata.org/atom.xml',
+        items: [],
+    },
+
+    {
+        // sample RSS 1.0 / RDF Feed
+        // https://www.w3schools.com/xml/xml_rdf.asp
+        id: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
+        url: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
+        items: [],
+    },
+
+    {
+        // sample RSS 2.0 Feed
+        id: 'https://www.tagesschau.de/xml/rss2/',
+        url: 'https://www.tagesschau.de/xml/rss2/',
+        items: [],
+    },
+    {
+        // sample Youtube Feed (Atom)
+        id: 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA',
+        url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA',
+        items: [],
+    },
+    {
+        id: 'https://stackoverflow.blog/feed/',
+        url: 'https://stackoverflow.blog/feed/',
+        items: [],
+    },
+    {
+        id: 'https://www.quarks.de/feed/',
+        url: 'https://www.quarks.de/feed/',
+        items: [],
+    },
+];
+
 const initialState: FeedSliceState = {
     folders:
         process.env.NODE_ENV === 'development'
-            ? [
-                  {
-                      id: rootFolderId,
-                      title: 'root',
-                      feedIds: [
-                          'https://ourworldindata.org/atom.xml',
-                          'https://stackoverflow.blog/feed/',
-                          'https://www.quarks.de/feed/',
-                      ],
-                      subFolders: ['_news_', '_abc_'],
-                  },
-                  {
-                      id: '_news_',
-                      title: 'News',
-                      feedIds: ['https://www.tagesschau.de/xml/rss2/'],
-                      subFolders: ['_yt_'],
-                  },
-                  {
-                      id: '_yt_',
-                      title: 'YouTube',
-                      feedIds: ['https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA'],
-                      subFolders: [],
-                  },
-                  {
-                      id: '_abc_',
-                      title: 'ABC',
-                      feedIds: ['https://www.dragonball-multiverse.com/flux.rss.php?lang=en'],
-                      subFolders: [],
-                  },
-              ]
+            ? sampleDataFolders
             : [
                   {
                       id: rootFolderId, // top level node
@@ -57,48 +99,7 @@ const initialState: FeedSliceState = {
                       subFolders: ['_news_'],
                   },
               ],
-    feeds:
-        process.env.NODE_ENV === 'development'
-            ? [
-                  {
-                      // sample Atom Feed
-                      id: 'https://ourworldindata.org/atom.xml',
-                      url: 'https://ourworldindata.org/atom.xml',
-                      items: [],
-                  },
-
-                  {
-                      // sample RSS 1.0 / RDF Feed
-                      // https://www.w3schools.com/xml/xml_rdf.asp
-                      id: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
-                      url: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
-                      items: [],
-                  },
-
-                  {
-                      // sample RSS 2.0 Feed
-                      id: 'https://www.tagesschau.de/xml/rss2/',
-                      url: 'https://www.tagesschau.de/xml/rss2/',
-                      items: [],
-                  },
-                  {
-                      // sample Youtube Feed (Atom)
-                      id: 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA',
-                      url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA',
-                      items: [],
-                  },
-                  {
-                      id: 'https://stackoverflow.blog/feed/',
-                      url: 'https://stackoverflow.blog/feed/',
-                      items: [],
-                  },
-                  {
-                      id: 'https://www.quarks.de/feed/',
-                      url: 'https://www.quarks.de/feed/',
-                      items: [],
-                  },
-              ]
-            : [],
+    feeds: process.env.NODE_ENV === 'development' ? sampleDataFeeds : [],
     selectedId: '',
 };
 
