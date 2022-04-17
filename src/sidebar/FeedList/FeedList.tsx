@@ -17,6 +17,7 @@ interface Props {
 const FeedList: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds);
+    const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive);
 
     const handleOnEditComplete = (title: string) => {
         dispatch(feedsSlice.actions.addFolder(title));
@@ -31,7 +32,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <FullHeightScrollContainer>
-            <Folder editing={true} onEditComplete={handleOnEditComplete} />
+            {showNewFolderInput && <Folder editing={true} onEditComplete={handleOnEditComplete} />}
 
             <Virtuoso
                 data={topLevelTreeNodes}

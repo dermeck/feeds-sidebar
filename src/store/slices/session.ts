@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import feedsSlice from './feeds';
+
 type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
 export const enum MenuType {
@@ -100,6 +102,14 @@ const sessionSlice = createSlice({
 
             state.feedStatus = [...updated, ...newEntries];
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(feedsSlice.actions.addFolder, (state) => {
+            return {
+                ...state,
+                newFolderEditActive: false,
+            };
+        });
     },
 });
 
