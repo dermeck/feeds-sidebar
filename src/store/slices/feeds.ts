@@ -214,9 +214,23 @@ const feedsSlice = createSlice({
             };
         },
         updateFeeds(state, action: PayloadAction<ReadonlyArray<Feed>>) {
+            const newFeeds = action.payload.filter(
+                (updatedFeed) => !state.feeds.some((x) => x.url === updatedFeed.url),
+            );
+
+            const folders = state.folders.map((folder) =>
+                folder.id === rootFolderId
+                    ? {
+                          ...folder,
+                          feedIds: [...folder.feedIds, ...newFeeds.map((feed) => feed.id)],
+                      }
+                    : folder,
+            );
+
             return {
                 ...state,
-                feeds: [...updateFeeds(state.feeds, action.payload)],
+                folders: folders,
+                feeds: [...updateFeeds(state.feeds, action.payload), ...newFeeds],
             };
         },
 
@@ -248,7 +262,7 @@ const feedsSlice = createSlice({
 
 const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> => {
     // TODO extract newFeeds and add them to a top lebeln folder "_default_"
-    const newFeeds = updatedFeeds.filter((updatedFeed) => !feeds.some((x) => x.url === updatedFeed.url));
+    //const newFeeds = updatedFeeds.filter((updatedFeed) => !feeds.some((x) => x.url === updatedFeed.url));
 
     updatedFeeds = feeds.map((feed) => {
         const updatedFeed = updatedFeeds.find((x) => x.url === feed.url);
@@ -261,7 +275,7 @@ const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Fee
         };
     });
 
-    return updatedFeeds.concat(newFeeds);
+    return updatedFeeds;
 };
 
 // keep old items, update existing items, add new items
