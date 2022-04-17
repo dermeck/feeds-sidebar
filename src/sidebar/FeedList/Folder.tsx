@@ -64,6 +64,7 @@ interface Props {
 const Folder = (props: Props) => (
     <Fragment>
         <FolderTitleContainer
+            tabIndex={0}
             selected={!!props.selected}
             focus={!!props.focus}
             onClick={props.handleOnClick}

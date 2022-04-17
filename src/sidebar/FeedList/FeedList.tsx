@@ -8,6 +8,7 @@ import feedsSlice from '../../store/slices/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import Feed from './Feed';
 import Folder from './Folder';
+import FolderTreeNode from './FolderTreeNode';
 
 interface Props {
     showFeedTitles: boolean;
@@ -39,7 +40,14 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                 itemContent={(_, node) => {
                     switch (node.nodeType) {
                         case NodeType.Folder:
-                            return <Folder key={node.folder.id} title={node.folder.title} />;
+                            return (
+                                <FolderTreeNode
+                                    key={node.folder.id}
+                                    id={node.folder.id}
+                                    selectedId={feeds.selectedId}
+                                    title={node.folder.title}
+                                />
+                            );
 
                         case NodeType.Feed:
                             return (
