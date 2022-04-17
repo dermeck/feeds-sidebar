@@ -172,12 +172,25 @@ const feedsSlice = createSlice({
     initialState,
     reducers: {
         addFolder(state, action: PayloadAction<string>) {
-            state.folders.push({
-                id: uuidv4(),
+            const newFolderId = uuidv4();
+
+            const folders = state.folders.map((f) =>
+                f.id === rootFolderId
+                    ? {
+                          ...f,
+                          subFolders: [newFolderId, ...f.subFolders],
+                      }
+                    : f,
+            );
+
+            folders.push({
+                id: newFolderId,
                 title: action.payload,
                 feedIds: [],
                 subFolders: [],
             });
+
+            state.folders = folders;
         },
         select(state, action: PayloadAction<string>) {
             state.selectedId = action.payload;
