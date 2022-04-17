@@ -2,7 +2,6 @@ import React, { FunctionComponent, memo } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { FullHeightScrollContainer } from '../../base-components';
-import { FeedNode, FolderNode, NodeType, TopLevelTreeNode } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectTopLevelNodes } from '../../store/slices/feeds';
 import Folder from './Folder';
