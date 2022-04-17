@@ -20,12 +20,12 @@ export const enum NodeType {
 
 export interface FeedNode {
     nodeType: NodeType.Feed;
-    feed: Feed;
+    data: Feed;
 }
 
 export interface FolderNode {
     nodeType: NodeType.Folder;
-    folder: Folder;
+    data: Folder;
 }
 
 export type TopLevelTreeNode = FolderNode | FeedNode;

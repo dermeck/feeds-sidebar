@@ -24,10 +24,10 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
         dispatch(feedsSlice.actions.addFolder(title));
     };
 
-    const folderNodes: ReadonlyArray<FolderNode> = feeds.folders.map((x) => ({ nodeType: NodeType.Folder, folder: x }));
+    const folderNodes: ReadonlyArray<FolderNode> = feeds.folders.map((x) => ({ nodeType: NodeType.Folder, data: x }));
 
     // TODO add all top-level feeds to a folder "_root_" (so we only need to map folders array)
-    const feedNodes: ReadonlyArray<FeedNode> = feeds.feeds.map((x) => ({ nodeType: NodeType.Feed, feed: x }));
+    const feedNodes: ReadonlyArray<FeedNode> = feeds.feeds.map((x) => ({ nodeType: NodeType.Feed, data: x }));
 
     const topLevelTreeNodes: Array<TopLevelTreeNode> = [...folderNodes, ...feedNodes];
 
@@ -40,21 +40,14 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                 itemContent={(_, node) => {
                     switch (node.nodeType) {
                         case NodeType.Folder:
-                            return (
-                                <FolderTreeNode
-                                    key={node.folder.id}
-                                    id={node.folder.id}
-                                    selectedId={feeds.selectedId}
-                                    title={node.folder.title}
-                                />
-                            );
+                            return <FolderTreeNode key={node.data.id} node={node} selectedId={feeds.selectedId} />;
 
                         case NodeType.Feed:
                             return (
                                 <Feed
-                                    key={node.feed.id}
+                                    key={node.data.id}
                                     selectedId={feeds.selectedId}
-                                    feed={node.feed}
+                                    feed={node.data}
                                     showTitle={props.showFeedTitles}
                                     filterString={props.filterString}
                                 />
