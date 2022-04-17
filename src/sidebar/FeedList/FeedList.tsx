@@ -2,8 +2,10 @@ import React, { FunctionComponent, memo } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { FullHeightScrollContainer } from '../../base-components';
+import { FeedNode, FolderNode, NodeType, TopLevelTreeNode } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import Feed from './Feed';
 import Folder from './Folder';
 
@@ -20,21 +22,39 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
         dispatch(feedsSlice.actions.addFolder(title));
     };
 
+    const folderNodes: ReadonlyArray<FolderNode> = feeds.folders.map((x) => ({ nodeType: NodeType.Folder, folder: x }));
+
+    // TODO add all top-level feeds to a folder "_root_" (so we only need to map folders array)
+    const feedNodes: ReadonlyArray<FeedNode> = feeds.feeds.map((x) => ({ nodeType: NodeType.Feed, feed: x }));
+
+    const topLevelTreeNodes: Array<TopLevelTreeNode> = [...folderNodes, ...feedNodes];
+
     return (
         <FullHeightScrollContainer>
             <Folder editing={true} onEditComplete={handleOnEditComplete} />
 
             <Virtuoso
-                data={feeds.feeds}
-                itemContent={(index, feed) => (
-                    <Feed
-                        key={feed.id}
-                        selectedId={feeds.selectedId}
-                        feed={feed}
-                        showTitle={props.showFeedTitles}
-                        filterString={props.filterString}
-                    />
-                )}
+                data={topLevelTreeNodes}
+                itemContent={(_, node) => {
+                    switch (node.nodeType) {
+                        case NodeType.Folder:
+                            return <Folder key={node.folder.id} title={node.folder.title} />;
+
+                        case NodeType.Feed:
+                            return (
+                                <Feed
+                                    key={node.feed.id}
+                                    selectedId={feeds.selectedId}
+                                    feed={node.feed}
+                                    showTitle={props.showFeedTitles}
+                                    filterString={props.filterString}
+                                />
+                            );
+
+                        default:
+                            throw new UnreachableCaseError(node);
+                    }
+                }}
             />
         </FullHeightScrollContainer>
     );

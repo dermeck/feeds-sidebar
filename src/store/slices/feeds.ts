@@ -73,6 +73,7 @@ const feedsSlice = createSlice({
     initialState,
     reducers: {
         addFolder(state, action: PayloadAction<string>) {
+            // TODO insert element at start of the array
             state.folders.push({
                 parentId: undefined,
                 id: uuidv4(),
@@ -136,6 +137,7 @@ const feedsSlice = createSlice({
 });
 
 const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> => {
+    // TODO extract newFeeds and add them to a top lebeln folder "_default_"
     const newFeeds = updatedFeeds.filter((updatedFeed) => !feeds.some((x) => x.url === updatedFeed.url));
 
     updatedFeeds = feeds.map((feed) => {

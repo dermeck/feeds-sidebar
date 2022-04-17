@@ -13,6 +13,23 @@ export interface Feed {
     title?: string;
 }
 
+export const enum NodeType {
+    Feed = 'FEED',
+    Folder = 'FOLDER',
+}
+
+export interface FeedNode {
+    nodeType: NodeType.Feed;
+    feed: Feed;
+}
+
+export interface FolderNode {
+    nodeType: NodeType.Folder;
+    folder: Folder;
+}
+
+export type TopLevelTreeNode = FolderNode | FeedNode;
+
 export interface FeedItem {
     id: string;
     title: string;
