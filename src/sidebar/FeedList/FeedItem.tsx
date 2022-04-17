@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
 
 const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean }>`
-    padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};
+    padding-left: ${(props) => (props.indented ? '39px' : '20px')};
 
     background-color: ${(props) =>
         props.selected
