@@ -1,7 +1,7 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Feed, Folder } from '../../model/feeds';
+import { Feed, FeedNode, Folder, FolderNode, NodeType } from '../../model/feeds';
 import { extensionStateLoaded } from '../actions';
 import { RootState } from '../store';
 
@@ -15,7 +15,31 @@ export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
 
 const initialState: FeedSliceState = {
-    folders: [],
+    folders: [
+        {
+            id: '_root_',
+            title: 'root',
+            feedIds: [
+                'https://ourworldindata.org/atom.xml',
+                'https://stackoverflow.blog/feed/',
+                'https://www.quarks.de/feed/',
+                'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
+            ],
+            subFolders: ['_news_'],
+        },
+        {
+            id: '_news_',
+            title: 'News',
+            feedIds: ['https://www.tagesschau.de/xml/rss2/'],
+            subFolders: ['_yt_'],
+        },
+        {
+            id: '_yt_',
+            title: 'YouTube',
+            feedIds: ['https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA'],
+            subFolders: [],
+        },
+    ],
     feeds:
         process.env.NODE_ENV === 'development'
             ? [
@@ -68,17 +92,38 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
 
 export const selectFeeds = (state: RootState) => state.feeds.feeds;
 
+export const selectTreeNode = (state: RootState, nodeId: string): FolderNode | FeedNode => {
+    const folder = state.feeds.folders.find((f) => f.id === nodeId);
+
+    if (folder !== undefined) {
+        return {
+            nodeType: NodeType.Folder,
+            data: folder,
+        };
+    }
+
+    const feed = state.feeds.feeds.find((f) => f.id === nodeId);
+
+    if (feed !== undefined) {
+        return {
+            nodeType: NodeType.Feed,
+            data: feed,
+        };
+    }
+
+    throw new Error('`Node with id: ${nodeId} not found.`');
+};
+
 const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
         addFolder(state, action: PayloadAction<string>) {
-            // TODO insert element at start of the array
             state.folders.push({
-                parentId: undefined,
                 id: uuidv4(),
                 title: action.payload,
                 feedIds: [],
+                subFolders: [],
             });
         },
         select(state, action: PayloadAction<string>) {

@@ -4,16 +4,16 @@ import React, { Fragment, memo, useEffect, useState } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { Feed, FeedNode, FolderNode, NodeType } from '../../model/feeds';
-import { useAppDispatch } from '../../store/hooks';
-import feedsSlice from '../../store/slices/feeds';
-import { selectOptions } from '../../store/slices/options';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import feedsSlice, { selectTreeNode } from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import FeedItem from './FeedItem';
 import Folder from './Folder';
 
 interface Props {
-    node: FolderNode | FeedNode;
+    nodeId: string;
     selectedId?: string;
     showTitle: boolean;
     filterString: string;
@@ -33,12 +33,9 @@ interface FeedItemsprops {
 }
 
 const FeedItems = (props: FeedItemsprops) => {
-    console.log('FeedItems', props);
     if (!props.feed.items.some((x) => !x.isRead || x.id === props.selectedId)) {
         return <Fragment />;
     }
-
-    console.log('FeedContainer');
 
     return (
         <FeedContainer>
@@ -57,11 +54,38 @@ const FeedItems = (props: FeedItemsprops) => {
     );
 };
 
+const renderChildren = (props: Props, node: FolderNode | FeedNode): React.ReactNode => {
+    switch (node.nodeType) {
+        case NodeType.Feed:
+            return (
+                node.nodeType === NodeType.Feed && (
+                    <FeedItems
+                        key={node.data.id}
+                        feed={node.data}
+                        filterString={props.filterString}
+                        showTitle={props.showTitle}
+                        selectedId={props.selectedId}
+                    />
+                )
+            );
+
+        case NodeType.Folder:
+            // TODO
+            //props.node.data.subFolders.map(f => <FolderTreeNode node={}/>);
+            return 'folder';
+
+        default:
+            throw new UnreachableCaseError(node);
+    }
+};
+
 // TODO find a more robust way to determine menu height
 const contextMenuHeight = 64; // 2 menu items, each 32px
 
 const FolderTreeNode = (props: Props) => {
-    const { id, title } = props.node.data;
+    const node = useAppSelector((state) => selectTreeNode(state, props.nodeId));
+
+    const { id, title } = node.data;
 
     const dispatch = useAppDispatch();
 
@@ -112,7 +136,7 @@ const FolderTreeNode = (props: Props) => {
 
     return (
         <Folder
-            title={title ?? (props.node.nodeType === NodeType.Feed ? props.node.data.url : '')}
+            title={title ?? (node.nodeType === NodeType.Feed ? node.data.url : '')}
             showTitle={props.showTitle}
             selected={props.selectedId === id}
             focus={focus}
@@ -120,16 +144,7 @@ const FolderTreeNode = (props: Props) => {
             handleOnClick={handleOnClickFolder}
             handleOnBlur={handleOnBlurFolder}
             handleOnContextMenu={handleOnContextMenuFolder}>
-            {props.node.nodeType === NodeType.Feed && (
-                <FeedItems
-                    key={id}
-                    feed={props.node.data}
-                    filterString={props.filterString}
-                    showTitle={props.showTitle}
-                    selectedId={props.selectedId}
-                />
-            )}
-            {props.node.nodeType === NodeType.Folder && props.node.data.title}
+            {renderChildren(props, node)}
         </Folder>
     );
 };

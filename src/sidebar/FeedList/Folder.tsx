@@ -64,7 +64,6 @@ interface Props {
 
 const Folder = (props: Props) => {
     if (!props.showTitle) {
-        console.log('meop', props);
         return <Fragment>{props.children}</Fragment>;
     }
 

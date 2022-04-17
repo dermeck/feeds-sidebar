@@ -39,7 +39,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                 itemContent={(_, node) => (
                     <FolderTreeNode
                         key={node.data.id}
-                        node={node}
+                        nodeId={node.data.id}
                         selectedId={feeds.selectedId}
                         showTitle={props.showFeedTitles}
                         filterString={props.filterString}
