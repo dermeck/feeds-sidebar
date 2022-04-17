@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 import React, { Fragment } from 'react';
 
-import { FolderNode, FeedNode, NodeType, Feed } from '../../model/feeds';
+import { NodeType, Feed, TreeNode } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import FeedItem from './FeedItem';
 import FolderTreeNode from './FolderTreeNode';
@@ -47,7 +47,7 @@ const SubFolderWrapper = styled.div<{ indented: boolean }>`
 `;
 
 interface Props {
-    node: FolderNode | FeedNode;
+    node: TreeNode;
     selectedId?: string;
     showTitle: boolean;
     filterString: string;

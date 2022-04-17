@@ -1,7 +1,7 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Feed, FeedNode, Folder, FolderNode, NodeType, TopLevelTreeNode as TreeNode } from '../../model/feeds';
+import { Feed, FeedNode, Folder, FolderNode, NodeType, TreeNode } from '../../model/feeds';
 import { extensionStateLoaded } from '../actions';
 import { RootState } from '../store';
 

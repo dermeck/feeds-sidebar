@@ -29,7 +29,7 @@ export interface FolderNode {
     data: Folder;
 }
 
-export type TopLevelTreeNode = FolderNode | FeedNode;
+export type TreeNode = FolderNode | FeedNode;
 
 export interface FeedItem {
     id: string;
