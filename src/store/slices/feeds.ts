@@ -238,11 +238,9 @@ const feedsSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(extensionStateLoaded, (state, action) => {
+        builder.addCase(extensionStateLoaded, (_, action) => {
             return {
-                ...state,
-                folders: action.payload.feeds.folders,
-                feeds: action.payload.feeds.feeds,
+                ...action.payload.feeds,
             };
         });
     },

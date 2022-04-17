@@ -83,6 +83,7 @@ describe('global extensionStateLoaded action', () => {
         });
 
         expect(feedsSlice.reducer(prevState, action)).toStrictEqual({
+            folders: [], // TODO add folder fixture
             feeds: [feed2Fixture],
             selectedId: '',
         });
