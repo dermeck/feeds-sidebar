@@ -72,21 +72,25 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                 </Fragment>
             );
 
-        case NodeType.Folder:
-            // TODO
+        case NodeType.Folder: {
+            const childIds = [...node.data.subFolders, ...node.data.feedIds];
+
             return (
                 <SubFolderWrapper>
-                    {node.data.subFolders.map((subFolderId) => (
-                        <FolderTreeNode
-                            key={subFolderId}
-                            nodeId={subFolderId}
-                            selectedId={selectedId}
-                            showTitle={showTitle}
-                            filterString={filterString}
-                        />
-                    ))}
+                    {childIds.map((childId) => {
+                        return (
+                            <FolderTreeNode
+                                key={childId}
+                                nodeId={childId}
+                                selectedId={selectedId}
+                                showTitle={showTitle}
+                                filterString={filterString}
+                            />
+                        );
+                    })}
                 </SubFolderWrapper>
             );
+        }
 
         default:
             throw new UnreachableCaseError(node);

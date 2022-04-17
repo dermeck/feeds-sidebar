@@ -1,7 +1,7 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Feed, FeedNode, Folder, FolderNode, NodeType, TopLevelTreeNode } from '../../model/feeds';
+import { Feed, FeedNode, Folder, FolderNode, NodeType, TopLevelTreeNode as TreeNode } from '../../model/feeds';
 import { extensionStateLoaded } from '../actions';
 import { RootState } from '../store';
 
@@ -27,9 +27,8 @@ const initialState: FeedSliceState = {
                           'https://ourworldindata.org/atom.xml',
                           'https://stackoverflow.blog/feed/',
                           'https://www.quarks.de/feed/',
-                          'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
                       ],
-                      subFolders: ['_news_'],
+                      subFolders: ['_news_', '_abc_'],
                   },
                   {
                       id: '_news_',
@@ -41,6 +40,12 @@ const initialState: FeedSliceState = {
                       id: '_yt_',
                       title: 'YouTube',
                       feedIds: ['https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA'],
+                      subFolders: [],
+                  },
+                  {
+                      id: '_abc_',
+                      title: 'ABC',
+                      feedIds: ['https://www.dragonball-multiverse.com/flux.rss.php?lang=en'],
                       subFolders: [],
                   },
               ]
@@ -144,21 +149,23 @@ const feedById = (state: RootState, id: string) => {
     return feed;
 };
 
-export const selectTopLevelNodes = (state: RootState): ReadonlyArray<TopLevelTreeNode> => {
-    const rootFolder = folderById(state, rootFolderId);
+const selectChildNodes = (state: RootState, parentId: string): ReadonlyArray<TreeNode> => {
+    const parentFolder = folderById(state, parentId);
 
-    const topLevelFolders: ReadonlyArray<FolderNode> = rootFolder.subFolders.map((subFolderId) => ({
+    const folderNodes: ReadonlyArray<FolderNode> = parentFolder.subFolders.map((subFolderId) => ({
         nodeType: NodeType.Folder,
         data: folderById(state, subFolderId),
     }));
 
-    const topLevelFeeds: ReadonlyArray<FeedNode> = rootFolder.feedIds.map((feedId) => ({
+    const feedNodes: ReadonlyArray<FeedNode> = parentFolder.feedIds.map((feedId) => ({
         nodeType: NodeType.Feed,
         data: feedById(state, feedId),
     }));
 
-    return [...topLevelFolders, ...topLevelFeeds];
+    return [...folderNodes, ...feedNodes];
 };
+
+export const selectTopLevelNodes = (state: RootState): ReadonlyArray<TreeNode> => selectChildNodes(state, rootFolderId);
 
 const feedsSlice = createSlice({
     name: 'feeds',
