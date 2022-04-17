@@ -5,8 +5,6 @@ import { FullHeightScrollContainer } from '../../base-components';
 import { FeedNode, FolderNode, NodeType, TopLevelTreeNode } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
-import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import Feed from './Feed';
 import Folder from './Folder';
 import FolderTreeNode from './FolderTreeNode';
 
@@ -30,33 +28,23 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
     const feedNodes: ReadonlyArray<FeedNode> = feeds.feeds.map((x) => ({ nodeType: NodeType.Feed, data: x }));
 
     const topLevelTreeNodes: Array<TopLevelTreeNode> = [...folderNodes, ...feedNodes];
+    console.log('topLevelTreeNodes', topLevelTreeNodes);
 
     return (
         <FullHeightScrollContainer>
-            {showNewFolderInput && <Folder editing={true} onEditComplete={handleOnEditComplete} />}
+            {showNewFolderInput && <Folder editing={true} onEditComplete={handleOnEditComplete} showTitle={true} />}
 
             <Virtuoso
                 data={topLevelTreeNodes}
-                itemContent={(_, node) => {
-                    switch (node.nodeType) {
-                        case NodeType.Folder:
-                            return <FolderTreeNode key={node.data.id} node={node} selectedId={feeds.selectedId} />;
-
-                        case NodeType.Feed:
-                            return (
-                                <Feed
-                                    key={node.data.id}
-                                    selectedId={feeds.selectedId}
-                                    feed={node.data}
-                                    showTitle={props.showFeedTitles}
-                                    filterString={props.filterString}
-                                />
-                            );
-
-                        default:
-                            throw new UnreachableCaseError(node);
-                    }
-                }}
+                itemContent={(_, node) => (
+                    <FolderTreeNode
+                        key={node.data.id}
+                        node={node}
+                        selectedId={feeds.selectedId}
+                        showTitle={props.showFeedTitles}
+                        filterString={props.filterString}
+                    />
+                )}
             />
         </FullHeightScrollContainer>
     );

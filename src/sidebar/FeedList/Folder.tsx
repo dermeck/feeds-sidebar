@@ -50,6 +50,7 @@ const FolderIcon = styled(FolderSimple)`
 
 interface Props {
     title?: string;
+    showTitle: boolean;
     children?: React.ReactNode;
     selected?: boolean;
     focus?: boolean;
@@ -61,37 +62,44 @@ interface Props {
     onEditComplete?: (x: string) => void;
 }
 
-const Folder = (props: Props) => (
-    <Fragment>
-        <FolderTitleContainer
-            tabIndex={0}
-            selected={!!props.selected}
-            focus={!!props.focus}
-            onClick={props.handleOnClick}
-            onBlur={props.handleOnBlur}
-            onContextMenu={props.handleOnContextMenu}>
-            <ToggleIndicator>
-                {props.expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
-            </ToggleIndicator>
-            <FolderIcon size={20} weight="light" />
-            {props.editing ? (
-                <FolderEdit
-                    initialValue={props.title ?? ''}
-                    onEditComplete={(value) => {
-                        if (props.onEditComplete === undefined) {
-                            throw new Error('onEditComplete is not defined.');
-                        }
-                        props.onEditComplete(value);
-                    }}
-                />
-            ) : (
-                <FolderTitle>{props.title}</FolderTitle>
-            )}
-        </FolderTitleContainer>
+const Folder = (props: Props) => {
+    if (!props.showTitle) {
+        console.log('meop', props);
+        return <Fragment>{props.children}</Fragment>;
+    }
 
-        {props.expanded && props.children}
-    </Fragment>
-);
+    return (
+        <Fragment>
+            <FolderTitleContainer
+                tabIndex={0}
+                selected={!!props.selected}
+                focus={!!props.focus}
+                onClick={props.handleOnClick}
+                onBlur={props.handleOnBlur}
+                onContextMenu={props.handleOnContextMenu}>
+                <ToggleIndicator>
+                    {props.expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
+                </ToggleIndicator>
+                <FolderIcon size={20} weight="light" />
+                {props.editing ? (
+                    <FolderEdit
+                        initialValue={props.title ?? ''}
+                        onEditComplete={(value) => {
+                            if (props.onEditComplete === undefined) {
+                                throw new Error('onEditComplete is not defined.');
+                            }
+                            props.onEditComplete(value);
+                        }}
+                    />
+                ) : (
+                    <FolderTitle>{props.title}</FolderTitle>
+                )}
+            </FolderTitleContainer>
+
+            {props.expanded && props.children}
+        </Fragment>
+    );
+};
 
 if (process.env.MODE === 'dev') {
     Folder.whyDidYouRender = true;
