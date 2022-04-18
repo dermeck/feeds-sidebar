@@ -215,6 +215,7 @@ const feedsSlice = createSlice({
             };
         },
         markSelectedFeedAsRead(state) {
+            // TODO also handle folders
             return {
                 ...state,
                 feeds: [...markFeedAsRead(state.feeds, state.selectedNodeId)],

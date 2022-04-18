@@ -67,6 +67,7 @@ const Folder = (props: Props) => {
         return <Fragment>{props.children}</Fragment>;
     }
 
+    // TODO indicate if folder has unread items
     return (
         <Fragment>
             <FolderTitleContainer
