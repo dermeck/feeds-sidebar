@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { Fragment, memo, useEffect, useState } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { NodeType } from '../../model/feeds';
@@ -22,12 +22,10 @@ const contextMenuHeight = 64; // 2 menu items, each 32px
 const FolderTreeNode = (props: Props) => {
     const node = useAppSelector((state) => selectTreeNode(state, props.nodeId));
 
-    const { id, title } = node.data;
-
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (props.selectedId === id && !focus) {
+        if (node && props.selectedId === node.data.id && !focus) {
             setFocus(true);
         }
     }, [props.selectedId]);
@@ -36,6 +34,12 @@ const FolderTreeNode = (props: Props) => {
     const [focus, setFocus] = useState<boolean>(false);
 
     const { height, width } = useWindowDimensions();
+
+    if (!node) {
+        return <Fragment />;
+    }
+
+    const { id, title } = node.data;
 
     const handleOnClickTitle = () => {
         if (id !== undefined) {

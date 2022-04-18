@@ -116,7 +116,7 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
 
 export const selectFeeds = (state: RootState) => state.feeds.feeds;
 
-export const selectTreeNode = (state: RootState, nodeId: string): FolderNode | FeedNode => {
+export const selectTreeNode = (state: RootState, nodeId: string): FolderNode | FeedNode | undefined => {
     const folder = state.feeds.folders.find((f) => f.id === nodeId);
 
     if (folder !== undefined) {
@@ -135,14 +135,13 @@ export const selectTreeNode = (state: RootState, nodeId: string): FolderNode | F
         };
     }
 
-    // TODO fix this workaround and throw error again
-    // something causes rerender if a folder with subfolders is deleted (might be Virtuoso?)
-    console.log('selectTreeNode error', state, nodeId);
-    return {
-        nodeType: NodeType.Folder,
-        data: { subfolders: [], title: 'error', feedIds: [], id: 'err' },
-    };
+    // TODO something triggers selectTreeNode with ids that were just deleted
+    // occurs if folders with subfolders are deleted
+    // fix this workaround and throw error again
+    // console.log('selectTreeNode error', state, nodeId);
     // throw new Error(`Node with id: "${nodeId}" not found.`);
+
+    return undefined;
 };
 
 const folderById = (state: FeedSliceState, id: string) => {
