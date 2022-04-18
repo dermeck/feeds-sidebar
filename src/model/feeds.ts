@@ -1,5 +1,4 @@
 export interface Folder {
-    //parentId: string | undefined; // TODO is this needed?
     id: string;
     title: string;
     feedIds: ReadonlyArray<string>;
