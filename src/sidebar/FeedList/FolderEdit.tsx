@@ -25,7 +25,7 @@ const FolderEdit = (props: Props) => {
     };
 
     // TODO handle Enter key
-
+    // TODO focus the input
     return <EditInput value={editValue} onChange={handleChange} onBlur={handleOnBlur} />;
 };
 

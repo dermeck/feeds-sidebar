@@ -80,7 +80,7 @@ const enum AuxButton {
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
-    const isSelected = useAppSelector((state) => state.feeds.selectedId) === props.item.id;
+    const isSelected = useAppSelector((state) => state.feeds.selectedNodeId) === props.item.id;
 
     useEffect(() => {
         if (isSelected) {

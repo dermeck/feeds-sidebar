@@ -27,7 +27,7 @@ const FolderTreeNode = (props: Props) => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (props.selectedId === id) {
+        if (props.selectedId === id && !focus) {
             setFocus(true);
         }
     }, [props.selectedId]);
@@ -45,12 +45,16 @@ const FolderTreeNode = (props: Props) => {
 
     const handleOnClickFolder = () => {
         setExpanded(!expanded);
-        setFocus(true);
+        if (!focus) {
+            setFocus(true);
+        }
         handleOnClickTitle();
     };
 
     const handleOnBlurFolder = () => {
-        setFocus(false);
+        if (focus) {
+            setFocus(false);
+        }
     };
 
     const handleOnContextMenuFolder = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

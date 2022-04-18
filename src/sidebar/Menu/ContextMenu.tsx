@@ -22,11 +22,11 @@ const ContextMenu: FunctionComponent<Props> = (props: Props) => {
                 <MenuItem
                     onMouseDown={() => {
                         dispatch(sessionSlice.actions.hideMenu());
-                        window.confirm('Do you want to delete the selected feed?')
-                            ? dispatch(feedsSlice.actions.deleteSelectedFeed())
+                        window.confirm('Do you want to delete the selected folder and all its contents?')
+                            ? dispatch(feedsSlice.actions.deleteSelectedNode())
                             : undefined;
                     }}>
-                    Delete Feed
+                    Delete
                 </MenuItem>
                 <MenuItem onMouseDown={() => dispatch(feedsSlice.actions.markSelectedFeedAsRead())}>
                     Mark as Read

@@ -10,7 +10,7 @@ describe('global extensionStateLoaded action', () => {
         };
 
         const action = extensionStateLoaded({
-            feeds: { folders: [], feeds: [], selectedId: '' },
+            feeds: { folders: [], feeds: [], selectedNodeId: '' },
             options: { feedUpdatePeriodInMinutes: 45, fetchThreadsCount: 8, showFeedTitles: false },
         });
 

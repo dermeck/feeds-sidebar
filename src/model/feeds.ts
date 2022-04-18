@@ -3,7 +3,7 @@ export interface Folder {
     id: string;
     title: string;
     feedIds: ReadonlyArray<string>;
-    subFolders: ReadonlyArray<string>;
+    subfolders: ReadonlyArray<string>;
 }
 
 export interface Feed {

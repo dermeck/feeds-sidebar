@@ -8,7 +8,7 @@ import { RootState } from '../store';
 export type FeedSliceState = {
     folders: ReadonlyArray<Folder>;
     feeds: ReadonlyArray<Feed>;
-    selectedId: string;
+    selectedNodeId: string;
 };
 
 export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
@@ -16,7 +16,7 @@ export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetc
 
 const rootFolderId = '_root_';
 
-const sampleDataFolders = [
+const sampleDataFolders: ReadonlyArray<Folder> = [
     {
         id: rootFolderId,
         title: 'root',
@@ -25,29 +25,35 @@ const sampleDataFolders = [
             'https://stackoverflow.blog/feed/',
             'https://www.quarks.de/feed/',
         ],
-        subFolders: ['_news_', '_abc_'],
+        subfolders: ['_news_', '_abc_'],
     },
     {
         id: '_news_',
         title: 'News',
         feedIds: ['https://www.tagesschau.de/xml/rss2/'],
-        subFolders: ['_yt_'],
+        subfolders: ['_yt_'],
     },
     {
         id: '_yt_',
         title: 'YouTube',
         feedIds: ['https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA'],
-        subFolders: [],
+        subfolders: ['_yt-sub_'],
+    },
+    {
+        id: '_yt-sub_',
+        title: 'YT-SUB',
+        feedIds: [],
+        subfolders: [],
     },
     {
         id: '_abc_',
         title: 'ABC',
         feedIds: ['https://www.dragonball-multiverse.com/flux.rss.php?lang=en'],
-        subFolders: [],
+        subfolders: [],
     },
 ];
 
-const sampleDataFeeds = [
+const sampleDataFeeds: ReadonlyArray<Feed> = [
     {
         // sample Atom Feed
         id: 'https://ourworldindata.org/atom.xml',
@@ -96,11 +102,11 @@ const initialState: FeedSliceState = {
                       id: rootFolderId, // top level node
                       title: 'root',
                       feedIds: [],
-                      subFolders: ['_news_'],
+                      subfolders: ['_news_'],
                   },
               ],
     feeds: process.env.NODE_ENV === 'development' ? sampleDataFeeds : [],
-    selectedId: '',
+    selectedNodeId: '',
 };
 
 export const selectTotalUnreadItems = (state: FeedSliceState) =>
@@ -129,11 +135,18 @@ export const selectTreeNode = (state: RootState, nodeId: string): FolderNode | F
         };
     }
 
-    throw new Error(`Node with id: "${nodeId}" not found.`);
+    // TODO fix this workaround and throw error again
+    // something causes rerender if a folder with subfolders is deleted (might be Virtuoso?)
+    console.log('selectTreeNode error', state, nodeId);
+    return {
+        nodeType: NodeType.Folder,
+        data: { subfolders: [], title: 'error', feedIds: [], id: 'err' },
+    };
+    // throw new Error(`Node with id: "${nodeId}" not found.`);
 };
 
-const folderById = (state: RootState, id: string) => {
-    const folder = state.feeds.folders.find((x) => x.id === id);
+const folderById = (state: FeedSliceState, id: string) => {
+    const folder = state.folders.find((x) => x.id === id);
 
     if (folder === undefined) {
         throw new Error(`Folder with id: "${id}" not found.`);
@@ -151,11 +164,11 @@ const feedById = (state: RootState, id: string) => {
 };
 
 const selectChildNodes = (state: RootState, parentId: string): ReadonlyArray<TreeNode> => {
-    const parentFolder = folderById(state, parentId);
+    const parentFolder = folderById(state.feeds, parentId);
 
-    const folderNodes: ReadonlyArray<FolderNode> = parentFolder.subFolders.map((subFolderId) => ({
+    const folderNodes: ReadonlyArray<FolderNode> = parentFolder.subfolders.map((subFolderId) => ({
         nodeType: NodeType.Folder,
-        data: folderById(state, subFolderId),
+        data: folderById(state.feeds, subFolderId),
     }));
 
     const feedNodes: ReadonlyArray<FeedNode> = parentFolder.feedIds.map((feedId) => ({
@@ -179,7 +192,7 @@ const feedsSlice = createSlice({
                 f.id === rootFolderId
                     ? {
                           ...f,
-                          subFolders: [newFolderId, ...f.subFolders],
+                          subfolders: [newFolderId, ...f.subfolders],
                       }
                     : f,
             );
@@ -188,13 +201,13 @@ const feedsSlice = createSlice({
                 id: newFolderId,
                 title: action.payload,
                 feedIds: [],
-                subFolders: [],
+                subfolders: [],
             });
 
             state.folders = folders;
         },
         select(state, action: PayloadAction<string>) {
-            state.selectedId = action.payload;
+            state.selectedNodeId = action.payload;
         },
         markItemAsRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             return {
@@ -205,7 +218,7 @@ const feedsSlice = createSlice({
         markSelectedFeedAsRead(state) {
             return {
                 ...state,
-                feeds: [...markFeedAsRead(state.feeds, state.selectedId)],
+                feeds: [...markFeedAsRead(state.feeds, state.selectedNodeId)],
             };
         },
         markAllAsRead(state) {
@@ -235,21 +248,67 @@ const feedsSlice = createSlice({
             };
         },
 
-        deleteSelectedFeed(state) {
-            // index of the feed that gets deleted
-            const selectedFeedId = state.selectedId;
-            const selectedIndex = state.feeds.findIndex((f) => f.id === selectedFeedId);
+        deleteSelectedNode(state) {
+            const isFeed = state.feeds.some((x) => x.id === state.selectedNodeId);
 
-            // delete
-            state.feeds = state.feeds.filter((f) => f.id !== selectedFeedId);
+            if (isFeed) {
+                // index of the feed that gets deleted
+                const selectedFeedId = state.selectedNodeId;
+                // const selectedIndex = state.feeds.findIndex((f) => f.id === selectedFeedId); // TODO
 
-            // if possible select the the next feed
-            state.selectedId =
-                state.feeds.length === 0
-                    ? ''
-                    : state.feeds.length > selectedIndex
-                    ? state.feeds[selectedIndex].id
-                    : state.feeds[selectedIndex - 1].id;
+                // delete relation in parent
+                state.folders = state.folders.map((folder) =>
+                    folder.feedIds.some((feedId) => feedId === selectedFeedId)
+                        ? {
+                              ...folder,
+                              feedIds: folder.feedIds.filter((feedId) => feedId !== selectedFeedId),
+                          }
+                        : folder,
+                );
+
+                // delete feed
+                state.feeds = state.feeds.filter((f) => f.id !== selectedFeedId);
+
+                // if possible select the the next feed
+                // TODO consider changed selection
+                state.selectedNodeId = '';
+                /*state.selectedNodeId =
+                    state.feeds.length === 0
+                        ? ''
+                        : state.feeds.length > selectedIndex
+                        ? state.feeds[selectedIndex].id
+                        : state.feeds[selectedIndex - 1].id;
+                        */
+            }
+
+            const isFolder = state.folders.some((x) => x.id === state.selectedNodeId);
+
+            if (isFolder) {
+                const selectedFolderId = state.selectedNodeId;
+
+                // delete relation in parent
+                state.folders = state.folders.map((folder) =>
+                    folder.subfolders.some((subfolderId) => subfolderId === selectedFolderId)
+                        ? {
+                              ...folder,
+                              subfolders: folder.subfolders.filter((subfolderId) => subfolderId !== selectedFolderId),
+                          }
+                        : folder,
+                );
+
+                // delete feeds in selected folder and its subfolders (all levels)
+                const feedIdsToDelete = feedIdsByFolderId(state, selectedFolderId);
+                state.feeds = state.feeds.filter((feed) => !feedIdsToDelete.some((id) => feed.id === id));
+
+                // delete folder and subfolders (all levels)
+                const subfolderIdsToDelete = subfolderIdsByFolderId(state, selectedFolderId);
+                state.folders = state.folders.filter(
+                    (folder) => ![selectedFolderId, ...subfolderIdsToDelete].some((id) => folder.id === id),
+                );
+
+                // TODO consider changed selection
+                state.selectedNodeId = '';
+            }
         },
     },
     extraReducers: (builder) => {
@@ -261,10 +320,22 @@ const feedsSlice = createSlice({
     },
 });
 
-const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> => {
-    // TODO extract newFeeds and add them to a top lebeln folder "_default_"
-    //const newFeeds = updatedFeeds.filter((updatedFeed) => !feeds.some((x) => x.url === updatedFeed.url));
+const feedIdsByFolderId = (state: FeedSliceState, folderId: string): ReadonlyArray<string> => {
+    const folder = folderById(state, folderId);
 
+    return [...folder.feedIds, ...folder.subfolders.flatMap((subfolder) => [...feedIdsByFolderId(state, subfolder)])];
+};
+
+const subfolderIdsByFolderId = (state: FeedSliceState, folderId: string): ReadonlyArray<string> => {
+    const folder = folderById(state, folderId);
+
+    return [
+        ...folder.subfolders,
+        ...folder.subfolders.flatMap((subfolder) => [...subfolderIdsByFolderId(state, subfolder)]),
+    ];
+};
+
+const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> => {
     updatedFeeds = feeds.map((feed) => {
         const updatedFeed = updatedFeeds.find((x) => x.url === feed.url);
         if (updatedFeed === undefined) {
