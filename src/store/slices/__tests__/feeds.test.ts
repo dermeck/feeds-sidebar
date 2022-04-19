@@ -71,6 +71,8 @@ const folderFixture: (id: string) => Folder = (id: string) => ({ id, title: id, 
 
 const folder1Fixture = folderFixture('folder1');
 const folder2Fixture = folderFixture('folder2');
+const folder3Fixture = folderFixture('folder3');
+const folder4Fixture = folderFixture('folder4');
 
 const feedsFixture = [feed1Fixture, feed2Fixture];
 
@@ -127,7 +129,7 @@ describe('markItemAsRead action', () => {
 });
 
 describe('markSelectedFeedAsRead action', () => {
-    it('marks all items of selected feed as read', () => {
+    it('marks all items of feed as read if selectedNode is a feed', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             feeds: feedsFixture,
@@ -140,6 +142,8 @@ describe('markSelectedFeedAsRead action', () => {
         expect(feedsSlice.reducer(prevState, action).feeds[0].items[1].isRead).toBe(true);
         expect(feedsSlice.reducer(prevState, action).feeds[1].items[0].isRead).toBe(false);
     });
+
+    it.todo('marks all items within folder as read if selectedNode is a folder');
 });
 
 describe('markAllAsRead action', () => {
@@ -426,9 +430,50 @@ describe('deleteSelectedNode action', () => {
     });
 
     describe('when selected node is a folder', () => {
-        it.todo('deletes the selected folder and its content (subfolders and feeds)');
+        it('deletes the selected folder and its content (subfolders and feeds)', () => {
+            const prevState: FeedSliceState = {
+                ...feedsSlice.getInitialState,
+                folders: [
+                    { ...folder1Fixture, subfolders: [folder2Fixture.id], feedIds: [feed1Fixture.id] },
+                    { ...folder2Fixture, subfolders: [folder3Fixture.id] },
+                    { ...folder3Fixture, feedIds: [feed2Fixture.id] },
+                    { ...folder4Fixture, feedIds: [feed3Fixture.id] },
+                ],
+                feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
+                selectedNodeId: folder1Fixture.id,
+            };
 
-        it.todo('deletes the relation to the parent folder');
+            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
+
+            expect(newState.folders).toHaveLength(1);
+            expect(newState.feeds).toHaveLength(1);
+            expect(newState.folders[0]).toStrictEqual({ ...folder4Fixture, feedIds: [feed3Fixture.id] });
+            expect(newState.feeds[0]).toStrictEqual(feed3Fixture);
+        });
+
+        it('deletes the relation to the parent folder', () => {
+            const prevState: FeedSliceState = {
+                ...feedsSlice.getInitialState,
+                folders: [
+                    {
+                        ...folder1Fixture,
+                        subfolders: [folder2Fixture.id, folder3Fixture.id],
+                    },
+                    folder2Fixture,
+                    folder3Fixture,
+                ],
+                feeds: [],
+                selectedNodeId: folder2Fixture.id,
+            };
+
+            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
+
+            expect(newState.folders).toHaveLength(2);
+            expect(newState.folders[0]).toStrictEqual({
+                ...folder1Fixture,
+                subfolders: [folder3Fixture.id],
+            });
+        });
 
         it.todo('it selects the parent folder if it was the only subfolder');
 
@@ -484,4 +529,12 @@ describe('selectTotalUnreadItems', () => {
 
         expect(selectTotalUnreadItems(state)).toBe(3);
     });
+});
+
+describe('selectTreeNode', () => {
+    it.todo('returns a feedNode if id matches a feed');
+
+    it.todo('returns a folderNode if id matches a folder');
+
+    it.todo('returns undefined if the id does not match a feed or folder');
 });
