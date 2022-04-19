@@ -1,4 +1,4 @@
-import { Feed } from '../../../model/feeds';
+import { Feed, FeedItem, Folder } from '../../../model/feeds';
 import { extensionStateLoaded } from '../../actions';
 import feedsSlice, { FeedSliceState, selectTotalUnreadItems } from '../feeds';
 import { initialState as initialOptionsState } from '../options';
@@ -60,30 +60,35 @@ const feed3Fixture: Feed = {
     ],
 };
 
-const itemFixture = (id: string) => ({
+const itemFixture: (id: string) => FeedItem = (id: string) => ({
     id: id,
     url: `http://feed.url/${id}`,
     title: `title-${id}`,
     isRead: false,
 });
 
+const folderFixture: (id: string) => Folder = (id: string) => ({ id, title: id, feedIds: [], subfolders: [] });
+
+const folder1Fixture = folderFixture('folder1');
+const folder2Fixture = folderFixture('folder2');
+
 const feedsFixture = [feed1Fixture, feed2Fixture];
 
 describe('global extensionStateLoaded action', () => {
     it('replaces previous state with payload', () => {
         const prevState: FeedSliceState = {
-            folders: [],
+            folders: [folder1Fixture],
             feeds: [feed1Fixture],
             selectedNodeId: '1',
         };
 
         const action = extensionStateLoaded({
-            feeds: { folders: [], feeds: [feed2Fixture], selectedNodeId: '' },
+            feeds: { folders: [folder2Fixture], feeds: [feed2Fixture], selectedNodeId: '' },
             options: initialOptionsState,
         });
 
         const expectation: FeedSliceState = {
-            folders: [], // TODO add folder fixture
+            folders: [folder2Fixture],
             feeds: [feed2Fixture],
             selectedNodeId: '',
         };
