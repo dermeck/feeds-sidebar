@@ -386,6 +386,48 @@ describe('updateFeeds action', () => {
     });
 });
 
+jest.mock('uuid', () => {
+    const original = jest.requireActual('uuid');
+
+    return {
+        ...original,
+        v4: jest.fn().mockReturnValue('mocked-uuid'),
+    };
+});
+
+describe('addFolder', () => {
+    it('does add a new folder with uuid', () => {
+        const prevState: FeedSliceState = feedsSlice.getInitialState();
+
+        const action = feedsSlice.actions.addFolder('moepFolder');
+        const newState = feedsSlice.reducer(prevState, action);
+
+        const expectation: Folder = {
+            id: 'mocked-uuid',
+            title: 'moepFolder',
+            subfolders: [],
+            feedIds: [],
+        };
+
+        expect(newState.folders).toHaveLength(2);
+        expect(newState.folders[1]).toStrictEqual(expectation);
+    });
+
+    it('does add relation to root folder', () => {
+        const prevState: FeedSliceState = feedsSlice.getInitialState();
+
+        const action = feedsSlice.actions.addFolder('miepFolder');
+        const newState = feedsSlice.reducer(prevState, action);
+
+        expect(newState.folders[0]).toStrictEqual({
+            id: '_root_',
+            title: 'root',
+            feedIds: [],
+            subfolders: ['mocked-uuid'],
+        });
+    });
+});
+
 describe('deleteSelectedNode action', () => {
     describe('when selected node is a feed', () => {
         it('deletes the selected feed', () => {
