@@ -1,6 +1,6 @@
-import { Feed, FeedItem, Folder } from '../../../model/feeds';
+import { Feed, FeedItem, FeedNode, Folder, FolderNode, NodeType } from '../../../model/feeds';
 import { extensionStateLoaded } from '../../actions';
-import feedsSlice, { FeedSliceState, selectTotalUnreadItems } from '../feeds';
+import feedsSlice, { FeedSliceState, selectTotalUnreadItems, selectTreeNode } from '../feeds';
 import { initialState as initialOptionsState } from '../options';
 
 const feed1Fixture: Feed = {
@@ -432,7 +432,7 @@ describe('deleteSelectedNode action', () => {
     describe('when selected node is a folder', () => {
         it('deletes the selected folder and its content (subfolders and feeds)', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState,
+                ...feedsSlice.getInitialState(),
                 folders: [
                     { ...folder1Fixture, subfolders: [folder2Fixture.id], feedIds: [feed1Fixture.id] },
                     { ...folder2Fixture, subfolders: [folder3Fixture.id] },
@@ -453,7 +453,7 @@ describe('deleteSelectedNode action', () => {
 
         it('deletes the relation to the parent folder', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState,
+                ...feedsSlice.getInitialState(),
                 folders: [
                     {
                         ...folder1Fixture,
@@ -462,7 +462,6 @@ describe('deleteSelectedNode action', () => {
                     folder2Fixture,
                     folder3Fixture,
                 ],
-                feeds: [],
                 selectedNodeId: folder2Fixture.id,
             };
 
@@ -532,9 +531,31 @@ describe('selectTotalUnreadItems', () => {
 });
 
 describe('selectTreeNode', () => {
-    it.todo('returns a feedNode if id matches a feed');
+    const state: FeedSliceState = {
+        ...feedsSlice.getInitialState(),
+        folders: [folder1Fixture, folder2Fixture, folder3Fixture],
+        feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
+    };
 
-    it.todo('returns a folderNode if id matches a folder');
+    it('returns a feedNode if id matches a feed', () => {
+        const expectation: FeedNode = {
+            nodeType: NodeType.Feed,
+            data: feed2Fixture,
+        };
 
-    it.todo('returns undefined if the id does not match a feed or folder');
+        expect(selectTreeNode(state, feed2Fixture.id)).toStrictEqual(expectation);
+    });
+
+    it('returns a folderNode if id matches a folder', () => {
+        const expectation: FolderNode = {
+            nodeType: NodeType.Folder,
+            data: folder2Fixture,
+        };
+
+        expect(selectTreeNode(state, folder2Fixture.id)).toStrictEqual(expectation);
+    });
+
+    it('returns undefined if the id does not match a feed or folder', () => {
+        expect(selectTreeNode(state, 'moep')).toBeUndefined();
+    });
 });

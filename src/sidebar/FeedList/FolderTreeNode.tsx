@@ -20,7 +20,7 @@ interface Props {
 const contextMenuHeight = 64; // 2 menu items, each 32px
 
 const FolderTreeNode = (props: Props) => {
-    const node = useAppSelector((state) => selectTreeNode(state, props.nodeId));
+    const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
 
     const dispatch = useAppDispatch();
 

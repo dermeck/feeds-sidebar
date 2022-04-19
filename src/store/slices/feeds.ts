@@ -116,8 +116,8 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
 
 export const selectFeeds = (state: RootState) => state.feeds.feeds;
 
-export const selectTreeNode = (state: RootState, nodeId: string): FolderNode | FeedNode | undefined => {
-    const folder = state.feeds.folders.find((f) => f.id === nodeId);
+export const selectTreeNode = (state: FeedSliceState, nodeId: string): FolderNode | FeedNode | undefined => {
+    const folder = state.folders.find((f) => f.id === nodeId);
 
     if (folder !== undefined) {
         return {
@@ -126,7 +126,7 @@ export const selectTreeNode = (state: RootState, nodeId: string): FolderNode | F
         };
     }
 
-    const feed = state.feeds.feeds.find((f) => f.id === nodeId);
+    const feed = state.feeds.find((f) => f.id === nodeId);
 
     if (feed !== undefined) {
         return {
