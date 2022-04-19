@@ -102,7 +102,7 @@ const initialState: FeedSliceState = {
                       id: rootFolderId, // top level node
                       title: 'root',
                       feedIds: [],
-                      subfolders: ['_news_'],
+                      subfolders: [],
                   },
               ],
     feeds: process.env.NODE_ENV === 'development' ? sampleDataFeeds : [],
