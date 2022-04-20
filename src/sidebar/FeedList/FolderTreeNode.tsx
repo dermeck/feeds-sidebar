@@ -106,7 +106,12 @@ const FolderTreeNode = (props: Props) => {
             onDrop={handleDrop}
             onDragEnd={handleDragEnd}
             validDropTarget={validDropTarget}>
-            <FolderSubTreeNode node={node} {...props} validDropTarget={validDropTarget} />
+            <FolderSubTreeNode
+                node={node}
+                {...props}
+                validDropTarget={validDropTarget}
+                feedItemsVisable={draggedId === undefined}
+            />
         </Folder>
     );
 };
