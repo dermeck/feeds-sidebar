@@ -150,6 +150,7 @@ const folderById = (state: FeedSliceState, id: string) => {
     if (folder === undefined) {
         throw new Error(`Folder with id: "${id}" not found.`);
     }
+
     return folder;
 };
 
@@ -159,6 +160,7 @@ const feedById = (state: RootState, id: string) => {
     if (feed === undefined) {
         throw new Error(`Feed with id: "${id}" not found.`);
     }
+
     return feed;
 };
 

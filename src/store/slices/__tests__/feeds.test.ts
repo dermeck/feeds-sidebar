@@ -629,3 +629,7 @@ describe('selectTreeNode', () => {
         expect(selectTreeNode(state, 'moep')).toBeUndefined();
     });
 });
+
+describe('selectTopLevelNodes', () => {
+    it.todo('selectes the subfolders and feeds of the root folder');
+});
