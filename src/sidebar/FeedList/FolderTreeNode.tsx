@@ -81,7 +81,11 @@ const FolderTreeNode = (props: Props) => {
         }
     };
 
-    const handleDrag = () => dispatch(sessionSlice.actions.changeDragged(id));
+    const handleDrag = () => {
+        if (draggedId !== id) {
+            dispatch(sessionSlice.actions.changeDragged(id));
+        }
+    };
     const handleDrop = () => dispatch(sessionSlice.actions.dropped(id));
     const handleDragEnd = () => dispatch(sessionSlice.actions.changeDragged(undefined));
 
