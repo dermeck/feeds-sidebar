@@ -51,10 +51,11 @@ interface Props {
     selectedId?: string;
     showTitle: boolean;
     filterString: string;
+    validDropTarget: boolean;
 }
 
 const FolderSubTreeNode = (props: Props): JSX.Element => {
-    const { node, filterString, showTitle, selectedId } = props;
+    const { node, filterString, showTitle, selectedId, validDropTarget } = props;
 
     switch (node.nodeType) {
         case NodeType.Feed:
@@ -85,6 +86,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                                 selectedId={selectedId}
                                 showTitle={showTitle}
                                 filterString={filterString}
+                                validDropTarget={validDropTarget}
                             />
                         );
                     })}

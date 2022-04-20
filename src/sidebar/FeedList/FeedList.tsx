@@ -24,7 +24,9 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <FullHeightScrollContainer>
-            {showNewFolderInput && <Folder editing={true} onEditComplete={handleOnEditComplete} showTitle={true} />}
+            {showNewFolderInput && (
+                <Folder editing={true} onEditComplete={handleOnEditComplete} showTitle={true} validDropTarget={false} />
+            )}
 
             <Virtuoso
                 data={topLevelNodes}
@@ -35,6 +37,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                         selectedId={feeds.selectedNodeId}
                         showTitle={props.showFeedTitles}
                         filterString={props.filterString}
+                        validDropTarget={true}
                     />
                 )}
             />

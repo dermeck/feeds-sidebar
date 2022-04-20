@@ -14,6 +14,7 @@ interface Props {
     selectedId?: string;
     showTitle: boolean;
     filterString: string;
+    validDropTarget: boolean;
 }
 
 // TODO find a more robust way to determine menu height
@@ -21,6 +22,7 @@ const contextMenuHeight = 64; // 2 menu items, each 32px
 
 const FolderTreeNode = (props: Props) => {
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
+    const draggedId = useAppSelector((state) => state.session.draggedId);
 
     const dispatch = useAppDispatch();
 
@@ -79,6 +81,13 @@ const FolderTreeNode = (props: Props) => {
         }
     };
 
+    const handleDrag = () => dispatch(sessionSlice.actions.changeDragged(id));
+    const handleDrop = () => dispatch(sessionSlice.actions.dropped(id));
+    const handleDragEnd = () => dispatch(sessionSlice.actions.changeDragged(undefined));
+
+    // disable drop on self and all children
+    const validDropTarget = id !== draggedId && props.validDropTarget;
+
     return (
         <Folder
             title={title ?? (node.nodeType === NodeType.Feed ? node.data.url : '')}
@@ -88,8 +97,12 @@ const FolderTreeNode = (props: Props) => {
             expanded={expanded}
             handleOnClick={handleOnClickFolder}
             handleOnBlur={handleOnBlurFolder}
-            handleOnContextMenu={handleOnContextMenuFolder}>
-            <FolderSubTreeNode node={node} {...props} />
+            handleOnContextMenu={handleOnContextMenuFolder}
+            onDrag={handleDrag}
+            onDrop={handleDrop}
+            onDragEnd={handleDragEnd}
+            validDropTarget={validDropTarget}>
+            <FolderSubTreeNode node={node} {...props} validDropTarget={validDropTarget} />
         </Folder>
     );
 };

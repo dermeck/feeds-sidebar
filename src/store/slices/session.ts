@@ -33,6 +33,8 @@ export type SessionSliceState = {
     menuContext?: MenuContext;
     menuVisible: boolean;
     newFolderEditActive: boolean;
+
+    draggedId?: string;
 };
 
 export const initialState: SessionSliceState = {
@@ -42,6 +44,8 @@ export const initialState: SessionSliceState = {
     menuContext: undefined,
     menuVisible: false,
     newFolderEditActive: false,
+
+    draggedId: undefined,
 };
 
 export const selectIsLoadingFeeds = (state: SessionSliceState) => state.feedStatus.some((x) => x.status === 'loading');
@@ -50,6 +54,14 @@ const sessionSlice = createSlice({
     name: 'session',
     initialState,
     reducers: {
+        changeDragged(state, action: PayloadAction<string | undefined>) {
+            console.log('dragging ', action.payload); // TODO
+            state.draggedId = action.payload;
+        },
+        dropped(satte, action: PayloadAction<string>) {
+            console.log('dropped on target', action.payload); // TODO
+            satte.draggedId = undefined;
+        },
         changeView(state, action: PayloadAction<View>) {
             state.activeView = action.payload;
         },

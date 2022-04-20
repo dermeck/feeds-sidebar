@@ -8,6 +8,7 @@ import FolderEdit from './FolderEdit';
 interface FolderTitleContainerProps {
     selected: boolean;
     focus: boolean;
+    disabled: boolean;
 }
 
 const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
@@ -15,6 +16,8 @@ const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
     flex-direction: row;
     align-items: center;
     padding: 3px 0 3px 8px;
+
+    border: ${(props) => (props.disabled ? '1px solid red' : '1px solid blue')}; // TODO
 
     background-color: ${(props) =>
         props.selected
@@ -60,6 +63,10 @@ interface Props {
     handleOnBlur?: () => void;
     handleOnContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     onEditComplete?: (x: string) => void;
+    onDrag?: () => void;
+    onDragEnd?: () => void;
+    validDropTarget: boolean;
+    onDrop?: () => void;
 }
 
 const Folder = (props: Props) => {
@@ -71,6 +78,18 @@ const Folder = (props: Props) => {
     return (
         <Fragment>
             <FolderTitleContainer
+                draggable={true}
+                onDragOver={(event: React.DragEvent<HTMLDivElement>) => {
+                    if (props.validDropTarget) {
+                        // TODO change style
+                        event.preventDefault();
+                        console.log('onDragOver', props.title), event;
+                    }
+                }}
+                onDrag={props.onDrag}
+                onDrop={props.onDrop}
+                onDragEnd={props.onDragEnd}
+                disabled={!props.validDropTarget}
                 tabIndex={0}
                 selected={!!props.selected}
                 focus={!!props.focus}
