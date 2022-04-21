@@ -55,7 +55,6 @@ const sessionSlice = createSlice({
     initialState,
     reducers: {
         changeDragged(state, action: PayloadAction<string | undefined>) {
-            console.log('dragging ', action.payload); // TODO
             state.draggedId = action.payload;
         },
         dropped(satte, action: PayloadAction<string>) {

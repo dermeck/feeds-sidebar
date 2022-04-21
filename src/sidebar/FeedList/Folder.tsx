@@ -63,10 +63,10 @@ interface Props {
     handleOnBlur?: () => void;
     handleOnContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     onEditComplete?: (x: string) => void;
-    onDrag?: () => void;
-    onDragEnd?: () => void;
+    onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
+    onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
     validDropTarget: boolean;
-    onDrop?: () => void;
+    onDrop?: (event: React.DragEvent<HTMLDivElement>) => void;
 }
 
 const Folder = (props: Props) => {
@@ -80,13 +80,18 @@ const Folder = (props: Props) => {
             <FolderTitleContainer
                 draggable={true}
                 onDragOver={(event: React.DragEvent<HTMLDivElement>) => {
+                    // TODO determine drop position (top, center, bottom) based on drop target bounding box and drag position
+                    // use that information (local state) to highlight (line, highlight label) and use it fro drop effect (before, insert, after)
                     if (props.validDropTarget) {
-                        // TODO change style
                         event.preventDefault();
                         console.log('onDragOver', props.title), event;
                     }
                 }}
-                onDrag={props.onDrag}
+                onDragStart={(event: React.DragEvent<HTMLDivElement>) => {
+                    if (props.onDragStart) {
+                        props.onDragStart(event);
+                    }
+                }}
                 onDrop={props.onDrop}
                 onDragEnd={props.onDragEnd}
                 disabled={!props.validDropTarget}

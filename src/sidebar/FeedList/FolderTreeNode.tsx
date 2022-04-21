@@ -81,13 +81,23 @@ const FolderTreeNode = (props: Props) => {
         }
     };
 
-    const handleDrag = () => {
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        event.dataTransfer.setData('moep', id); // TODO do we need this?
+
         if (draggedId !== id) {
             dispatch(sessionSlice.actions.changeDragged(id));
         }
     };
-    const handleDrop = () => dispatch(sessionSlice.actions.dropped(id));
-    const handleDragEnd = () => dispatch(sessionSlice.actions.changeDragged(undefined));
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const data = event.dataTransfer.getData('moep'); // TODO do we need this?
+        console.log('dropped id on id', data, id);
+
+        return dispatch(sessionSlice.actions.dropped(id)); // id is the target
+    };
+    const handleDragEnd = () => {
+        dispatch(sessionSlice.actions.changeDragged(undefined));
+    };
 
     // disable drop on self and all children
     const validDropTarget = id !== draggedId && props.validDropTarget;
@@ -102,7 +112,7 @@ const FolderTreeNode = (props: Props) => {
             handleOnClick={handleOnClickFolder}
             handleOnBlur={handleOnBlurFolder}
             handleOnContextMenu={handleOnContextMenuFolder}
-            onDrag={handleDrag}
+            onDragStart={handleDragStart}
             onDrop={handleDrop}
             onDragEnd={handleDragEnd}
             validDropTarget={validDropTarget}>
