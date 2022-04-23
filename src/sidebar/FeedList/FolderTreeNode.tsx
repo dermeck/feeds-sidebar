@@ -13,6 +13,7 @@ interface Props {
     nodeId: string;
     selectedId?: string;
     showTitle: boolean;
+    nestedLevel: number;
     filterString: string;
     validDropTarget: boolean;
 }
@@ -112,6 +113,7 @@ const FolderTreeNode = (props: Props) => {
     return (
         <Folder
             title={title ?? (node.nodeType === NodeType.Feed ? node.data.url : '')}
+            nestedLevel={props.nestedLevel}
             showTitle={props.showTitle}
             selected={props.selectedId === id}
             focus={focus}

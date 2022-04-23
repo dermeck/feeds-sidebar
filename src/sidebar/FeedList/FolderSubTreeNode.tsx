@@ -42,15 +42,12 @@ const FeedItems = (props: FeedItemsprops) => {
     );
 };
 
-// TODO indent should happen on the level level to ensure highlight coloring is appliad to full width (pass "level+1" down as prop)
-const SubFolderWrapper = styled.div<{ indented: boolean }>`
-    padding-left: ${(props) => (props.indented ? '15px' : 0)};
-`;
-
+// TODO consolidate with FolderTreeNodeProps
 interface Props {
     node: TreeNode;
     selectedId?: string;
     showTitle: boolean;
+    nestedLevel: number;
     filterString: string;
     validDropTarget: boolean;
     feedItemsVisable: boolean;
@@ -79,20 +76,21 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
             const childIds = [...node.data.subfolders, ...node.data.feedIds];
 
             return (
-                <SubFolderWrapper indented={showTitle}>
+                <Fragment>
                     {childIds.map((childId) => {
                         return (
                             <FolderTreeNode
                                 key={childId}
                                 nodeId={childId}
                                 selectedId={selectedId}
+                                nestedLevel={props.nestedLevel + 1}
                                 showTitle={showTitle}
                                 filterString={filterString}
                                 validDropTarget={validDropTarget}
                             />
                         );
                     })}
-                </SubFolderWrapper>
+                </Fragment>
             );
         }
 

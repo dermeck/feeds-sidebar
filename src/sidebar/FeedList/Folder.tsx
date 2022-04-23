@@ -9,13 +9,17 @@ interface FolderTitleContainerProps {
     selected: boolean;
     focus: boolean;
     disabled: boolean;
+    nestedLevel: number;
 }
 
 const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 3px 0 3px 8px;
+    padding-top: 3px;
+    padding-right: o;
+    padding-bottom: 3px;
+    padding-left: ${(props) => (props.nestedLevel > 0 ? `${8 + props.nestedLevel * 15}px` : '8px')};
 
     background-color: ${(props) =>
         props.selected
@@ -52,6 +56,7 @@ const FolderIcon = styled(FolderSimple)`
 interface Props {
     title?: string;
     showTitle: boolean;
+    nestedLevel: number;
     children?: React.ReactNode;
     selected?: boolean;
     focus?: boolean;
@@ -93,6 +98,7 @@ const Folder = (props: Props) => {
                 onDrop={props.onDrop}
                 onDragEnd={props.onDragEnd}
                 disabled={!props.validDropTarget}
+                nestedLevel={props.nestedLevel}
                 tabIndex={0}
                 selected={!!props.selected}
                 focus={!!props.focus}

@@ -25,7 +25,13 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
     return (
         <FullHeightScrollContainer>
             {showNewFolderInput && (
-                <Folder editing={true} onEditComplete={handleOnEditComplete} showTitle={true} validDropTarget={false} />
+                <Folder
+                    editing={true}
+                    onEditComplete={handleOnEditComplete}
+                    showTitle={true}
+                    validDropTarget={false}
+                    nestedLevel={0}
+                />
             )}
 
             {topLevelNodes.map((node) => (
@@ -33,6 +39,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                     key={node.data.id}
                     nodeId={node.data.id}
                     selectedId={feeds.selectedNodeId}
+                    nestedLevel={0}
                     showTitle={props.showFeedTitles}
                     filterString={props.filterString}
                     validDropTarget={true}
