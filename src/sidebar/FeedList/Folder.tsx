@@ -97,7 +97,7 @@ const Folder = (props: Props) => {
                 }}
                 onDrop={props.onDrop}
                 onDragEnd={props.onDragEnd}
-                disabled={!props.validDropTarget}
+                disabled={!props.validDropTarget && !props.editing}
                 nestedLevel={props.nestedLevel}
                 tabIndex={0}
                 selected={!!props.selected}
