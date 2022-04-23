@@ -17,8 +17,6 @@ const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
     align-items: center;
     padding: 3px 0 3px 8px;
 
-    border: ${(props) => (props.disabled ? '1px solid red' : '1px solid blue')}; // TODO
-
     background-color: ${(props) =>
         props.selected
             ? props.focus
@@ -31,7 +29,7 @@ const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
                 ? props.theme.colors.selectedItemTextColor
                 : props.theme.colors.selectedItemNoFocusTextColor
             : 'inherit'};
-    opacity: 0.9;
+    opacity: ${(props) => (props.disabled ? 0.3 : 0.9)};
 `;
 
 const FolderTitle = styled.label`
