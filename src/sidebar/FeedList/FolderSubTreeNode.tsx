@@ -50,17 +50,17 @@ interface Props {
     nestedLevel: number;
     filterString: string;
     validDropTarget: boolean;
-    feedItemsVisable: boolean;
+    feedItemsVisible: boolean;
 }
 
 const FolderSubTreeNode = (props: Props): JSX.Element => {
-    const { node, filterString, showTitle, selectedId, validDropTarget, feedItemsVisable } = props;
+    const { node, filterString, showTitle, selectedId, validDropTarget, feedItemsVisible } = props;
 
     switch (node.nodeType) {
         case NodeType.Feed:
             return (
                 <Fragment>
-                    {node.nodeType === NodeType.Feed && feedItemsVisable && (
+                    {node.nodeType === NodeType.Feed && feedItemsVisible && (
                         <FeedItems
                             key={node.data.id}
                             feed={node.data}
