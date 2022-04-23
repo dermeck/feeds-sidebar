@@ -18,6 +18,11 @@ export const enum NodeType {
     Folder = 'FOLDER',
 }
 
+export interface NodeMeta {
+    nodeId: string;
+    nodeType: NodeType;
+}
+
 export interface FeedNode {
     nodeType: NodeType.Feed;
     data: Feed;

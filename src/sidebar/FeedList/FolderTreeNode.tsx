@@ -22,7 +22,8 @@ const contextMenuHeight = 64; // 2 menu items, each 32px
 
 const FolderTreeNode = (props: Props) => {
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
-    const draggedId = useAppSelector((state) => state.session.draggedId);
+    const dragged = useAppSelector((state) => state.session.dragged);
+    const draggedId = dragged?.nodeId;
 
     const dispatch = useAppDispatch();
 
@@ -85,17 +86,17 @@ const FolderTreeNode = (props: Props) => {
         console.log(event.target);
 
         if (draggedId !== id) {
-            dispatch(sessionSlice.actions.changeDragged(id));
+            dispatch(sessionSlice.actions.changeDragged({ nodeId: id, nodeType: node.nodeType }));
         }
     };
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
         console.log(event.target);
 
-        if (!draggedId) {
-            throw new Error('draggedId must be defined.');
+        if (!dragged) {
+            throw new Error('dragged node must be defined.');
         }
 
-        dispatch(feedsSlice.actions.moveNode({ movedNodeId: draggedId, targetNodeId: id }));
+        dispatch(feedsSlice.actions.moveNode({ movedNode: dragged, targetFolderNodeId: id }));
         dispatch(sessionSlice.actions.changeDragged(undefined));
 
         // move node {nodeId, target, mode=insert | before | after} // feed on feed only before/after; node.nodeType

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { NodeMeta } from '../../model/feeds';
 import feedsSlice from './feeds';
 
 type FeedFetchStatus = 'loading' | 'loaded' | 'error';
@@ -34,7 +35,7 @@ export type SessionSliceState = {
     menuVisible: boolean;
     newFolderEditActive: boolean;
 
-    draggedId?: string;
+    dragged?: NodeMeta;
 };
 
 export const initialState: SessionSliceState = {
@@ -45,7 +46,7 @@ export const initialState: SessionSliceState = {
     menuVisible: false,
     newFolderEditActive: false,
 
-    draggedId: undefined,
+    dragged: undefined,
 };
 
 export const selectIsLoadingFeeds = (state: SessionSliceState) => state.feedStatus.some((x) => x.status === 'loading');
@@ -54,12 +55,12 @@ const sessionSlice = createSlice({
     name: 'session',
     initialState,
     reducers: {
-        changeDragged(state, action: PayloadAction<string | undefined>) {
-            state.draggedId = action.payload;
+        changeDragged(state, action: PayloadAction<NodeMeta | undefined>) {
+            state.dragged = action.payload;
         },
         dropped(satte, action: PayloadAction<string>) {
             console.log('dropped on target', action.payload); // TODO
-            satte.draggedId = undefined;
+            satte.dragged = undefined;
         },
         changeView(state, action: PayloadAction<View>) {
             state.activeView = action.payload;

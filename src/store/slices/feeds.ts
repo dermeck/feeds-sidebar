@@ -1,7 +1,8 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Feed, FeedNode, Folder, FolderNode, NodeType, TreeNode } from '../../model/feeds';
+import { Feed, FeedNode, Folder, FolderNode, NodeMeta, NodeType, TreeNode } from '../../model/feeds';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { extensionStateLoaded } from '../actions';
 import { RootState } from '../store';
 
@@ -207,15 +208,25 @@ const feedsSlice = createSlice({
 
             state.folders = folders;
         },
-        moveNode(state, action: PayloadAction<{ movedNodeId: string; targetNodeId: string }>) {
-            const { movedNodeId, targetNodeId } = action.payload;
+        moveNode(state, action: PayloadAction<{ movedNode: NodeMeta; targetFolderNodeId: string }>) {
+            const { movedNode, targetFolderNodeId } = action.payload;
 
-            const newFolders = moveFolderNode(state.folders, targetNodeId, movedNodeId);
+            switch (movedNode.nodeType) {
+                case NodeType.Feed:
+                    return {
+                        ...state,
+                        folders: moveFeedNode(state.folders, targetFolderNodeId, movedNode.nodeId),
+                    };
 
-            return {
-                ...state,
-                folders: newFolders,
-            };
+                case NodeType.Folder:
+                    return {
+                        ...state,
+                        folders: moveFolderNode(state.folders, targetFolderNodeId, movedNode.nodeId),
+                    };
+
+                default:
+                    throw new UnreachableCaseError(movedNode.nodeType);
+            }
         },
         select(state, action: PayloadAction<string>) {
             state.selectedNodeId = action.payload;
@@ -261,6 +272,7 @@ const feedsSlice = createSlice({
         },
 
         deleteSelectedNode(state) {
+            // TODO store selected node type as well
             const isFeed = state.feeds.some((x) => x.id === state.selectedNodeId);
 
             if (isFeed) {
@@ -361,6 +373,29 @@ const moveFolderNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, mo
                 const oldParent: Folder = {
                     ...f,
                     subfolders: f.subfolders.filter((id) => id !== movedNodeId),
+                };
+
+                return oldParent;
+            }
+        }
+
+        return f;
+    });
+
+const moveFeedNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string) =>
+    folders.map((f) => {
+        if (f.id === targetNodeId) {
+            const newParent: Folder = {
+                ...f,
+                feedIds: [...new Set([...f.feedIds, movedNodeId])], // prevent duplicates
+            };
+
+            return newParent;
+        } else {
+            if (f.feedIds.some((id) => id === movedNodeId)) {
+                const oldParent: Folder = {
+                    ...f,
+                    feedIds: f.feedIds.filter((id) => id !== movedNodeId),
                 };
 
                 return oldParent;
