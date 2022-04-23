@@ -82,18 +82,23 @@ const FolderTreeNode = (props: Props) => {
     };
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        event.dataTransfer.setData('moep', id); // TODO do we need this?
+        console.log(event.target);
 
         if (draggedId !== id) {
             dispatch(sessionSlice.actions.changeDragged(id));
         }
     };
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-        event.preventDefault();
-        const data = event.dataTransfer.getData('moep'); // TODO do we need this?
-        console.log('dropped id on id', data, id);
+        console.log(event.target);
 
-        return dispatch(sessionSlice.actions.dropped(id)); // id is the target
+        if (!draggedId) {
+            throw new Error('draggedId must be defined.');
+        }
+
+        dispatch(feedsSlice.actions.moveNode({ movedNodeId: draggedId, targetNodeId: id }));
+        dispatch(sessionSlice.actions.changeDragged(undefined));
+
+        // move node {nodeId, target, mode=insert | before | after} // feed on feed only before/after; node.nodeType
     };
     const handleDragEnd = () => {
         dispatch(sessionSlice.actions.changeDragged(undefined));

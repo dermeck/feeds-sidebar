@@ -207,6 +207,16 @@ const feedsSlice = createSlice({
 
             state.folders = folders;
         },
+        moveNode(state, action: PayloadAction<{ movedNodeId: string; targetNodeId: string }>) {
+            const { movedNodeId, targetNodeId } = action.payload;
+
+            const newFolders = moveFolderNode(state.folders, targetNodeId, movedNodeId);
+
+            return {
+                ...state,
+                folders: newFolders,
+            };
+        },
         select(state, action: PayloadAction<string>) {
             state.selectedNodeId = action.payload;
         },
@@ -336,6 +346,29 @@ const subfolderIdsByFolderId = (state: FeedSliceState, folderId: string): Readon
         ...folder.subfolders.flatMap((subfolder) => [...subfolderIdsByFolderId(state, subfolder)]),
     ];
 };
+
+const moveFolderNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string) =>
+    folders.map((f) => {
+        if (f.id === targetNodeId) {
+            const newParent: Folder = {
+                ...f,
+                subfolders: [...new Set([...f.subfolders, movedNodeId])], // prevent duplicates
+            };
+
+            return newParent;
+        } else {
+            if (f.subfolders.some((id) => id === movedNodeId)) {
+                const oldParent: Folder = {
+                    ...f,
+                    subfolders: f.subfolders.filter((id) => id !== movedNodeId),
+                };
+
+                return oldParent;
+            }
+        }
+
+        return f;
+    });
 
 const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> => {
     updatedFeeds = feeds.map((feed) => {
