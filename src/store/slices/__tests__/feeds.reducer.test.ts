@@ -1,80 +1,18 @@
-import { Feed, FeedItem, FeedNode, Folder, FolderNode, NodeType } from '../../../model/feeds';
+import { Folder } from '../../../model/feeds';
 import { extensionStateLoaded } from '../../actions';
-import feedsSlice, { FeedSliceState, selectTotalUnreadItems, selectTreeNode } from '../feeds';
+import feedsSlice, { FeedSliceState } from '../feeds';
 import { initialState as initialOptionsState } from '../options';
-
-const feed1Fixture: Feed = {
-    id: 'feedId1',
-    url: 'http://feedId1.url',
-    items: [
-        {
-            id: 'itemId1',
-            url: 'http://feedId1.url/item1',
-            title: 'item1',
-            isRead: false,
-        },
-        {
-            id: 'itemId2',
-            url: 'http://feedId1.url/item2',
-            title: 'item2',
-            isRead: false,
-        },
-    ],
-};
-
-const feed2Fixture: Feed = {
-    id: 'feedId2',
-    url: 'http://feedId2.url',
-    items: [
-        {
-            id: 'itemId1',
-            url: 'http://feedId2.url/item1',
-            title: 'item1',
-            isRead: false,
-        },
-        {
-            id: 'itemId2',
-            url: 'http://feedId2.url/item2',
-            title: 'item2',
-            isRead: false,
-        },
-    ],
-};
-
-const feed3Fixture: Feed = {
-    id: 'feedId3',
-    url: 'http://feedId3.url',
-    items: [
-        {
-            id: 'itemId1',
-            url: 'http://feedId3.url/item1',
-            title: 'item1',
-            isRead: false,
-        },
-        {
-            id: 'itemId2',
-            url: 'http://feedId3.url/item2',
-            title: 'item2',
-            isRead: false,
-        },
-    ],
-};
-
-const itemFixture: (id: string) => FeedItem = (id: string) => ({
-    id: id,
-    url: `http://feed.url/${id}`,
-    title: `title-${id}`,
-    isRead: false,
-});
-
-const folderFixture: (id: string) => Folder = (id: string) => ({ id, title: id, feedIds: [], subfolders: [] });
-
-const folder1Fixture = folderFixture('folder1');
-const folder2Fixture = folderFixture('folder2');
-const folder3Fixture = folderFixture('folder3');
-const folder4Fixture = folderFixture('folder4');
-
-const feedsFixture = [feed1Fixture, feed2Fixture];
+import {
+    feed1Fixture,
+    feed2Fixture,
+    feed3Fixture,
+    feedsFixture,
+    folder1Fixture,
+    folder2Fixture,
+    folder3Fixture,
+    folder4Fixture,
+    itemFixture,
+} from './feeds.fixtures';
 
 describe('global extensionStateLoaded action', () => {
     it('replaces previous state with payload', () => {
@@ -612,86 +550,4 @@ describe('deleteSelectedNode action', () => {
 
         it.todo('selects the subsequent subfolder of the parent if it was not the last subfolder');
     });
-});
-
-describe('selectTotalUnreadItems', () => {
-    it('returns sum of all unread items for all feeds', () => {
-        const state: FeedSliceState = {
-            ...feedsSlice.getInitialState(),
-            feeds: [
-                {
-                    ...feed1Fixture,
-                    items: [
-                        {
-                            ...itemFixture('1'),
-                            isRead: false,
-                        },
-                    ],
-                },
-                {
-                    ...feed1Fixture,
-                    items: [
-                        {
-                            ...itemFixture('2'),
-                            isRead: true,
-                        },
-                    ],
-                },
-                {
-                    ...feed2Fixture,
-                    items: [
-                        {
-                            ...itemFixture('1'),
-                            isRead: false,
-                        },
-                    ],
-                },
-                {
-                    ...feed1Fixture,
-                    items: [
-                        {
-                            ...itemFixture('2'),
-                            isRead: false,
-                        },
-                    ],
-                },
-            ],
-        };
-
-        expect(selectTotalUnreadItems(state)).toBe(3);
-    });
-});
-
-describe('selectTreeNode', () => {
-    const state: FeedSliceState = {
-        ...feedsSlice.getInitialState(),
-        folders: [folder1Fixture, folder2Fixture, folder3Fixture],
-        feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
-    };
-
-    it('returns a feedNode if id matches a feed', () => {
-        const expectation: FeedNode = {
-            nodeType: NodeType.Feed,
-            data: feed2Fixture,
-        };
-
-        expect(selectTreeNode(state, feed2Fixture.id)).toStrictEqual(expectation);
-    });
-
-    it('returns a folderNode if id matches a folder', () => {
-        const expectation: FolderNode = {
-            nodeType: NodeType.Folder,
-            data: folder2Fixture,
-        };
-
-        expect(selectTreeNode(state, folder2Fixture.id)).toStrictEqual(expectation);
-    });
-
-    it('returns undefined if the id does not match a feed or folder', () => {
-        expect(selectTreeNode(state, 'moep')).toBeUndefined();
-    });
-});
-
-describe('selectTopLevelNodes', () => {
-    it.todo('selectes the subfolders and feeds of the root folder');
 });
