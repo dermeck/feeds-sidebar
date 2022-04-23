@@ -58,10 +58,6 @@ const sessionSlice = createSlice({
         changeDragged(state, action: PayloadAction<NodeMeta | undefined>) {
             state.dragged = action.payload;
         },
-        dropped(satte, action: PayloadAction<string>) {
-            console.log('dropped on target', action.payload); // TODO
-            satte.dragged = undefined;
-        },
         changeView(state, action: PayloadAction<View>) {
             state.activeView = action.payload;
         },
