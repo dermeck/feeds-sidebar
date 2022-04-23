@@ -28,6 +28,18 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                 <Folder editing={true} onEditComplete={handleOnEditComplete} showTitle={true} validDropTarget={false} />
             )}
 
+            {topLevelNodes.map((node) => (
+                <FolderTreeNode
+                    key={node.data.id}
+                    nodeId={node.data.id}
+                    selectedId={feeds.selectedNodeId}
+                    showTitle={props.showFeedTitles}
+                    filterString={props.filterString}
+                    validDropTarget={true}
+                />
+            ))}
+
+            {/* TODO check if this is still useful
             <Virtuoso
                 data={topLevelNodes}
                 itemContent={(_, node) => (
@@ -41,6 +53,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                     />
                 )}
             />
+            */}
         </FullHeightScrollContainer>
     );
 };
