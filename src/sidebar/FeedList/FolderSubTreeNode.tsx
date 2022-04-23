@@ -42,6 +42,7 @@ const FeedItems = (props: FeedItemsprops) => {
     );
 };
 
+// TODO indent should happen on the level level to ensure highlight coloring is appliad to full width (pass "level+1" down as prop)
 const SubFolderWrapper = styled.div<{ indented: boolean }>`
     padding-left: ${(props) => (props.indented ? '15px' : 0)};
 `;
