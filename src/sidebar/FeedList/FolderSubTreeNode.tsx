@@ -73,7 +73,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
             );
 
         case NodeType.Folder: {
-            const childIds = [...node.data.subfolders, ...node.data.feedIds];
+            const childIds = [...node.data.subfolderIds, ...node.data.feedIds];
 
             return (
                 <Fragment>

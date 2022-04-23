@@ -139,7 +139,7 @@ describe('updateFeeds action', () => {
                 id: '_root_',
                 title: 'root',
                 feedIds: [feed1Fixture.id],
-                subfolders: [],
+                subfolderIds: [],
             });
         });
     });
@@ -343,7 +343,7 @@ describe('addFolder', () => {
         const expectation: Folder = {
             id: 'mocked-uuid',
             title: 'moepFolder',
-            subfolders: [],
+            subfolderIds: [],
             feedIds: [],
         };
 
@@ -361,19 +361,19 @@ describe('addFolder', () => {
             id: '_root_',
             title: 'root',
             feedIds: [],
-            subfolders: ['mocked-uuid'],
+            subfolderIds: ['mocked-uuid'],
         });
     });
 });
 
 describe('moveNode action', () => {
     describe('when moving folder nodes', () => {
-        it('adds dragged folder to subfolders of target folder', () => {
+        it('adds dragged folder to subfolderIds of target folder', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
-                    { ...folder1Fixture, subfolders: [folder2Fixture.id] },
-                    { ...folder2Fixture, subfolders: [folder3Fixture.id] },
+                    { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
+                    { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
                     { ...folder3Fixture },
                 ],
             };
@@ -389,15 +389,15 @@ describe('moveNode action', () => {
                 }),
             );
 
-            expect(newState.folders[0].subfolders).toContain(folder3Fixture.id);
+            expect(newState.folders[0].subfolderIds).toContain(folder3Fixture.id);
         });
 
-        it('removes dragged folder from subfolders of previous parent folder', () => {
+        it('removes dragged folder from subfolderIds of previous parent folder', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
-                    { ...folder1Fixture, subfolders: [folder2Fixture.id] },
-                    { ...folder2Fixture, subfolders: [folder3Fixture.id] },
+                    { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
+                    { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
                     { ...folder3Fixture },
                 ],
             };
@@ -413,15 +413,15 @@ describe('moveNode action', () => {
                 }),
             );
 
-            expect(newState.folders[1].subfolders).not.toContain(folder3Fixture.id);
+            expect(newState.folders[1].subfolderIds).not.toContain(folder3Fixture.id);
         });
 
         it('does not change anything if previous parent is the target', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
-                    { ...folder1Fixture, subfolders: [folder2Fixture.id] },
-                    { ...folder2Fixture, subfolders: [folder3Fixture.id] },
+                    { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
+                    { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
                     { ...folder3Fixture },
                 ],
             };
@@ -438,8 +438,8 @@ describe('moveNode action', () => {
             );
 
             expect(newState.folders).toStrictEqual([
-                { ...folder1Fixture, subfolders: [folder2Fixture.id] },
-                { ...folder2Fixture, subfolders: [folder3Fixture.id] },
+                { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
+                { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
                 { ...folder3Fixture },
             ]);
         });
@@ -450,7 +450,7 @@ describe('moveNode action', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
-                    { ...folder1Fixture, feedIds: [feed3Fixture.id], subfolders: [folder2Fixture.id] },
+                    { ...folder1Fixture, feedIds: [feed3Fixture.id], subfolderIds: [folder2Fixture.id] },
                     { ...folder2Fixture, feedIds: [feed1Fixture.id] },
                 ],
             };
@@ -473,7 +473,7 @@ describe('moveNode action', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
-                    { ...folder1Fixture, feedIds: [], subfolders: [folder2Fixture.id] },
+                    { ...folder1Fixture, feedIds: [], subfolderIds: [folder2Fixture.id] },
                     { ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id] },
                 ],
             };
@@ -497,7 +497,7 @@ describe('moveNode action', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
-                    { ...folder1Fixture, feedIds: [], subfolders: [folder2Fixture.id] },
+                    { ...folder1Fixture, feedIds: [], subfolderIds: [folder2Fixture.id] },
                     { ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id] },
                 ],
             };
@@ -594,8 +594,8 @@ describe('deleteSelectedNode action', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
-                    { ...folder1Fixture, subfolders: [folder2Fixture.id], feedIds: [feed1Fixture.id] },
-                    { ...folder2Fixture, subfolders: [folder3Fixture.id] },
+                    { ...folder1Fixture, subfolderIds: [folder2Fixture.id], feedIds: [feed1Fixture.id] },
+                    { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
                     { ...folder3Fixture, feedIds: [feed2Fixture.id] },
                     { ...folder4Fixture, feedIds: [feed3Fixture.id] },
                 ],
@@ -617,7 +617,7 @@ describe('deleteSelectedNode action', () => {
                 folders: [
                     {
                         ...folder1Fixture,
-                        subfolders: [folder2Fixture.id, folder3Fixture.id],
+                        subfolderIds: [folder2Fixture.id, folder3Fixture.id],
                     },
                     folder2Fixture,
                     folder3Fixture,
@@ -630,7 +630,7 @@ describe('deleteSelectedNode action', () => {
             expect(newState.folders).toHaveLength(2);
             expect(newState.folders[0]).toStrictEqual({
                 ...folder1Fixture,
-                subfolders: [folder3Fixture.id],
+                subfolderIds: [folder3Fixture.id],
             });
         });
 

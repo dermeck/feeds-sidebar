@@ -26,31 +26,31 @@ const sampleDataFolders: ReadonlyArray<Folder> = [
             'https://stackoverflow.blog/feed/',
             'https://www.quarks.de/feed/',
         ],
-        subfolders: ['_news_', '_abc_'],
+        subfolderIds: ['_news_', '_abc_'],
     },
     {
         id: '_news_',
         title: 'News',
         feedIds: ['https://www.tagesschau.de/xml/rss2/'],
-        subfolders: ['_yt_'],
+        subfolderIds: ['_yt_'],
     },
     {
         id: '_yt_',
         title: 'YouTube',
         feedIds: ['https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA'],
-        subfolders: ['_yt-sub_'],
+        subfolderIds: ['_yt-sub_'],
     },
     {
         id: '_yt-sub_',
         title: 'YT-SUB',
         feedIds: [],
-        subfolders: [],
+        subfolderIds: [],
     },
     {
         id: '_abc_',
         title: 'ABC',
         feedIds: ['https://www.dragonball-multiverse.com/flux.rss.php?lang=en'],
-        subfolders: [],
+        subfolderIds: [],
     },
 ];
 
@@ -103,7 +103,7 @@ const initialState: FeedSliceState = {
                       id: rootFolderId, // top level node
                       title: 'root',
                       feedIds: [],
-                      subfolders: [],
+                      subfolderIds: [],
                   },
               ],
     feeds: process.env.NODE_ENV === 'development' ? sampleDataFeeds : [],
@@ -168,7 +168,7 @@ const feedById = (state: RootState, id: string) => {
 const selectChildNodes = (state: RootState, parentId: string): ReadonlyArray<TreeNode> => {
     const parentFolder = folderById(state.feeds, parentId);
 
-    const folderNodes: ReadonlyArray<FolderNode> = parentFolder.subfolders.map((subFolderId) => ({
+    const folderNodes: ReadonlyArray<FolderNode> = parentFolder.subfolderIds.map((subFolderId) => ({
         nodeType: NodeType.Folder,
         data: folderById(state.feeds, subFolderId),
     }));
@@ -194,7 +194,7 @@ const feedsSlice = createSlice({
                 f.id === rootFolderId
                     ? {
                           ...f,
-                          subfolders: [newFolderId, ...f.subfolders],
+                          subfolderIds: [newFolderId, ...f.subfolderIds],
                       }
                     : f,
             );
@@ -203,7 +203,7 @@ const feedsSlice = createSlice({
                 id: newFolderId,
                 title: action.payload,
                 feedIds: [],
-                subfolders: [],
+                subfolderIds: [],
             });
 
             state.folders = folders;
@@ -312,10 +312,12 @@ const feedsSlice = createSlice({
 
                 // delete relation in parent
                 state.folders = state.folders.map((folder) =>
-                    folder.subfolders.some((subfolderId) => subfolderId === selectedFolderId)
+                    folder.subfolderIds.some((subfolderId) => subfolderId === selectedFolderId)
                         ? {
                               ...folder,
-                              subfolders: folder.subfolders.filter((subfolderId) => subfolderId !== selectedFolderId),
+                              subfolderIds: folder.subfolderIds.filter(
+                                  (subfolderId) => subfolderId !== selectedFolderId,
+                              ),
                           }
                         : folder,
                 );
@@ -347,15 +349,15 @@ const feedsSlice = createSlice({
 const feedIdsByFolderId = (state: FeedSliceState, folderId: string): ReadonlyArray<string> => {
     const folder = folderById(state, folderId);
 
-    return [...folder.feedIds, ...folder.subfolders.flatMap((subfolder) => [...feedIdsByFolderId(state, subfolder)])];
+    return [...folder.feedIds, ...folder.subfolderIds.flatMap((subfolder) => [...feedIdsByFolderId(state, subfolder)])];
 };
 
 const subfolderIdsByFolderId = (state: FeedSliceState, folderId: string): ReadonlyArray<string> => {
     const folder = folderById(state, folderId);
 
     return [
-        ...folder.subfolders,
-        ...folder.subfolders.flatMap((subfolder) => [...subfolderIdsByFolderId(state, subfolder)]),
+        ...folder.subfolderIds,
+        ...folder.subfolderIds.flatMap((subfolder) => [...subfolderIdsByFolderId(state, subfolder)]),
     ];
 };
 
@@ -364,15 +366,15 @@ const moveFolderNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, mo
         if (f.id === targetNodeId) {
             const newParent: Folder = {
                 ...f,
-                subfolders: [...new Set([...f.subfolders, movedNodeId])], // prevent duplicates
+                subfolderIds: [...new Set([...f.subfolderIds, movedNodeId])], // prevent duplicates
             };
 
             return newParent;
         } else {
-            if (f.subfolders.some((id) => id === movedNodeId)) {
+            if (f.subfolderIds.some((id) => id === movedNodeId)) {
                 const oldParent: Folder = {
                     ...f,
-                    subfolders: f.subfolders.filter((id) => id !== movedNodeId),
+                    subfolderIds: f.subfolderIds.filter((id) => id !== movedNodeId),
                 };
 
                 return oldParent;

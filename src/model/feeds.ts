@@ -2,7 +2,7 @@ export interface Folder {
     id: string;
     title: string;
     feedIds: ReadonlyArray<string>;
-    subfolders: ReadonlyArray<string>; // TODO should be subfolderIds
+    subfolderIds: ReadonlyArray<string>;
 }
 
 export interface Feed {

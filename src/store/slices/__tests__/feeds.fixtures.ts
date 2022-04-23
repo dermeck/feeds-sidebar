@@ -64,7 +64,7 @@ export const itemFixture: (id: string) => FeedItem = (id: string) => ({
     isRead: false,
 });
 
-export const folderFixture: (id: string) => Folder = (id: string) => ({ id, title: id, feedIds: [], subfolders: [] });
+export const folderFixture: (id: string) => Folder = (id: string) => ({ id, title: id, feedIds: [], subfolderIds: [] });
 
 export const folder1Fixture = folderFixture('folder1');
 export const folder2Fixture = folderFixture('folder2');
