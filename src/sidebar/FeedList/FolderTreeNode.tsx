@@ -99,8 +99,9 @@ const FolderTreeNode = (props: Props) => {
         dispatch(sessionSlice.actions.changeDragged(undefined));
     };
 
-    // disable drop on self and all children
-    const validDropTarget = id !== draggedId && props.validDropTarget;
+    // disable drop on self and all children and all feeds(for now) // TODO enable feed as drop target (insert before/after)
+    const validDropTarget =
+        id !== draggedId && props.validDropTarget && (node.nodeType !== NodeType.Feed || draggedId === undefined);
 
     return (
         <Folder
