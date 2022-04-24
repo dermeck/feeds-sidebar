@@ -124,7 +124,7 @@ const Folder = (props: Props) => {
                 <FolderIcon size={20} weight="light" />
                 {props.editing ? (
                     <FolderEdit
-                        initialValue={props.title ?? ''}
+                        initialValue={props.title ?? 'New Folder'}
                         onEditComplete={(value) => {
                             if (props.onEditComplete === undefined) {
                                 throw new Error('onEditComplete is not defined.');
