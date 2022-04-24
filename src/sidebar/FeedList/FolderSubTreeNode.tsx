@@ -16,7 +16,8 @@ const FeedContainer = styled.ul`
 interface FeedItemsprops {
     feed: Feed;
     selectedId?: string;
-    showTitle: boolean;
+    indented: boolean;
+    nestedLevel: number;
     filterString: string;
 }
 
@@ -34,7 +35,8 @@ const FeedItems = (props: FeedItemsprops) => {
                             key={item.id + item.title}
                             feedId={props.feed.id}
                             item={item}
-                            indented={props.showTitle}
+                            indented={props.indented}
+                            nestedLevel={props.nestedLevel}
                         />
                     ),
             )}
@@ -42,7 +44,6 @@ const FeedItems = (props: FeedItemsprops) => {
     );
 };
 
-// TODO consolidate with FolderTreeNodeProps
 interface Props {
     node: TreeNode;
     selectedId?: string;
@@ -54,7 +55,7 @@ interface Props {
 }
 
 const FolderSubTreeNode = (props: Props): JSX.Element => {
-    const { node, filterString, showTitle, selectedId, validDropTarget, feedItemsVisible } = props;
+    const { node, filterString, showTitle, selectedId, validDropTarget, feedItemsVisible, nestedLevel } = props;
 
     switch (node.nodeType) {
         case NodeType.Feed:
@@ -65,7 +66,8 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                             key={node.data.id}
                             feed={node.data}
                             filterString={filterString}
-                            showTitle={showTitle}
+                            indented={showTitle}
+                            nestedLevel={nestedLevel + 1}
                             selectedId={selectedId}
                         />
                     )}
@@ -83,7 +85,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                                 key={childId}
                                 nodeId={childId}
                                 selectedId={selectedId}
-                                nestedLevel={props.nestedLevel + 1}
+                                nestedLevel={nestedLevel + 1}
                                 showTitle={showTitle}
                                 filterString={filterString}
                                 validDropTarget={validDropTarget}

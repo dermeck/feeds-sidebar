@@ -8,8 +8,9 @@ import { FeedItem as FeedItemType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
 
-const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean }>`
-    padding-left: ${(props) => (props.indented ? '39px' : '20px')};
+const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean; nestedLevel: number }>`
+    padding-left: ${(props) =>
+        !props.indented || props.nestedLevel === 0 ? '20px' : `${25 + props.nestedLevel * 15}px`};
 
     background-color: ${(props) =>
         props.selected
@@ -70,6 +71,7 @@ interface Props {
     item: FeedItemType;
     feedId: string;
     indented: boolean;
+    nestedLevel: number;
 }
 
 const enum AuxButton {
@@ -122,6 +124,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
         <Container
             key={props.item.id}
             indented={props.indented}
+            nestedLevel={props.nestedLevel}
             selected={isSelected}
             focus={focus}
             onClick={() => setFocus(true)}
