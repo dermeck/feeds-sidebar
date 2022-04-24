@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
 
-import React, { ChangeEvent, useEffect, useState } from 'react';
-
-import useFocus from '../../utils/hooks/useFocus';
+import React, { ChangeEvent, useState } from 'react';
 
 const EditInput = styled.input`
     flex: 1;
@@ -17,11 +15,6 @@ interface Props {
 
 const FolderEdit = (props: Props) => {
     const [editValue, setEditValue] = useState(props.initialValue);
-    const [inputRef, setFocus] = useFocus<HTMLInputElement>();
-
-    useEffect(() => {
-        setFocus();
-    }, []);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => setEditValue(event.target.value);
 
@@ -35,7 +28,7 @@ const FolderEdit = (props: Props) => {
 
     return (
         <EditInput
-            ref={inputRef}
+            autoFocus
             value={editValue}
             onChange={handleChange}
             onBlur={handleOnBlur}
