@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+
+import useFocus from '../../utils/hooks/useFocus';
 
 const EditInput = styled.input`
     flex: 1;
@@ -15,6 +17,11 @@ interface Props {
 
 const FolderEdit = (props: Props) => {
     const [editValue, setEditValue] = useState(props.initialValue);
+    const [inputRef, setFocus] = useFocus<HTMLInputElement>();
+
+    useEffect(() => {
+        setFocus();
+    }, []);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => setEditValue(event.target.value);
 
@@ -26,9 +33,15 @@ const FolderEdit = (props: Props) => {
         }
     };
 
-    // TODO handle Enter key
-    // TODO focus the input
-    return <EditInput value={editValue} onChange={handleChange} onBlur={handleOnBlur} onKeyDown={handleOnKeyDown} />;
+    return (
+        <EditInput
+            ref={inputRef}
+            value={editValue}
+            onChange={handleChange}
+            onBlur={handleOnBlur}
+            onKeyDown={handleOnKeyDown}
+        />
+    );
 };
 
 export default FolderEdit;
