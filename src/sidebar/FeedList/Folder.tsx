@@ -63,9 +63,9 @@ interface Props {
     focus?: boolean;
     expanded?: boolean;
     editing?: boolean;
-    handleOnClick?: () => void;
-    handleOnBlur?: () => void;
-    handleOnContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    onClick?: () => void;
+    onBlur?: () => void;
+    onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     onEditComplete?: (x: string) => void;
     onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
     onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
@@ -115,9 +115,9 @@ const Folder = (props: Props) => {
                 tabIndex={0}
                 selected={!!props.selected}
                 focus={!!props.focus}
-                onClick={props.handleOnClick}
-                onBlur={props.handleOnBlur}
-                onContextMenu={props.handleOnContextMenu}>
+                onClick={props.onClick}
+                onBlur={props.onBlur}
+                onContextMenu={props.onContextMenu}>
                 <ToggleIndicator>
                     {props.expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
                 </ToggleIndicator>

@@ -18,7 +18,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
     const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive);
     const topLevelNodes = useAppSelector(selectTopLevelNodes);
 
-    const handleOnEditComplete = (title: string) => {
+    const handleEditComplete = (title: string) => {
         dispatch(feedsSlice.actions.addFolder(title));
     };
 
@@ -27,7 +27,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
             {showNewFolderInput && (
                 <Folder
                     editing={true}
-                    onEditComplete={handleOnEditComplete}
+                    onEditComplete={handleEditComplete}
                     showTitle={true}
                     validDropTarget={false}
                     nestedLevel={0}

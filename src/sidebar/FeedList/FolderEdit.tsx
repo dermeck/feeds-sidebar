@@ -18,11 +18,11 @@ const FolderEdit = (props: Props) => {
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => setEditValue(event.target.value);
 
-    const handleOnBlur = () => props.onEditComplete(editValue);
+    const handleBlur = () => props.onEditComplete(editValue);
 
     const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => event.target.select();
 
-    const handleOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.code === 'Enter') {
             props.onEditComplete(editValue);
         }
@@ -33,9 +33,9 @@ const FolderEdit = (props: Props) => {
             autoFocus
             value={editValue}
             onChange={handleChange}
-            onBlur={handleOnBlur}
+            onBlur={handleBlur}
             onFocus={handleFocus}
-            onKeyDown={handleOnKeyDown}
+            onKeyDown={handleKeyDown}
         />
     );
 };

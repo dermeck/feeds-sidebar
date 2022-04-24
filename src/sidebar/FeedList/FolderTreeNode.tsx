@@ -45,27 +45,27 @@ const FolderTreeNode = (props: Props) => {
 
     const { id, title } = node.data;
 
-    const handleOnClickTitle = () => {
+    const handleClickTitle = () => {
         if (id !== undefined) {
             dispatch(feedsSlice.actions.select(id));
         }
     };
 
-    const handleOnClickFolder = () => {
+    const handleClickFolder = () => {
         setExpanded(!expanded);
         if (!focus) {
             setFocus(true);
         }
-        handleOnClickTitle();
+        handleClickTitle();
     };
 
-    const handleOnBlurFolder = () => {
+    const handleBlurFolder = () => {
         if (focus) {
             setFocus(false);
         }
     };
 
-    const handleOnContextMenuFolder = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const handleContextMenuFolder = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.preventDefault();
 
         if (width === undefined || height === undefined) {
@@ -118,9 +118,9 @@ const FolderTreeNode = (props: Props) => {
             selected={props.selectedId === id}
             focus={focus}
             expanded={expanded}
-            handleOnClick={handleOnClickFolder}
-            handleOnBlur={handleOnBlurFolder}
-            handleOnContextMenu={handleOnContextMenuFolder}
+            onClick={handleClickFolder}
+            onBlur={handleBlurFolder}
+            onContextMenu={handleContextMenuFolder}
             onDragStart={handleDragStart}
             onDrop={handleDrop}
             onDragEnd={handleDragEnd}
