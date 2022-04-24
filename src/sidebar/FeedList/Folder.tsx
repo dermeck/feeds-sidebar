@@ -37,9 +37,8 @@ const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
 `;
 
 const FolderTitle = styled.label<{ highlight: boolean }>`
-    background-color: ${(props) => (props.highlight ? props.theme.colors.selectedItemBackgroundColor : 'inherit')};
-
     overflow: hidden;
+    background-color: ${(props) => (props.highlight ? props.theme.colors.selectedItemBackgroundColor : 'inherit')};
     text-overflow: ellipsis;
     white-space: nowrap;
 `;
@@ -99,7 +98,7 @@ const Folder = (props: Props) => {
                         event.preventDefault();
                     }
                 }}
-                onDragLeave={(event: React.DragEvent<HTMLDivElement>) => {
+                onDragLeave={() => {
                     if (props.validDropTarget) {
                         setDraggedOver(false);
                     }
