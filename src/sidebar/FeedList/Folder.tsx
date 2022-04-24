@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 
 import FolderEdit from './FolderEdit';
 
@@ -36,7 +36,9 @@ const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
     opacity: ${(props) => (props.disabled ? 0.3 : 0.9)};
 `;
 
-const FolderTitle = styled.label`
+const FolderTitle = styled.label<{ highlight: boolean }>`
+    background-color: ${(props) => (props.highlight ? props.theme.colors.selectedItemBackgroundColor : 'inherit')};
+
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -73,6 +75,8 @@ interface Props {
 }
 
 const Folder = (props: Props) => {
+    const [draggedOver, setDraggedOver] = useState(false);
+
     if (!props.showTitle) {
         return <Fragment>{props.children}</Fragment>;
     }
@@ -82,20 +86,30 @@ const Folder = (props: Props) => {
         <Fragment>
             <FolderTitleContainer
                 draggable={true}
-                onDragOver={(event: React.DragEvent<HTMLDivElement>) => {
-                    // TODO determine drop position (top, center, bottom) based on drop target bounding box and drag position
-                    // use that information (local state) to highlight (line, highlight label) and use it fro drop effect (before, insert, after)
-                    if (props.validDropTarget) {
-                        event.preventDefault();
-                        console.log('onDragOver', props.title), event;
-                    }
-                }}
                 onDragStart={(event: React.DragEvent<HTMLDivElement>) => {
                     if (props.onDragStart) {
                         props.onDragStart(event);
                     }
                 }}
-                onDrop={props.onDrop}
+                onDragOver={(event: React.DragEvent<HTMLDivElement>) => {
+                    // TODO determine drop position (top, center, bottom) based on drop target bounding box and drag position
+                    // use that information (local state) to highlight (line, highlight label) and use it fro drop effect (before, insert, after)
+                    if (props.validDropTarget) {
+                        setDraggedOver(true);
+                        event.preventDefault();
+                    }
+                }}
+                onDragLeave={(event: React.DragEvent<HTMLDivElement>) => {
+                    if (props.validDropTarget) {
+                        setDraggedOver(false);
+                    }
+                }}
+                onDrop={(event: React.DragEvent<HTMLDivElement>) => {
+                    setDraggedOver(false);
+                    if (props.onDrop) {
+                        props.onDrop(event);
+                    }
+                }}
                 onDragEnd={props.onDragEnd}
                 disabled={!props.validDropTarget && !props.editing}
                 nestedLevel={props.nestedLevel}
@@ -120,7 +134,7 @@ const Folder = (props: Props) => {
                         }}
                     />
                 ) : (
-                    <FolderTitle>{props.title}</FolderTitle>
+                    <FolderTitle highlight={draggedOver}>{props.title}</FolderTitle>
                 )}
             </FolderTitleContainer>
 
