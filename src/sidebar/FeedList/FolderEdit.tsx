@@ -16,17 +16,19 @@ interface Props {
 const FolderEdit = (props: Props) => {
     const [editValue, setEditValue] = useState(props.initialValue);
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setEditValue(event.target.value);
-    };
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => setEditValue(event.target.value);
 
-    const handleOnBlur = () => {
-        props.onEditComplete(editValue);
+    const handleOnBlur = () => props.onEditComplete(editValue);
+
+    const handleOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.code === 'Enter') {
+            props.onEditComplete(editValue);
+        }
     };
 
     // TODO handle Enter key
     // TODO focus the input
-    return <EditInput value={editValue} onChange={handleChange} onBlur={handleOnBlur} />;
+    return <EditInput value={editValue} onChange={handleChange} onBlur={handleOnBlur} onKeyDown={handleOnKeyDown} />;
 };
 
 export default FolderEdit;
