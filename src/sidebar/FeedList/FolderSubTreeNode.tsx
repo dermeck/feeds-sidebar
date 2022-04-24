@@ -7,10 +7,10 @@ import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import FeedItem from './FeedItem';
 import FolderTreeNode from './FolderTreeNode';
 
-const FeedContainer = styled.ul`
+const FeedContainer = styled.ul<{ disabled: boolean }>`
     padding-left: 0;
     margin: 0;
-    opacity: 0.9;
+    opacity: ${(props) => (props.disabled ? 0.3 : 0.9)};
 `;
 
 interface FeedItemsprops {
@@ -19,6 +19,7 @@ interface FeedItemsprops {
     indented: boolean;
     nestedLevel: number;
     filterString: string;
+    disabled: boolean;
 }
 
 const FeedItems = (props: FeedItemsprops) => {
@@ -27,7 +28,7 @@ const FeedItems = (props: FeedItemsprops) => {
     }
 
     return (
-        <FeedContainer>
+        <FeedContainer disabled={props.disabled}>
             {props.feed.items.map(
                 (item) =>
                     item.title?.toLowerCase().includes(props.filterString.toLowerCase()) && (
@@ -69,6 +70,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                             indented={showTitle}
                             nestedLevel={nestedLevel + 1}
                             selectedId={selectedId}
+                            disabled={!props.validDropTarget}
                         />
                     )}
                 </Fragment>

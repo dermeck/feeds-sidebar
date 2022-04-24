@@ -129,7 +129,7 @@ const FolderTreeNode = (props: Props) => {
                 node={node}
                 {...props}
                 validDropTarget={validDropTarget}
-                feedItemsVisible={draggedId === undefined}
+                feedItemsVisible={true /*draggedId === undefined*/}
             />
         </Folder>
     );
