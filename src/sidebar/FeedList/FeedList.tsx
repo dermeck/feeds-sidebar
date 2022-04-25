@@ -16,7 +16,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds);
     const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive);
-    const topLevelNodes = useAppSelector(selectTopLevelNodes);
+    const topLevelNodes = useAppSelector((state) => selectTopLevelNodes(state.feeds));
 
     const handleEditComplete = (title: string) => {
         dispatch(feedsSlice.actions.addFolder(title));

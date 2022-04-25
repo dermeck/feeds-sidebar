@@ -155,8 +155,8 @@ const folderById = (state: FeedSliceState, id: string) => {
     return folder;
 };
 
-const feedById = (state: RootState, id: string) => {
-    const feed = state.feeds.feeds.find((x) => x.id === id);
+const feedById = (state: FeedSliceState, id: string) => {
+    const feed = state.feeds.find((x) => x.id === id);
 
     if (feed === undefined) {
         throw new Error(`Feed with id: "${id}" not found.`);
@@ -165,12 +165,12 @@ const feedById = (state: RootState, id: string) => {
     return feed;
 };
 
-const selectChildNodes = (state: RootState, parentId: string): ReadonlyArray<TreeNode> => {
-    const parentFolder = folderById(state.feeds, parentId);
+const selectChildNodes = (state: FeedSliceState, parentId: string): ReadonlyArray<TreeNode> => {
+    const parentFolder = folderById(state, parentId);
 
     const folderNodes: ReadonlyArray<FolderNode> = parentFolder.subfolderIds.map((subFolderId) => ({
         nodeType: NodeType.Folder,
-        data: folderById(state.feeds, subFolderId),
+        data: folderById(state, subFolderId),
     }));
 
     const feedNodes: ReadonlyArray<FeedNode> = parentFolder.feedIds.map((feedId) => ({
@@ -181,7 +181,8 @@ const selectChildNodes = (state: RootState, parentId: string): ReadonlyArray<Tre
     return [...folderNodes, ...feedNodes];
 };
 
-export const selectTopLevelNodes = (state: RootState): ReadonlyArray<TreeNode> => selectChildNodes(state, rootFolderId);
+export const selectTopLevelNodes = (state: FeedSliceState): ReadonlyArray<TreeNode> =>
+    selectChildNodes(state, rootFolderId);
 
 const feedsSlice = createSlice({
     name: 'feeds',

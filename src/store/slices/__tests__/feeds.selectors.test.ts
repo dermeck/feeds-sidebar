@@ -1,5 +1,5 @@
-import { FeedNode, NodeType, FolderNode } from '../../../model/feeds';
-import feedsSlice, { FeedSliceState, selectTotalUnreadItems, selectTreeNode } from '../feeds';
+import { FeedNode, NodeType, FolderNode, TreeNode } from '../../../model/feeds';
+import feedsSlice, { FeedSliceState, selectTopLevelNodes, selectTotalUnreadItems, selectTreeNode } from '../feeds';
 import {
     feed1Fixture,
     itemFixture,
@@ -8,6 +8,7 @@ import {
     folder2Fixture,
     folder3Fixture,
     feed3Fixture,
+    folder4Fixture,
 } from './feeds.fixtures';
 
 describe('selectTotalUnreadItems', () => {
@@ -89,5 +90,32 @@ describe('selectTreeNode', () => {
 });
 
 describe('selectTopLevelNodes', () => {
-    it.todo('selectes the subfolders and feeds of the root folder');
+    it('selects the subfolders and feeds of the root folder', () => {
+        const rootFolderId = '_root_';
+
+        const state: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            folders: [
+                {
+                    ...folder1Fixture,
+                    id: rootFolderId,
+                    subfolderIds: [folder2Fixture.id, folder4Fixture.id],
+                    feedIds: [feed1Fixture.id, feed2Fixture.id],
+                },
+                { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
+                { ...folder3Fixture },
+                { ...folder4Fixture },
+            ],
+            feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
+        };
+
+        const expectation: ReadonlyArray<TreeNode> = [
+            { nodeType: NodeType.Folder, data: { ...folder2Fixture, subfolderIds: [folder3Fixture.id] } },
+            { nodeType: NodeType.Folder, data: folder4Fixture },
+            { nodeType: NodeType.Feed, data: feed1Fixture },
+            { nodeType: NodeType.Feed, data: feed2Fixture },
+        ];
+
+        expect(selectTopLevelNodes(state)).toStrictEqual(expectation);
+    });
 });
