@@ -4,7 +4,7 @@ import { GlobeSimple, X } from 'phosphor-react';
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import { ToolbarButton } from '../../base-components';
-import { FeedItem as FeedItemType } from '../../model/feeds';
+import { FeedItem as FeedItemType, NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
 
@@ -82,7 +82,7 @@ const enum AuxButton {
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
-    const isSelected = useAppSelector((state) => state.feeds.selectedNodeId) === props.item.id;
+    const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === props.item.id;
 
     useEffect(() => {
         if (isSelected) {
@@ -99,7 +99,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
     }
 
     const handleFeedItemClick = (feedId: string, itemId: string) => {
-        dispatch(feedsSlice.actions.select(props.item.id));
+        dispatch(feedsSlice.actions.select({ nodeType: NodeType.FeedItem, nodeId: props.item.id }));
 
         dispatch(
             feedsSlice.actions.markItemAsRead({

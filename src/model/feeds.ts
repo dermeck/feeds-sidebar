@@ -14,6 +14,7 @@ export interface Feed {
 }
 
 export const enum NodeType {
+    FeedItem = 'FEED_ITEM',
     Feed = 'FEED',
     Folder = 'FOLDER',
 }

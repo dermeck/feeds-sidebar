@@ -9,7 +9,7 @@ import { RootState } from '../store';
 export type FeedSliceState = {
     folders: ReadonlyArray<Folder>;
     feeds: ReadonlyArray<Feed>;
-    selectedNodeId: string;
+    selectedNode: NodeMeta | undefined;
 };
 
 export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
@@ -107,7 +107,7 @@ const initialState: FeedSliceState = {
                   },
               ],
     feeds: process.env.NODE_ENV === 'development' ? sampleDataFeeds : [],
-    selectedNodeId: '',
+    selectedNode: undefined,
 };
 
 export const selectTotalUnreadItems = (state: FeedSliceState) =>
@@ -212,6 +212,9 @@ const feedsSlice = createSlice({
             const { movedNode, targetFolderNodeId } = action.payload;
 
             switch (movedNode.nodeType) {
+                case NodeType.FeedItem:
+                    throw new Error('Cannot move feed item.');
+
                 case NodeType.Feed:
                     return {
                         ...state,
@@ -228,8 +231,8 @@ const feedsSlice = createSlice({
                     throw new UnreachableCaseError(movedNode.nodeType);
             }
         },
-        select(state, action: PayloadAction<string>) {
-            state.selectedNodeId = action.payload;
+        select(state, action: PayloadAction<NodeMeta>) {
+            state.selectedNode = action.payload;
         },
         markItemAsRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             return {
@@ -239,10 +242,13 @@ const feedsSlice = createSlice({
         },
         markSelectedFeedAsRead(state) {
             // TODO also handle folders
-            return {
-                ...state,
-                feeds: [...markFeedAsRead(state.feeds, state.selectedNodeId)],
-            };
+
+            if (state.selectedNode?.nodeType === NodeType.Feed) {
+                return {
+                    ...state,
+                    feeds: [...markFeedAsRead(state.feeds, state.selectedNode.nodeId)],
+                };
+            }
         },
         markAllAsRead(state) {
             return {
@@ -272,68 +278,79 @@ const feedsSlice = createSlice({
         },
 
         deleteSelectedNode(state) {
-            // TODO store selected node type as well
-            const isFeed = state.feeds.some((x) => x.id === state.selectedNodeId);
-
-            if (isFeed) {
-                // index of the feed that gets deleted
-                const selectedFeedId = state.selectedNodeId;
-                // const selectedIndex = state.feeds.findIndex((f) => f.id === selectedFeedId); // TODO
-
-                // delete relation in parent
-                state.folders = state.folders.map((folder) =>
-                    folder.feedIds.some((feedId) => feedId === selectedFeedId)
-                        ? {
-                              ...folder,
-                              feedIds: folder.feedIds.filter((feedId) => feedId !== selectedFeedId),
-                          }
-                        : folder,
-                );
-
-                // delete feed
-                state.feeds = state.feeds.filter((f) => f.id !== selectedFeedId);
-
-                // if possible select the the next feed
-                // TODO consider changed selection
-                state.selectedNodeId = '';
-                /*state.selectedNodeId =
-                    state.feeds.length === 0
-                        ? ''
-                        : state.feeds.length > selectedIndex
-                        ? state.feeds[selectedIndex].id
-                        : state.feeds[selectedIndex - 1].id;
-                        */
+            if (state.selectedNode === undefined) {
+                throw new Error('Cannot delete node because selection is undefined.');
             }
 
-            const isFolder = state.folders.some((x) => x.id === state.selectedNodeId);
+            switch (state.selectedNode.nodeType) {
+                case NodeType.FeedItem:
+                    throw new Error('Cannot delete feed item.');
 
-            if (isFolder) {
-                const selectedFolderId = state.selectedNodeId;
+                case NodeType.Feed:
+                    {
+                        // index of the feed that gets deleted
+                        const selectedFeedId = state.selectedNode.nodeId;
+                        // const selectedIndex = state.feeds.findIndex((f) => f.id === selectedFeedId); // TODO
 
-                // delete relation in parent
-                state.folders = state.folders.map((folder) =>
-                    folder.subfolderIds.some((subfolderId) => subfolderId === selectedFolderId)
-                        ? {
-                              ...folder,
-                              subfolderIds: folder.subfolderIds.filter(
-                                  (subfolderId) => subfolderId !== selectedFolderId,
-                              ),
-                          }
-                        : folder,
-                );
+                        // delete relation in parent
+                        state.folders = state.folders.map((folder) =>
+                            folder.feedIds.some((feedId) => feedId === selectedFeedId)
+                                ? {
+                                      ...folder,
+                                      feedIds: folder.feedIds.filter((feedId) => feedId !== selectedFeedId),
+                                  }
+                                : folder,
+                        );
 
-                // delete feeds in selected folder and its subfolders (all levels)
-                const feedIdsToDelete = feedIdsByFolderId(state, selectedFolderId);
-                state.feeds = state.feeds.filter((feed) => !feedIdsToDelete.some((id) => feed.id === id));
+                        // delete feed
+                        state.feeds = state.feeds.filter((f) => f.id !== selectedFeedId);
 
-                // delete folder and subfolders (all levels)
-                const subfolderIdsToDelete = subfolderIdsByFolderId(state, selectedFolderId);
-                state.folders = state.folders.filter(
-                    (folder) => ![selectedFolderId, ...subfolderIdsToDelete].some((id) => folder.id === id),
-                );
+                        // if possible select the the next feed
+                        // TODO consider changed selection
+                        state.selectedNode = undefined;
+                        /*state.selectedNodeId =
+                    state.feeds.length === 0
+                    ? ''
+                    : state.feeds.length > selectedIndex
+                                ? state.feeds[selectedIndex].id
+                                : state.feeds[selectedIndex - 1].id;
+                                */
+                    }
+                    break;
 
-                // TODO consider changed selection
-                state.selectedNodeId = '';
+                case NodeType.Folder:
+                    {
+                        const selectedFolderId = state.selectedNode.nodeId;
+
+                        // delete relation in parent
+                        state.folders = state.folders.map((folder) =>
+                            folder.subfolderIds.some((subfolderId) => subfolderId === selectedFolderId)
+                                ? {
+                                      ...folder,
+                                      subfolderIds: folder.subfolderIds.filter(
+                                          (subfolderId) => subfolderId !== selectedFolderId,
+                                      ),
+                                  }
+                                : folder,
+                        );
+
+                        // delete feeds in selected folder and its subfolders (all levels)
+                        const feedIdsToDelete = feedIdsByFolderId(state, selectedFolderId);
+                        state.feeds = state.feeds.filter((feed) => !feedIdsToDelete.some((id) => feed.id === id));
+
+                        // delete folder and subfolders (all levels)
+                        const subfolderIdsToDelete = subfolderIdsByFolderId(state, selectedFolderId);
+                        state.folders = state.folders.filter(
+                            (folder) => ![selectedFolderId, ...subfolderIdsToDelete].some((id) => folder.id === id),
+                        );
+
+                        // TODO consider changed selection
+                        state.selectedNode = undefined;
+                    }
+                    break;
+
+                default:
+                    throw new UnreachableCaseError(state.selectedNode.nodeType);
             }
         },
     },

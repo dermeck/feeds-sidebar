@@ -47,7 +47,7 @@ const FolderTreeNode = (props: Props) => {
 
     const handleClickTitle = () => {
         if (id !== undefined) {
-            dispatch(feedsSlice.actions.select(id));
+            dispatch(feedsSlice.actions.select({ nodeType: node.nodeType, nodeId: id }));
         }
     };
 
@@ -78,8 +78,8 @@ const FolderTreeNode = (props: Props) => {
 
         dispatch(sessionSlice.actions.showContextMenu({ x, y }));
 
-        if (id !== undefined) {
-            dispatch(feedsSlice.actions.select(id));
+        if (node !== undefined) {
+            dispatch(feedsSlice.actions.select({ nodeType: node.nodeType, nodeId: id }));
         }
     };
 
