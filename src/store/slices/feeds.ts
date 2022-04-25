@@ -240,14 +240,30 @@ const feedsSlice = createSlice({
                 feeds: [...markItemAsRead(state.feeds, action.payload.feedId, action.payload.itemId)],
             };
         },
-        markSelectedFeedAsRead(state) {
-            // TODO also handle folders
+        markSelectedNodeAsRead(state) {
+            if (state.selectedNode === undefined) {
+                throw new Error('Cannot mark node as read because selection is undefined.');
+            }
 
-            if (state.selectedNode?.nodeType === NodeType.Feed) {
-                return {
-                    ...state,
-                    feeds: [...markFeedAsRead(state.feeds, state.selectedNode.nodeId)],
-                };
+            switch (state.selectedNode.nodeType) {
+                case NodeType.FeedItem:
+                    // always handled via markItemAsRead action
+                    break;
+
+                case NodeType.Feed:
+                    return {
+                        ...state,
+                        feeds: [...markFeedsAsRead(state.feeds, [state.selectedNode.nodeId])],
+                    };
+
+                case NodeType.Folder:
+                    return {
+                        ...state,
+                        feeds: [...markFeedsAsRead(state.feeds, feedIdsByFolderId(state, state.selectedNode.nodeId))],
+                    };
+
+                default:
+                    throw new UnreachableCaseError(state.selectedNode.nodeType);
             }
         },
         markAllAsRead(state) {
@@ -470,9 +486,9 @@ const markItemAsRead = (feeds: ReadonlyArray<Feed>, feedId: string, itemId: stri
         };
     });
 
-const markFeedAsRead = (feeds: ReadonlyArray<Feed>, readFeedId: string): ReadonlyArray<Feed> =>
+const markFeedsAsRead = (feeds: ReadonlyArray<Feed>, readFeedIds: ReadonlyArray<string>): ReadonlyArray<Feed> =>
     feeds.map((feed) => {
-        if (feed.id !== readFeedId) {
+        if (!readFeedIds.includes(feed.id)) {
             return feed;
         }
 

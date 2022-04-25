@@ -28,7 +28,7 @@ const ContextMenu: FunctionComponent<Props> = (props: Props) => {
                     }}>
                     Delete
                 </MenuItem>
-                <MenuItem onMouseDown={() => dispatch(feedsSlice.actions.markSelectedFeedAsRead())}>
+                <MenuItem onMouseDown={() => dispatch(feedsSlice.actions.markSelectedNodeAsRead())}>
                     Mark as Read
                 </MenuItem>
             </MenuList>

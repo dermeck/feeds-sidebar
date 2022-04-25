@@ -71,4 +71,4 @@ export const folder2Fixture = folderFixture('folder2');
 export const folder3Fixture = folderFixture('folder3');
 export const folder4Fixture = folderFixture('folder4');
 
-export const feedsFixture = [feed1Fixture, feed2Fixture];
+export const feedsFixture = [feed1Fixture, feed2Fixture, feed3Fixture];
