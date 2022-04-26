@@ -63,8 +63,6 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
         .map((feed) => feed.items.filter((i) => !i.isRead).length)
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
 
-export const selectFeeds = (state: RootState) => state.feeds.feeds;
-
 const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
