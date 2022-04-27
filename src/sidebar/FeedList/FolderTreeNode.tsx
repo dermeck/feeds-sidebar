@@ -84,14 +84,14 @@ const FolderTreeNode = (props: Props) => {
     };
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        console.log(event.target);
+        console.log(event.target); // TODO
 
         if (draggedId !== id) {
             dispatch(sessionSlice.actions.changeDragged({ nodeId: id, nodeType: node.nodeType }));
         }
     };
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-        console.log(event.target);
+        console.log(event.target); // TODO
 
         if (!dragged) {
             throw new Error('dragged node must be defined.');

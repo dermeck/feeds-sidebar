@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { Feed, FeedNode, Folder, FolderNode, NodeMeta, NodeType, TreeNode } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { extensionStateLoaded } from '../actions';
-import { RootState } from '../store';
 
 export type FeedSliceState = {
     folders: ReadonlyArray<Folder>;
@@ -137,7 +136,6 @@ export const selectTreeNode = (state: FeedSliceState, nodeId: string): FolderNod
     // TODO something triggers selectTreeNode with ids that were just deleted
     // occurs if folders with subfolders are deleted
     // fix this workaround and throw error again
-    // console.log('selectTreeNode error', state, nodeId);
     // throw new Error(`Node with id: "${nodeId}" not found.`);
 
     return undefined;
