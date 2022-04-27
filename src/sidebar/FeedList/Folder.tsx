@@ -80,35 +80,43 @@ const Folder = (props: Props) => {
         return <Fragment>{props.children}</Fragment>;
     }
 
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        if (props.onDragStart) {
+            props.onDragStart(event);
+        }
+    };
+
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        // TODO determine drop position (top, center, bottom) based on drop target bounding box and drag position
+        // use that information (local state) to highlight (line, highlight label) and use it fro drop effect (before, insert, after)
+        if (props.validDropTarget) {
+            setDraggedOver(true);
+            event.preventDefault();
+        }
+    };
+
+    const handleDragLeave = () => {
+        if (props.validDropTarget) {
+            setDraggedOver(false);
+        }
+    };
+
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        setDraggedOver(false);
+        if (props.onDrop) {
+            props.onDrop(event);
+        }
+    };
+
     // TODO indicate if folder has unread items
     return (
         <Fragment>
             <FolderTitleContainer
                 draggable={true}
-                onDragStart={(event: React.DragEvent<HTMLDivElement>) => {
-                    if (props.onDragStart) {
-                        props.onDragStart(event);
-                    }
-                }}
-                onDragOver={(event: React.DragEvent<HTMLDivElement>) => {
-                    // TODO determine drop position (top, center, bottom) based on drop target bounding box and drag position
-                    // use that information (local state) to highlight (line, highlight label) and use it fro drop effect (before, insert, after)
-                    if (props.validDropTarget) {
-                        setDraggedOver(true);
-                        event.preventDefault();
-                    }
-                }}
-                onDragLeave={() => {
-                    if (props.validDropTarget) {
-                        setDraggedOver(false);
-                    }
-                }}
-                onDrop={(event: React.DragEvent<HTMLDivElement>) => {
-                    setDraggedOver(false);
-                    if (props.onDrop) {
-                        props.onDrop(event);
-                    }
-                }}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
                 onDragEnd={props.onDragEnd}
                 disabled={!props.validDropTarget && !props.editing}
                 nestedLevel={props.nestedLevel}

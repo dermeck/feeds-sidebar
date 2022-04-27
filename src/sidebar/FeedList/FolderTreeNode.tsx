@@ -90,6 +90,7 @@ const FolderTreeNode = (props: Props) => {
             dispatch(sessionSlice.actions.changeDragged({ nodeId: id, nodeType: node.nodeType }));
         }
     };
+
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
         console.log(event.target); // TODO
 
@@ -102,6 +103,7 @@ const FolderTreeNode = (props: Props) => {
 
         // move node {nodeId, target, mode=insert | before | after} // feed on feed only before/after; node.nodeType
     };
+
     const handleDragEnd = () => {
         dispatch(sessionSlice.actions.changeDragged(undefined));
     };
