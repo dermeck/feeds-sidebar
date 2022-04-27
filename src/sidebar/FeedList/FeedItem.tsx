@@ -4,12 +4,13 @@ import { GlobeSimple, X } from 'phosphor-react';
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import { ToolbarButton } from '../../base-components';
-import { FeedItem as FeedItemType } from '../../model/feeds';
+import { FeedItem as FeedItemType, NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
 
-const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean }>`
-    padding-left: ${(props) => (props.indented ? '2.25rem' : '1.5rem')};
+const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean; nestedLevel: number }>`
+    padding-left: ${(props) =>
+        !props.indented || props.nestedLevel === 0 ? '20px' : `${25 + props.nestedLevel * 15}px`};
 
     background-color: ${(props) =>
         props.selected
@@ -70,6 +71,7 @@ interface Props {
     item: FeedItemType;
     feedId: string;
     indented: boolean;
+    nestedLevel: number;
 }
 
 const enum AuxButton {
@@ -80,7 +82,7 @@ const enum AuxButton {
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
-    const isSelected = useAppSelector((state) => state.feeds.selectedId) === props.item.id;
+    const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === props.item.id;
 
     useEffect(() => {
         if (isSelected) {
@@ -97,7 +99,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
     }
 
     const handleFeedItemClick = (feedId: string, itemId: string) => {
-        dispatch(feedsSlice.actions.select(props.item.id));
+        dispatch(feedsSlice.actions.select({ nodeType: NodeType.FeedItem, nodeId: props.item.id }));
 
         dispatch(
             feedsSlice.actions.markItemAsRead({
@@ -122,6 +124,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
         <Container
             key={props.item.id}
             indented={props.indented}
+            nestedLevel={props.nestedLevel}
             selected={isSelected}
             focus={focus}
             onClick={() => setFocus(true)}

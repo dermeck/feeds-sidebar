@@ -64,7 +64,6 @@ const Sidebar: FunctionComponent = () => {
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
     const showFeedTitles = useAppSelector(selectOptions).showFeedTitles;
-
     const activeView = useAppSelector((state) => state.session.activeView);
     const feeds = useAppSelector((state) => state.feeds.feeds);
     const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
@@ -115,6 +114,7 @@ const Sidebar: FunctionComponent = () => {
                     />
                 </MoreMenuButton>
             </Header>
+
             <FeedList
                 showFeedTitles={showFeedTitles && filterString.trim() === ''}
                 filterString={filterString.trim()}

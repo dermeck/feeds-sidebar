@@ -1,13 +1,13 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
-import { DownloadSimple, UploadSimple, CheckSquare, Plus } from 'phosphor-react';
+import { DownloadSimple, UploadSimple, CheckSquare, Plus, FolderSimplePlus } from 'phosphor-react';
 
 import { FunctionComponent, MouseEventHandler } from 'react';
 
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 
-type IconKeys = 'plus' | 'import' | 'export' | 'check-square';
+type IconKeys = 'plus' | 'import' | 'export' | 'check-square' | 'folder-plus';
 
 interface Props {
     icon?: IconKeys;
@@ -54,6 +54,9 @@ const renderIcon = (key: IconKeys) => {
 
         case 'check-square':
             return <CheckSquare size={size} weight="bold" />;
+
+        case 'folder-plus':
+            return <FolderSimplePlus size={size} />;
 
         default:
             throw new UnreachableCaseError(key);

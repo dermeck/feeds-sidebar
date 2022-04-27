@@ -35,9 +35,9 @@ export const feedMiddleware: Middleware<
     if (
         feedsSlice.actions.updateFeeds.match(action) ||
         feedsSlice.actions.markItemAsRead.match(action) ||
-        feedsSlice.actions.markSelectedFeedAsRead.match(action) ||
+        feedsSlice.actions.markSelectedNodeAsRead.match(action) ||
         feedsSlice.actions.markAllAsRead.match(action) ||
-        feedsSlice.actions.deleteSelectedFeed.match(action)
+        feedsSlice.actions.deleteSelectedNode.match(action)
     ) {
         updateBadge(middlewareApi.getState().feeds);
     }

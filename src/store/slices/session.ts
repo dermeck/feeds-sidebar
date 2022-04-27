@@ -1,5 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { NodeMeta } from '../../model/feeds';
+import feedsSlice from './feeds';
+
 type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
 export const enum MenuType {
@@ -30,6 +33,9 @@ export type SessionSliceState = {
 
     menuContext?: MenuContext;
     menuVisible: boolean;
+    newFolderEditActive: boolean;
+
+    dragged?: NodeMeta;
 };
 
 export const initialState: SessionSliceState = {
@@ -38,6 +44,9 @@ export const initialState: SessionSliceState = {
 
     menuContext: undefined,
     menuVisible: false,
+    newFolderEditActive: false,
+
+    dragged: undefined,
 };
 
 export const selectIsLoadingFeeds = (state: SessionSliceState) => state.feedStatus.some((x) => x.status === 'loading');
@@ -46,6 +55,9 @@ const sessionSlice = createSlice({
     name: 'session',
     initialState,
     reducers: {
+        changeDragged(state, action: PayloadAction<NodeMeta | undefined>) {
+            state.dragged = action.payload;
+        },
         changeView(state, action: PayloadAction<View>) {
             state.activeView = action.payload;
         },
@@ -66,6 +78,9 @@ const sessionSlice = createSlice({
         },
         hideMenu(state) {
             state.menuVisible = false;
+        },
+        newFolder(state) {
+            state.newFolderEditActive = true;
         },
         changeFeedsStatus(
             state,
@@ -95,6 +110,14 @@ const sessionSlice = createSlice({
 
             state.feedStatus = [...updated, ...newEntries];
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(feedsSlice.actions.addFolder, (state) => {
+            return {
+                ...state,
+                newFolderEditActive: false,
+            };
+        });
     },
 });
 
