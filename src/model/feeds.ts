@@ -5,6 +5,8 @@ export interface Folder {
     subfolderIds: ReadonlyArray<string>;
 }
 
+export const rootFolderId = '_root_';
+
 export interface Feed {
     id: string;
     url: string;

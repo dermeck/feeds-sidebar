@@ -29,7 +29,7 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
     const inputFileRef = useRef<HTMLInputElement>(null);
 
     const dispatch = useAppDispatch();
-    const feeds = useAppSelector((state) => state.feeds.feeds);
+    const feeds = useAppSelector((state) => state.feeds);
 
     return (
         <MenuContainer anchorTop={props.anchorPoint.y} anchorLeft={props.anchorPoint.x}>
@@ -48,7 +48,7 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
 
                 <Divider />
 
-                <MenuItem icon="export" onMouseDown={() => opmlExport(feeds)}>
+                <MenuItem icon="export" onMouseDown={() => opmlExport(feeds.folders, feeds.feeds)}>
                     Export
                 </MenuItem>
 
