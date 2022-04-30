@@ -1,7 +1,7 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Feed, FeedNode, Folder, FolderNode, NodeMeta, NodeType, TreeNode } from '../../model/feeds';
+import { Feed, FeedNode, Folder, FolderNode, NodeMeta, NodeType, rootFolderId, TreeNode } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { extensionStateLoaded } from '../actions';
 
@@ -13,8 +13,6 @@ export type FeedSliceState = {
 
 export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
-
-const rootFolderId = '_root_';
 
 const sampleDataFolders: ReadonlyArray<Folder> = [
     {
