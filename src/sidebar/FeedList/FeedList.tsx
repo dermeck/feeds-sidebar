@@ -34,20 +34,38 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                 />
             )}
 
-            <Virtuoso
-                data={topLevelNodes}
-                itemContent={(_, node) => (
-                    <FolderTreeNode
-                        key={node.data.id}
-                        nodeId={node.data.id}
-                        selectedId={feeds.selectedNode?.nodeId}
-                        nestedLevel={0}
-                        showTitle={props.showFeedTitles}
-                        filterString={props.filterString}
-                        validDropTarget={true}
+            {
+                // TODO Fix rendering problem and also vitualize the flat list
+                // Virtuoso causes an issue: on reload / browser start the flat list won't render if there are only a few items
+                props.showFeedTitles ? (
+                    <Virtuoso
+                        data={topLevelNodes}
+                        itemContent={(_, node) => (
+                            <FolderTreeNode
+                                key={node.data.id}
+                                nodeId={node.data.id}
+                                selectedId={feeds.selectedNode?.nodeId}
+                                nestedLevel={0}
+                                showTitle={props.showFeedTitles}
+                                filterString={props.filterString}
+                                validDropTarget={true}
+                            />
+                        )}
                     />
-                )}
-            />
+                ) : (
+                    topLevelNodes.map((node) => (
+                        <FolderTreeNode
+                            key={node.data.id}
+                            nodeId={node.data.id}
+                            selectedId={feeds.selectedNode?.nodeId}
+                            nestedLevel={0}
+                            showTitle={props.showFeedTitles}
+                            filterString={props.filterString}
+                            validDropTarget={true}
+                        />
+                    ))
+                )
+            }
         </FullHeightScrollContainer>
     );
 };
