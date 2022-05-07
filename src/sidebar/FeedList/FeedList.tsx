@@ -25,13 +25,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
     return (
         <FullHeightScrollContainer>
             {showNewFolderInput && (
-                <Folder
-                    editing={true}
-                    onEditComplete={handleEditComplete}
-                    showTitle={true}
-                    disabled={false}
-                    nestedLevel={0}
-                />
+                <Folder editing={true} onEditComplete={handleEditComplete} showTitle={true} nestedLevel={0} />
             )}
 
             {

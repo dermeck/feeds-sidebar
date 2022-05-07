@@ -8,7 +8,7 @@ import FolderEdit from './FolderEdit';
 interface FolderTitleContainerProps {
     selected: boolean;
     focus: boolean;
-    disabled: boolean;
+    disabled?: boolean;
     nestedLevel: number;
 }
 
@@ -70,7 +70,7 @@ interface Props {
     onEditComplete?: (x: string) => void;
     onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
     onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
-    disabled: boolean;
+    disabled?: boolean;
     onDrop?: (event: React.DragEvent<HTMLDivElement>) => void;
 }
 
@@ -131,7 +131,7 @@ const Folder = (props: Props) => {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onDragEnd={props.onDragEnd}
-                disabled={props.disabled && !props.editing}
+                disabled={props.disabled}
                 nestedLevel={props.nestedLevel}
                 tabIndex={0}
                 selected={!!props.selected}
