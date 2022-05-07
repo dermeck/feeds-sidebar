@@ -55,6 +55,7 @@ const FolderIcon = styled(FolderSimple)`
 `;
 
 interface Props {
+    id?: string;
     title?: string;
     showTitle: boolean;
     nestedLevel: number;
@@ -87,6 +88,12 @@ const Folder = (props: Props) => {
     };
 
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        const invalidDroptTargets = event.dataTransfer.getData('invalidDroptTargets').split(';');
+
+        if (invalidDroptTargets.find((x) => x === props.id)) {
+            return;
+        }
+
         // TODO determine drop position (top, center, bottom) based on drop target bounding box and drag position
         // use that information (local state) to highlight (line, highlight label) and use it fro drop effect (before, insert, after)
         if (props.validDropTarget) {
@@ -96,12 +103,18 @@ const Folder = (props: Props) => {
     };
 
     const handleDragLeave = () => {
-        if (props.validDropTarget) {
+        if (draggedOver) {
             setDraggedOver(false);
         }
     };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        const invalidDroptTargets = event.dataTransfer.getData('invalidDroptTargets').split(';');
+
+        if (invalidDroptTargets.find((x) => x === props.id)) {
+            return;
+        }
+
         setDraggedOver(false);
         if (props.onDrop) {
             props.onDrop(event);
@@ -141,7 +154,7 @@ const Folder = (props: Props) => {
                         }}
                     />
                 ) : (
-                    <FolderTitle highlight={draggedOver}>{props.title}</FolderTitle>
+                    <FolderTitle highlight={draggedOver && props.validDropTarget}>{props.title}</FolderTitle>
                 )}
             </FolderTitleContainer>
 
