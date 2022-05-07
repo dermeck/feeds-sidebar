@@ -8,7 +8,7 @@ import FolderEdit from './FolderEdit';
 interface FolderTitleContainerProps {
     selected: boolean;
     focus: boolean;
-    disabled: boolean;
+    disabled?: boolean;
     nestedLevel: number;
 }
 
@@ -55,6 +55,7 @@ const FolderIcon = styled(FolderSimple)`
 `;
 
 interface Props {
+    id?: string;
     title?: string;
     showTitle: boolean;
     nestedLevel: number;
@@ -69,7 +70,7 @@ interface Props {
     onEditComplete?: (x: string) => void;
     onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
     onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
-    validDropTarget: boolean;
+    disabled?: boolean;
     onDrop?: (event: React.DragEvent<HTMLDivElement>) => void;
 }
 
@@ -87,21 +88,33 @@ const Folder = (props: Props) => {
     };
 
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        const invalidDroptTargets = event.dataTransfer.getData('invalidDroptTargets').split(';');
+
+        if (invalidDroptTargets.find((x) => x === props.id)) {
+            return;
+        }
+
         // TODO determine drop position (top, center, bottom) based on drop target bounding box and drag position
         // use that information (local state) to highlight (line, highlight label) and use it fro drop effect (before, insert, after)
-        if (props.validDropTarget) {
+        if (!props.disabled) {
             setDraggedOver(true);
             event.preventDefault();
         }
     };
 
     const handleDragLeave = () => {
-        if (props.validDropTarget) {
+        if (draggedOver) {
             setDraggedOver(false);
         }
     };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        const invalidDroptTargets = event.dataTransfer.getData('invalidDroptTargets').split(';');
+
+        if (invalidDroptTargets.find((x) => x === props.id)) {
+            return;
+        }
+
         setDraggedOver(false);
         if (props.onDrop) {
             props.onDrop(event);
@@ -118,7 +131,7 @@ const Folder = (props: Props) => {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onDragEnd={props.onDragEnd}
-                disabled={!props.validDropTarget && !props.editing}
+                disabled={props.disabled}
                 nestedLevel={props.nestedLevel}
                 tabIndex={0}
                 selected={!!props.selected}

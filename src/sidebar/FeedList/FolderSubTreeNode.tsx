@@ -51,11 +51,11 @@ interface Props {
     showTitle: boolean;
     nestedLevel: number;
     filterString: string;
-    validDropTarget: boolean;
+    disabled: boolean;
 }
 
 const FolderSubTreeNode = (props: Props): JSX.Element => {
-    const { node, filterString, showTitle, selectedId, validDropTarget, nestedLevel } = props;
+    const { node, filterString, showTitle, selectedId, disabled, nestedLevel } = props;
 
     switch (node.nodeType) {
         case NodeType.Feed:
@@ -69,7 +69,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                             indented={showTitle}
                             nestedLevel={nestedLevel + 1}
                             selectedId={selectedId}
-                            disabled={!props.validDropTarget}
+                            disabled={disabled}
                         />
                     )}
                 </Fragment>
@@ -89,7 +89,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                                 nestedLevel={nestedLevel + 1}
                                 showTitle={showTitle}
                                 filterString={filterString}
-                                validDropTarget={validDropTarget}
+                                disabled={disabled}
                             />
                         );
                     })}

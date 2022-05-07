@@ -3,7 +3,7 @@ import React, { Fragment, memo, useEffect, useState } from 'react';
 import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import feedsSlice, { selectTreeNode } from '../../store/slices/feeds';
+import feedsSlice, { selectDescendentNodeIds, selectTreeNode } from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
 import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import Folder from './Folder';
@@ -15,7 +15,7 @@ interface Props {
     showTitle: boolean;
     nestedLevel: number;
     filterString: string;
-    validDropTarget: boolean;
+    disabled?: boolean;
 }
 
 // TODO find a more robust way to determine menu height
@@ -24,6 +24,7 @@ const contextMenuHeight = 64; // 2 menu items, each 32px
 const FolderTreeNode = (props: Props) => {
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
     const dragged = useAppSelector((state) => state.session.dragged);
+    const descendentNodeIds = useAppSelector((state) => selectDescendentNodeIds(state.feeds, props.nodeId));
     const draggedId = dragged?.nodeId;
 
     const dispatch = useAppDispatch();
@@ -84,7 +85,7 @@ const FolderTreeNode = (props: Props) => {
     };
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        console.log(event.target); // TODO
+        event.dataTransfer.setData('invalidDroptTargets', descendentNodeIds.join(';'));
 
         if (draggedId !== id) {
             dispatch(sessionSlice.actions.changeDragged({ nodeId: id, nodeType: node.nodeType }));
@@ -108,12 +109,11 @@ const FolderTreeNode = (props: Props) => {
         dispatch(sessionSlice.actions.changeDragged(undefined));
     };
 
-    // disable drop on self and all children and all feeds(for now) // TODO enable feed as drop target (insert before/after)
-    const validDropTarget =
-        id !== draggedId && props.validDropTarget && (node.nodeType !== NodeType.Feed || draggedId === undefined);
+    const disabled = (id === draggedId || props.disabled || node.nodeType === NodeType.Feed) && draggedId !== undefined;
 
     return (
         <Folder
+            id={id}
             title={title ?? (node.nodeType === NodeType.Feed ? node.data.url : '')}
             nestedLevel={props.nestedLevel}
             showTitle={props.showTitle}
@@ -126,8 +126,8 @@ const FolderTreeNode = (props: Props) => {
             onDragStart={handleDragStart}
             onDrop={handleDrop}
             onDragEnd={handleDragEnd}
-            validDropTarget={validDropTarget}>
-            <FolderSubTreeNode node={node} {...props} validDropTarget={validDropTarget} />
+            disabled={disabled}>
+            <FolderSubTreeNode node={node} {...props} disabled={disabled} />
         </Folder>
     );
 };
