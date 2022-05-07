@@ -1,5 +1,11 @@
 import { FeedNode, NodeType, FolderNode, TreeNode } from '../../../model/feeds';
-import feedsSlice, { FeedSliceState, selectTopLevelNodes, selectTotalUnreadItems, selectTreeNode } from '../feeds';
+import feedsSlice, {
+    FeedSliceState,
+    selectDescendentNodeIds,
+    selectTopLevelNodes,
+    selectTotalUnreadItems,
+    selectTreeNode,
+} from '../feeds';
 import {
     feed1Fixture,
     itemFixture,
@@ -117,5 +123,40 @@ describe('selectTopLevelNodes', () => {
         ];
 
         expect(selectTopLevelNodes(state)).toStrictEqual(expectation);
+    });
+});
+
+describe('selectDescendentNodeIds', () => {
+    const state: FeedSliceState = {
+        ...feedsSlice.getInitialState(),
+        folders: [
+            {
+                ...folder1Fixture,
+                subfolderIds: [folder2Fixture.id, folder3Fixture.id],
+                feedIds: [feed1Fixture.id, feed2Fixture.id],
+            },
+
+            { ...folder2Fixture },
+            { ...folder3Fixture, subfolderIds: [folder4Fixture.id] },
+            { ...folder4Fixture, feedIds: [feed3Fixture.id] },
+        ],
+        feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
+    };
+
+    it('returns ids of all descendents', () => {
+        const expectation = [
+            folder2Fixture.id,
+            folder3Fixture.id,
+            feed1Fixture.id,
+            feed2Fixture.id,
+            folder4Fixture.id,
+            feed3Fixture.id,
+        ];
+
+        expect(selectDescendentNodeIds(state, folder1Fixture.id)).toStrictEqual(expectation);
+    });
+
+    it('returns an empty array of parent is not a folder', () => {
+        expect(selectDescendentNodeIds(state, feed1Fixture.id)).toStrictEqual([]);
     });
 });

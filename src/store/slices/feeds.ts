@@ -175,6 +175,20 @@ const selectChildNodes = (state: FeedSliceState, parentId: string): ReadonlyArra
     return [...folderNodes, ...feedNodes];
 };
 
+export const selectDescendentNodeIds = (state: FeedSliceState, parentId: string): ReadonlyArray<string> => {
+    if (state.folders.find((x) => x.id === parentId) === undefined) {
+        return [];
+    }
+
+    const parentFolder = folderById(state, parentId);
+
+    return [
+        ...parentFolder.subfolderIds,
+        ...parentFolder.feedIds,
+        ...parentFolder.subfolderIds.flatMap((sid) => selectDescendentNodeIds(state, sid)),
+    ];
+};
+
 export const selectTopLevelNodes = (state: FeedSliceState): ReadonlyArray<TreeNode> =>
     selectChildNodes(state, rootFolderId);
 
