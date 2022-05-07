@@ -15,7 +15,7 @@ interface Props {
     showTitle: boolean;
     nestedLevel: number;
     filterString: string;
-    validDropTarget: boolean;
+    validDropTarget: boolean; // TODO this should be "disabled" and optional
 }
 
 // TODO find a more robust way to determine menu height
@@ -113,6 +113,9 @@ const FolderTreeNode = (props: Props) => {
     const validDropTarget =
         (id !== draggedId && props.validDropTarget && node.nodeType !== NodeType.Feed) || draggedId === undefined;
 
+    const disabled =
+        (id === draggedId || !props.validDropTarget || node.nodeType === NodeType.Feed) && draggedId !== undefined;
+
     return (
         <Folder
             id={id}
@@ -128,8 +131,8 @@ const FolderTreeNode = (props: Props) => {
             onDragStart={handleDragStart}
             onDrop={handleDrop}
             onDragEnd={handleDragEnd}
-            disabled={!validDropTarget}>
-            <FolderSubTreeNode node={node} {...props} validDropTarget={validDropTarget} />
+            disabled={disabled}>
+            <FolderSubTreeNode node={node} {...props} disabled={!validDropTarget} />
         </Folder>
     );
 };
