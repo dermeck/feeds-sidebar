@@ -128,7 +128,7 @@ const FolderTreeNode = (props: Props) => {
             onDragStart={handleDragStart}
             onDrop={handleDrop}
             onDragEnd={handleDragEnd}
-            validDropTarget={validDropTarget}>
+            disabled={!validDropTarget}>
             <FolderSubTreeNode node={node} {...props} validDropTarget={validDropTarget} />
         </Folder>
     );

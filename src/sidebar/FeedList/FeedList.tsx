@@ -29,7 +29,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                     editing={true}
                     onEditComplete={handleEditComplete}
                     showTitle={true}
-                    validDropTarget={false}
+                    disabled={false}
                     nestedLevel={0}
                 />
             )}

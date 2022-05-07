@@ -70,7 +70,7 @@ interface Props {
     onEditComplete?: (x: string) => void;
     onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
     onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
-    validDropTarget: boolean;
+    disabled: boolean;
     onDrop?: (event: React.DragEvent<HTMLDivElement>) => void;
 }
 
@@ -96,7 +96,7 @@ const Folder = (props: Props) => {
 
         // TODO determine drop position (top, center, bottom) based on drop target bounding box and drag position
         // use that information (local state) to highlight (line, highlight label) and use it fro drop effect (before, insert, after)
-        if (props.validDropTarget) {
+        if (!props.disabled) {
             setDraggedOver(true);
             event.preventDefault();
         }
@@ -131,7 +131,7 @@ const Folder = (props: Props) => {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onDragEnd={props.onDragEnd}
-                disabled={!props.validDropTarget && !props.editing}
+                disabled={props.disabled && !props.editing}
                 nestedLevel={props.nestedLevel}
                 tabIndex={0}
                 selected={!!props.selected}
@@ -154,7 +154,7 @@ const Folder = (props: Props) => {
                         }}
                     />
                 ) : (
-                    <FolderTitle highlight={draggedOver && props.validDropTarget}>{props.title}</FolderTitle>
+                    <FolderTitle highlight={draggedOver}>{props.title}</FolderTitle>
                 )}
             </FolderTitleContainer>
 
