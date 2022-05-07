@@ -89,7 +89,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                                 nestedLevel={nestedLevel + 1}
                                 showTitle={showTitle}
                                 filterString={filterString}
-                                validDropTarget={!disabled}
+                                disabled={disabled}
                             />
                         );
                     })}

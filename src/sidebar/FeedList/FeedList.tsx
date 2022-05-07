@@ -42,7 +42,6 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                                 nestedLevel={0}
                                 showTitle={props.showFeedTitles}
                                 filterString={props.filterString}
-                                validDropTarget={true}
                             />
                         )}
                     />
@@ -55,7 +54,6 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                             nestedLevel={0}
                             showTitle={props.showFeedTitles}
                             filterString={props.filterString}
-                            validDropTarget={true}
                         />
                     ))
                 )

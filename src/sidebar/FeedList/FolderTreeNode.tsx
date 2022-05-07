@@ -15,7 +15,7 @@ interface Props {
     showTitle: boolean;
     nestedLevel: number;
     filterString: string;
-    validDropTarget: boolean; // TODO this should be "disabled" and optional
+    disabled?: boolean;
 }
 
 // TODO find a more robust way to determine menu height
@@ -109,12 +109,7 @@ const FolderTreeNode = (props: Props) => {
         dispatch(sessionSlice.actions.changeDragged(undefined));
     };
 
-    // disable drop on self and all children and all feeds(for now) // TODO enable feed as drop target (insert before/after)
-    const validDropTarget =
-        (id !== draggedId && props.validDropTarget && node.nodeType !== NodeType.Feed) || draggedId === undefined;
-
-    const disabled =
-        (id === draggedId || !props.validDropTarget || node.nodeType === NodeType.Feed) && draggedId !== undefined;
+    const disabled = (id === draggedId || props.disabled || node.nodeType === NodeType.Feed) && draggedId !== undefined;
 
     return (
         <Folder
@@ -132,7 +127,7 @@ const FolderTreeNode = (props: Props) => {
             onDrop={handleDrop}
             onDragEnd={handleDragEnd}
             disabled={disabled}>
-            <FolderSubTreeNode node={node} {...props} disabled={!validDropTarget} />
+            <FolderSubTreeNode node={node} {...props} disabled={disabled} />
         </Folder>
     );
 };
