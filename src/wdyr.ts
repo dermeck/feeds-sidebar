@@ -6,10 +6,10 @@ import React from 'react';
 if (process.env.NODE_ENV === 'development') {
     // react-redux/lib because:
     // https://github.com/welldone-software/why-did-you-render/issues/154#issuecomment-773905769
-    const ReactRedux = require('react-redux/lib');
+    //const ReactRedux = require('react-redux/lib');
     const whyDidYouRender = require('@welldone-software/why-did-you-render');
     whyDidYouRender(React, {
         trackAllPureComponents: true,
-        trackExtraHooks: [[ReactRedux, 'useSelector']],
+        // trackExtraHooks: [[ReactRedux, 'useSelector']], // TODO reconfigure (broke after update) with message "uncaught TypeError: setting getter-only property "useSelector""
     });
 }
