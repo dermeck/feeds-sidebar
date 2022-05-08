@@ -11,7 +11,6 @@ import FolderSubTreeNode from './FolderSubTreeNode';
 
 interface Props {
     nodeId: string;
-    selectedId?: string;
     showTitle: boolean;
     nestedLevel: number;
     filterString: string;
@@ -23,17 +22,19 @@ const contextMenuHeight = 64; // 2 menu items, each 32px
 
 const FolderTreeNode = (props: Props) => {
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
+    const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
     const dragged = useAppSelector((state) => state.session.dragged);
     const descendentNodeIds = useAppSelector((state) => selectDescendentNodeIds(state.feeds, props.nodeId));
+
     const draggedId = dragged?.nodeId;
 
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (node && props.selectedId === node.data.id && !focus) {
+        if (node && selectedId === node.data.id && !focus) {
             setFocus(true);
         }
-    }, [props.selectedId]);
+    }, [selectedId]);
 
     const [expanded, setExpanded] = useState<boolean>(true);
     const [focus, setFocus] = useState<boolean>(false);
@@ -117,16 +118,16 @@ const FolderTreeNode = (props: Props) => {
             title={title ?? (node.nodeType === NodeType.Feed ? node.data.url : '')}
             nestedLevel={props.nestedLevel}
             showTitle={props.showTitle}
-            selected={props.selectedId === id}
+            selected={selectedId === id}
             focus={focus}
             expanded={expanded}
+            disabled={disabled}
             onClick={handleClickFolder}
             onBlur={handleBlurFolder}
             onContextMenu={handleContextMenuFolder}
             onDragStart={handleDragStart}
             onDrop={handleDrop}
-            onDragEnd={handleDragEnd}
-            disabled={disabled}>
+            onDragEnd={handleDragEnd}>
             <FolderSubTreeNode node={node} {...props} disabled={disabled} />
         </Folder>
     );

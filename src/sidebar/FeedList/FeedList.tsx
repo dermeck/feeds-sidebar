@@ -14,7 +14,6 @@ interface Props {
 
 const FeedList: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
-    const feeds = useAppSelector((state) => state.feeds);
     const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive);
     const topLevelNodes = useAppSelector((state) => selectTopLevelNodes(state.feeds));
 
@@ -38,7 +37,6 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                             <FolderTreeNode
                                 key={node.data.id}
                                 nodeId={node.data.id}
-                                selectedId={feeds.selectedNode?.nodeId}
                                 nestedLevel={0}
                                 showTitle={props.showFeedTitles}
                                 filterString={props.filterString}
@@ -50,7 +48,6 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                         <FolderTreeNode
                             key={node.data.id}
                             nodeId={node.data.id}
-                            selectedId={feeds.selectedNode?.nodeId}
                             nestedLevel={0}
                             showTitle={props.showFeedTitles}
                             filterString={props.filterString}

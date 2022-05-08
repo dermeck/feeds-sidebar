@@ -85,7 +85,6 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                             <FolderTreeNode
                                 key={childId}
                                 nodeId={childId}
-                                selectedId={selectedId}
                                 nestedLevel={nestedLevel + 1}
                                 showTitle={showTitle}
                                 filterString={filterString}
