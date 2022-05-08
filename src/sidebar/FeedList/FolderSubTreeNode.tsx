@@ -1,49 +1,9 @@
-import styled from '@emotion/styled';
-
 import React, { Fragment } from 'react';
 
-import { NodeType, Feed, TreeNode } from '../../model/feeds';
+import { NodeType, TreeNode } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import FeedItem from './FeedItem';
+import FeedItemList from './FeedItemList';
 import FolderTreeNode from './FolderTreeNode';
-
-const FeedContainer = styled.ul<{ disabled: boolean }>`
-    padding-left: 0;
-    margin: 0;
-    opacity: ${(props) => (props.disabled ? 0.3 : 0.9)};
-`;
-
-interface FeedItemsprops {
-    feed: Feed;
-    selectedId?: string;
-    indented: boolean;
-    nestedLevel: number;
-    filterString: string;
-    disabled: boolean;
-}
-
-const FeedItems = (props: FeedItemsprops) => {
-    if (!props.feed.items.some((x) => !x.isRead || x.id === props.selectedId)) {
-        return <Fragment />;
-    }
-
-    return (
-        <FeedContainer disabled={props.disabled}>
-            {props.feed.items.map(
-                (item) =>
-                    item.title?.toLowerCase().includes(props.filterString.toLowerCase()) && (
-                        <FeedItem
-                            key={item.id + item.title}
-                            feedId={props.feed.id}
-                            item={item}
-                            indented={props.indented}
-                            nestedLevel={props.nestedLevel}
-                        />
-                    ),
-            )}
-        </FeedContainer>
-    );
-};
 
 interface Props {
     node: TreeNode;
@@ -62,7 +22,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
             return (
                 <Fragment>
                     {node.nodeType === NodeType.Feed && (
-                        <FeedItems
+                        <FeedItemList
                             key={node.data.id}
                             feed={node.data}
                             filterString={filterString}
