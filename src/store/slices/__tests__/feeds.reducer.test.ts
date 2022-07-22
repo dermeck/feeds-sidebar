@@ -1,4 +1,4 @@
-import { Folder, NodeMeta, NodeType } from '../../../model/feeds';
+import { Folder, InsertMode, NodeMeta, NodeType } from '../../../model/feeds';
 import { extensionStateLoaded } from '../../actions';
 import feedsSlice, { FeedSliceState } from '../feeds';
 import { initialState as initialOptionsState } from '../options';
@@ -392,7 +392,7 @@ describe('addFolder', () => {
 });
 
 describe('moveNode action', () => {
-    describe('when moving folder nodes', () => {
+    describe('when moving folder nodes to new parent (InsertMode.Into)', () => {
         it('adds dragged folder to subfolderIds of target folder', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
@@ -411,6 +411,7 @@ describe('moveNode action', () => {
                         nodeType: NodeType.Folder,
                     },
                     targetFolderNodeId: folder1Fixture.id,
+                    mode: InsertMode.Into,
                 }),
             );
 
@@ -435,6 +436,7 @@ describe('moveNode action', () => {
                         nodeType: NodeType.Folder,
                     },
                     targetFolderNodeId: folder1Fixture.id,
+                    mode: InsertMode.Into,
                 }),
             );
 
@@ -459,6 +461,7 @@ describe('moveNode action', () => {
                         nodeType: NodeType.Folder,
                     },
                     targetFolderNodeId: folder2Fixture.id,
+                    mode: InsertMode.Into,
                 }),
             );
 
@@ -470,7 +473,7 @@ describe('moveNode action', () => {
         });
     });
 
-    describe('when moving feed nodes', () => {
+    describe('when moving feed nodes to new parent (InsertMode.Into)', () => {
         it('adds dragged feed to feedIds of target folder', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
@@ -488,6 +491,7 @@ describe('moveNode action', () => {
                         nodeType: NodeType.Feed,
                     },
                     targetFolderNodeId: folder1Fixture.id,
+                    mode: InsertMode.Into,
                 }),
             );
 
@@ -511,6 +515,7 @@ describe('moveNode action', () => {
                         nodeType: NodeType.Feed,
                     },
                     targetFolderNodeId: folder1Fixture.id,
+                    mode: InsertMode.Into,
                 }),
             );
 
@@ -535,6 +540,7 @@ describe('moveNode action', () => {
                         nodeType: NodeType.Feed,
                     },
                     targetFolderNodeId: folder2Fixture.id,
+                    mode: InsertMode.Into,
                 }),
             );
 

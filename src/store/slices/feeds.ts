@@ -1,7 +1,17 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Feed, FeedNode, Folder, FolderNode, NodeMeta, NodeType, rootFolderId, TreeNode } from '../../model/feeds';
+import {
+    Feed,
+    FeedNode,
+    Folder,
+    FolderNode,
+    InsertMode,
+    NodeMeta,
+    NodeType,
+    rootFolderId,
+    TreeNode,
+} from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { extensionStateLoaded } from '../actions';
 
@@ -217,8 +227,8 @@ const feedsSlice = createSlice({
 
             state.folders = folders;
         },
-        moveNode(state, action: PayloadAction<{ movedNode: NodeMeta; targetFolderNodeId: string }>) {
-            const { movedNode, targetFolderNodeId } = action.payload;
+        moveNode(state, action: PayloadAction<{ movedNode: NodeMeta; targetFolderNodeId: string; mode: InsertMode }>) {
+            const { movedNode, targetFolderNodeId, mode } = action.payload;
 
             switch (movedNode.nodeType) {
                 case NodeType.FeedItem:
@@ -227,13 +237,13 @@ const feedsSlice = createSlice({
                 case NodeType.Feed:
                     return {
                         ...state,
-                        folders: moveFeedNode(state.folders, targetFolderNodeId, movedNode.nodeId),
+                        folders: moveFeedNode(state.folders, targetFolderNodeId, movedNode.nodeId), // TODO add mode
                     };
 
                 case NodeType.Folder:
                     return {
                         ...state,
-                        folders: moveFolderNode(state.folders, targetFolderNodeId, movedNode.nodeId),
+                        folders: moveFolderNode(state.folders, targetFolderNodeId, movedNode.nodeId, mode),
                     };
 
                 default:
@@ -403,7 +413,30 @@ const subfolderIdsByFolderId = (state: FeedSliceState, folderId: string): Readon
     ];
 };
 
-const moveFolderNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string) =>
+const moveFolderNode = (
+    folders: ReadonlyArray<Folder>,
+    targetNodeId: string,
+    movedNodeId: string,
+    mode: InsertMode,
+) => {
+    switch (mode) {
+        case InsertMode.Into:
+            return changeParentNodeFolder(folders, targetNodeId, movedNodeId);
+
+        case InsertMode.Before:
+            // TODO
+            return folders;
+
+        case InsertMode.After:
+            // TODO
+            return folders;
+
+        default:
+            throw new UnreachableCaseError(mode);
+    }
+};
+
+const changeParentNodeFolder = (folders: readonly Folder[], targetNodeId: string, movedNodeId: string) =>
     folders.map((f) => {
         if (f.id === targetNodeId) {
             const newParent: Folder = {
