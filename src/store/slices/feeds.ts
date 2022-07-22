@@ -237,7 +237,7 @@ const feedsSlice = createSlice({
                 case NodeType.Feed:
                     return {
                         ...state,
-                        folders: moveFeedNode(state.folders, targetFolderNodeId, movedNode.nodeId), // TODO add mode
+                        folders: moveFeedNode(state.folders, targetFolderNodeId, movedNode.nodeId, mode),
                     };
 
                 case NodeType.Folder:
@@ -421,7 +421,7 @@ const moveFolderNode = (
 ) => {
     switch (mode) {
         case InsertMode.Into:
-            return changeParentNodeFolder(folders, targetNodeId, movedNodeId);
+            return changeParentFolderForFolder(folders, targetNodeId, movedNodeId);
 
         case InsertMode.Before:
             // TODO
@@ -436,7 +436,7 @@ const moveFolderNode = (
     }
 };
 
-const changeParentNodeFolder = (folders: readonly Folder[], targetNodeId: string, movedNodeId: string) =>
+const changeParentFolderForFolder = (folders: readonly Folder[], targetNodeId: string, movedNodeId: string) =>
     folders.map((f) => {
         if (f.id === targetNodeId) {
             const newParent: Folder = {
@@ -459,7 +459,25 @@ const changeParentNodeFolder = (folders: readonly Folder[], targetNodeId: string
         return f;
     });
 
-const moveFeedNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string) =>
+const moveFeedNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string, mode: InsertMode) => {
+    switch (mode) {
+        case InsertMode.Into:
+            return changeParentFolderForFeed(folders, targetNodeId, movedNodeId);
+
+        case InsertMode.Before:
+            // TODO
+            return folders;
+
+        case InsertMode.After:
+            // TODO
+            return folders;
+
+        default:
+            throw new UnreachableCaseError(mode);
+    }
+};
+
+const changeParentFolderForFeed = (folders: readonly Folder[], targetNodeId: string, movedNodeId: string) =>
     folders.map((f) => {
         if (f.id === targetNodeId) {
             const newParent: Folder = {
