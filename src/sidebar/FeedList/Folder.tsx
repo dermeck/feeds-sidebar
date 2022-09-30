@@ -6,20 +6,21 @@ import React, { Fragment, useState } from 'react';
 import { relativeDragDropPosition } from '../../utils/dragdrop';
 import FolderEdit from './FolderEdit';
 
-interface FolderTitleRowProps {
+const spacerHeight = 2;
+
+interface FolderTitleContainerProps {
     selected: boolean;
     focus: boolean;
     disabled?: boolean;
     nestedLevel: number;
 }
 
-const FolderTitleRow = styled.div<FolderTitleRowProps>`
+const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding-top: 3px;
-    padding-right: o;
-    padding-bottom: 3px;
+    flex-direction: column;
+    margin-top: -${spacerHeight}px;
+    margin-bottom: -${spacerHeight}px;
+
     padding-left: ${(props) => (props.nestedLevel > 0 ? `${8 + props.nestedLevel * 15}px` : '8px')};
 
     background-color: ${(props) =>
@@ -37,6 +38,27 @@ const FolderTitleRow = styled.div<FolderTitleRowProps>`
     opacity: ${(props) => (props.disabled ? 0.3 : 0.9)};
 `;
 
+interface SpacerProps {
+    highlight: boolean;
+}
+
+const Spacer = styled.div<SpacerProps>`
+    height: ${spacerHeight}px;
+    width: 30px;
+    margin-left: 18px;
+
+    background-color: ${(props) => (props.highlight ? props.theme.colors.selectedItemBackgroundColor : 'inherit')};
+`;
+
+const FolderTitleRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 1px;
+    padding-right: 0;
+    padding-bottom: 1px;
+`;
+
 const FolderTitle = styled.label<{ highlight: boolean }>`
     overflow: hidden;
     background-color: ${(props) => (props.highlight ? props.theme.colors.selectedItemBackgroundColor : 'inherit')};
@@ -47,15 +69,12 @@ const FolderTitle = styled.label<{ highlight: boolean }>`
 const ToggleIndicator = styled.div`
     margin-right: 4px;
     margin-bottom: -6px;
-    // margin-bottom: -4px // TODO mit border +2px;
 `;
 
 const FolderIcon = styled(FolderSimple)`
     flex-shrink: 0;
-    margin-top: -2px; /* align with label */ // TODO border berücksichtigen
+    margin-top: -2px; /* align with label */
     margin-right: 4px;
-    // border-top: 2px solid transparent; // TODO color bei drag
-    // border-bottom: 2px solid transparent; // TODO color bei drag
 `;
 
 interface Props {
@@ -129,39 +148,47 @@ const Folder = (props: Props) => {
     // TODO indicate if folder has unread items
     return (
         <Fragment>
-            <FolderTitleRow
-                draggable={true}
-                onDragStart={handleDragStart}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onDragEnd={props.onDragEnd}
+            <FolderTitleContainer
                 disabled={props.disabled}
-                nestedLevel={props.nestedLevel}
-                tabIndex={0}
-                selected={!!props.selected}
                 focus={!!props.focus}
-                onClick={props.onClick}
-                onBlur={props.onBlur}
-                onContextMenu={props.onContextMenu}>
-                <ToggleIndicator>
-                    {props.expanded ? <CaretDown size={12} weight="bold" /> : <CaretRight size={12} weight="bold" />}
-                </ToggleIndicator>
-                <FolderIcon size={20} weight="light" />
-                {props.editing ? (
-                    <FolderEdit
-                        initialValue={props.title ?? 'New Folder'}
-                        onEditComplete={(value) => {
-                            if (props.onEditComplete === undefined) {
-                                throw new Error('onEditComplete is not defined.');
-                            }
-                            props.onEditComplete(value);
-                        }}
-                    />
-                ) : (
-                    <FolderTitle highlight={draggedOver}>{props.title}</FolderTitle>
-                )}
-            </FolderTitleRow>
+                nestedLevel={props.nestedLevel}
+                selected={!!props.selected}>
+                <Spacer highlight />
+                <FolderTitleRow
+                    draggable={true}
+                    onDragStart={handleDragStart}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onDragEnd={props.onDragEnd}
+                    tabIndex={0}
+                    onClick={props.onClick}
+                    onBlur={props.onBlur}
+                    onContextMenu={props.onContextMenu}>
+                    <ToggleIndicator>
+                        {props.expanded ? (
+                            <CaretDown size={12} weight="bold" />
+                        ) : (
+                            <CaretRight size={12} weight="bold" />
+                        )}
+                    </ToggleIndicator>
+                    <FolderIcon size={20} weight="light" />
+                    {props.editing ? (
+                        <FolderEdit
+                            initialValue={props.title ?? 'New Folder'}
+                            onEditComplete={(value) => {
+                                if (props.onEditComplete === undefined) {
+                                    throw new Error('onEditComplete is not defined.');
+                                }
+                                props.onEditComplete(value);
+                            }}
+                        />
+                    ) : (
+                        <FolderTitle highlight={draggedOver}>{props.title}</FolderTitle>
+                    )}
+                </FolderTitleRow>
+                <Spacer highlight />
+            </FolderTitleContainer>
 
             {props.expanded && props.children}
         </Fragment>
