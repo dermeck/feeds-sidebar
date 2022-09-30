@@ -152,19 +152,19 @@ const Folder = (props: Props) => {
                 disabled={props.disabled}
                 focus={!!props.focus}
                 nestedLevel={props.nestedLevel}
-                selected={!!props.selected}>
+                selected={!!props.selected}
+                draggable={true}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onDragEnd={props.onDragEnd}
+                tabIndex={0}
+                onClick={props.onClick}
+                onBlur={props.onBlur}
+                onContextMenu={props.onContextMenu}>
                 <Spacer highlight />
-                <FolderTitleRow
-                    draggable={true}
-                    onDragStart={handleDragStart}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    onDragEnd={props.onDragEnd}
-                    tabIndex={0}
-                    onClick={props.onClick}
-                    onBlur={props.onBlur}
-                    onContextMenu={props.onContextMenu}>
+                <FolderTitleRow>
                     <ToggleIndicator>
                         {props.expanded ? (
                             <CaretDown size={12} weight="bold" />
