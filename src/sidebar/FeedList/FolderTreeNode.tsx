@@ -5,7 +5,8 @@ import { InsertMode, NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectDescendentNodeIds, selectTreeNode } from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
-import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
+import { RelativeDragDropPosition } from '../../utils/dragdrop';
 import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import Folder from './Folder';
 import FolderSubTreeNode from './FolderSubTreeNode';
@@ -94,20 +95,35 @@ const FolderTreeNode = (props: Props) => {
         }
     };
 
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-        console.log(event.target); // TODO
-
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => {
         if (!dragged) {
             throw new Error('dragged node must be defined.');
         }
 
-        const mode =
-            relativeDragDropPosition(event) === RelativeDragDropPosition.Middle ? InsertMode.Into : InsertMode.After; // TODO
-
-        dispatch(feedsSlice.actions.moveNode({ movedNode: dragged, targetFolderNodeId: id, mode }));
+        dispatch(
+            feedsSlice.actions.moveNode({
+                movedNode: dragged,
+                targetFolderNodeId: id,
+                mode: insertModeByRelativeDropPosition(relativeDropPosition),
+            }),
+        );
         dispatch(sessionSlice.actions.changeDragged(undefined));
+    };
 
-        // move node {nodeId, target, mode=insert | before | after} // feed on feed only before/after; node.nodeType
+    const insertModeByRelativeDropPosition = (relativeDropPosition: RelativeDragDropPosition): InsertMode => {
+        switch (relativeDropPosition) {
+            case RelativeDragDropPosition.Top:
+                return InsertMode.Before;
+
+            case RelativeDragDropPosition.Middle:
+                return InsertMode.Into;
+
+            case RelativeDragDropPosition.Bottom:
+                return InsertMode.After;
+
+            default:
+                throw new UnreachableCaseError(relativeDropPosition);
+        }
     };
 
     const handleDragEnd = () => {

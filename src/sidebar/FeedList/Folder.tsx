@@ -3,7 +3,7 @@ import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
 import React, { Fragment, useState } from 'react';
 
-import { relativeDragDropPosition } from '../../utils/dragdrop';
+import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
 import FolderEdit from './FolderEdit';
 
 const spacerHeight = 2;
@@ -93,11 +93,11 @@ interface Props {
     onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
     onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
     disabled?: boolean;
-    onDrop?: (event: React.DragEvent<HTMLDivElement>) => void;
+    onDrop?: (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => void;
 }
 
 const Folder = (props: Props) => {
-    const [draggedOver, setDraggedOver] = useState(false);
+    const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
 
     if (!props.showTitle) {
         return <Fragment>{props.children}</Fragment>;
@@ -116,18 +116,15 @@ const Folder = (props: Props) => {
             return;
         }
 
-        // TODO determine drop position (top, center, bottom) based on drop target bounding box and drag position
-        // use that information (local state) to highlight (line, highlight label) and use it fro drop effect (before, insert, after)
         if (!props.disabled) {
-            setDraggedOver(true);
-            console.log(relativeDragDropPosition(event));
+            setRelativDropPosition(relativeDragDropPosition(event));
             event.preventDefault();
         }
     };
 
     const handleDragLeave = () => {
-        if (draggedOver) {
-            setDraggedOver(false);
+        if (relativeDropPosition !== undefined) {
+            setRelativDropPosition(undefined);
         }
     };
 
@@ -138,10 +135,15 @@ const Folder = (props: Props) => {
             return;
         }
 
-        setDraggedOver(false);
-        if (props.onDrop) {
-            props.onDrop(event);
+        if (relativeDropPosition === undefined) {
+            throw new Error('Illegal state: relativeDropPosition must be definend when handleDrop is called.');
         }
+
+        if (props.onDrop) {
+            props.onDrop(event, relativeDropPosition);
+        }
+
+        setRelativDropPosition(undefined);
     };
 
     // TODO indicate if folder has unread items
@@ -162,7 +164,7 @@ const Folder = (props: Props) => {
                 onClick={props.onClick}
                 onBlur={props.onBlur}
                 onContextMenu={props.onContextMenu}>
-                <Spacer highlight />
+                <Spacer highlight={relativeDropPosition === RelativeDragDropPosition.Top} />
                 <FolderTitleRow>
                     <ToggleIndicator>
                         {props.expanded ? (
@@ -183,10 +185,12 @@ const Folder = (props: Props) => {
                             }}
                         />
                     ) : (
-                        <FolderTitle highlight={draggedOver}>{props.title}</FolderTitle>
+                        <FolderTitle highlight={relativeDropPosition === RelativeDragDropPosition.Middle}>
+                            {props.title}
+                        </FolderTitle>
                     )}
                 </FolderTitleRow>
-                <Spacer highlight />
+                <Spacer highlight={relativeDropPosition === RelativeDragDropPosition.Bottom} />
             </FolderTitleContainer>
 
             {props.expanded && props.children}
