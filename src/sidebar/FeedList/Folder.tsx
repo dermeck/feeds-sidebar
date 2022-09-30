@@ -46,7 +46,7 @@ const FolderTitle = styled.label<{ highlight: boolean }>`
 
 const ToggleIndicator = styled.div`
     margin-right: 4px;
-    margin-top: -6px;
+    margin-bottom: -6px;
     // margin-bottom: -4px // TODO mit border +2px;
 `;
 
