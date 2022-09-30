@@ -18,10 +18,9 @@ interface FolderTitleContainerProps {
 const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
     display: flex;
     flex-direction: column;
+    padding-left: ${(props) => (props.nestedLevel > 0 ? `${8 + props.nestedLevel * 15}px` : '8px')};
     margin-top: -${spacerHeight}px;
     margin-bottom: -${spacerHeight}px;
-
-    padding-left: ${(props) => (props.nestedLevel > 0 ? `${8 + props.nestedLevel * 15}px` : '8px')};
 
     background-color: ${(props) =>
         props.selected
@@ -43,8 +42,8 @@ interface SpacerProps {
 }
 
 const Spacer = styled.div<SpacerProps>`
-    height: ${spacerHeight}px;
     width: 30px;
+    height: ${spacerHeight}px;
     margin-left: 18px;
 
     background-color: ${(props) => (props.highlight ? props.theme.colors.selectedItemBackgroundColor : 'inherit')};
