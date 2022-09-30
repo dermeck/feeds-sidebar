@@ -6,14 +6,14 @@ import React, { Fragment, useState } from 'react';
 import { relativeDragDropPosition } from '../../utils/dragdrop';
 import FolderEdit from './FolderEdit';
 
-interface FolderTitleContainerProps {
+interface FolderTitleRowProps {
     selected: boolean;
     focus: boolean;
     disabled?: boolean;
     nestedLevel: number;
 }
 
-const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
+const FolderTitleRow = styled.div<FolderTitleRowProps>`
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -129,7 +129,7 @@ const Folder = (props: Props) => {
     // TODO indicate if folder has unread items
     return (
         <Fragment>
-            <FolderTitleContainer
+            <FolderTitleRow
                 draggable={true}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
@@ -161,7 +161,7 @@ const Folder = (props: Props) => {
                 ) : (
                     <FolderTitle highlight={draggedOver}>{props.title}</FolderTitle>
                 )}
-            </FolderTitleContainer>
+            </FolderTitleRow>
 
             {props.expanded && props.children}
         </Fragment>
