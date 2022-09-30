@@ -3,6 +3,7 @@ import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
 import React, { Fragment, useState } from 'react';
 
+import { relativeDragDropPosition } from '../../utils/dragdrop';
 import FolderEdit from './FolderEdit';
 
 interface FolderTitleContainerProps {
@@ -45,13 +46,16 @@ const FolderTitle = styled.label<{ highlight: boolean }>`
 
 const ToggleIndicator = styled.div`
     margin-right: 4px;
-    margin-bottom: -6px;
+    margin-top: -6px;
+    // margin-bottom: -4px // TODO mit border +2px;
 `;
 
 const FolderIcon = styled(FolderSimple)`
     flex-shrink: 0;
-    margin-top: -2px; /* align with label */
+    margin-top: -2px; /* align with label */ // TODO border berücksichtigen
     margin-right: 4px;
+    // border-top: 2px solid transparent; // TODO color bei drag
+    // border-bottom: 2px solid transparent; // TODO color bei drag
 `;
 
 interface Props {
@@ -98,6 +102,7 @@ const Folder = (props: Props) => {
         // use that information (local state) to highlight (line, highlight label) and use it fro drop effect (before, insert, after)
         if (!props.disabled) {
             setDraggedOver(true);
+            console.log(relativeDragDropPosition(event));
             event.preventDefault();
         }
     };

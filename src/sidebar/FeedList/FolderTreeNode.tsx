@@ -5,7 +5,7 @@ import { InsertMode, NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectDescendentNodeIds, selectTreeNode } from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
-import { RelativeDropPosition, relativeDropPosition } from '../../utils/dragdrop';
+import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
 import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import Folder from './Folder';
 import FolderSubTreeNode from './FolderSubTreeNode';
@@ -101,7 +101,8 @@ const FolderTreeNode = (props: Props) => {
             throw new Error('dragged node must be defined.');
         }
 
-        const mode = relativeDropPosition() === RelativeDropPosition.Middle ? InsertMode.Into : InsertMode.After; // TODO
+        const mode =
+            relativeDragDropPosition(event) === RelativeDragDropPosition.Middle ? InsertMode.Into : InsertMode.After; // TODO
 
         dispatch(feedsSlice.actions.moveNode({ movedNode: dragged, targetFolderNodeId: id, mode }));
         dispatch(sessionSlice.actions.changeDragged(undefined));
