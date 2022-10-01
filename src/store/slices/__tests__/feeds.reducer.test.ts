@@ -442,8 +442,10 @@ describe('moveNode action', () => {
 
             expect(newState.folders[1].subfolderIds).not.toContain(folder3Fixture.id);
         });
+    });
 
-        it('does not change anything if previous parent is the target', () => {
+    describe("when moving folder node to same parent (InsertMode.Into')", () => {
+        it('does not change anything', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
@@ -473,7 +475,84 @@ describe('moveNode action', () => {
         });
     });
 
+    describe('when moving folder to new parent (InsertMode.Before)', () => {
+        it.todo('adds dragged folder to subfolderIds of target folders parent');
+        it.todo('removes dragged folder from subfolderIds of previous parent folder');
+        it.todo('adds dragged folder before target folder');
+    });
+
+    describe('when moving folder node to same parent (InsertMode.Before)', () => {
+        // TODO
+        it.skip('adds dragged folder before dragged over folder', () => {
+            const prevState: FeedSliceState = {
+                ...feedsSlice.getInitialState(),
+                folders: [
+                    { ...folder1Fixture, subfolderIds: [folder2Fixture.id, folder3Fixture.id] },
+                    { ...folder2Fixture, subfolderIds: [] },
+                    { ...folder3Fixture },
+                ],
+            };
+
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.moveNode({
+                    movedNode: {
+                        nodeId: folder3Fixture.id,
+                        nodeType: NodeType.Folder,
+                    },
+                    targetFolderNodeId: folder2Fixture.id,
+                    mode: InsertMode.Before,
+                }),
+            );
+
+            expect(newState.folders).toStrictEqual([
+                { ...folder1Fixture, subfolderIds: [folder3Fixture.id, folder2Fixture.id] },
+                { ...folder2Fixture, subfolderIds: [] },
+                { ...folder3Fixture },
+            ]);
+        });
+    });
+
+    describe('when moving folder to new parent (InsertMode.After)', () => {
+        it.todo('adds dragged folder to subfolderIds of target folders parent');
+        it.todo('removes dragged folder from subfolderIds of previous parent folder');
+        it.todo('adds dragged folder after target folder');
+    });
+
+    describe('when moving folder node to same parent (InsertMode.Before)', () => {
+        // TODO
+        it.skip('adds dragged folder after dragged over folder', () => {
+            const prevState: FeedSliceState = {
+                ...feedsSlice.getInitialState(),
+                folders: [
+                    { ...folder1Fixture, subfolderIds: [folder2Fixture.id, folder3Fixture.id] },
+                    { ...folder2Fixture, subfolderIds: [] },
+                    { ...folder3Fixture },
+                ],
+            };
+
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.moveNode({
+                    movedNode: {
+                        nodeId: folder2Fixture.id,
+                        nodeType: NodeType.Folder,
+                    },
+                    targetFolderNodeId: folder3Fixture.id,
+                    mode: InsertMode.After,
+                }),
+            );
+
+            expect(newState.folders).toStrictEqual([
+                { ...folder1Fixture, subfolderIds: [folder3Fixture.id, folder2Fixture.id] },
+                { ...folder2Fixture, subfolderIds: [] },
+                { ...folder3Fixture },
+            ]);
+        });
+    });
+
     describe('when moving feed nodes to new parent (InsertMode.Into)', () => {
+        // TODO add tests for Before/After
         it('adds dragged feed to feedIds of target folder', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
