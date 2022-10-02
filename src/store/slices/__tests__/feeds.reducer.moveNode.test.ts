@@ -100,8 +100,7 @@ describe('moveNode action', () => {
     });
 
     describe('when moving folder node to same parent (InsertMode.Before)', () => {
-        // TODO
-        it.skip('adds dragged folder before dragged over folder', () => {
+        it('adds dragged folder before dragged over folder', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
@@ -137,7 +136,7 @@ describe('moveNode action', () => {
         it.todo('adds dragged folder after target folder');
     });
 
-    describe('when moving folder node to same parent (InsertMode.Before)', () => {
+    describe('when moving folder node to same parent (InsertMode.After)', () => {
         // TODO
         it.skip('adds dragged folder after dragged over folder', () => {
             const prevState: FeedSliceState = {

@@ -423,9 +423,21 @@ const moveFolderNode = (
         case InsertMode.Into:
             return changeParentFolderForFolder(folders, targetNodeId, movedNodeId);
 
-        case InsertMode.Before:
-            // TODO
-            return folders;
+        case InsertMode.Before: {
+            const targetParent = folders.find((x) => x.subfolderIds.includes(targetNodeId));
+
+            if (targetParent === undefined) {
+                throw new Error('Cannot find parent of drop target.');
+            }
+
+            const foldersWithCorrectParents =
+                targetParent.subfolderIds.includes(targetNodeId) && targetParent.subfolderIds.includes(movedNodeId)
+                    ? folders
+                    : changeParentFolderForFolder(folders, targetParent.id, movedNodeId);
+
+            // change position
+            return moveElementBefore(foldersWithCorrectParents, targetNodeId, movedNodeId);
+        }
 
         case InsertMode.After:
             // TODO
@@ -436,7 +448,11 @@ const moveFolderNode = (
     }
 };
 
-const changeParentFolderForFolder = (folders: readonly Folder[], targetNodeId: string, movedNodeId: string) =>
+const changeParentFolderForFolder = (
+    folders: readonly Folder[],
+    targetNodeId: string,
+    movedNodeId: string,
+): ReadonlyArray<Folder> =>
     folders.map((f) => {
         if (f.id === targetNodeId) {
             const newParent: Folder = {
@@ -459,8 +475,32 @@ const changeParentFolderForFolder = (folders: readonly Folder[], targetNodeId: s
         return f;
     });
 
+// TODO make this a generic array util
+const moveElementBefore = (
+    folders: ReadonlyArray<Folder>, // TODO should be string[] to make it reuseable for feeds
+    targetNodeId: string,
+    movedNodeId: string,
+): ReadonlyArray<Folder> =>
+    folders.map((f) => {
+        if (f.subfolderIds.includes(targetNodeId) && f.subfolderIds.includes(movedNodeId)) {
+            // remove moved node from current position
+            const newSubfolders = [...f.subfolderIds].filter((x) => x !== movedNodeId);
+            // insert before target
+            const targetIndex = newSubfolders.indexOf(targetNodeId);
+            newSubfolders.splice(targetIndex, 0, movedNodeId);
+
+            return {
+                ...f,
+                subfolderIds: newSubfolders,
+            };
+        } else {
+            return f;
+        }
+    });
+
 const moveFeedNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string, mode: InsertMode) => {
     switch (mode) {
+        // TODO prevent Before/After if target is a folder node
         case InsertMode.Into:
             return changeParentFolderForFeed(folders, targetNodeId, movedNodeId);
 
