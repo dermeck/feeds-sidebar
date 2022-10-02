@@ -122,9 +122,18 @@ const Folder = (props: Props) => {
         }
 
         if (!props.disabled) {
-            dragged?.nodeType === NodeType.Feed && props.nodeType === NodeType.Folder
-                ? setRelativDropPosition(RelativeDragDropPosition.Middle) // feeds can only be inserted into folders
-                : setRelativDropPosition(relativeDragDropPosition(event));
+            if (dragged?.nodeType === NodeType.Feed && props.nodeType === NodeType.Folder) {
+                // feeds can only be inserted into folders
+                setRelativDropPosition(RelativeDragDropPosition.Middle);
+            } else if (dragged?.nodeType === NodeType.Feed && props.nodeType === NodeType.Feed) {
+                // feeds can only be sorted
+                setRelativDropPosition(relativeDragDropPosition(event, 0.5));
+            } else if (dragged?.nodeType === NodeType.Folder && props.nodeType === NodeType.Folder) {
+                setRelativDropPosition(relativeDragDropPosition(event, 0.15));
+            } else {
+                throw new Error(`${dragged?.nodeType} can not be dropped on ${props.nodeType}.`);
+            }
+
             event.preventDefault();
         }
     };

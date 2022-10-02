@@ -133,13 +133,17 @@ const FolderTreeNode = (props: Props) => {
         dispatch(sessionSlice.actions.changeDragged(undefined));
     };
 
-    const disabled = (id === draggedId || props.disabled || node.nodeType === NodeType.Feed) && draggedId !== undefined;
+    const disabled =
+        (id === draggedId ||
+            !!props.disabled ||
+            (node.nodeType === NodeType.Feed && dragged?.nodeType === NodeType.Folder)) &&
+        draggedId !== undefined;
 
     return (
         <Folder
             id={id}
-            title={title ?? (node.nodeType === NodeType.Feed ? node.data.url : '')}
             nodeType={node.nodeType}
+            title={title ?? (node.nodeType === NodeType.Feed ? node.data.url : '')}
             nestedLevel={props.nestedLevel}
             showTitle={props.showTitle}
             selected={selectedId === id}

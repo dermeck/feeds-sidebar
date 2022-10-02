@@ -4,10 +4,10 @@ export const enum RelativeDragDropPosition {
     Bottom = 'BOTTOM',
 }
 
-// divide the drop target to 15% top, 70% middle, 15% bottom
-const verticalZoneThreshold = 0.15;
-
-export const relativeDragDropPosition = (event: React.DragEvent<HTMLElement>): RelativeDragDropPosition => {
+export const relativeDragDropPosition = (
+    event: React.DragEvent<HTMLElement>,
+    verticalZoneThreshold: number, // divide drop target into top, middle and bottom section
+): RelativeDragDropPosition => {
     const draggedPositionY = event.clientY;
     const targetRect = (event.target as HTMLDivElement).getBoundingClientRect();
 
