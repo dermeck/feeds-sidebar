@@ -13,7 +13,7 @@ import {
     TreeNode,
 } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import { moveElementBefore } from '../../utils/arrayUtils';
+import { moveOrInsertElementBefore } from '../../utils/arrayUtils';
 import { extensionStateLoaded } from '../actions';
 
 export type FeedSliceState = {
@@ -440,7 +440,7 @@ const moveFolderNode = (
                 if (f.subfolderIds.includes(targetNodeId) && f.subfolderIds.includes(movedNodeId)) {
                     return {
                         ...f,
-                        subfolderIds: moveElementBefore(f.subfolderIds, targetNodeId, movedNodeId),
+                        subfolderIds: moveOrInsertElementBefore(f.subfolderIds, targetNodeId, movedNodeId),
                     };
                 } else {
                     return f;

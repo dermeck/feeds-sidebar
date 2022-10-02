@@ -1,9 +1,9 @@
-export const moveElementBefore = <T>(array: ReadonlyArray<T>, targetNodeId: T, movedNodeId: T): ReadonlyArray<T> => {
+export const moveOrInsertElementBefore = <T>(array: ReadonlyArray<T>, target: T, moved: T): ReadonlyArray<T> => {
     // remove moved element from current position
-    const result = [...array].filter((x) => x !== movedNodeId);
+    const result = [...array].filter((x) => x !== moved);
     // insert before target element
-    const targetIndex = result.indexOf(targetNodeId);
-    result.splice(targetIndex, 0, movedNodeId);
+    const targetIndex = result.indexOf(target);
+    result.splice(targetIndex, 0, moved);
 
     return result;
 };
