@@ -3,6 +3,8 @@ import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
 import React, { Fragment, useState } from 'react';
 
+import { NodeType } from '../../model/feeds';
+import { useAppSelector } from '../../store/hooks';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
 import FolderEdit from './FolderEdit';
 
@@ -78,6 +80,7 @@ const FolderIcon = styled(FolderSimple)`
 
 interface Props {
     id?: string;
+    nodeType: NodeType;
     title?: string;
     showTitle: boolean;
     nestedLevel: number;
@@ -97,6 +100,8 @@ interface Props {
 }
 
 const Folder = (props: Props) => {
+    const dragged = useAppSelector((state) => state.session.dragged);
+
     const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
 
     if (!props.showTitle) {
@@ -117,7 +122,9 @@ const Folder = (props: Props) => {
         }
 
         if (!props.disabled) {
-            setRelativDropPosition(relativeDragDropPosition(event));
+            dragged?.nodeType === NodeType.Feed && props.nodeType === NodeType.Folder
+                ? setRelativDropPosition(RelativeDragDropPosition.Middle) // feeds can only be inserted into folders
+                : setRelativDropPosition(relativeDragDropPosition(event));
             event.preventDefault();
         }
     };

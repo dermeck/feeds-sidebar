@@ -103,8 +103,11 @@ const FolderTreeNode = (props: Props) => {
         dispatch(
             feedsSlice.actions.moveNode({
                 movedNode: dragged,
-                targetFolderNodeId: id,
-                mode: insertModeByRelativeDropPosition(relativeDropPosition),
+                targetFolderNodeId: id, // TODO kann auch Feed sein
+                mode:
+                    node.nodeType === NodeType.Folder && dragged.nodeType === NodeType.Feed
+                        ? InsertMode.Into
+                        : insertModeByRelativeDropPosition(relativeDropPosition),
             }),
         );
         dispatch(sessionSlice.actions.changeDragged(undefined));
@@ -136,6 +139,7 @@ const FolderTreeNode = (props: Props) => {
         <Folder
             id={id}
             title={title ?? (node.nodeType === NodeType.Feed ? node.data.url : '')}
+            nodeType={node.nodeType}
             nestedLevel={props.nestedLevel}
             showTitle={props.showTitle}
             selected={selectedId === id}
