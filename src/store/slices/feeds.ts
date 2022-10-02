@@ -13,7 +13,7 @@ import {
     TreeNode,
 } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import { moveOrInsertElementBefore } from '../../utils/arrayUtils';
+import { moveOrInsertElementBefore, moveOrInsertElementAfter } from '../../utils/arrayUtils';
 import { extensionStateLoaded } from '../actions';
 
 export type FeedSliceState = {
@@ -448,9 +448,29 @@ const moveFolderNode = (
             });
         }
 
-        case InsertMode.After:
-            // TODO
-            return folders;
+        case InsertMode.After: {
+            const targetParent = folders.find((x) => x.subfolderIds.includes(targetNodeId));
+
+            if (targetParent === undefined) {
+                throw new Error('Cannot find parent of drop target.');
+            }
+
+            const foldersWithCorrectParents =
+                targetParent.subfolderIds.includes(targetNodeId) && targetParent.subfolderIds.includes(movedNodeId)
+                    ? folders
+                    : changeParentFolderForFolder(folders, targetParent.id, movedNodeId);
+
+            return foldersWithCorrectParents.map((f) => {
+                if (f.subfolderIds.includes(targetNodeId) && f.subfolderIds.includes(movedNodeId)) {
+                    return {
+                        ...f,
+                        subfolderIds: moveOrInsertElementAfter(f.subfolderIds, targetNodeId, movedNodeId),
+                    };
+                } else {
+                    return f;
+                }
+            });
+        }
 
         default:
             throw new UnreachableCaseError(mode);

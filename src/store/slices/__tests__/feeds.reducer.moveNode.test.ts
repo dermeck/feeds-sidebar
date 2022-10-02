@@ -137,8 +137,7 @@ describe('moveNode action', () => {
     });
 
     describe('when moving folder node to same parent (InsertMode.After)', () => {
-        // TODO
-        it.skip('adds dragged folder after dragged over folder', () => {
+        it('adds dragged folder after dragged over folder', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
