@@ -13,6 +13,7 @@ import {
     TreeNode,
 } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
+import { moveElementBefore } from '../../utils/arrayUtils';
 import { extensionStateLoaded } from '../actions';
 
 export type FeedSliceState = {
@@ -435,8 +436,16 @@ const moveFolderNode = (
                     ? folders
                     : changeParentFolderForFolder(folders, targetParent.id, movedNodeId);
 
-            // change position
-            return moveElementBefore(foldersWithCorrectParents, targetNodeId, movedNodeId);
+            return foldersWithCorrectParents.map((f) => {
+                if (f.subfolderIds.includes(targetNodeId) && f.subfolderIds.includes(movedNodeId)) {
+                    return {
+                        ...f,
+                        subfolderIds: moveElementBefore(f.subfolderIds, targetNodeId, movedNodeId),
+                    };
+                } else {
+                    return f;
+                }
+            });
         }
 
         case InsertMode.After:
@@ -473,29 +482,6 @@ const changeParentFolderForFolder = (
         }
 
         return f;
-    });
-
-// TODO make this a generic array util
-const moveElementBefore = (
-    folders: ReadonlyArray<Folder>, // TODO should be string[] to make it reuseable for feeds
-    targetNodeId: string,
-    movedNodeId: string,
-): ReadonlyArray<Folder> =>
-    folders.map((f) => {
-        if (f.subfolderIds.includes(targetNodeId) && f.subfolderIds.includes(movedNodeId)) {
-            // remove moved node from current position
-            const newSubfolders = [...f.subfolderIds].filter((x) => x !== movedNodeId);
-            // insert before target
-            const targetIndex = newSubfolders.indexOf(targetNodeId);
-            newSubfolders.splice(targetIndex, 0, movedNodeId);
-
-            return {
-                ...f,
-                subfolderIds: newSubfolders,
-            };
-        } else {
-            return f;
-        }
     });
 
 const moveFeedNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string, mode: InsertMode) => {
