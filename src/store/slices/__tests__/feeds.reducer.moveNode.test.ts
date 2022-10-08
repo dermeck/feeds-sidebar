@@ -29,7 +29,7 @@ describe('moveNode action', () => {
                         nodeId: folder3Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder1Fixture.id,
+                    targetNodeId: folder1Fixture.id,
                     mode: InsertMode.Into,
                 }),
             );
@@ -54,7 +54,7 @@ describe('moveNode action', () => {
                         nodeId: folder3Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder1Fixture.id,
+                    targetNodeId: folder1Fixture.id,
                     mode: InsertMode.Into,
                 }),
             );
@@ -81,7 +81,7 @@ describe('moveNode action', () => {
                         nodeId: folder3Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder2Fixture.id,
+                    targetNodeId: folder2Fixture.id,
                     mode: InsertMode.Into,
                 }),
             );
@@ -112,7 +112,7 @@ describe('moveNode action', () => {
                         nodeId: folder3Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder2Fixture.id,
+                    targetNodeId: folder2Fixture.id,
                     mode: InsertMode.Before,
                 }),
             );
@@ -137,7 +137,7 @@ describe('moveNode action', () => {
                         nodeId: folder3Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder2Fixture.id,
+                    targetNodeId: folder2Fixture.id,
                     mode: InsertMode.Before,
                 }),
             );
@@ -162,7 +162,7 @@ describe('moveNode action', () => {
                         nodeId: folder3Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder2Fixture.id,
+                    targetNodeId: folder2Fixture.id,
                     mode: InsertMode.Before,
                 }),
             );
@@ -189,7 +189,7 @@ describe('moveNode action', () => {
                         nodeId: folder3Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder2Fixture.id,
+                    targetNodeId: folder2Fixture.id,
                     mode: InsertMode.Before,
                 }),
             );
@@ -220,7 +220,7 @@ describe('moveNode action', () => {
                         nodeId: folder3Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder2Fixture.id,
+                    targetNodeId: folder2Fixture.id,
                     mode: InsertMode.After,
                 }),
             );
@@ -245,7 +245,7 @@ describe('moveNode action', () => {
                         nodeId: folder3Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder2Fixture.id,
+                    targetNodeId: folder2Fixture.id,
                     mode: InsertMode.After,
                 }),
             );
@@ -271,7 +271,7 @@ describe('moveNode action', () => {
                         nodeId: folder3Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder2Fixture.id,
+                    targetNodeId: folder2Fixture.id,
                     mode: InsertMode.After,
                 }),
             );
@@ -298,7 +298,7 @@ describe('moveNode action', () => {
                         nodeId: folder2Fixture.id,
                         nodeType: NodeType.Folder,
                     },
-                    targetFolderNodeId: folder3Fixture.id,
+                    targetNodeId: folder3Fixture.id,
                     mode: InsertMode.After,
                 }),
             );
@@ -329,7 +329,7 @@ describe('moveNode action', () => {
                         nodeId: feed1Fixture.id,
                         nodeType: NodeType.Feed,
                     },
-                    targetFolderNodeId: folder1Fixture.id,
+                    targetNodeId: folder1Fixture.id,
                     mode: InsertMode.Into,
                 }),
             );
@@ -353,7 +353,7 @@ describe('moveNode action', () => {
                         nodeId: feed1Fixture.id,
                         nodeType: NodeType.Feed,
                     },
-                    targetFolderNodeId: folder1Fixture.id,
+                    targetNodeId: folder1Fixture.id,
                     mode: InsertMode.Into,
                 }),
             );
@@ -378,7 +378,7 @@ describe('moveNode action', () => {
                         nodeId: feed1Fixture.id,
                         nodeType: NodeType.Feed,
                     },
-                    targetFolderNodeId: folder2Fixture.id,
+                    targetNodeId: folder2Fixture.id,
                     mode: InsertMode.Into,
                 }),
             );

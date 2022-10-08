@@ -228,8 +228,8 @@ const feedsSlice = createSlice({
 
             state.folders = folders;
         },
-        moveNode(state, action: PayloadAction<{ movedNode: NodeMeta; targetFolderNodeId: string; mode: InsertMode }>) {
-            const { movedNode, targetFolderNodeId, mode } = action.payload;
+        moveNode(state, action: PayloadAction<{ movedNode: NodeMeta; targetNodeId: string; mode: InsertMode }>) {
+            const { movedNode, targetNodeId: targetFolderNodeId, mode } = action.payload;
 
             switch (movedNode.nodeType) {
                 case NodeType.FeedItem:
