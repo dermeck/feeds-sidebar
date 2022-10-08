@@ -311,8 +311,32 @@ describe('moveNode action', () => {
         });
     });
 
-    describe('when moving feed nodes to new parent (InsertMode.Into)', () => {
-        // TODO add tests for Before/After
+    describe('when moving feed nodes (InsertMode.Into)', () => {
+        // TODO maybe throw instead, move this test out (block for all InsertModes)
+        it('does not change anything if target is a feed node', () => {
+            const prevState: FeedSliceState = {
+                ...feedsSlice.getInitialState(),
+                folders: [
+                    { ...folder1Fixture, feedIds: [], subfolderIds: [folder2Fixture.id] },
+                    { ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id] },
+                ],
+            };
+
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.moveNode({
+                    movedNode: {
+                        nodeId: feed1Fixture.id,
+                        nodeType: NodeType.Feed,
+                    },
+                    targetNodeId: folder2Fixture.id,
+                    mode: InsertMode.Into,
+                }),
+            );
+
+            expect(newState.folders[1].feedIds).toStrictEqual([feed1Fixture.id, feed2Fixture.id]);
+        });
+
         it('adds dragged feed to feedIds of target folder', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
@@ -362,7 +386,7 @@ describe('moveNode action', () => {
             expect(newState.folders[1].feedIds).toStrictEqual([feed2Fixture.id]);
         });
 
-        it('does not change anything if previous parent is the target', () => {
+        it('does not change anything if target is already the parent', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
@@ -384,6 +408,32 @@ describe('moveNode action', () => {
             );
 
             expect(newState.folders[1].feedIds).toStrictEqual([feed1Fixture.id, feed2Fixture.id]);
+        });
+    });
+
+    describe('when moving feed nodes (IsertMode.Before)', () => {
+        // TODO maybe throw instead
+        it.todo('does not change anything if target is a folder node');
+
+        it.todo('adds dragged feed before target feed');
+
+        describe('with taget feed having different parent', () => {
+            it.todo('adds dragged feed to feedIds of new parent (parent of target feed)');
+            it.todo('adds dragged feed before target feed');
+            it.todo('removes dragged feed from feedIds of old parent)');
+        });
+    });
+
+    describe('when moving feed nodes (IsertMode.After)', () => {
+        // TODO maybe throw instead
+        it.todo('does not change anything if target is a folder node');
+
+        it.todo('adds dragged feed after target feed');
+
+        describe('with taget feed having different parent', () => {
+            it.todo('adds dragged feed to feedIds of new parent (parent of target feed)');
+            it.todo('adds dragged feed after target feed');
+            it.todo('removes dragged feed from feedIds of old parent)');
         });
     });
 });
