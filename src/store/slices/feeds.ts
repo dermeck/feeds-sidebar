@@ -242,6 +242,11 @@ const feedsSlice = createSlice({
                     };
 
                 case NodeType.Folder:
+                    if (!state.folders.find((f) => f.id === targetFolderNodeId)) {
+                        // invalid target
+                        return state;
+                    }
+
                     return {
                         ...state,
                         folders: moveFolderNode(state.folders, targetFolderNodeId, movedNode.nodeId, mode),
