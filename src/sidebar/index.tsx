@@ -13,6 +13,12 @@ const store = new Store();
 // App break on useSelector "Uncaught TypeError: can't access property "state", this is undefined"
 
 store.ready().then(() => {
+    console.log('store ready', store);
+    console.log('state', store.getState());
+    // https://github.com/reduxjs/react-redux/blob/master/src/hooks/useSelector.ts
+    //     const { store, subscription, getServerState } = useReduxContext()! ?
+    // https://react-redux.js.org/api/hooks#custom-context
+    // https://github.com/reduxjs/react-redux/blob/master/src/utils/Subscription.ts
     const container = document.getElementById('sidebar-root');
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

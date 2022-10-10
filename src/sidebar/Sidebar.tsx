@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react';
 
 import { FunctionComponent, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../base-components';
 import { menuWidthInPx } from '../base-components/styled/Menu';
@@ -60,6 +61,8 @@ const FetchAllButtonIcon = styled(ArrowsClockwise, {
 const Sidebar: FunctionComponent = () => {
     const dispatch = useAppDispatch();
     const urlInputRef = useRef<HTMLInputElement>(null);
+    const moep = useSelector((state) => state);
+    console.log('moep', moep);
     const moreMenuVisible = useAppSelector(
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
