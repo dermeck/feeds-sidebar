@@ -74,7 +74,6 @@
         "webpack-cli": "^4.9.2",
         "webpack-dev-server": "^4.7.4"
     },
-    "dependencies": {},
     "prettier": {
         "printWidth": 120,
         "tabWidth": 4,
@@ -91,5 +90,6 @@
             "^[./]"
         ],
         "importOrderSeparation": true
-    }
+    },
+    "packageManager": "yarn@3.2.4"
 }
