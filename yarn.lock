@@ -12938,7 +12938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webext-redux@npm:^2.1.9":
+"webext-redux@npm:2.1.9":
   version: 2.1.9
   resolution: "webext-redux@npm:2.1.9"
   dependencies:
@@ -12947,6 +12947,18 @@ __metadata:
   peerDependencies:
     redux: ">= 3 <= 4"
   checksum: 0cc64d1420d8494380fbab9db7f8d9cdd43487bb52452c38d229f639635cdbf3115d04f5496aa867069dbb8c12683da49acc80961686b0751a3beec117e50f56
+  languageName: node
+  linkType: hard
+
+"webext-redux@patch:webext-redux@npm%3A2.1.9#./.yarn/patches/webext-redux-npm-2.1.9-e005835987.patch::locator=feeds%40workspace%3A.":
+  version: 2.1.9
+  resolution: "webext-redux@patch:webext-redux@npm%3A2.1.9#./.yarn/patches/webext-redux-npm-2.1.9-e005835987.patch::version=2.1.9&hash=9a8ad4&locator=feeds%40workspace%3A."
+  dependencies:
+    lodash.assignin: ^4.2.0
+    lodash.clonedeep: ^4.5.0
+  peerDependencies:
+    redux: ">= 3 <= 4"
+  checksum: 67ef1e58b0da2a6483146a402a3bf8ea62cbe62af6fdeaab58b9ff311dba828c84cc9ecadbacc2bec32f2ef2c039ff3b4ce4279440aa5be9b9ecee61de5c8874
   languageName: node
   linkType: hard
 

@@ -91,5 +91,8 @@
         ],
         "importOrderSeparation": true
     },
-    "packageManager": "yarn@3.2.4"
+    "packageManager": "yarn@3.2.4",
+    "resolutions": {
+        "webext-redux@^2.1.9": "patch:webext-redux@npm%3A2.1.9#./.yarn/patches/webext-redux-npm-2.1.9-e005835987.patch"
+    }
 }
