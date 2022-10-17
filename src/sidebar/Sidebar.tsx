@@ -61,8 +61,6 @@ const FetchAllButtonIcon = styled(ArrowsClockwise, {
 const Sidebar: FunctionComponent = () => {
     const dispatch = useAppDispatch();
     const urlInputRef = useRef<HTMLInputElement>(null);
-    const moep = useSelector((state) => state);
-    console.log('moep', moep);
     const moreMenuVisible = useAppSelector(
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
