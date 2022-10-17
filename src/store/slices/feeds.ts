@@ -257,7 +257,7 @@ const feedsSlice = createSlice({
             switch (state.selectedNode.nodeType) {
                 case NodeType.FeedItem:
                     // always handled via markItemAsRead action
-                    break;
+                    return state;
 
                 case NodeType.Feed:
                     return {
