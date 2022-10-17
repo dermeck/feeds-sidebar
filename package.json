@@ -22,9 +22,9 @@
         "find-deadcode": "ts-prune | (! grep -v 'used in module')"
     },
     "devDependencies": {
-        "@emotion/css": "^11.7.1",
-        "@emotion/react": "^11.8.2",
-        "@emotion/styled": "^11.8.1",
+        "@emotion/css": "^11.10.0",
+        "@emotion/react": "^11.10.4",
+        "@emotion/styled": "^11.10.4",
         "@reduxjs/toolkit": "^1.8.6",
         "@trivago/prettier-plugin-sort-imports": "^3.2.0",
         "@types/feedparser": "^2.2.5",
