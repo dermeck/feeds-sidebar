@@ -6073,7 +6073,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-redux: ^8.0.4
-    react-virtuoso: ^2.8.3
+    react-virtuoso: ^3.1.0
     redux-saga: ^1.2.1
     rimraf: ^3.0.2
     stream-browserify: ^3.0.0
@@ -10811,16 +10811,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-virtuoso@npm:^2.8.3":
-  version: 2.11.0
-  resolution: "react-virtuoso@npm:2.11.0"
+"react-virtuoso@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "react-virtuoso@npm:3.1.0"
   dependencies:
     "@virtuoso.dev/react-urx": ^0.2.12
     "@virtuoso.dev/urx": ^0.2.12
   peerDependencies:
     react: ">=16 || >=17 || >= 18"
     react-dom: ">=16 || >=17 || >= 18"
-  checksum: 84563dc170bdeb65932682eb4387c377aa736c0012a94e381d7f30210a0a441e744ba874d884448504030c5c144f83bc132c4ca2dd33728bb4c4d1b1df93e93f
+  checksum: 4f5c8dcf7d03b15899f0cc67a28e13445c885c8f30f8a80b582a5a7e2d20f545cc738e82b0aba2c7967627abe4402d90a1e3310a6f39401f3469bee7449c9245
   languageName: node
   linkType: hard
 
