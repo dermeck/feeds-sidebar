@@ -229,27 +229,33 @@ const feedsSlice = createSlice({
             state.folders = folders;
         },
         moveNode(state, action: PayloadAction<{ movedNode: NodeMeta; targetNodeId: string; mode: InsertMode }>) {
-            const { movedNode, targetNodeId: targetFolderNodeId, mode } = action.payload;
+            const { movedNode, targetNodeId, mode } = action.payload;
 
             switch (movedNode.nodeType) {
                 case NodeType.FeedItem:
                     throw new Error('Cannot move feed item.');
 
                 case NodeType.Feed:
+                    if (mode === InsertMode.Into && !state.folders.find((folder) => folder.id === targetNodeId)) {
+                        throw new Error(
+                            `Feed can not be moved into node with id: ${targetNodeId} because it is not a folder.`,
+                        );
+                    }
+
                     return {
                         ...state,
-                        folders: moveFeedNode(state.folders, targetFolderNodeId, movedNode.nodeId, mode),
+                        folders: moveFeedNode(state.folders, targetNodeId, movedNode.nodeId, mode),
                     };
 
                 case NodeType.Folder:
-                    if (!state.folders.find((f) => f.id === targetFolderNodeId)) {
+                    if (!state.folders.find((f) => f.id === targetNodeId)) {
                         // invalid target
                         return state;
                     }
 
                     return {
                         ...state,
-                        folders: moveFolderNode(state.folders, targetFolderNodeId, movedNode.nodeId, mode),
+                        folders: moveFolderNode(state.folders, targetNodeId, movedNode.nodeId, mode),
                     };
 
                 default:

@@ -345,7 +345,7 @@ describe('moveNode action', () => {
     });
 
     describe('when moving feed nodes (InsertMode.Into)', () => {
-        it('does not change anything if target is a feed node', () => {
+        it('throws an error if the target node is not a folder', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
@@ -354,19 +354,19 @@ describe('moveNode action', () => {
                 ],
             };
 
-            const newState = feedsSlice.reducer(
-                prevState,
-                feedsSlice.actions.moveNode({
-                    movedNode: {
-                        nodeId: feed1Fixture.id,
-                        nodeType: NodeType.Feed,
-                    },
-                    targetNodeId: folder2Fixture.id,
-                    mode: InsertMode.Into,
-                }),
-            );
-
-            expect(newState.folders[1].feedIds).toStrictEqual([feed1Fixture.id, feed2Fixture.id]);
+            expect(() =>
+                feedsSlice.reducer(
+                    prevState,
+                    feedsSlice.actions.moveNode({
+                        movedNode: {
+                            nodeId: feed1Fixture.id,
+                            nodeType: NodeType.Feed,
+                        },
+                        targetNodeId: feed2Fixture.id,
+                        mode: InsertMode.Into,
+                    }),
+                ),
+            ).toThrowError('Feed can not be moved into node with id: feedId2 because it is not a folder.');
         });
 
         it('adds moved feed to feedIds of target folder', () => {
