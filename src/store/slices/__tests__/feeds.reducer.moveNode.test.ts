@@ -472,10 +472,7 @@ describe('moveNode action', () => {
         it('adds moved feed before target feed', () => {
             const prevState: FeedSliceState = {
                 ...defaultState,
-                folders: [
-                    { ...folder1Fixture, feedIds: [feed1Fixture.id], subfolderIds: [folder2Fixture.id] },
-                    { ...folder2Fixture, feedIds: [feed2Fixture.id, feed3Fixture.id] },
-                ],
+                folders: [{ ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id, feed3Fixture.id] }],
             };
 
             const newState = feedsSlice.reducer(
@@ -490,7 +487,7 @@ describe('moveNode action', () => {
                 }),
             );
 
-            expect(newState.folders[1].feedIds).toStrictEqual([feed2Fixture.id, feed1Fixture.id, feed3Fixture.id]);
+            expect(newState.folders[0].feedIds).toStrictEqual([feed2Fixture.id, feed1Fixture.id, feed3Fixture.id]);
         });
 
         describe('with taget feed having different parent', () => {
@@ -593,12 +590,99 @@ describe('moveNode action', () => {
             ).toThrowError("Feed can not be moved before or after node with id: 'folder1' because it is not a feed.");
         });
 
-        it.todo('adds moved feed after target feed');
+        it('adds moved feed after target feed', () => {
+            const prevState: FeedSliceState = {
+                ...defaultState,
+                folders: [{ ...folder1Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id, feed3Fixture.id] }],
+            };
+
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.moveNode({
+                    movedNode: {
+                        nodeId: feed1Fixture.id,
+                        nodeType: NodeType.Feed,
+                    },
+                    targetNodeId: feed3Fixture.id,
+                    mode: InsertMode.After,
+                }),
+            );
+
+            expect(newState.folders[0].feedIds).toStrictEqual([feed2Fixture.id, feed3Fixture.id, feed1Fixture.id]);
+        });
 
         describe('with taget feed having different parent', () => {
-            it.todo('adds moved feed to feedIds of new parent (parent of target feed)');
-            it.todo('adds moved feed after target feed');
-            it.todo('removes moved feed from feedIds of old parent)');
+            it('adds moved feed to feedIds of new parent (parent of target feed)', () => {
+                const prevState: FeedSliceState = {
+                    ...defaultState,
+                    folders: [
+                        { ...folder1Fixture, feedIds: [feed1Fixture.id] },
+                        { ...folder2Fixture, feedIds: [feed2Fixture.id] },
+                    ],
+                };
+
+                const newState = feedsSlice.reducer(
+                    prevState,
+                    feedsSlice.actions.moveNode({
+                        movedNode: {
+                            nodeId: feed1Fixture.id,
+                            nodeType: NodeType.Feed,
+                        },
+                        targetNodeId: feed2Fixture.id,
+                        mode: InsertMode.After,
+                    }),
+                );
+
+                expect(newState.folders[1].feedIds).toContain(feed1Fixture.id);
+            });
+
+            it('adds moved feed after target feed', () => {
+                const prevState: FeedSliceState = {
+                    ...defaultState,
+                    folders: [
+                        { ...folder1Fixture, feedIds: [feed1Fixture.id], subfolderIds: [folder2Fixture.id] },
+                        { ...folder2Fixture, feedIds: [feed2Fixture.id, feed3Fixture.id] },
+                    ],
+                };
+
+                const newState = feedsSlice.reducer(
+                    prevState,
+                    feedsSlice.actions.moveNode({
+                        movedNode: {
+                            nodeId: feed1Fixture.id,
+                            nodeType: NodeType.Feed,
+                        },
+                        targetNodeId: feed3Fixture.id,
+                        mode: InsertMode.After,
+                    }),
+                );
+
+                expect(newState.folders[1].feedIds).toStrictEqual([feed2Fixture.id, feed3Fixture.id, feed1Fixture.id]);
+            });
+
+            it('removes moved feed from feedIds of old parent)', () => {
+                const prevState: FeedSliceState = {
+                    ...defaultState,
+                    folders: [
+                        { ...folder1Fixture, feedIds: [feed1Fixture.id] },
+                        { ...folder2Fixture, feedIds: [feed2Fixture.id] },
+                    ],
+                };
+
+                const newState = feedsSlice.reducer(
+                    prevState,
+                    feedsSlice.actions.moveNode({
+                        movedNode: {
+                            nodeId: feed1Fixture.id,
+                            nodeType: NodeType.Feed,
+                        },
+                        targetNodeId: feed2Fixture.id,
+                        mode: InsertMode.Before,
+                    }),
+                );
+
+                expect(newState.folders[0].feedIds).toStrictEqual([]);
+            });
         });
     });
 });

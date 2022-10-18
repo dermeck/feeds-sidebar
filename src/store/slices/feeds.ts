@@ -528,12 +528,10 @@ const moveFeedNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, move
             return changeParentFolderForFeed(folders, targetNodeId, movedNodeId);
 
         case InsertMode.Before:
-            // TODO move feed befor target feed
-            return moveFeedBefore(folders, targetNodeId, movedNodeId);
+            return moveFeed(folders, targetNodeId, movedNodeId, moveOrInsertElementBefore);
 
         case InsertMode.After:
-            // TODO
-            return folders;
+            return moveFeed(folders, targetNodeId, movedNodeId, moveOrInsertElementAfter);
 
         default:
             throw new UnreachableCaseError(mode);
@@ -563,12 +561,17 @@ const changeParentFolderForFeed = (folders: readonly Folder[], targetNodeId: str
         return f;
     });
 
-const moveFeedBefore = (folders: readonly Folder[], targetNodeId: string, movedNodeId: string) => {
-    return folders.map((f) => {
+const moveFeed = (
+    folders: readonly Folder[],
+    targetNodeId: string,
+    movedNodeId: string,
+    moveFn: (arr: readonly string[], target: string, moved: string) => readonly string[],
+) =>
+    folders.map((f) => {
         if (f.feedIds.includes(targetNodeId)) {
             const newParent: Folder = {
                 ...f,
-                feedIds: moveOrInsertElementBefore(f.feedIds, targetNodeId, movedNodeId),
+                feedIds: moveFn(f.feedIds, targetNodeId, movedNodeId),
             };
 
             return newParent;
@@ -585,7 +588,6 @@ const moveFeedBefore = (folders: readonly Folder[], targetNodeId: string, movedN
 
         return f;
     });
-};
 
 const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> => {
     updatedFeeds = feeds.map((feed) => {
