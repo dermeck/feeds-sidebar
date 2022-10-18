@@ -242,6 +242,12 @@ const feedsSlice = createSlice({
                         );
                     }
 
+                    if (mode !== InsertMode.Into && !state.feeds.find((f) => f.id === targetNodeId)) {
+                        throw new Error(
+                            `Feed can not be moved before or after node with id: '${targetNodeId}' because it is not a feed.`,
+                        );
+                    }
+
                     return {
                         ...state,
                         folders: moveFeedNode(state.folders, targetNodeId, movedNode.nodeId, mode),

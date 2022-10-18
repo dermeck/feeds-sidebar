@@ -440,8 +440,29 @@ describe('moveNode action', () => {
     });
 
     describe('when moving feed nodes (IsertMode.Before)', () => {
-        // TODO maybe throw instead
-        it.todo('does not change anything if target is a folder node');
+        it('throws if target is a folder node', () => {
+            const prevState: FeedSliceState = {
+                ...feedsSlice.getInitialState(),
+                folders: [
+                    { ...folder1Fixture, feedIds: [], subfolderIds: [folder2Fixture.id] },
+                    { ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id] },
+                ],
+            };
+
+            expect(() =>
+                feedsSlice.reducer(
+                    prevState,
+                    feedsSlice.actions.moveNode({
+                        movedNode: {
+                            nodeId: feed1Fixture.id,
+                            nodeType: NodeType.Feed,
+                        },
+                        targetNodeId: folder1Fixture.id,
+                        mode: InsertMode.Before,
+                    }),
+                ),
+            ).toThrowError("Feed can not be moved before or after node with id: 'folder1' because it is not a feed.");
+        });
 
         it.todo('adds moved feed before target feed');
 
@@ -453,8 +474,29 @@ describe('moveNode action', () => {
     });
 
     describe('when moving feed nodes (IsertMode.After)', () => {
-        // TODO maybe throw instead
-        it.todo('does not change anything if target is a folder node');
+        it('throws if target is a folder node', () => {
+            const prevState: FeedSliceState = {
+                ...feedsSlice.getInitialState(),
+                folders: [
+                    { ...folder1Fixture, feedIds: [], subfolderIds: [folder2Fixture.id] },
+                    { ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id] },
+                ],
+            };
+
+            expect(() =>
+                feedsSlice.reducer(
+                    prevState,
+                    feedsSlice.actions.moveNode({
+                        movedNode: {
+                            nodeId: feed1Fixture.id,
+                            nodeType: NodeType.Feed,
+                        },
+                        targetNodeId: folder1Fixture.id,
+                        mode: InsertMode.After,
+                    }),
+                ),
+            ).toThrowError("Feed can not be moved before or after node with id: 'folder1' because it is not a feed.");
+        });
 
         it.todo('adds moved feed after target feed');
 
