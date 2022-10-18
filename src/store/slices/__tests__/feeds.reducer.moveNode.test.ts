@@ -11,8 +11,7 @@ import {
 } from './feeds.fixtures';
 
 describe('moveNode action', () => {
-    // TODO maybe throw since this should never happen
-    it('does not change anything if moved node if a folder and target node is a feed', () => {
+    it('throws if moved node if a folder and target node is a feed', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             folders: [
@@ -21,22 +20,19 @@ describe('moveNode action', () => {
             ],
         };
 
-        const newState = feedsSlice.reducer(
-            prevState,
-            feedsSlice.actions.moveNode({
-                movedNode: {
-                    nodeId: folder2Fixture.id,
-                    nodeType: NodeType.Folder,
-                },
-                targetNodeId: feed1Fixture.id,
-                mode: InsertMode.Into,
-            }),
-        );
-
-        expect(newState.folders).toStrictEqual([
-            { ...folder1Fixture, feedIds: [feed3Fixture.id], subfolderIds: [folder2Fixture.id] },
-            { ...folder2Fixture, feedIds: [feed1Fixture.id] },
-        ]);
+        expect(() =>
+            feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.moveNode({
+                    movedNode: {
+                        nodeId: folder2Fixture.id,
+                        nodeType: NodeType.Folder,
+                    },
+                    targetNodeId: feed1Fixture.id,
+                    mode: InsertMode.Into,
+                }),
+            ),
+        ).toThrow("Folder can not be moved because the target folder with id 'feedId1' does not exist");
     });
 
     describe('when moving folder nodes (InsertMode.Into)', () => {
@@ -366,7 +362,7 @@ describe('moveNode action', () => {
                         mode: InsertMode.Into,
                     }),
                 ),
-            ).toThrowError('Feed can not be moved into node with id: feedId2 because it is not a folder.');
+            ).toThrowError("Feed can not be moved into node with id: 'feedId2' because it is not a folder.");
         });
 
         it('adds moved feed to feedIds of target folder', () => {

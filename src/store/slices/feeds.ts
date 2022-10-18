@@ -236,9 +236,9 @@ const feedsSlice = createSlice({
                     throw new Error('Cannot move feed item.');
 
                 case NodeType.Feed:
-                    if (mode === InsertMode.Into && !state.folders.find((folder) => folder.id === targetNodeId)) {
+                    if (mode === InsertMode.Into && !state.folders.find((f) => f.id === targetNodeId)) {
                         throw new Error(
-                            `Feed can not be moved into node with id: ${targetNodeId} because it is not a folder.`,
+                            `Feed can not be moved into node with id: '${targetNodeId}' because it is not a folder.`,
                         );
                     }
 
@@ -249,8 +249,9 @@ const feedsSlice = createSlice({
 
                 case NodeType.Folder:
                     if (!state.folders.find((f) => f.id === targetNodeId)) {
-                        // invalid target
-                        return state;
+                        throw new Error(
+                            `Folder can not be moved because the target folder with id '${targetNodeId}' does not exist`,
+                        );
                     }
 
                     return {
