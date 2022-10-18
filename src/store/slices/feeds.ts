@@ -524,13 +524,12 @@ const changeParentFolderForFolder = (
 
 const moveFeedNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string, mode: InsertMode) => {
     switch (mode) {
-        // TODO prevent Before/After if target is a folder node
         case InsertMode.Into:
             return changeParentFolderForFeed(folders, targetNodeId, movedNodeId);
 
         case InsertMode.Before:
-            // TODO
-            return folders;
+            // TODO move feed befor target feed
+            return moveFeedBefore(folders, targetNodeId, movedNodeId);
 
         case InsertMode.After:
             // TODO
@@ -563,6 +562,30 @@ const changeParentFolderForFeed = (folders: readonly Folder[], targetNodeId: str
 
         return f;
     });
+
+const moveFeedBefore = (folders: readonly Folder[], targetNodeId: string, movedNodeId: string) => {
+    return folders.map((f) => {
+        if (f.feedIds.includes(targetNodeId)) {
+            const newParent: Folder = {
+                ...f,
+                feedIds: moveOrInsertElementBefore(f.feedIds, targetNodeId, movedNodeId),
+            };
+
+            return newParent;
+        } else {
+            if (f.feedIds.some((id) => id === movedNodeId)) {
+                const oldParent: Folder = {
+                    ...f,
+                    feedIds: f.feedIds.filter((id) => id !== movedNodeId),
+                };
+
+                return oldParent;
+            }
+        }
+
+        return f;
+    });
+};
 
 const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> => {
     updatedFeeds = feeds.map((feed) => {

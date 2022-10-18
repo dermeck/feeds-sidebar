@@ -10,10 +10,15 @@ import {
     folder4Fixture,
 } from './feeds.fixtures';
 
+const defaultState = {
+    ...feedsSlice.getInitialState(),
+    feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
+};
+
 describe('moveNode action', () => {
     it('throws if moved node if a folder and target node is a feed', () => {
         const prevState: FeedSliceState = {
-            ...feedsSlice.getInitialState(),
+            ...defaultState,
             folders: [
                 { ...folder1Fixture, feedIds: [feed3Fixture.id], subfolderIds: [folder2Fixture.id] },
                 { ...folder2Fixture, feedIds: [feed1Fixture.id] },
@@ -38,7 +43,7 @@ describe('moveNode action', () => {
     describe('when moving folder nodes (InsertMode.Into)', () => {
         it('does not change anything if target is already the parent', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
+                ...defaultState,
                 folders: [
                     { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
                     { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
@@ -68,7 +73,7 @@ describe('moveNode action', () => {
         describe('with target folder having different parent', () => {
             it('adds moved folder to subfolderIds of target folder', () => {
                 const prevState: FeedSliceState = {
-                    ...feedsSlice.getInitialState(),
+                    ...defaultState,
                     folders: [
                         { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
                         { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
@@ -93,7 +98,7 @@ describe('moveNode action', () => {
 
             it('removes moved folder from subfolderIds of previous parent folder', () => {
                 const prevState: FeedSliceState = {
-                    ...feedsSlice.getInitialState(),
+                    ...defaultState,
                     folders: [
                         { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
                         { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
@@ -121,7 +126,7 @@ describe('moveNode action', () => {
     describe('when moving folder (InsertMode.Before)', () => {
         it('adds moved folder before target folder', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
+                ...defaultState,
                 folders: [
                     { ...folder1Fixture, subfolderIds: [folder2Fixture.id, folder3Fixture.id] },
                     { ...folder2Fixture, subfolderIds: [] },
@@ -151,7 +156,7 @@ describe('moveNode action', () => {
         describe('with target folder having different parent', () => {
             it('adds moved folder to subfolderIds of target folders parent', () => {
                 const prevState: FeedSliceState = {
-                    ...feedsSlice.getInitialState(),
+                    ...defaultState,
                     folders: [
                         { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
 
@@ -177,7 +182,7 @@ describe('moveNode action', () => {
 
             it('removes moved folder from subfolderIds of previous parent folder', () => {
                 const prevState: FeedSliceState = {
-                    ...feedsSlice.getInitialState(),
+                    ...defaultState,
                     folders: [
                         { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
                         { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
@@ -202,7 +207,7 @@ describe('moveNode action', () => {
 
             it('adds moved folder before target folder', () => {
                 const prevState: FeedSliceState = {
-                    ...feedsSlice.getInitialState(),
+                    ...defaultState,
                     folders: [
                         { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
                         { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
@@ -230,7 +235,7 @@ describe('moveNode action', () => {
     describe('when moving folder (InsertMode.After)', () => {
         it('adds moved folder after target folder', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
+                ...defaultState,
                 folders: [
                     { ...folder1Fixture, subfolderIds: [folder2Fixture.id, folder3Fixture.id] },
                     { ...folder2Fixture, subfolderIds: [] },
@@ -260,7 +265,7 @@ describe('moveNode action', () => {
         describe('with target folder having different parent', () => {
             it('adds moved folder to subfolderIds of target folders parent', () => {
                 const prevState: FeedSliceState = {
-                    ...feedsSlice.getInitialState(),
+                    ...defaultState,
                     folders: [
                         { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
                         { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
@@ -285,7 +290,7 @@ describe('moveNode action', () => {
 
             it('removes moved folder from subfolderIds of previous parent folder', () => {
                 const prevState: FeedSliceState = {
-                    ...feedsSlice.getInitialState(),
+                    ...defaultState,
                     folders: [
                         { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
                         { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
@@ -310,7 +315,7 @@ describe('moveNode action', () => {
 
             it('adds moved folder after target folder', () => {
                 const prevState: FeedSliceState = {
-                    ...feedsSlice.getInitialState(),
+                    ...defaultState,
                     folders: [
                         { ...folder1Fixture, subfolderIds: [folder2Fixture.id, folder4Fixture.id] },
                         { ...folder2Fixture, subfolderIds: [folder3Fixture.id] },
@@ -343,7 +348,7 @@ describe('moveNode action', () => {
     describe('when moving feed nodes (InsertMode.Into)', () => {
         it('throws an error if the target node is not a folder', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
+                ...defaultState,
                 folders: [
                     { ...folder1Fixture, feedIds: [], subfolderIds: [folder2Fixture.id] },
                     { ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id] },
@@ -367,7 +372,7 @@ describe('moveNode action', () => {
 
         it('adds moved feed to feedIds of target folder', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
+                ...defaultState,
                 folders: [
                     { ...folder1Fixture, feedIds: [feed3Fixture.id], subfolderIds: [folder2Fixture.id] },
                     { ...folder2Fixture, feedIds: [feed1Fixture.id] },
@@ -391,7 +396,7 @@ describe('moveNode action', () => {
 
         it('removes moved feed from feedIds of previous parent folder', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
+                ...defaultState,
                 folders: [
                     { ...folder1Fixture, feedIds: [], subfolderIds: [folder2Fixture.id] },
                     { ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id] },
@@ -416,7 +421,7 @@ describe('moveNode action', () => {
 
         it('does not change anything if target is already the parent', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
+                ...defaultState,
                 folders: [
                     { ...folder1Fixture, feedIds: [], subfolderIds: [folder2Fixture.id] },
                     { ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id] },
@@ -442,7 +447,7 @@ describe('moveNode action', () => {
     describe('when moving feed nodes (IsertMode.Before)', () => {
         it('throws if target is a folder node', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
+                ...defaultState,
                 folders: [
                     { ...folder1Fixture, feedIds: [], subfolderIds: [folder2Fixture.id] },
                     { ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id] },
@@ -464,19 +469,109 @@ describe('moveNode action', () => {
             ).toThrowError("Feed can not be moved before or after node with id: 'folder1' because it is not a feed.");
         });
 
-        it.todo('adds moved feed before target feed');
+        it('adds moved feed before target feed', () => {
+            const prevState: FeedSliceState = {
+                ...defaultState,
+                folders: [
+                    { ...folder1Fixture, feedIds: [feed1Fixture.id], subfolderIds: [folder2Fixture.id] },
+                    { ...folder2Fixture, feedIds: [feed2Fixture.id, feed3Fixture.id] },
+                ],
+            };
+
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.moveNode({
+                    movedNode: {
+                        nodeId: feed1Fixture.id,
+                        nodeType: NodeType.Feed,
+                    },
+                    targetNodeId: feed3Fixture.id,
+                    mode: InsertMode.Before,
+                }),
+            );
+
+            expect(newState.folders[1].feedIds).toStrictEqual([feed2Fixture.id, feed1Fixture.id, feed3Fixture.id]);
+        });
 
         describe('with taget feed having different parent', () => {
-            it.todo('adds moved feed to feedIds of new parent (parent of target feed)');
-            it.todo('adds moved feed before target feed');
-            it.todo('removes moved feed from feedIds of old parent)');
+            it('adds moved feed to feedIds of new parent (parent of target feed)', () => {
+                const prevState: FeedSliceState = {
+                    ...defaultState,
+                    folders: [
+                        { ...folder1Fixture, feedIds: [feed1Fixture.id] },
+                        { ...folder2Fixture, feedIds: [feed2Fixture.id] },
+                    ],
+                };
+
+                const newState = feedsSlice.reducer(
+                    prevState,
+                    feedsSlice.actions.moveNode({
+                        movedNode: {
+                            nodeId: feed1Fixture.id,
+                            nodeType: NodeType.Feed,
+                        },
+                        targetNodeId: feed2Fixture.id,
+                        mode: InsertMode.Before,
+                    }),
+                );
+
+                expect(newState.folders[1].feedIds).toContain(feed1Fixture.id);
+            });
+
+            it('adds moved feed before target feed', () => {
+                const prevState: FeedSliceState = {
+                    ...defaultState,
+                    folders: [
+                        { ...folder1Fixture, feedIds: [feed1Fixture.id] },
+                        { ...folder2Fixture, feedIds: [feed2Fixture.id] },
+                    ],
+                };
+
+                const newState = feedsSlice.reducer(
+                    prevState,
+                    feedsSlice.actions.moveNode({
+                        movedNode: {
+                            nodeId: feed1Fixture.id,
+                            nodeType: NodeType.Feed,
+                        },
+                        targetNodeId: feed2Fixture.id,
+                        mode: InsertMode.Before,
+                    }),
+                );
+
+                expect(newState.folders[1].feedIds).toStrictEqual([feed1Fixture.id, feed2Fixture.id]);
+            });
+
+            it('removes moved feed from feedIds of old parent)', () => {
+                const prevState: FeedSliceState = {
+                    ...defaultState,
+                    folders: [
+                        { ...folder1Fixture, feedIds: [feed1Fixture.id] },
+                        { ...folder2Fixture, feedIds: [feed2Fixture.id] },
+                    ],
+                };
+
+                const newState = feedsSlice.reducer(
+                    prevState,
+                    feedsSlice.actions.moveNode({
+                        movedNode: {
+                            nodeId: feed1Fixture.id,
+                            nodeType: NodeType.Feed,
+                        },
+                        targetNodeId: feed2Fixture.id,
+                        mode: InsertMode.Before,
+                    }),
+                );
+
+                expect(newState.folders[0].feedIds).toStrictEqual([]);
+            });
         });
     });
 
     describe('when moving feed nodes (IsertMode.After)', () => {
         it('throws if target is a folder node', () => {
             const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
+                ...defaultState,
                 folders: [
                     { ...folder1Fixture, feedIds: [], subfolderIds: [folder2Fixture.id] },
                     { ...folder2Fixture, feedIds: [feed1Fixture.id, feed2Fixture.id] },
