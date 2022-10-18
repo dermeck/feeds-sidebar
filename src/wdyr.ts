@@ -4,9 +4,8 @@
 import React from 'react';
 
 if (process.env.NODE_ENV === 'development') {
-    // react-redux/lib because:
-    // https://github.com/welldone-software/why-did-you-render/issues/154#issuecomment-773905769
-    const ReactRedux = require('react-redux/lib');
+    // https://github.com/welldone-software/why-did-you-render/issues/85#issuecomment-590076401
+    const ReactRedux = require('react-redux/dist/react-redux.js');
     const whyDidYouRender = require('@welldone-software/why-did-you-render');
     whyDidYouRender(React, {
         trackAllPureComponents: true,
