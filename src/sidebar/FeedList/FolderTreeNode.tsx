@@ -103,7 +103,7 @@ const FolderTreeNode = (props: Props) => {
         dispatch(
             feedsSlice.actions.moveNode({
                 movedNode: dragged,
-                targetNodeId: id, // TODO kann auch Feed sein
+                targetNodeId: id,
                 mode:
                     node.nodeType === NodeType.Folder && dragged.nodeType === NodeType.Feed
                         ? InsertMode.Into

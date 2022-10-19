@@ -9,6 +9,9 @@ import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/
 import FolderEdit from './FolderEdit';
 
 const spacerHeight = 2;
+const toogleIndicatorSize = 12;
+const folderIconSize = 20;
+const iconRightPadding = 4;
 
 interface FolderTitleContainerProps {
     selected: boolean;
@@ -44,9 +47,9 @@ interface SpacerProps {
 }
 
 const Spacer = styled.div<SpacerProps>`
-    width: 30px;
+    width: 48px;
     height: ${spacerHeight}px;
-    margin-left: 18px;
+    margin-left: ${toogleIndicatorSize + iconRightPadding}px;
 
     background-color: ${(props) => (props.highlight ? props.theme.colors.selectedItemBackgroundColor : 'inherit')};
 `;
@@ -68,14 +71,14 @@ const FolderTitle = styled.label<{ highlight: boolean }>`
 `;
 
 const ToggleIndicator = styled.div`
-    margin-right: 4px;
+    padding-right: ${iconRightPadding}px;
     margin-bottom: -6px;
 `;
 
 const FolderIcon = styled(FolderSimple)`
     flex-shrink: 0;
+    padding-right: ${iconRightPadding}px;
     margin-top: -2px; /* align with label */
-    margin-right: 4px;
 `;
 
 interface Props {
@@ -184,12 +187,12 @@ const Folder = (props: Props) => {
                 <FolderTitleRow>
                     <ToggleIndicator>
                         {props.expanded ? (
-                            <CaretDown size={12} weight="bold" />
+                            <CaretDown size={toogleIndicatorSize} weight="bold" />
                         ) : (
-                            <CaretRight size={12} weight="bold" />
+                            <CaretRight size={toogleIndicatorSize} weight="bold" />
                         )}
                     </ToggleIndicator>
-                    <FolderIcon size={20} weight="light" />
+                    <FolderIcon size={folderIconSize} weight="light" />
                     {props.editing ? (
                         <FolderEdit
                             initialValue={props.title ?? 'New Folder'}
