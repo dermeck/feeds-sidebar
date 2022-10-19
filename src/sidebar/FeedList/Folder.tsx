@@ -3,8 +3,7 @@ import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
 import React, { Fragment, useState } from 'react';
 
-import { NodeType } from '../../model/feeds';
-import { useAppSelector } from '../../store/hooks';
+import { NodeMeta, NodeType } from '../../model/feeds';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
 import FolderEdit from './FolderEdit';
 
@@ -103,8 +102,7 @@ interface Props {
 }
 
 const Folder = (props: Props) => {
-    const dragged = useAppSelector((state) => state.session.dragged);
-
+    // only use this for UI rendering effects (insert/before/after indicator)
     const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
 
     if (!props.showTitle) {
@@ -118,24 +116,21 @@ const Folder = (props: Props) => {
     };
 
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        if (event.dataTransfer.getData('draggedNodeMeta') === '') {
+            // if drag over happens very fast this might not be set properly
+            return;
+        }
+
         const invalidDroptTargets = event.dataTransfer.getData('invalidDroptTargets').split(';');
 
         if (invalidDroptTargets.find((x) => x === props.id)) {
             return;
         }
 
+        const dragged: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
+
         if (!props.disabled) {
-            if (dragged?.nodeType === NodeType.Feed && props.nodeType === NodeType.Folder) {
-                // feeds can only be inserted into folders
-                setRelativDropPosition(RelativeDragDropPosition.Middle);
-            } else if (dragged?.nodeType === NodeType.Feed && props.nodeType === NodeType.Feed) {
-                // feeds can only be sorted
-                setRelativDropPosition(relativeDragDropPosition(event, 0.5));
-            } else if (dragged?.nodeType === NodeType.Folder && props.nodeType === NodeType.Folder) {
-                setRelativDropPosition(relativeDragDropPosition(event, 0.15));
-            } else {
-                throw new Error(`${dragged?.nodeType} can not be dropped on ${props.nodeType}.`);
-            }
+            setRelativDropPosition(calculateRelativeDragDropPosition(dragged.nodeType, props.nodeType, event));
 
             event.preventDefault();
         }
@@ -154,15 +149,42 @@ const Folder = (props: Props) => {
             return;
         }
 
-        if (relativeDropPosition === undefined) {
-            throw new Error('Illegal state: relativeDropPosition must be definend when handleDrop is called.');
-        }
+        const dragged: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
 
         if (props.onDrop) {
+            // recalculate here, dont rely on local state set in handleDragover
+            // handleDragover is dependend on props.disabled which depends on global store so there can be timing issues
+            // (local) relativeDropPosition can be undefined if drag/drop happens very fast
+            const relativeDropPosition = calculateRelativeDragDropPosition(dragged.nodeType, props.nodeType, event);
+
+            if (relativeDropPosition === undefined) {
+                throw new Error('Illegal state: relativeDropPosition must be definend when handleDrop is called.');
+            }
+
             props.onDrop(event, relativeDropPosition);
         }
 
         setRelativDropPosition(undefined);
+    };
+
+    const calculateRelativeDragDropPosition = (
+        draggedNodeType: NodeType,
+        targetNodeType: NodeType,
+        event: React.DragEvent<HTMLDivElement>,
+    ) => {
+        let value = undefined;
+        if (draggedNodeType === NodeType.Feed && targetNodeType === NodeType.Folder) {
+            // feeds can only be inserted into folders
+            value = RelativeDragDropPosition.Middle;
+        } else if (draggedNodeType === NodeType.Feed && targetNodeType === NodeType.Feed) {
+            // feeds can only be sorted
+            value = relativeDragDropPosition(event, 0.5);
+        } else if (draggedNodeType === NodeType.Folder && targetNodeType === NodeType.Folder) {
+            value = relativeDragDropPosition(event, 0.15);
+        } else {
+            throw new Error(`${draggedNodeType} can not be dropped on ${targetNodeType}.`);
+        }
+        return value;
     };
 
     // TODO indicate if folder has unread items

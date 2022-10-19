@@ -1,7 +1,7 @@
 import React, { Fragment, memo, useEffect, useState } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
-import { InsertMode, NodeType } from '../../model/feeds';
+import { InsertMode, NodeMeta, NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectDescendentNodeIds, selectTreeNode } from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
@@ -25,6 +25,7 @@ const contextMenuHeight = 64; // 2 menu items, each 32px
 const FolderTreeNode = (props: Props) => {
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
     const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
+    // only use this for UI rendering effects (insert/before/after indicator, disabled)
     const dragged = useAppSelector((state) => state.session.dragged);
     const descendentNodeIds = useAppSelector((state) => selectDescendentNodeIds(state.feeds, props.nodeId));
 
@@ -88,7 +89,10 @@ const FolderTreeNode = (props: Props) => {
     };
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        const draggedNodeMeta = { nodeId: id, nodeType: node.nodeType };
+
         event.dataTransfer.setData('invalidDroptTargets', descendentNodeIds.join(';'));
+        event.dataTransfer.setData('draggedNodeMeta', JSON.stringify(draggedNodeMeta));
 
         if (draggedId !== id) {
             dispatch(sessionSlice.actions.changeDragged({ nodeId: id, nodeType: node.nodeType }));
@@ -96,20 +100,23 @@ const FolderTreeNode = (props: Props) => {
     };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => {
-        if (!dragged) {
+        const draggedNodeMeta: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
+
+        if (!draggedNodeMeta) {
             throw new Error('dragged node must be defined.');
         }
 
         dispatch(
             feedsSlice.actions.moveNode({
-                movedNode: dragged,
+                movedNode: draggedNodeMeta,
                 targetNodeId: id,
                 mode:
-                    node.nodeType === NodeType.Folder && dragged.nodeType === NodeType.Feed
+                    node.nodeType === NodeType.Folder && draggedNodeMeta.nodeType === NodeType.Feed
                         ? InsertMode.Into
                         : insertModeByRelativeDropPosition(relativeDropPosition),
             }),
         );
+
         dispatch(sessionSlice.actions.changeDragged(undefined));
     };
 
