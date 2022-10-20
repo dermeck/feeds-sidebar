@@ -4,8 +4,9 @@ import { Task } from 'redux-saga';
 import { takeEvery, put, join, fork, select } from 'redux-saga/effects';
 
 import feedsSlice, { fetchFeedsCommand } from '../slices/feeds';
-import { OptionsSliceState, selectOptions } from '../slices/options';
+import { selectOptions } from '../slices/options';
 import sessionSlice from '../slices/session';
+import { RootState } from '../store';
 import { WorkerRequestAction, WorkerResponseAction } from './worker/workerApi';
 
 export function* watchfetchFeedsSaga() {
@@ -17,7 +18,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
 
     yield put(sessionSlice.actions.changeFeedsStatus({ newStatus: 'loading', feedUrls: action.payload }));
 
-    const options: OptionsSliceState = yield select(selectOptions);
+    const options: RootState['options'] = yield select(selectOptions);
     const fetchThreadsCount = Math.min(options.fetchThreadsCount, leftToFetch.length);
     const tasks: Task[] = [];
 

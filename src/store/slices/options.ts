@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { extensionStateLoaded } from '../actions';
 import { RootState } from '../store';
 
-export type OptionsSliceState = {
+type OptionsSliceState = {
     feedUpdatePeriodInMinutes: number;
     fetchThreadsCount: number;
     showFeedTitles: boolean;

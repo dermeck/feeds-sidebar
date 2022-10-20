@@ -1,6 +1,7 @@
 import { Folder, NodeMeta, NodeType } from '../../../model/feeds';
 import { extensionStateLoaded } from '../../actions';
-import feedsSlice, { FeedSliceState } from '../feeds';
+import { RootState } from '../../store';
+import feedsSlice from '../feeds';
 import { initialState as initialOptionsState } from '../options';
 import {
     feed1Fixture,
@@ -13,6 +14,8 @@ import {
     folder4Fixture,
     itemFixture,
 } from './feeds.fixtures';
+
+type FeedSliceState = RootState['feeds'];
 
 describe('global extensionStateLoaded action', () => {
     it('replaces previous state with payload', () => {

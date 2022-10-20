@@ -1,8 +1,9 @@
-import sessionSlice, { initialState, SessionSliceState } from '../session';
+import { RootState } from '../../store';
+import sessionSlice, { initialState } from '../session';
 
 describe('changeFeedsStatus action', () => {
     it('adds entry if url status is not already tracked', () => {
-        const prevState: SessionSliceState = {
+        const prevState: RootState['session'] = {
             ...initialState,
             feedStatus: [],
         };
@@ -19,7 +20,7 @@ describe('changeFeedsStatus action', () => {
     });
 
     it('replaces entry if url status is already tracked', () => {
-        const prevState: SessionSliceState = {
+        const prevState: RootState['session'] = {
             ...initialState,
             feedStatus: [
                 { url: 'first.url', status: 'loaded' },
