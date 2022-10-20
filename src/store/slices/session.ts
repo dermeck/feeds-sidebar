@@ -25,7 +25,7 @@ export const enum View {
     subscribe,
 }
 
-export type SessionSliceState = {
+type SessionSliceState = {
     activeView: View;
     // feedStatus is managed separately because it can contain entries that have no corresponding feed in feedSlice
     // (recently added and not successfully fetched or parsed)

@@ -5,7 +5,7 @@ import { Feed, FeedNode, Folder, FolderNode, NodeMeta, NodeType, rootFolderId, T
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { extensionStateLoaded } from '../actions';
 
-export type FeedSliceState = {
+type FeedSliceState = {
     folders: ReadonlyArray<Folder>;
     feeds: ReadonlyArray<Feed>;
     selectedNode: NodeMeta | undefined;

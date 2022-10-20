@@ -1,6 +1,6 @@
 import { FeedNode, NodeType, FolderNode, TreeNode } from '../../../model/feeds';
+import { RootState } from '../../store';
 import feedsSlice, {
-    FeedSliceState,
     selectDescendentNodeIds,
     selectTopLevelNodes,
     selectTotalUnreadItems,
@@ -19,7 +19,7 @@ import {
 
 describe('selectTotalUnreadItems', () => {
     it('returns sum of all unread items for all feeds', () => {
-        const state: FeedSliceState = {
+        const state: RootState['feeds'] = {
             ...feedsSlice.getInitialState(),
             feeds: [
                 {
@@ -66,7 +66,7 @@ describe('selectTotalUnreadItems', () => {
 });
 
 describe('selectTreeNode', () => {
-    const state: FeedSliceState = {
+    const state: RootState['feeds'] = {
         ...feedsSlice.getInitialState(),
         folders: [folder1Fixture, folder2Fixture, folder3Fixture],
         feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
@@ -99,7 +99,7 @@ describe('selectTopLevelNodes', () => {
     it('selects the subfolders and feeds of the root folder', () => {
         const rootFolderId = '_root_';
 
-        const state: FeedSliceState = {
+        const state: RootState['feeds'] = {
             ...feedsSlice.getInitialState(),
             folders: [
                 {
@@ -127,7 +127,7 @@ describe('selectTopLevelNodes', () => {
 });
 
 describe('selectDescendentNodeIds', () => {
-    const state: FeedSliceState = {
+    const state: RootState['feeds'] = {
         ...feedsSlice.getInitialState(),
         folders: [
             {

@@ -1,15 +1,10 @@
 import { AnyAction, Middleware } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import feedsSlice, {
-    selectTotalUnreadItems,
-    FeedSliceState,
-    fetchAllFeedsCommand,
-    fetchFeedsCommand,
-} from '../slices/feeds';
+import feedsSlice, { selectTotalUnreadItems, fetchAllFeedsCommand, fetchFeedsCommand } from '../slices/feeds';
 import { RootState } from '../store';
 
-const updateBadge = (feedSliceState: FeedSliceState) => {
+const updateBadge = (feedSliceState: RootState['feeds']) => {
     const totalUnreadReadItems = selectTotalUnreadItems(feedSliceState);
 
     browser.browserAction.setBadgeText({ text: totalUnreadReadItems !== 0 ? totalUnreadReadItems.toString() : '' });

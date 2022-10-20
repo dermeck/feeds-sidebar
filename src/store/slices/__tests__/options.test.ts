@@ -1,9 +1,10 @@
 import { extensionStateLoaded } from '../../actions';
-import optionsSlice, { OptionsSliceState } from '../options';
+import { RootState } from '../../store';
+import optionsSlice from '../options';
 
 describe('global extensionStateLoaded action', () => {
     it('replaces previous state with payload', () => {
-        const prevState: OptionsSliceState = {
+        const prevState: RootState['options'] = {
             feedUpdatePeriodInMinutes: 30,
             fetchThreadsCount: 4,
             showFeedTitles: true,
