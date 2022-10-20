@@ -21,6 +21,12 @@ export const enum NodeType {
     Folder = 'FOLDER',
 }
 
+export const enum InsertMode {
+    Into = 'INTO',
+    Before = 'BEFORE',
+    After = 'AFTER',
+}
+
 export interface NodeMeta {
     nodeId: string;
     nodeType: NodeType;

@@ -1,8 +1,19 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Feed, FeedNode, Folder, FolderNode, NodeMeta, NodeType, rootFolderId, TreeNode } from '../../model/feeds';
+import {
+    Feed,
+    FeedNode,
+    Folder,
+    FolderNode,
+    InsertMode,
+    NodeMeta,
+    NodeType,
+    rootFolderId,
+    TreeNode,
+} from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
+import { moveOrInsertElementBefore, moveOrInsertElementAfter } from '../../utils/arrayUtils';
 import { extensionStateLoaded } from '../actions';
 
 type FeedSliceState = {
@@ -217,23 +228,41 @@ const feedsSlice = createSlice({
 
             state.folders = folders;
         },
-        moveNode(state, action: PayloadAction<{ movedNode: NodeMeta; targetFolderNodeId: string }>) {
-            const { movedNode, targetFolderNodeId } = action.payload;
+        moveNode(state, action: PayloadAction<{ movedNode: NodeMeta; targetNodeId: string; mode: InsertMode }>) {
+            const { movedNode, targetNodeId, mode } = action.payload;
 
             switch (movedNode.nodeType) {
                 case NodeType.FeedItem:
                     throw new Error('Cannot move feed item.');
 
                 case NodeType.Feed:
+                    if (mode === InsertMode.Into && !state.folders.find((f) => f.id === targetNodeId)) {
+                        throw new Error(
+                            `Feed can not be moved into node with id: '${targetNodeId}' because it is not a folder.`,
+                        );
+                    }
+
+                    if (mode !== InsertMode.Into && !state.feeds.find((f) => f.id === targetNodeId)) {
+                        throw new Error(
+                            `Feed can not be moved before or after node with id: '${targetNodeId}' because it is not a feed.`,
+                        );
+                    }
+
                     return {
                         ...state,
-                        folders: moveFeedNode(state.folders, targetFolderNodeId, movedNode.nodeId),
+                        folders: moveFeedNode(state.folders, targetNodeId, movedNode.nodeId, mode),
                     };
 
                 case NodeType.Folder:
+                    if (!state.folders.find((f) => f.id === targetNodeId)) {
+                        throw new Error(
+                            `Folder can not be moved because the target folder with id '${targetNodeId}' does not exist`,
+                        );
+                    }
+
                     return {
                         ...state,
-                        folders: moveFolderNode(state.folders, targetFolderNodeId, movedNode.nodeId),
+                        folders: moveFolderNode(state.folders, targetNodeId, movedNode.nodeId, mode),
                     };
 
                 default:
@@ -403,7 +432,74 @@ const subfolderIdsByFolderId = (state: FeedSliceState, folderId: string): Readon
     ];
 };
 
-const moveFolderNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string) =>
+const moveFolderNode = (
+    folders: ReadonlyArray<Folder>,
+    targetNodeId: string,
+    movedNodeId: string,
+    mode: InsertMode,
+) => {
+    switch (mode) {
+        case InsertMode.Into:
+            return changeParentFolderForFolder(folders, targetNodeId, movedNodeId);
+
+        case InsertMode.Before: {
+            const targetParent = folders.find((x) => x.subfolderIds.includes(targetNodeId));
+
+            if (targetParent === undefined) {
+                throw new Error('Cannot find parent of drop target.');
+            }
+
+            const foldersWithCorrectParents =
+                targetParent.subfolderIds.includes(targetNodeId) && targetParent.subfolderIds.includes(movedNodeId)
+                    ? folders
+                    : changeParentFolderForFolder(folders, targetParent.id, movedNodeId);
+
+            return foldersWithCorrectParents.map((f) => {
+                if (f.subfolderIds.includes(targetNodeId) && f.subfolderIds.includes(movedNodeId)) {
+                    return {
+                        ...f,
+                        subfolderIds: moveOrInsertElementBefore(f.subfolderIds, targetNodeId, movedNodeId),
+                    };
+                } else {
+                    return f;
+                }
+            });
+        }
+
+        case InsertMode.After: {
+            const targetParent = folders.find((x) => x.subfolderIds.includes(targetNodeId));
+
+            if (targetParent === undefined) {
+                throw new Error('Cannot find parent of drop target.');
+            }
+
+            const foldersWithCorrectParents =
+                targetParent.subfolderIds.includes(targetNodeId) && targetParent.subfolderIds.includes(movedNodeId)
+                    ? folders
+                    : changeParentFolderForFolder(folders, targetParent.id, movedNodeId);
+
+            return foldersWithCorrectParents.map((f) => {
+                if (f.subfolderIds.includes(targetNodeId) && f.subfolderIds.includes(movedNodeId)) {
+                    return {
+                        ...f,
+                        subfolderIds: moveOrInsertElementAfter(f.subfolderIds, targetNodeId, movedNodeId),
+                    };
+                } else {
+                    return f;
+                }
+            });
+        }
+
+        default:
+            throw new UnreachableCaseError(mode);
+    }
+};
+
+const changeParentFolderForFolder = (
+    folders: readonly Folder[],
+    targetNodeId: string,
+    movedNodeId: string,
+): ReadonlyArray<Folder> =>
     folders.map((f) => {
         if (f.id === targetNodeId) {
             const newParent: Folder = {
@@ -426,12 +522,56 @@ const moveFolderNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, mo
         return f;
     });
 
-const moveFeedNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string) =>
+const moveFeedNode = (folders: ReadonlyArray<Folder>, targetNodeId: string, movedNodeId: string, mode: InsertMode) => {
+    switch (mode) {
+        case InsertMode.Into:
+            return changeParentFolderForFeed(folders, targetNodeId, movedNodeId);
+
+        case InsertMode.Before:
+            return moveFeed(folders, targetNodeId, movedNodeId, moveOrInsertElementBefore);
+
+        case InsertMode.After:
+            return moveFeed(folders, targetNodeId, movedNodeId, moveOrInsertElementAfter);
+
+        default:
+            throw new UnreachableCaseError(mode);
+    }
+};
+
+const changeParentFolderForFeed = (folders: readonly Folder[], targetNodeId: string, movedNodeId: string) =>
     folders.map((f) => {
         if (f.id === targetNodeId) {
             const newParent: Folder = {
                 ...f,
                 feedIds: [...new Set([...f.feedIds, movedNodeId])], // prevent duplicates
+            };
+
+            return newParent;
+        } else {
+            if (f.feedIds.some((id) => id === movedNodeId)) {
+                const oldParent: Folder = {
+                    ...f,
+                    feedIds: f.feedIds.filter((id) => id !== movedNodeId),
+                };
+
+                return oldParent;
+            }
+        }
+
+        return f;
+    });
+
+const moveFeed = (
+    folders: readonly Folder[],
+    targetNodeId: string,
+    movedNodeId: string,
+    moveFn: (arr: readonly string[], target: string, moved: string) => readonly string[],
+) =>
+    folders.map((f) => {
+        if (f.feedIds.includes(targetNodeId)) {
+            const newParent: Folder = {
+                ...f,
+                feedIds: moveFn(f.feedIds, targetNodeId, movedNodeId),
             };
 
             return newParent;

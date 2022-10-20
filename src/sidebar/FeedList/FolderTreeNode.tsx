@@ -1,10 +1,12 @@
 import React, { Fragment, memo, useEffect, useState } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
-import { NodeType } from '../../model/feeds';
+import { InsertMode, NodeMeta, NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectDescendentNodeIds, selectTreeNode } from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
+import { RelativeDragDropPosition } from '../../utils/dragdrop';
 import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import Folder from './Folder';
 import FolderSubTreeNode from './FolderSubTreeNode';
@@ -23,6 +25,7 @@ const contextMenuHeight = 64; // 2 menu items, each 32px
 const FolderTreeNode = (props: Props) => {
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
     const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
+    // only use this for UI rendering effects (insert/before/after indicator, disabled)
     const dragged = useAppSelector((state) => state.session.dragged);
     const descendentNodeIds = useAppSelector((state) => selectDescendentNodeIds(state.feeds, props.nodeId));
 
@@ -86,35 +89,67 @@ const FolderTreeNode = (props: Props) => {
     };
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        const draggedNodeMeta = { nodeId: id, nodeType: node.nodeType };
+
         event.dataTransfer.setData('invalidDroptTargets', descendentNodeIds.join(';'));
+        event.dataTransfer.setData('draggedNodeMeta', JSON.stringify(draggedNodeMeta));
 
         if (draggedId !== id) {
             dispatch(sessionSlice.actions.changeDragged({ nodeId: id, nodeType: node.nodeType }));
         }
     };
 
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-        console.log(event.target); // TODO
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => {
+        const draggedNodeMeta: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
 
-        if (!dragged) {
+        if (!draggedNodeMeta) {
             throw new Error('dragged node must be defined.');
         }
 
-        dispatch(feedsSlice.actions.moveNode({ movedNode: dragged, targetFolderNodeId: id }));
-        dispatch(sessionSlice.actions.changeDragged(undefined));
+        dispatch(
+            feedsSlice.actions.moveNode({
+                movedNode: draggedNodeMeta,
+                targetNodeId: id,
+                mode:
+                    node.nodeType === NodeType.Folder && draggedNodeMeta.nodeType === NodeType.Feed
+                        ? InsertMode.Into
+                        : insertModeByRelativeDropPosition(relativeDropPosition),
+            }),
+        );
 
-        // move node {nodeId, target, mode=insert | before | after} // feed on feed only before/after; node.nodeType
+        dispatch(sessionSlice.actions.changeDragged(undefined));
+    };
+
+    const insertModeByRelativeDropPosition = (relativeDropPosition: RelativeDragDropPosition): InsertMode => {
+        switch (relativeDropPosition) {
+            case RelativeDragDropPosition.Top:
+                return InsertMode.Before;
+
+            case RelativeDragDropPosition.Middle:
+                return InsertMode.Into;
+
+            case RelativeDragDropPosition.Bottom:
+                return InsertMode.After;
+
+            default:
+                throw new UnreachableCaseError(relativeDropPosition);
+        }
     };
 
     const handleDragEnd = () => {
         dispatch(sessionSlice.actions.changeDragged(undefined));
     };
 
-    const disabled = (id === draggedId || props.disabled || node.nodeType === NodeType.Feed) && draggedId !== undefined;
+    const disabled =
+        (id === draggedId ||
+            !!props.disabled ||
+            (node.nodeType === NodeType.Feed && dragged?.nodeType === NodeType.Folder)) &&
+        draggedId !== undefined;
 
     return (
         <Folder
             id={id}
+            nodeType={node.nodeType}
             title={title ?? (node.nodeType === NodeType.Feed ? node.data.url : '')}
             nestedLevel={props.nestedLevel}
             showTitle={props.showTitle}
