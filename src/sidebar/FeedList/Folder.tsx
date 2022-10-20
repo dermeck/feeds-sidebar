@@ -152,7 +152,7 @@ const Folder = (props: Props) => {
         const dragged: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
 
         if (props.onDrop) {
-            // recalculate here, dont rely on local state set in handleDragover
+            // recalculate here, don't rely on local state set in handleDragover
             // handleDragover is dependend on props.disabled which depends on global store so there can be timing issues
             // (local) relativeDropPosition can be undefined if drag/drop happens very fast
             const relativeDropPosition = calculateRelativeDragDropPosition(dragged.nodeType, props.nodeType, event);
