@@ -1,5 +1,8 @@
-import feedsSlice, { FeedSliceState } from '../feeds';
+import { RootState } from '../../store';
+import feedsSlice from '../feeds';
 import { feed1Fixture, feed2Fixture, itemFixture } from './feeds.fixtures';
+
+type FeedSliceState = RootState['feeds'];
 
 describe('updateFeeds action', () => {
     it('does not change existing feeds if feedId does not match', () => {

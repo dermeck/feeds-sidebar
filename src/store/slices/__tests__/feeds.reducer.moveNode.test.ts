@@ -1,5 +1,6 @@
 import { InsertMode, NodeType } from '../../../model/feeds';
-import feedsSlice, { FeedSliceState } from '../feeds';
+import { RootState } from '../../store';
+import feedsSlice from '../feeds';
 import {
     feed1Fixture,
     feed2Fixture,
@@ -14,6 +15,8 @@ const defaultState = {
     ...feedsSlice.getInitialState(),
     feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
 };
+
+type FeedSliceState = RootState['feeds'];
 
 describe('moveNode action', () => {
     it('throws if moved node if a folder and target node is a feed', () => {

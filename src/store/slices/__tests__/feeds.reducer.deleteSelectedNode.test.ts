@@ -1,5 +1,6 @@
 import { NodeType } from '../../../model/feeds';
-import feedsSlice, { FeedSliceState } from '../feeds';
+import { RootState } from '../../store';
+import feedsSlice from '../feeds';
 import {
     feed1Fixture,
     feed2Fixture,
@@ -9,6 +10,8 @@ import {
     folder3Fixture,
     folder4Fixture,
 } from './feeds.fixtures';
+
+type FeedSliceState = RootState['feeds'];
 
 describe('deleteSelectedNode action', () => {
     describe('when selected node is a feed', () => {
