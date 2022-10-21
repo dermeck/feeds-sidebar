@@ -1,10 +1,11 @@
 const path = require('path');
 var webpack = require('webpack');
+const ExtReloader = require('webpack-ext-reloader');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = (env) => ({
     entry: {
-        'sidebar/sidebar': './src/sidebar/index.tsx',
+        sidebar: './src/sidebar/index.tsx',
         background: './src/background/background.ts',
     },
 
@@ -42,6 +43,15 @@ module.exports = (env) => ({
                     },
                 },
             ],
+        }),
+
+        new ExtReloader({
+            manifest: path.resolve('./build', 'manifest.json'),
+            entries: {
+                // The entries used for the content/background scripts or extension pages
+                sidebar: 'sidebar',
+                background: 'background',
+            },
         }),
 
         // node polyfills
