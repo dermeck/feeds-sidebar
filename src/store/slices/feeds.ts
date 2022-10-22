@@ -200,6 +200,65 @@ export const selectDescendentNodeIds = (state: FeedSliceState, parentId: string)
     ];
 };
 
+export const selectHasVisibleChildren = (
+    state: FeedSliceState,
+    nodeId: string | undefined,
+    nodeType: NodeType,
+): boolean => {
+    if (nodeId === undefined) {
+        return false;
+    }
+
+    switch (nodeType) {
+        case NodeType.FeedItem:
+            return false;
+
+        case NodeType.Feed:
+            return hasFeedUnreadItem(state, nodeId);
+
+        case NodeType.Folder: {
+            return hasFolderUnreadItems(state, nodeId);
+        }
+
+        default:
+            throw new UnreachableCaseError(nodeType);
+    }
+};
+
+const hasFeedUnreadItem = (state: FeedSliceState, feedId: string): boolean => {
+    return !!state.feeds.find((f) => f.id === feedId)?.items.find((item) => !item.isRead);
+};
+
+const hasFolderUnreadItems = (state: FeedSliceState, folderId: string): boolean => {
+    // TODO this should be implemented more efficiently (and memoized)
+    // keep a map of <nodeId, hasUnreadItem> which is updated in read events?
+
+    const folder = state.folders.find((f) => f.id === folderId);
+    if (!folder) {
+        return false;
+    }
+
+    let res = false;
+
+    folder.feedIds.forEach((feedId) => {
+        if (hasFeedUnreadItem(state, feedId)) {
+            res = true;
+        }
+    });
+
+    if (res) {
+        return true;
+    }
+
+    folder.subfolderIds.forEach((fid) => {
+        if (hasFolderUnreadItems(state, fid)) {
+            res = true;
+        }
+    });
+
+    return res;
+};
+
 export const selectTopLevelNodes = (state: FeedSliceState): ReadonlyArray<TreeNode> =>
     selectChildNodes(state, rootFolderId);
 
