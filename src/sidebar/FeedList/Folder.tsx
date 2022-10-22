@@ -85,20 +85,20 @@ const FolderIcon = styled(FolderSimple)`
 interface Props {
     id: string;
     nodeType: NodeType; // TODO use NodeMeta?
-    title?: string;
+    title: string;
     showTitle: boolean;
     nestedLevel: number;
-    children?: React.ReactNode;
-    selected?: boolean;
-    focus?: boolean;
-    expanded?: boolean;
+    children: React.ReactNode;
+    selected: boolean;
+    focus: boolean;
+    expanded: boolean;
     onClick: () => void;
-    onBlur?: () => void;
-    onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-    onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
-    onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
-    disabled?: boolean;
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => void;
+    onBlur: () => void;
+    onContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
+    onDragEnd: (event: React.DragEvent<HTMLDivElement>) => void;
+    disabled: boolean;
+    onDrop: (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => void;
 }
 
 const Folder = (props: Props) => {
@@ -196,9 +196,9 @@ const Folder = (props: Props) => {
         <Fragment>
             <FolderTitleContainer
                 disabled={props.disabled}
-                focus={!!props.focus}
+                focus={props.focus}
                 nestedLevel={props.nestedLevel}
-                selected={!!props.selected}
+                selected={props.selected}
                 draggable={true}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
