@@ -31,6 +31,10 @@ const baseTheme: Theme = {
         messageBackgroundColor: '-moz-Dialog',
         messageTextColor: '-moz-DialogText',
     },
+    folderIconSize: 20,
+    toggleIndicatorSize: 12,
+    iconRightSpacing: 4,
+    spacerHeight: 2,
 };
 
 export const lightTheme = baseTheme;

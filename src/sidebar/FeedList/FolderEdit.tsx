@@ -1,11 +1,8 @@
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FolderSimple } from 'phosphor-react';
 
 import React, { ChangeEvent, useState } from 'react';
-
-// TODO centralize constants
-const iconRightSpacing = 4;
-const folderIconSize = 20;
 
 const Wrapper = styled.div`
     display: flex;
@@ -24,7 +21,7 @@ const EditInput = styled.input`
 const FolderIcon = styled(FolderSimple)`
     flex-shrink: 0;
     margin-top: -2px; /* align with label */
-    margin-right: ${iconRightSpacing}px;
+    margin-right: ${(props) => props.theme.iconRightSpacing}px;
 `;
 
 interface Props {
@@ -33,6 +30,8 @@ interface Props {
 }
 
 const FolderEdit = (props: Props) => {
+    const theme = useTheme();
+
     const [editValue, setEditValue] = useState(props.initialValue);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => setEditValue(event.target.value);
@@ -49,9 +48,10 @@ const FolderEdit = (props: Props) => {
 
     return (
         <Wrapper>
-            <FolderIcon size={folderIconSize} weight="light" />
+            <FolderIcon size={theme.folderIconSize} weight="light" />
 
             <EditInput
+                theme={theme}
                 autoFocus
                 value={editValue}
                 onChange={handleChange}

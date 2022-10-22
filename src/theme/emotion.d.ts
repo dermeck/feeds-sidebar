@@ -30,5 +30,9 @@ declare module '@emotion/react' {
             messageBackgroundColor: string;
             messageTextColor: string;
         };
+        folderIconSize: number;
+        toggleIndicatorSize: number;
+        iconRightSpacing: number;
+        spacerHeight: number;
     }
 }
