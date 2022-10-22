@@ -12,7 +12,7 @@ import FolderEdit from './FolderEdit';
 const spacerHeight = 2;
 const toogleIndicatorSize = 12;
 const folderIconSize = 20;
-const iconRightPadding = 4;
+const iconRightSpacing = 4;
 
 interface FolderTitleContainerProps {
     selected: boolean;
@@ -50,7 +50,7 @@ interface SpacerProps {
 const Spacer = styled.div<SpacerProps>`
     width: 48px;
     height: ${spacerHeight}px;
-    margin-left: ${toogleIndicatorSize + iconRightPadding}px;
+    margin-left: ${toogleIndicatorSize + iconRightSpacing}px;
 
     background-color: ${(props) => (props.highlight ? props.theme.colors.selectedItemBackgroundColor : 'inherit')};
 `;
@@ -73,13 +73,13 @@ const FolderTitle = styled.label<{ highlight: boolean }>`
 
 const ToggleIndicator = styled.div`
     width: ${toogleIndicatorSize}px;
-    padding-right: ${iconRightPadding}px;
+    padding-right: ${iconRightSpacing}px;
     margin-bottom: -6px;
 `;
 
 const FolderIcon = styled(FolderSimple)`
     flex-shrink: 0;
-    padding-right: ${iconRightPadding}px;
+    margin-right: ${iconRightSpacing}px;
     margin-top: -2px; /* align with label */
 `;
 
