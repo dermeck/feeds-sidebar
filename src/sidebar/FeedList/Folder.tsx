@@ -4,6 +4,8 @@ import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 import React, { Fragment, useState } from 'react';
 
 import { NodeMeta, NodeType } from '../../model/feeds';
+import { useAppSelector } from '../../store/hooks';
+import { selectHasVisibleChildren } from '../../store/slices/feeds';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
 import FolderEdit from './FolderEdit';
 
@@ -70,6 +72,7 @@ const FolderTitle = styled.label<{ highlight: boolean }>`
 `;
 
 const ToggleIndicator = styled.div`
+    width: ${toogleIndicatorSize}px;
     padding-right: ${iconRightPadding}px;
     margin-bottom: -6px;
 `;
@@ -81,8 +84,8 @@ const FolderIcon = styled(FolderSimple)`
 `;
 
 interface Props {
-    id?: string;
-    nodeType: NodeType;
+    id?: string; // TODO maybe extract the Folder editing part into a separate component and make this and other props non-optional
+    nodeType: NodeType; // TODO use NodeMeta?
     title?: string;
     showTitle: boolean;
     nestedLevel: number;
@@ -104,6 +107,10 @@ interface Props {
 const Folder = (props: Props) => {
     // only use this for UI rendering effects (insert/before/after indicator)
     const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
+
+    const showToggleIndicator = useAppSelector((state) =>
+        selectHasVisibleChildren(state.feeds, props.id, props.nodeType),
+    );
 
     if (!props.showTitle) {
         return <Fragment>{props.children}</Fragment>;
@@ -208,11 +215,12 @@ const Folder = (props: Props) => {
                 <Spacer highlight={relativeDropPosition === RelativeDragDropPosition.Top} />
                 <FolderTitleRow>
                     <ToggleIndicator>
-                        {props.expanded ? (
-                            <CaretDown size={toogleIndicatorSize} weight="bold" />
-                        ) : (
-                            <CaretRight size={toogleIndicatorSize} weight="bold" />
-                        )}
+                        {showToggleIndicator &&
+                            (props.expanded ? (
+                                <CaretDown size={toogleIndicatorSize} weight="bold" />
+                            ) : (
+                                <CaretRight size={toogleIndicatorSize} weight="bold" />
+                            ))}
                     </ToggleIndicator>
                     <FolderIcon size={folderIconSize} weight="light" />
                     {props.editing ? (
