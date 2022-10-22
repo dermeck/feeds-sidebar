@@ -79,8 +79,8 @@ const ToggleIndicator = styled.div`
 
 const FolderIcon = styled(FolderSimple)`
     flex-shrink: 0;
-    margin-right: ${iconRightSpacing}px;
     margin-top: -2px; /* align with label */
+    margin-right: ${iconRightSpacing}px;
 `;
 
 interface Props {
