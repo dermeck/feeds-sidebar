@@ -7,7 +7,6 @@ import { NodeMeta, NodeType } from '../../model/feeds';
 import { useAppSelector } from '../../store/hooks';
 import { selectHasVisibleChildren } from '../../store/slices/feeds';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
-import FolderEdit from './FolderEdit';
 
 const spacerHeight = 2;
 const toogleIndicatorSize = 12;
@@ -84,7 +83,7 @@ const FolderIcon = styled(FolderSimple)`
 `;
 
 interface Props {
-    id?: string; // TODO maybe extract the Folder editing part into a separate component and make this and other props non-optional
+    id: string;
     nodeType: NodeType; // TODO use NodeMeta?
     title?: string;
     showTitle: boolean;
@@ -93,11 +92,9 @@ interface Props {
     selected?: boolean;
     focus?: boolean;
     expanded?: boolean;
-    editing?: boolean;
-    onClick?: () => void;
+    onClick: () => void;
     onBlur?: () => void;
     onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-    onEditComplete?: (x: string) => void;
     onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
     onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
     disabled?: boolean;
@@ -223,21 +220,9 @@ const Folder = (props: Props) => {
                             ))}
                     </ToggleIndicator>
                     <FolderIcon size={folderIconSize} weight="light" />
-                    {props.editing ? (
-                        <FolderEdit
-                            initialValue={props.title ?? 'New Folder'}
-                            onEditComplete={(value) => {
-                                if (props.onEditComplete === undefined) {
-                                    throw new Error('onEditComplete is not defined.');
-                                }
-                                props.onEditComplete(value);
-                            }}
-                        />
-                    ) : (
-                        <FolderTitle highlight={relativeDropPosition === RelativeDragDropPosition.Middle}>
-                            {props.title}
-                        </FolderTitle>
-                    )}
+                    <FolderTitle highlight={relativeDropPosition === RelativeDragDropPosition.Middle}>
+                        {props.title}
+                    </FolderTitle>
                 </FolderTitleRow>
                 <Spacer highlight={relativeDropPosition === RelativeDragDropPosition.Bottom} />
             </FolderTitleContainer>

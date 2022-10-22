@@ -1,11 +1,30 @@
 import styled from '@emotion/styled';
+import { FolderSimple } from 'phosphor-react';
 
 import React, { ChangeEvent, useState } from 'react';
 
+// TODO centralize constants
+const iconRightSpacing = 4;
+const folderIconSize = 20;
+
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    padding-top: 1px;
+    padding-bottom: 1px;
+
+    padding-left: 20px;
+`;
+
 const EditInput = styled.input`
     flex: 1;
-    border-width: 1px;
     margin-right: 28px; /* align with XButton which is 22px wide and its parent has 6px padding */
+`;
+
+const FolderIcon = styled(FolderSimple)`
+    flex-shrink: 0;
+    margin-top: -2px; /* align with label */
+    margin-right: ${iconRightSpacing}px;
 `;
 
 interface Props {
@@ -29,14 +48,18 @@ const FolderEdit = (props: Props) => {
     };
 
     return (
-        <EditInput
-            autoFocus
-            value={editValue}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            onKeyDown={handleKeyDown}
-        />
+        <Wrapper>
+            <FolderIcon size={folderIconSize} weight="light" />
+
+            <EditInput
+                autoFocus
+                value={editValue}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                onKeyDown={handleKeyDown}
+            />
+        </Wrapper>
     );
 };
 

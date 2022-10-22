@@ -2,10 +2,9 @@ import React, { FunctionComponent, memo } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { FullHeightScrollContainer } from '../../base-components';
-import { NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectTopLevelNodes } from '../../store/slices/feeds';
-import Folder from './Folder';
+import FolderEdit from './FolderEdit';
 import FolderTreeNode from './FolderTreeNode';
 
 interface Props {
@@ -24,15 +23,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <FullHeightScrollContainer>
-            {showNewFolderInput && (
-                <Folder
-                    editing={true}
-                    nodeType={NodeType.Folder}
-                    onEditComplete={handleEditComplete}
-                    showTitle={true}
-                    nestedLevel={0}
-                />
-            )}
+            {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
 
             {
                 // TODO Fix rendering problem and also vitualize the flat list
