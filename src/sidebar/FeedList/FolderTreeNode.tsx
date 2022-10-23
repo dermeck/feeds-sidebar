@@ -3,7 +3,7 @@ import React, { Fragment, memo, useContext, useEffect, useState } from 'react';
 import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { InsertMode, NodeMeta, NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import feedsSlice, { selectDescendentNodeIds, selectTreeNode } from '../../store/slices/feeds';
+import feedsSlice, { selectTreeNode } from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { RelativeDragDropPosition } from '../../utils/dragdrop';
@@ -27,10 +27,8 @@ const FolderTreeNode = (props: Props) => {
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
     const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
     // only use this for UI rendering effects (insert/before/after indicator, disabled)
-
+    // TODO is this comment still relevant with dragged node in context?
     const { draggedNode, setDraggedNode } = useContext(DragDropContext);
-
-    const descendentNodeIds = useAppSelector((state) => selectDescendentNodeIds(state.feeds, props.nodeId));
 
     const draggedId = draggedNode?.nodeId;
 
@@ -91,17 +89,6 @@ const FolderTreeNode = (props: Props) => {
         }
     };
 
-    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        const draggedNodeMeta = { nodeId: id, nodeType: node.nodeType };
-
-        event.dataTransfer.setData('invalidDroptTargets', descendentNodeIds.join(';'));
-        event.dataTransfer.setData('draggedNodeMeta', JSON.stringify(draggedNodeMeta));
-
-        if (draggedId !== id) {
-            setDraggedNode({ nodeId: id, nodeType: node.nodeType });
-        }
-    };
-
     const handleDrop = (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => {
         const draggedNodeMeta: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
 
@@ -140,10 +127,6 @@ const FolderTreeNode = (props: Props) => {
         }
     };
 
-    const handleDragEnd = () => {
-        setDraggedNode(undefined);
-    };
-
     const disabled =
         (id === draggedId ||
             !!props.disabled ||
@@ -163,9 +146,7 @@ const FolderTreeNode = (props: Props) => {
             onClick={handleClickFolder}
             onBlur={handleBlurFolder}
             onContextMenu={handleContextMenuFolder}
-            onDragStart={handleDragStart}
-            onDrop={handleDrop}
-            onDragEnd={handleDragEnd}>
+            onDrop={handleDrop}>
             <FolderSubTreeNode node={node} {...props} disabled={disabled} />
         </Folder>
     );

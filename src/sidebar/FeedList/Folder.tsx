@@ -2,12 +2,13 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useContext, useState } from 'react';
 
 import { NodeMeta, NodeType } from '../../model/feeds';
 import { useAppSelector } from '../../store/hooks';
-import { selectHasVisibleChildren } from '../../store/slices/feeds';
+import { selectDescendentNodeIds, selectHasVisibleChildren } from '../../store/slices/feeds';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
+import { DragDropContext } from './contexts';
 
 interface FolderTitleContainerProps {
     selected: boolean;
@@ -90,8 +91,6 @@ interface Props {
     onClick: () => void;
     onBlur: () => void;
     onContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-    onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
-    onDragEnd: (event: React.DragEvent<HTMLDivElement>) => void;
     disabled: boolean;
     onDrop: (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => void;
 }
@@ -103,13 +102,19 @@ const Folder = (props: Props) => {
 
     const showToggleIndicator = useAppSelector((state) => selectHasVisibleChildren(state.feeds, props.nodeMeta));
 
+    const { draggedNode, setDraggedNode } = useContext(DragDropContext);
+    const descendentNodeIds = useAppSelector((state) => selectDescendentNodeIds(state.feeds, props.nodeMeta.nodeId));
+
     if (!props.showTitle) {
         return <Fragment>{props.children}</Fragment>;
     }
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        if (props.onDragStart) {
-            props.onDragStart(event);
+        event.dataTransfer.setData('invalidDroptTargets', descendentNodeIds.join(';'));
+        event.dataTransfer.setData('draggedNodeMeta', JSON.stringify(props.nodeMeta));
+
+        if (draggedNode?.nodeId !== props.nodeMeta.nodeId) {
+            setDraggedNode(props.nodeMeta);
         }
     };
 
@@ -190,6 +195,10 @@ const Folder = (props: Props) => {
         return value;
     };
 
+    const handleDragEnd = () => {
+        setDraggedNode(undefined);
+    };
+
     // TODO indicate if folder has unread items
     return (
         <Fragment>
@@ -204,7 +213,7 @@ const Folder = (props: Props) => {
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                onDragEnd={props.onDragEnd}
+                onDragEnd={handleDragEnd}
                 tabIndex={0}
                 onClick={props.onClick}
                 onBlur={props.onBlur}
