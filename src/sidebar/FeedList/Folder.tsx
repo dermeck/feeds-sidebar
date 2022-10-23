@@ -1,3 +1,4 @@
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
@@ -7,12 +8,6 @@ import { NodeMeta, NodeType } from '../../model/feeds';
 import { useAppSelector } from '../../store/hooks';
 import { selectHasVisibleChildren } from '../../store/slices/feeds';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
-import FolderEdit from './FolderEdit';
-
-const spacerHeight = 2;
-const toogleIndicatorSize = 12;
-const folderIconSize = 20;
-const iconRightSpacing = 4;
 
 interface FolderTitleContainerProps {
     selected: boolean;
@@ -25,8 +20,8 @@ const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
     display: flex;
     flex-direction: column;
     padding-left: ${(props) => (props.nestedLevel > 0 ? `${8 + props.nestedLevel * 15}px` : '8px')};
-    margin-top: -${spacerHeight}px;
-    margin-bottom: -${spacerHeight}px;
+    margin-top: -${(props) => props.theme.spacerHeight}px;
+    margin-bottom: -${(props) => props.theme.spacerHeight}px;
 
     background-color: ${(props) =>
         props.selected
@@ -49,8 +44,8 @@ interface SpacerProps {
 
 const Spacer = styled.div<SpacerProps>`
     width: 48px;
-    height: ${spacerHeight}px;
-    margin-left: ${toogleIndicatorSize + iconRightSpacing}px;
+    height: ${(props) => props.theme.spacerHeight}px;
+    margin-left: ${({ theme }) => theme.toggleIndicatorSize + theme.iconRightSpacing}px;
 
     background-color: ${(props) => (props.highlight ? props.theme.colors.selectedItemBackgroundColor : 'inherit')};
 `;
@@ -72,39 +67,38 @@ const FolderTitle = styled.label<{ highlight: boolean }>`
 `;
 
 const ToggleIndicator = styled.div`
-    width: ${toogleIndicatorSize}px;
-    padding-right: ${iconRightSpacing}px;
+    width: ${({ theme }) => theme.toggleIndicatorSize}px;
+    padding-right: ${({ theme }) => theme.iconRightSpacing}px;
     margin-bottom: -6px;
 `;
 
 const FolderIcon = styled(FolderSimple)`
     flex-shrink: 0;
-    margin-right: ${iconRightSpacing}px;
     margin-top: -2px; /* align with label */
+    margin-right: ${({ theme }) => theme.iconRightSpacing}px;
 `;
 
 interface Props {
-    id?: string; // TODO maybe extract the Folder editing part into a separate component and make this and other props non-optional
+    id: string;
     nodeType: NodeType; // TODO use NodeMeta?
-    title?: string;
+    title: string;
     showTitle: boolean;
     nestedLevel: number;
-    children?: React.ReactNode;
-    selected?: boolean;
-    focus?: boolean;
-    expanded?: boolean;
-    editing?: boolean;
-    onClick?: () => void;
-    onBlur?: () => void;
-    onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-    onEditComplete?: (x: string) => void;
-    onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
-    onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
-    disabled?: boolean;
-    onDrop?: (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => void;
+    children: React.ReactNode;
+    selected: boolean;
+    focus: boolean;
+    expanded: boolean;
+    onClick: () => void;
+    onBlur: () => void;
+    onContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
+    onDragEnd: (event: React.DragEvent<HTMLDivElement>) => void;
+    disabled: boolean;
+    onDrop: (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => void;
 }
 
 const Folder = (props: Props) => {
+    const theme = useTheme();
     // only use this for UI rendering effects (insert/before/after indicator)
     const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
 
@@ -198,10 +192,11 @@ const Folder = (props: Props) => {
     return (
         <Fragment>
             <FolderTitleContainer
+                theme={theme}
                 disabled={props.disabled}
-                focus={!!props.focus}
+                focus={props.focus}
                 nestedLevel={props.nestedLevel}
-                selected={!!props.selected}
+                selected={props.selected}
                 draggable={true}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
@@ -212,34 +207,22 @@ const Folder = (props: Props) => {
                 onClick={props.onClick}
                 onBlur={props.onBlur}
                 onContextMenu={props.onContextMenu}>
-                <Spacer highlight={relativeDropPosition === RelativeDragDropPosition.Top} />
+                <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Top} />
                 <FolderTitleRow>
-                    <ToggleIndicator>
+                    <ToggleIndicator theme={theme}>
                         {showToggleIndicator &&
                             (props.expanded ? (
-                                <CaretDown size={toogleIndicatorSize} weight="bold" />
+                                <CaretDown size={theme.toggleIndicatorSize} weight="bold" />
                             ) : (
-                                <CaretRight size={toogleIndicatorSize} weight="bold" />
+                                <CaretRight size={theme.toggleIndicatorSize} weight="bold" />
                             ))}
                     </ToggleIndicator>
-                    <FolderIcon size={folderIconSize} weight="light" />
-                    {props.editing ? (
-                        <FolderEdit
-                            initialValue={props.title ?? 'New Folder'}
-                            onEditComplete={(value) => {
-                                if (props.onEditComplete === undefined) {
-                                    throw new Error('onEditComplete is not defined.');
-                                }
-                                props.onEditComplete(value);
-                            }}
-                        />
-                    ) : (
-                        <FolderTitle highlight={relativeDropPosition === RelativeDragDropPosition.Middle}>
-                            {props.title}
-                        </FolderTitle>
-                    )}
+                    <FolderIcon theme={theme} size={theme.folderIconSize} weight="light" />
+                    <FolderTitle highlight={relativeDropPosition === RelativeDragDropPosition.Middle}>
+                        {props.title}
+                    </FolderTitle>
                 </FolderTitleRow>
-                <Spacer highlight={relativeDropPosition === RelativeDragDropPosition.Bottom} />
+                <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Bottom} />
             </FolderTitleContainer>
 
             {props.expanded && props.children}
