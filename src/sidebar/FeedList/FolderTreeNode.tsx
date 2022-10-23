@@ -15,7 +15,7 @@ interface Props {
     showTitle: boolean;
     nestedLevel: number;
     filterString: string;
-    disabled?: boolean;
+    disabled?: boolean; // TODO rework this ("parentDsabled" or context?)
 }
 
 // TODO find a more robust way to determine menu height
@@ -91,7 +91,7 @@ const FolderTreeNode = (props: Props) => {
         (id === draggedId ||
             !!props.disabled ||
             (node.nodeType === NodeType.Feed && draggedNode?.nodeType === NodeType.Folder)) &&
-        draggedId !== undefined;
+        draggedId !== undefined; // TODO expose "isDragging"?
 
     return (
         <Folder
