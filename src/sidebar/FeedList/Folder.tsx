@@ -79,8 +79,7 @@ const FolderIcon = styled(FolderSimple)`
 `;
 
 interface Props {
-    id: string;
-    nodeType: NodeType; // TODO use NodeMeta?
+    nodeMeta: NodeMeta;
     title: string;
     showTitle: boolean;
     nestedLevel: number;
@@ -102,9 +101,7 @@ const Folder = (props: Props) => {
     // only use this for UI rendering effects (insert/before/after indicator)
     const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
 
-    const showToggleIndicator = useAppSelector((state) =>
-        selectHasVisibleChildren(state.feeds, props.id, props.nodeType),
-    );
+    const showToggleIndicator = useAppSelector((state) => selectHasVisibleChildren(state.feeds, props.nodeMeta));
 
     if (!props.showTitle) {
         return <Fragment>{props.children}</Fragment>;
@@ -124,14 +121,14 @@ const Folder = (props: Props) => {
 
         const invalidDroptTargets = event.dataTransfer.getData('invalidDroptTargets').split(';');
 
-        if (invalidDroptTargets.find((x) => x === props.id)) {
+        if (invalidDroptTargets.find((x) => x === props.nodeMeta.nodeId)) {
             return;
         }
 
         const dragged: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
 
         if (!props.disabled) {
-            setRelativDropPosition(calculateRelativeDragDropPosition(dragged.nodeType, props.nodeType, event));
+            setRelativDropPosition(calculateRelativeDragDropPosition(dragged.nodeType, props.nodeMeta.nodeType, event));
 
             event.preventDefault();
         }
@@ -146,7 +143,7 @@ const Folder = (props: Props) => {
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
         const invalidDroptTargets = event.dataTransfer.getData('invalidDroptTargets').split(';');
 
-        if (invalidDroptTargets.find((x) => x === props.id)) {
+        if (invalidDroptTargets.find((x) => x === props.nodeMeta.nodeId)) {
             return;
         }
 
@@ -156,7 +153,11 @@ const Folder = (props: Props) => {
             // recalculate here, don't rely on local state set in handleDragover
             // handleDragover is dependend on props.disabled which depends on global store so there can be timing issues
             // (local) relativeDropPosition can be undefined if drag/drop happens very fast
-            const relativeDropPosition = calculateRelativeDragDropPosition(dragged.nodeType, props.nodeType, event);
+            const relativeDropPosition = calculateRelativeDragDropPosition(
+                dragged.nodeType,
+                props.nodeMeta.nodeType,
+                event,
+            );
 
             if (relativeDropPosition === undefined) {
                 throw new Error('Illegal state: relativeDropPosition must be definend when handleDrop is called.');

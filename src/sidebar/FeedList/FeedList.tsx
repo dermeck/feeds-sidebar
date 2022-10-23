@@ -44,6 +44,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                 ) : (
                     topLevelNodes.map((node) => (
                         <FolderTreeNode
+                            /* TODO pass down nodeMeta? */
                             key={node.data.id}
                             nodeId={node.data.id}
                             nestedLevel={0}

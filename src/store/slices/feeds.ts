@@ -200,14 +200,8 @@ export const selectDescendentNodeIds = (state: FeedSliceState, parentId: string)
     ];
 };
 
-export const selectHasVisibleChildren = (
-    state: FeedSliceState,
-    nodeId: string | undefined,
-    nodeType: NodeType,
-): boolean => {
-    if (nodeId === undefined) {
-        return false;
-    }
+export const selectHasVisibleChildren = (state: FeedSliceState, nodeMeta: NodeMeta): boolean => {
+    const { nodeId, nodeType } = nodeMeta;
 
     switch (nodeType) {
         case NodeType.FeedItem:

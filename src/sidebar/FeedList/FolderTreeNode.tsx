@@ -148,8 +148,7 @@ const FolderTreeNode = (props: Props) => {
 
     return (
         <Folder
-            id={id}
-            nodeType={node.nodeType}
+            nodeMeta={{ nodeId: id, nodeType: node.nodeType }}
             title={title ?? (node.nodeType === NodeType.Feed ? node.data.url : '')}
             nestedLevel={props.nestedLevel}
             showTitle={props.showTitle}
