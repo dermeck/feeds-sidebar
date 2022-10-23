@@ -15,7 +15,7 @@ interface Props {
     showTitle: boolean;
     nestedLevel: number;
     filterString: string;
-    disabled?: boolean; // TODO rework this ("parentDsabled" or context?)
+    disabled?: boolean; // TODO rework this ("parentDsabled" or context? or return this from drag/drophook (validdroptarget))
 }
 
 // TODO find a more robust way to determine menu height

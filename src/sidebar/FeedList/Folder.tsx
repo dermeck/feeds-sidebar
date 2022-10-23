@@ -7,10 +7,11 @@ import { useDispatch } from 'react-redux';
 
 import { InsertMode, NodeMeta, NodeType } from '../../model/feeds';
 import { useAppSelector } from '../../store/hooks';
-import feedsSlice, { selectDescendentNodeIds, selectHasVisibleChildren } from '../../store/slices/feeds';
+import feedsSlice, { selectHasVisibleChildren } from '../../store/slices/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
 import { DragDropContext } from './contexts';
+import useDragDropNode from './useDragDropNode';
 
 interface FolderTitleContainerProps {
     selected: boolean;
@@ -107,21 +108,13 @@ const Folder = (props: Props) => {
 
     // only use this for UI rendering effects (insert/before/after indicator, disabled)
     // TODO is this comment still relevant with dragged node in context?
-    const { draggedNode, setDraggedNode } = useContext(DragDropContext);
-    const descendentNodeIds = useAppSelector((state) => selectDescendentNodeIds(state.feeds, props.nodeMeta.nodeId));
+    const { setDraggedNode } = useContext(DragDropContext);
+
+    const { handleDragStart } = useDragDropNode(props.nodeMeta);
 
     if (!props.showTitle) {
         return <Fragment>{props.children}</Fragment>;
     }
-
-    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        event.dataTransfer.setData('invalidDroptTargets', descendentNodeIds.join(';'));
-        event.dataTransfer.setData('draggedNodeMeta', JSON.stringify(props.nodeMeta));
-
-        if (draggedNode?.nodeId !== props.nodeMeta.nodeId) {
-            setDraggedNode(props.nodeMeta);
-        }
-    };
 
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
         if (event.dataTransfer.getData('draggedNodeMeta') === '') {
