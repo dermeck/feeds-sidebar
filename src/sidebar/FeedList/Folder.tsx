@@ -3,10 +3,12 @@ import styled from '@emotion/styled';
 import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
 import React, { Fragment, useContext, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { NodeMeta, NodeType } from '../../model/feeds';
+import { InsertMode, NodeMeta, NodeType } from '../../model/feeds';
 import { useAppSelector } from '../../store/hooks';
-import { selectDescendentNodeIds, selectHasVisibleChildren } from '../../store/slices/feeds';
+import feedsSlice, { selectDescendentNodeIds, selectHasVisibleChildren } from '../../store/slices/feeds';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../utils/dragdrop';
 import { DragDropContext } from './contexts';
 
@@ -92,16 +94,19 @@ interface Props {
     onBlur: () => void;
     onContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     disabled: boolean;
-    onDrop: (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => void;
 }
 
 const Folder = (props: Props) => {
     const theme = useTheme();
+    const dispatch = useDispatch();
+
     // only use this for UI rendering effects (insert/before/after indicator)
     const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
 
     const showToggleIndicator = useAppSelector((state) => selectHasVisibleChildren(state.feeds, props.nodeMeta));
 
+    // only use this for UI rendering effects (insert/before/after indicator, disabled)
+    // TODO is this comment still relevant with dragged node in context?
     const { draggedNode, setDraggedNode } = useContext(DragDropContext);
     const descendentNodeIds = useAppSelector((state) => selectDescendentNodeIds(state.feeds, props.nodeMeta.nodeId));
 
@@ -154,25 +159,61 @@ const Folder = (props: Props) => {
 
         const dragged: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
 
-        if (props.onDrop) {
-            // recalculate here, don't rely on local state set in handleDragover
-            // handleDragover is dependend on props.disabled which depends on global store so there can be timing issues
-            // (local) relativeDropPosition can be undefined if drag/drop happens very fast
-            // TODO check if this is still a problem with dragged node in context!
-            const relativeDropPosition = calculateRelativeDragDropPosition(
-                dragged.nodeType,
-                props.nodeMeta.nodeType,
-                event,
-            );
+        // recalculate here, don't rely on local state set in handleDragover
+        // handleDragover is dependend on props.disabled which depends on global store so there can be timing issues
+        // (local) relativeDropPosition can be undefined if drag/drop happens very fast
+        // TODO check if this is still a problem with dragged node in context!
+        const relativeDropPosition = calculateRelativeDragDropPosition(
+            dragged.nodeType,
+            props.nodeMeta.nodeType,
+            event,
+        );
 
-            if (relativeDropPosition === undefined) {
-                throw new Error('Illegal state: relativeDropPosition must be definend when handleDrop is called.');
-            }
-
-            props.onDrop(event, relativeDropPosition);
+        if (relativeDropPosition === undefined) {
+            throw new Error('Illegal state: relativeDropPosition must be definend when handleDrop is called.');
         }
 
+        doDrop(event, relativeDropPosition);
+
         setRelativDropPosition(undefined);
+    };
+
+    const doDrop = (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => {
+        const draggedNodeMeta: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
+
+        if (!draggedNodeMeta) {
+            // TODO can this actually happen?
+            throw new Error('dragged node must be defined.');
+        }
+
+        dispatch(
+            feedsSlice.actions.moveNode({
+                movedNode: draggedNodeMeta,
+                targetNodeId: props.nodeMeta.nodeId,
+                mode:
+                    props.nodeMeta.nodeType === NodeType.Folder && draggedNodeMeta.nodeType === NodeType.Feed
+                        ? InsertMode.Into
+                        : insertModeByRelativeDropPosition(relativeDropPosition),
+            }),
+        );
+
+        setDraggedNode(undefined);
+    };
+
+    const insertModeByRelativeDropPosition = (relativeDropPosition: RelativeDragDropPosition): InsertMode => {
+        switch (relativeDropPosition) {
+            case RelativeDragDropPosition.Top:
+                return InsertMode.Before;
+
+            case RelativeDragDropPosition.Middle:
+                return InsertMode.Into;
+
+            case RelativeDragDropPosition.Bottom:
+                return InsertMode.After;
+
+            default:
+                throw new UnreachableCaseError(relativeDropPosition);
+        }
     };
 
     const calculateRelativeDragDropPosition = (

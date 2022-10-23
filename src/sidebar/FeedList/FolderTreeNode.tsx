@@ -1,12 +1,10 @@
 import React, { Fragment, memo, useContext, useEffect, useState } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
-import { InsertMode, NodeMeta, NodeType } from '../../model/feeds';
+import { NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectTreeNode } from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
-import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import { RelativeDragDropPosition } from '../../utils/dragdrop';
 import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import Folder from './Folder';
 import FolderSubTreeNode from './FolderSubTreeNode';
@@ -28,7 +26,7 @@ const FolderTreeNode = (props: Props) => {
     const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
     // only use this for UI rendering effects (insert/before/after indicator, disabled)
     // TODO is this comment still relevant with dragged node in context?
-    const { draggedNode, setDraggedNode } = useContext(DragDropContext);
+    const { draggedNode } = useContext(DragDropContext);
 
     const draggedId = draggedNode?.nodeId;
 
@@ -89,44 +87,6 @@ const FolderTreeNode = (props: Props) => {
         }
     };
 
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>, relativeDropPosition: RelativeDragDropPosition) => {
-        const draggedNodeMeta: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
-
-        if (!draggedNodeMeta) {
-            // TODO can this actually happen?
-            throw new Error('dragged node must be defined.');
-        }
-
-        dispatch(
-            feedsSlice.actions.moveNode({
-                movedNode: draggedNodeMeta,
-                targetNodeId: id,
-                mode:
-                    node.nodeType === NodeType.Folder && draggedNodeMeta.nodeType === NodeType.Feed
-                        ? InsertMode.Into
-                        : insertModeByRelativeDropPosition(relativeDropPosition),
-            }),
-        );
-
-        setDraggedNode(undefined);
-    };
-
-    const insertModeByRelativeDropPosition = (relativeDropPosition: RelativeDragDropPosition): InsertMode => {
-        switch (relativeDropPosition) {
-            case RelativeDragDropPosition.Top:
-                return InsertMode.Before;
-
-            case RelativeDragDropPosition.Middle:
-                return InsertMode.Into;
-
-            case RelativeDragDropPosition.Bottom:
-                return InsertMode.After;
-
-            default:
-                throw new UnreachableCaseError(relativeDropPosition);
-        }
-    };
-
     const disabled =
         (id === draggedId ||
             !!props.disabled ||
@@ -145,8 +105,7 @@ const FolderTreeNode = (props: Props) => {
             disabled={disabled}
             onClick={handleClickFolder}
             onBlur={handleBlurFolder}
-            onContextMenu={handleContextMenuFolder}
-            onDrop={handleDrop}>
+            onContextMenu={handleContextMenuFolder}>
             <FolderSubTreeNode node={node} {...props} disabled={disabled} />
         </Folder>
     );
