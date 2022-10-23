@@ -8,7 +8,7 @@ import { NodeMeta } from '../../model/feeds';
 import { useAppSelector } from '../../store/hooks';
 import { selectHasVisibleChildren } from '../../store/slices/feeds';
 import { RelativeDragDropPosition } from '../../utils/dragdrop';
-import useDragDropNode from './useDragDropNode';
+import useDragDropNode from './dragdrop/useDragDropNode';
 
 interface FolderTitleContainerProps {
     selected: boolean;

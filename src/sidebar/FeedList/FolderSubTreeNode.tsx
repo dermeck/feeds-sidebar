@@ -4,7 +4,7 @@ import { NodeType, TreeNode } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import FeedItemList from './FeedItemList';
 import FolderTreeNode from './FolderTreeNode';
-import useDragDropNode from './useDragDropNode';
+import useDragDropNode from './dragdrop/useDragDropNode';
 
 interface Props {
     node: TreeNode;

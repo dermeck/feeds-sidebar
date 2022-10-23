@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectTopLevelNodes } from '../../store/slices/feeds';
 import FolderEdit from './FolderEdit';
 import FolderTreeNode from './FolderTreeNode';
-import { DragDropContext } from './contexts';
+import { DragDropContext } from './dragdrop/dragdrop-context';
 
 interface Props {
     showFeedTitles: boolean;
