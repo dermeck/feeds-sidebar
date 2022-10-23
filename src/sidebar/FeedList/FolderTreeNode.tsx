@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useEffect, useState } from 'react';
+import React, { Fragment, memo, useContext, useEffect, useState } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { InsertMode, NodeMeta, NodeType } from '../../model/feeds';
@@ -10,6 +10,7 @@ import { RelativeDragDropPosition } from '../../utils/dragdrop';
 import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import Folder from './Folder';
 import FolderSubTreeNode from './FolderSubTreeNode';
+import { DragDropContext } from './contexts';
 
 interface Props {
     nodeId: string;
@@ -26,10 +27,12 @@ const FolderTreeNode = (props: Props) => {
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
     const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
     // only use this for UI rendering effects (insert/before/after indicator, disabled)
-    const dragged = useAppSelector((state) => state.session.dragged);
+
+    const { draggedNode, setDraggedNode } = useContext(DragDropContext);
+
     const descendentNodeIds = useAppSelector((state) => selectDescendentNodeIds(state.feeds, props.nodeId));
 
-    const draggedId = dragged?.nodeId;
+    const draggedId = draggedNode?.nodeId;
 
     const dispatch = useAppDispatch();
 
@@ -95,7 +98,7 @@ const FolderTreeNode = (props: Props) => {
         event.dataTransfer.setData('draggedNodeMeta', JSON.stringify(draggedNodeMeta));
 
         if (draggedId !== id) {
-            dispatch(sessionSlice.actions.changeDragged({ nodeId: id, nodeType: node.nodeType }));
+            setDraggedNode({ nodeId: id, nodeType: node.nodeType });
         }
     };
 
@@ -103,6 +106,7 @@ const FolderTreeNode = (props: Props) => {
         const draggedNodeMeta: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
 
         if (!draggedNodeMeta) {
+            // TODO can this actually happen?
             throw new Error('dragged node must be defined.');
         }
 
@@ -117,7 +121,7 @@ const FolderTreeNode = (props: Props) => {
             }),
         );
 
-        dispatch(sessionSlice.actions.changeDragged(undefined));
+        setDraggedNode(undefined);
     };
 
     const insertModeByRelativeDropPosition = (relativeDropPosition: RelativeDragDropPosition): InsertMode => {
@@ -137,13 +141,13 @@ const FolderTreeNode = (props: Props) => {
     };
 
     const handleDragEnd = () => {
-        dispatch(sessionSlice.actions.changeDragged(undefined));
+        setDraggedNode(undefined);
     };
 
     const disabled =
         (id === draggedId ||
             !!props.disabled ||
-            (node.nodeType === NodeType.Feed && dragged?.nodeType === NodeType.Folder)) &&
+            (node.nodeType === NodeType.Feed && draggedNode?.nodeType === NodeType.Folder)) &&
         draggedId !== undefined;
 
     return (

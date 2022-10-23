@@ -153,6 +153,7 @@ const Folder = (props: Props) => {
             // recalculate here, don't rely on local state set in handleDragover
             // handleDragover is dependend on props.disabled which depends on global store so there can be timing issues
             // (local) relativeDropPosition can be undefined if drag/drop happens very fast
+            // TODO check if this is still a problem with dragged node in context!
             const relativeDropPosition = calculateRelativeDragDropPosition(
                 dragged.nodeType,
                 props.nodeMeta.nodeType,
