@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useContext, useEffect, useState } from 'react';
+import React, { Fragment, memo, useEffect, useState } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { NodeType } from '../../model/feeds';
@@ -8,7 +8,6 @@ import sessionSlice from '../../store/slices/session';
 import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import Folder from './Folder';
 import FolderSubTreeNode from './FolderSubTreeNode';
-import { DragDropContext } from './contexts';
 
 interface Props {
     nodeId: string;
@@ -23,11 +22,6 @@ const contextMenuHeight = 64; // 2 menu items, each 32px
 const FolderTreeNode = (props: Props) => {
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
     const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
-    // only use this for UI rendering effects (insert/before/after indicator, disabled)
-    // TODO is this comment still relevant with dragged node in context?
-    const { draggedNode } = useContext(DragDropContext);
-
-    const draggedId = draggedNode?.nodeId;
 
     const dispatch = useAppDispatch();
 
