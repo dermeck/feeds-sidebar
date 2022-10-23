@@ -94,7 +94,6 @@ interface Props {
     onClick: () => void;
     onBlur: () => void;
     onContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-    disabled: boolean;
 }
 
 const Folder = (props: Props) => {
@@ -110,7 +109,7 @@ const Folder = (props: Props) => {
     // TODO is this comment still relevant with dragged node in context?
     const { setDraggedNode } = useContext(DragDropContext);
 
-    const { handleDragStart } = useDragDropNode(props.nodeMeta);
+    const { isDropNotAllowed, handleDragStart } = useDragDropNode(props.nodeMeta);
 
     if (!props.showTitle) {
         return <Fragment>{props.children}</Fragment>;
@@ -130,7 +129,7 @@ const Folder = (props: Props) => {
 
         const dragged: NodeMeta = JSON.parse(event.dataTransfer.getData('draggedNodeMeta'));
 
-        if (!props.disabled) {
+        if (!isDropNotAllowed) {
             setRelativDropPosition(calculateRelativeDragDropPosition(dragged.nodeType, props.nodeMeta.nodeType, event));
 
             event.preventDefault();
@@ -238,7 +237,7 @@ const Folder = (props: Props) => {
         <Fragment>
             <FolderTitleContainer
                 theme={theme}
-                disabled={props.disabled}
+                disabled={isDropNotAllowed}
                 focus={props.focus}
                 nestedLevel={props.nestedLevel}
                 selected={props.selected}

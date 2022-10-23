@@ -15,7 +15,6 @@ interface Props {
     showTitle: boolean;
     nestedLevel: number;
     filterString: string;
-    disabled?: boolean; // TODO rework this ("parentDsabled" or context? or return this from drag/drophook (validdroptarget))
 }
 
 // TODO find a more robust way to determine menu height
@@ -87,12 +86,6 @@ const FolderTreeNode = (props: Props) => {
         }
     };
 
-    const disabled =
-        (id === draggedId ||
-            !!props.disabled ||
-            (node.nodeType === NodeType.Feed && draggedNode?.nodeType === NodeType.Folder)) &&
-        draggedId !== undefined; // TODO expose "isDragging"?
-
     return (
         <Folder
             nodeMeta={{ nodeId: id, nodeType: node.nodeType }}
@@ -102,11 +95,10 @@ const FolderTreeNode = (props: Props) => {
             selected={selectedId === id}
             focus={focus}
             expanded={expanded}
-            disabled={disabled}
             onClick={handleClickFolder}
             onBlur={handleBlurFolder}
             onContextMenu={handleContextMenuFolder}>
-            <FolderSubTreeNode node={node} {...props} disabled={disabled} />
+            <FolderSubTreeNode node={node} {...props} />
         </Folder>
     );
 };
