@@ -4,6 +4,7 @@ import { NodeType, TreeNode } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import FeedItemList from './FeedItemList';
 import FolderTreeNode from './FolderTreeNode';
+import useDragDropNode from './dragdrop/useDragDropNode';
 
 interface Props {
     node: TreeNode;
@@ -11,11 +12,11 @@ interface Props {
     showTitle: boolean;
     nestedLevel: number;
     filterString: string;
-    disabled: boolean;
 }
 
 const FolderSubTreeNode = (props: Props): JSX.Element => {
-    const { node, filterString, showTitle, selectedId, disabled, nestedLevel } = props;
+    const { node, filterString, showTitle, selectedId, nestedLevel } = props;
+    const { isDropNotAllowed } = useDragDropNode({ nodeId: node.data.id, nodeType: node.nodeType });
 
     switch (node.nodeType) {
         case NodeType.Feed:
@@ -29,7 +30,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                             indented={showTitle}
                             nestedLevel={nestedLevel + 1}
                             selectedId={selectedId}
-                            disabled={disabled}
+                            disabled={isDropNotAllowed}
                         />
                     )}
                 </Fragment>
@@ -48,7 +49,6 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                                 nestedLevel={nestedLevel + 1}
                                 showTitle={showTitle}
                                 filterString={filterString}
-                                disabled={disabled}
                             />
                         );
                     })}
