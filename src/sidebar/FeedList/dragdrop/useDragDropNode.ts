@@ -14,6 +14,7 @@ const calculateRelativeDragDropPosition = (
     event: React.DragEvent<HTMLDivElement>,
 ) => {
     let value = undefined;
+
     if (draggedNodeType === NodeType.Feed && targetNodeType === NodeType.Folder) {
         // feeds can only be inserted into folders
         value = RelativeDragDropPosition.Middle;
@@ -25,6 +26,7 @@ const calculateRelativeDragDropPosition = (
     } else {
         throw new Error(`${draggedNodeType} can not be dropped on ${targetNodeType}.`);
     }
+
     return value;
 };
 
@@ -48,8 +50,6 @@ const useDragDropNode = (nodeMeta: NodeMeta) => {
     const dispatch = useDispatch();
     const { draggedNode, setDraggedNode } = useContext(DragDropContext);
 
-    // only use this for UI rendering effects (insert/before/after indicator)
-    // TODO check if we really need it separately for drop
     const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
 
     const draggedNodeDescendents = useAppSelector((state) =>
