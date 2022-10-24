@@ -59,9 +59,7 @@ const useDragDropNode = (nodeMeta: NodeMeta) => {
     const isDropNotAllowed =
         nodeMeta.nodeId === draggedNode?.nodeId ||
         draggedNodeDescendents.includes(nodeMeta.nodeId) ||
-        (nodeMeta.nodeType === NodeType.Feed &&
-            draggedNode?.nodeType === NodeType.Folder &&
-            draggedNode?.nodeId !== undefined);
+        (draggedNode !== undefined && draggedNode.nodeType === NodeType.Folder && nodeMeta.nodeType === NodeType.Feed);
 
     const handleDragStart = () => {
         if (draggedNode?.nodeId !== nodeMeta.nodeId) {
