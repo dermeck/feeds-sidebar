@@ -211,7 +211,7 @@ export const selectHasVisibleChildren = (state: FeedSliceState, nodeMeta: NodeMe
             return hasFeedUnreadItem(state, nodeId);
 
         case NodeType.Folder: {
-            return hasFolderUnreadItems(state, nodeId);
+            return hasFolderChildren(state, nodeId);
         }
 
         default:
@@ -223,34 +223,13 @@ const hasFeedUnreadItem = (state: FeedSliceState, feedId: string): boolean => {
     return !!state.feeds.find((f) => f.id === feedId)?.items.find((item) => !item.isRead);
 };
 
-const hasFolderUnreadItems = (state: FeedSliceState, folderId: string): boolean => {
-    // TODO this should be implemented more efficiently (and memoized)
-    // keep a map of <nodeId, hasUnreadItem> which is updated in read events?
-
+const hasFolderChildren = (state: FeedSliceState, folderId: string): boolean => {
     const folder = state.folders.find((f) => f.id === folderId);
     if (!folder) {
         return false;
     }
 
-    let res = false;
-
-    folder.feedIds.forEach((feedId) => {
-        if (hasFeedUnreadItem(state, feedId)) {
-            res = true;
-        }
-    });
-
-    if (res) {
-        return true;
-    }
-
-    folder.subfolderIds.forEach((fid) => {
-        if (hasFolderUnreadItems(state, fid)) {
-            res = true;
-        }
-    });
-
-    return res;
+    return folder.subfolderIds.length > 0 || folder.feedIds.length > 0;
 };
 
 export const selectTopLevelNodes = (state: FeedSliceState): ReadonlyArray<TreeNode> =>
