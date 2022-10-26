@@ -71,6 +71,7 @@ const ToggleIndicator = styled.div`
     width: ${({ theme }) => theme.toggleIndicatorSize}px;
     padding-right: ${({ theme }) => theme.iconRightSpacing}px;
     margin-bottom: -6px;
+    flex-shrink: 0; // only shrink title
 `;
 
 const FolderIcon = styled(FolderSimple)`
