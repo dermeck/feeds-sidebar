@@ -75,6 +75,26 @@ export const saveState = (state: RootState): Promise<void> => {
         'export-minified-keys-no-folders.json',
     );
 
+    // no items, no folders
+
+    const localStorageDataMinifiedKeysNoItemsNoFolders = {
+        [storageKeys.feeds]: {
+            feeds: state.feeds.feeds.map((f) => {
+                return {
+                    // i: f.id, // TODO url equals id => remove
+                    u: f.url,
+                };
+            }),
+        },
+        [storageKeys.options]: state.options,
+    };
+
+    const jsonMinifiedKeysNoItemsNoFolders = JSON.stringify(localStorageDataMinifiedKeysNoItemsNoFolders);
+    triggerDownload(
+        new Blob([jsonMinifiedKeysNoItemsNoFolders], { type: 'application/json' }),
+        'export-minified-keys-no-items-no-folders.json',
+    );
+
     return browser.storage.local.set(localStorageData);
 };
 
