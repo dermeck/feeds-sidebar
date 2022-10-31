@@ -11,7 +11,7 @@ export interface Feed {
     id: string;
     url: string;
     items: ReadonlyArray<FeedItem>;
-    link?: string;
+    link?: string; // TODO is this needed?
     title?: string;
 }
 

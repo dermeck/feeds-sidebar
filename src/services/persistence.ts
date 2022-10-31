@@ -1,5 +1,6 @@
 import { initialState as initialSessionSliceState } from '../store/slices/session';
 import { RootState } from '../store/store';
+import { hashCode } from '../utils/stringUtils';
 
 const storageKeys = {
     feeds: 'feedsKey',
@@ -15,74 +16,14 @@ export const saveState = (state: RootState): Promise<void> => {
     const json = JSON.stringify(localStorageData);
     triggerDownload(new Blob([json], { type: 'application/json' }), 'export-full.json');
 
-    // process
-    // minify Keys
-    const localStorageDataMinifiedKeys = {
-        [storageKeys.feeds]: {
-            ...state.feeds,
-            feeds: state.feeds.feeds.map((f) => {
-                return {
-                    i: f.id,
-                    u: f.url,
-                    t: f.title,
-                    l: f.link, // TODO is this needed?
-                    s: f.items.map((item) => {
-                        return {
-                            i: item.id,
-                            u: item.url,
-                            t: item.title,
-                            p: item.published,
-                            l: item.lastModified,
-                        };
-                    }),
-                };
-            }),
-        },
-        [storageKeys.options]: state.options,
-    };
-
-    const jsonMinifiedKeys = JSON.stringify(localStorageDataMinifiedKeys);
-    triggerDownload(new Blob([jsonMinifiedKeys], { type: 'application/json' }), 'export-minified-keys.json');
-
-    // minified keys and only feeds
-    const localStorageDataMinifiedKeysNoFolders = {
-        [storageKeys.feeds]: {
-            feeds: state.feeds.feeds.map((f) => {
-                return {
-                    i: f.id,
-                    u: f.url,
-                    t: f.title,
-                    l: f.link, // TODO is this needed?
-                    s: f.items.map((item) => {
-                        return {
-                            i: item.id,
-                            u: item.url,
-                            t: item.title,
-                            p: item.published,
-                            l: item.lastModified,
-                        };
-                    }),
-                };
-            }),
-        },
-        [storageKeys.options]: state.options,
-    };
-
-    const jsonMinifiedKeysNoFolders = JSON.stringify(localStorageDataMinifiedKeysNoFolders);
-
-    triggerDownload(
-        new Blob([jsonMinifiedKeysNoFolders], { type: 'application/json' }),
-        'export-minified-keys-no-folders.json',
-    );
-
     // no items, no folders
 
     const localStorageDataMinifiedKeysNoItemsNoFolders = {
         [storageKeys.feeds]: {
             feeds: state.feeds.feeds.map((f) => {
                 return {
-                    // i: f.id, // TODO url equals id => remove
                     u: f.url,
+                    // TODO add isRead Info
                 };
             }),
         },
@@ -90,15 +31,22 @@ export const saveState = (state: RootState): Promise<void> => {
     };
 
     const jsonMinifiedKeysNoItemsNoFolders = JSON.stringify(localStorageDataMinifiedKeysNoItemsNoFolders);
-    triggerDownload(
-        new Blob([jsonMinifiedKeysNoItemsNoFolders], { type: 'application/json' }),
-        'export-minified-keys-no-items-no-folders.json',
+    const blob = new Blob([jsonMinifiedKeysNoItemsNoFolders], { type: 'application/json' });
+    console.log('blobSize', blob.size); // n bytes
+    console.log('strlen', jsonMinifiedKeysNoItemsNoFolders.length); // TODO chunk https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync
+    // meta: {date, chunkNo}, chunk1, chunk2
+    triggerDownload(blob, 'export-minified-keys-no-items-no-folders.json');
+
+    console.log(
+        'https://ourworldindata.org/plastic-waste-trade',
+        hashCode('https://ourworldindata.org/plastic-waste-trade'),
     );
 
     return browser.storage.local.set(localStorageData);
 };
 
 const triggerDownload = (content: Blob, fileName: string) => {
+    return; // TODO
     const link = document.createElement('a');
 
     link.href = URL.createObjectURL(content);
