@@ -12,7 +12,78 @@ export const saveState = (state: RootState): Promise<void> => {
         [storageKeys.options]: state.options,
     };
 
+    const json = JSON.stringify(localStorageData);
+    triggerDownload(new Blob([json], { type: 'application/json' }), 'export-full.json');
+
+    // process
+    // minify Keys
+    const localStorageDataMinifiedKeys = {
+        [storageKeys.feeds]: {
+            ...state.feeds,
+            feeds: state.feeds.feeds.map((f) => {
+                return {
+                    i: f.id,
+                    u: f.url,
+                    t: f.title,
+                    l: f.link, // TODO is this needed?
+                    s: f.items.map((item) => {
+                        return {
+                            i: item.id,
+                            u: item.url,
+                            t: item.title,
+                            p: item.published,
+                            l: item.lastModified,
+                        };
+                    }),
+                };
+            }),
+        },
+        [storageKeys.options]: state.options,
+    };
+
+    const jsonMinifiedKeys = JSON.stringify(localStorageDataMinifiedKeys);
+    triggerDownload(new Blob([jsonMinifiedKeys], { type: 'application/json' }), 'export-minified-keys.json');
+
+    // minified keys and only feeds
+    const localStorageDataMinifiedKeysNoFolders = {
+        [storageKeys.feeds]: {
+            feeds: state.feeds.feeds.map((f) => {
+                return {
+                    i: f.id,
+                    u: f.url,
+                    t: f.title,
+                    l: f.link, // TODO is this needed?
+                    s: f.items.map((item) => {
+                        return {
+                            i: item.id,
+                            u: item.url,
+                            t: item.title,
+                            p: item.published,
+                            l: item.lastModified,
+                        };
+                    }),
+                };
+            }),
+        },
+        [storageKeys.options]: state.options,
+    };
+
+    const jsonMinifiedKeysNoFolders = JSON.stringify(localStorageDataMinifiedKeysNoFolders);
+
+    triggerDownload(
+        new Blob([jsonMinifiedKeysNoFolders], { type: 'application/json' }),
+        'export-minified-keys-no-folders.json',
+    );
+
     return browser.storage.local.set(localStorageData);
+};
+
+const triggerDownload = (content: Blob, fileName: string) => {
+    const link = document.createElement('a');
+
+    link.href = URL.createObjectURL(content);
+    link.download = fileName;
+    link.click();
 };
 
 export const loadState = async (): Promise<RootState | undefined> => {
