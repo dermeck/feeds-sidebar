@@ -13,7 +13,7 @@
         "build:zip": "npm run build && web-ext build --source-dir=build --artifacts-dir=dist",
         "build": "npm run lint && rimraf build && webpack --mode production && rimraf build/stand-alone  **/*.js.map **/**/*.js.map",
         "sign": "web-ext sign --source-dir=build --artifacts-dir=dist --api-key=$npm_config_ffaddon_api_key --api-secret=$npm_config_ffaddon_api_secret",
-        "lint": "npm run lint:js && npm run lint:styles && npm run find-deadcode",
+        "lint": "npm run lint:js && npm run find-deadcode",
         "lint:js": "eslint .eslintrc.json src/",
         "lint:styles": "stylelint '**/*.tsx' --config stylelintrc.json",
         "start:hotreload": "web-ext run --source-dir dist",
