@@ -19,7 +19,8 @@
         "start:hotreload": "web-ext run --source-dir dist",
         "prettier": "prettier --write '**/*.{ts,js,css,html}'",
         "check-env": "node -e 'console.log(process.env)' | grep npm",
-        "find-deadcode": "ts-prune | (! grep -v 'used in module')"
+        "find-deadcode": "ts-prune | (! grep -v 'used in module')",
+        "check": "dotenv -p FF_API_KEY"
     },
     "devDependencies": {
         "@emotion/css": "^11.10.0",
