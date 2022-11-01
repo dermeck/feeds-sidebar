@@ -10,12 +10,7 @@ To create an installable `.xpi` file the extension must be [signed](https://exte
 yarn run web-ext sign --source-dir=build --api-key=user:xxxxxxx:xxx --api-secret=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-The credentials can be configured:
-```
-yarn config set ffaddon_api_key [the-key]
-yarn config set ffaddon-api-secret [the-secret]
-
-``` 
+The credentials can be configured in the `.env` file. 
 
 ### `yarn build:xpi` 
 will perform a prod build and call `web-ext sign` with the configured credentials.
