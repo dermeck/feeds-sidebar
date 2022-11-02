@@ -2,7 +2,7 @@ import { encode } from 'html-entities';
 
 import { Feed, Folder, rootFolderId } from '../model/feeds';
 
-export const extensionUrl = 'https://addons.mozilla.org/en-US/firefox/addon/feeds-sidebar/';
+export const exportedOwnerId = 'https://addons.mozilla.org/en-US/firefox/addon/feeds-sidebar/';
 
 const exportFilename = 'feeds-sidebar-export.opml';
 
@@ -18,10 +18,10 @@ const opmlExport = (folders: ReadonlyArray<Folder>, feeds: ReadonlyArray<Feed>):
     rootFolder.subfolderIds.forEach((subfolderId) => {
         const subfolder = findSubfolder(folders, subfolderId);
 
-        addFolderNode(xmlDoc, bodyNode, subfolder, folders, feeds);
+        appendFolderNode(xmlDoc, bodyNode, subfolder, folders, feeds);
     });
 
-    addFeedNodes(xmlDoc, bodyNode, rootFolder.feedIds, feeds);
+    appendFeedNodes(xmlDoc, bodyNode, rootFolder.feedIds, feeds);
 
     const xmlString = new XMLSerializer().serializeToString(xmlDoc);
 
@@ -49,7 +49,7 @@ const createBaseDocument = () => {
     const headNode = xmlDoc.createElement('head');
     appendHeadNode(xmlDoc, headNode, 'title', 'Feeds Sidebar Export');
     appendHeadNode(xmlDoc, headNode, 'dateCreated', new Date().toLocaleDateString());
-    appendHeadNode(xmlDoc, headNode, 'ownerId', extensionUrl);
+    appendHeadNode(xmlDoc, headNode, 'ownerId', exportedOwnerId);
     appendHeadNode(xmlDoc, headNode, 'docs', 'http://opml.org/spec2.opml');
 
     rootNode.appendChild(headNode);
@@ -68,7 +68,7 @@ const appendHeadNode = (xmlDoc: XMLDocument, headNode: HTMLHeadElement, tag: str
     headNode.appendChild(node);
 };
 
-const addFolderNode = (
+const appendFolderNode = (
     xmlDoc: XMLDocument,
     rootNode: Element,
     folder: Folder,
@@ -81,15 +81,15 @@ const addFolderNode = (
 
     folder.subfolderIds.forEach((subfolderId) => {
         const subfolder = findSubfolder(folders, subfolderId);
-        addFolderNode(xmlDoc, folderNode, subfolder, folders, feeds);
+        appendFolderNode(xmlDoc, folderNode, subfolder, folders, feeds);
     });
 
-    addFeedNodes(xmlDoc, folderNode, folder.feedIds, feeds);
+    appendFeedNodes(xmlDoc, folderNode, folder.feedIds, feeds);
 
     rootNode.appendChild(folderNode);
 };
 
-const addFeedNodes = (
+const appendFeedNodes = (
     xmlDoc: XMLDocument,
     folderNode: Element,
     feedIds: ReadonlyArray<string>,
@@ -102,10 +102,10 @@ const addFeedNodes = (
             throw new Error(`Feed with id: ${feedId} not found.`);
         }
 
-        addFeedNode(xmlDoc, folderNode, feed);
+        appendFeedNode(xmlDoc, folderNode, feed);
     });
 
-const addFeedNode = (xmlDoc: XMLDocument, rootNode: Element, feed: Feed) => {
+const appendFeedNode = (xmlDoc: XMLDocument, rootNode: Element, feed: Feed) => {
     const feedNode = xmlDoc.createElement('outline');
     feedNode.setAttribute('type', 'rss');
     feedNode.setAttribute('title', encode(feed.title));
