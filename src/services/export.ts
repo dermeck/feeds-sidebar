@@ -2,6 +2,8 @@ import { encode } from 'html-entities';
 
 import { Feed, Folder, rootFolderId } from '../model/feeds';
 
+export const extensionUrl = 'https://addons.mozilla.org/en-US/firefox/addon/feeds-sidebar/';
+
 const exportFilename = 'feeds-sidebar-export.opml';
 
 const opmlExport = (folders: ReadonlyArray<Folder>, feeds: ReadonlyArray<Feed>): void => {
@@ -45,14 +47,25 @@ const createBaseDocument = () => {
     rootNode.setAttribute('version', '1.0');
 
     const headNode = xmlDoc.createElement('head');
-    headNode.setAttribute('title', 'Feeds Sidebar Export');
-    headNode.setAttribute('dateCreated', new Date().toLocaleDateString());
+    appendHeadNode(xmlDoc, headNode, 'title', 'Feeds Sidebar Export');
+    appendHeadNode(xmlDoc, headNode, 'dateCreated', new Date().toLocaleDateString());
+    appendHeadNode(xmlDoc, headNode, 'ownerId', extensionUrl);
+    appendHeadNode(xmlDoc, headNode, 'docs', 'http://opml.org/spec2.opml');
+
     rootNode.appendChild(headNode);
 
     const bodyNode = xmlDoc.createElement('body');
     rootNode.appendChild(bodyNode);
 
     return { xmlDoc, bodyNode };
+};
+
+const appendHeadNode = (xmlDoc: XMLDocument, headNode: HTMLHeadElement, tag: string, textContent: string) => {
+    const node = xmlDoc.createElement(tag);
+    const textNode = xmlDoc.createTextNode(textContent);
+    node.appendChild(textNode);
+
+    headNode.appendChild(node);
 };
 
 const addFolderNode = (
