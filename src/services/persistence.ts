@@ -1,5 +1,6 @@
 import { initialState as initialSessionSliceState } from '../store/slices/session';
 import { RootState } from '../store/store';
+import { hashCode } from '../utils/stringUtils';
 
 const storageKeys = {
     feeds: 'feedsKey',
@@ -12,7 +13,45 @@ export const saveState = (state: RootState): Promise<void> => {
         [storageKeys.options]: state.options,
     };
 
+    const json = JSON.stringify(localStorageData);
+    triggerDownload(new Blob([json], { type: 'application/json' }), 'export-full.json');
+
+    // no items, no folders
+
+    const localStorageDataMinifiedKeysNoItemsNoFolders = {
+        [storageKeys.feeds]: {
+            feeds: state.feeds.feeds.map((f) => {
+                return {
+                    u: f.url,
+                    // TODO add isRead Info
+                };
+            }),
+        },
+        [storageKeys.options]: state.options,
+    };
+
+    const jsonMinifiedKeysNoItemsNoFolders = JSON.stringify(localStorageDataMinifiedKeysNoItemsNoFolders);
+    const blob = new Blob([jsonMinifiedKeysNoItemsNoFolders], { type: 'application/json' });
+    console.log('blobSize', blob.size); // n bytes
+    console.log('strlen', jsonMinifiedKeysNoItemsNoFolders.length); // TODO chunk https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync
+    // meta: {date, chunkNo}, chunk1, chunk2
+    triggerDownload(blob, 'export-minified-keys-no-items-no-folders.json');
+
+    console.log(
+        'https://ourworldindata.org/plastic-waste-trade',
+        hashCode('https://ourworldindata.org/plastic-waste-trade'),
+    );
+
     return browser.storage.local.set(localStorageData);
+};
+
+const triggerDownload = (content: Blob, fileName: string) => {
+    return; // TODO
+    const link = document.createElement('a');
+
+    link.href = URL.createObjectURL(content);
+    link.download = fileName;
+    link.click();
 };
 
 export const loadState = async (): Promise<RootState | undefined> => {
