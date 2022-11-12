@@ -107,7 +107,7 @@ const appendFeedNodes = (
 
 const appendFeedNode = (xmlDoc: XMLDocument, rootNode: Element, feed: Feed) => {
     const feedNode = xmlDoc.createElement('outline');
-    feedNode.setAttribute('type', 'rss');
+    feedNode.setAttribute('type', 'rss'); // TODO export correct type
     feedNode.setAttribute('title', encode(feed.title));
     feedNode.setAttribute('text', encode(feed.title));
     feedNode.setAttribute('xmlUrl', encode(feed.url));
