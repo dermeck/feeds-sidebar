@@ -6,7 +6,6 @@ import { exportedOwnerId } from './export';
 type ParseOPMLResult = { feeds: ReadonlyArray<Feed>; folders: ReadonlyArray<Folder> } | undefined;
 
 type ParsedFeedOutline = {
-    type: 'rss';
     title: string;
     text: string;
     xmlUrl: string;
@@ -19,7 +18,7 @@ type ParsedFolderOutline = {
 };
 
 function isParsedFeedOutline(outline: ParsedOutline): outline is ParsedFeedOutline {
-    return (outline as ParsedFeedOutline).type !== undefined;
+    return (outline as ParsedFeedOutline).xmlUrl !== undefined;
 }
 
 type ParsedOutline = ParsedFeedOutline | ParsedFolderOutline;
@@ -123,7 +122,7 @@ const parseOnlyFeeds = (fileContent: string): ReadonlyArray<Feed> | undefined =>
     return parsedFeeds;
 };
 
-export const parseFeedsAndFolders = (fileContent: string): ParseOPMLResult => {
+export const parseOpml = (fileContent: string): ParseOPMLResult => {
     const options = {
         ignoreAttributes: false,
         attributeNamePrefix: '',
