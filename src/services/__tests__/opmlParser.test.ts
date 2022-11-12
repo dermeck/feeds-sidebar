@@ -68,7 +68,7 @@ describe('parseOpml', () => {
             expect(parseOpml(opmlFixture(bodyFixture))).toStrictEqual(expectation);
         });
 
-        it('returns a single feed and root folder if only one feed outline exists (xmlUrl is missing)', () => {
+        it('returns a single feed and root folder if only one feed outline exists (xmlUrl exists)', () => {
             const expectation: ReturnType<typeof parseOpml> = {
                 feeds: [{ id: 'feed1_url', url: 'feed1_url', items: [] }],
                 folders: [
