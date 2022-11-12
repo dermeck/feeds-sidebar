@@ -1,9 +1,8 @@
 import { rootFolderId } from '../../model/feeds';
 import { parseOpml } from '../opmlParser';
 
-const opmlFixture = (bodyXml: string) => {
-    return `
-    <?xml version="1.0" encoding="UTF-8"?>
+const opmlFixture = (bodyXml: string, ownerId = 'https://addons.mozilla.org/en-US/firefox/addon/feeds-sidebar/') => {
+    return `<?xml version="1.0" encoding="UTF-8"?>
     <opml version="1.0">
         <head>
             <title>
@@ -13,7 +12,7 @@ const opmlFixture = (bodyXml: string) => {
                 11/2/2022
             </dateCreated>
             <ownerId>
-                https://addons.mozilla.org/en-US/firefox/addon/feeds-sidebar/
+                ${ownerId}
             </ownerId>
             <docs>
                 http://opml.org/spec2.opml
@@ -115,6 +114,19 @@ describe('parseOpml', () => {
     });
 
     describe('if opml was not exported from this extension', () => {
-        it.todo('returns only feeds');
+        it('returns only feeds', () => {
+            const expectation: ReturnType<typeof parseOpml> = {
+                feeds: [
+                    { id: 'feed 1', url: 'feed1_url', items: [] },
+                    { id: 'feed 2', url: 'feed2_url', items: [] },
+                    { id: 'feed 3', url: 'feed3_url', items: [] },
+                    { id: 'feed 4', url: 'feed4_url', items: [] },
+                    { id: 'feed 5', url: 'feed5_url', items: [] },
+                ],
+                folders: [],
+            };
+
+            expect(parseOpml(opmlFixture(bodyFixture, 'wrongOwnerId'))).toStrictEqual(expectation);
+        });
     });
 });
