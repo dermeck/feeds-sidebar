@@ -61,7 +61,7 @@ describe('markItemAsRead action', () => {
         };
 
         const action = feedsSlice.actions.markItemAsRead({
-            feedId: 'feedId1',
+            feedId: feed1Fixture.id,
             itemId: 'itemId2',
         });
 
