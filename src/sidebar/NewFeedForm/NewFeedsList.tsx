@@ -58,7 +58,7 @@ const NewFeedsList: FunctionComponent<Props> = (props: Props) => {
                                 );
 
                             case 'loaded': {
-                                const loadedFeed = feeds.find((f) => f.url === newFeedUrl);
+                                const loadedFeed = feeds.find((f) => f.id === newFeedUrl);
                                 if (loadedFeed !== undefined) {
                                     return (
                                         <ListItem>

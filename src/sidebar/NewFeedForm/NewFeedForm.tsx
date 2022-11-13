@@ -104,7 +104,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                             return;
                         }
 
-                        const existingFeed = feeds.find((x) => x.url === newFeedUrl);
+                        const existingFeed = feeds.find((x) => x.id === newFeedUrl);
 
                         if (existingFeed === undefined) {
                             setAddedFeedUrls((oldItems) => [...oldItems, newFeedUrl]);

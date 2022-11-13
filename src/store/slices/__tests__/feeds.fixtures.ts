@@ -1,8 +1,7 @@
 import { Feed, FeedItem, Folder } from '../../../model/feeds';
 
 export const feed1Fixture: Feed = {
-    id: 'feedId1',
-    url: 'http://feedId1.url',
+    id: 'http://feedId1.url',
     items: [
         {
             id: 'itemId1',
@@ -20,8 +19,7 @@ export const feed1Fixture: Feed = {
 };
 
 export const feed2Fixture: Feed = {
-    id: 'feedId2',
-    url: 'http://feedId2.url',
+    id: 'http://feedId2.url',
     items: [
         {
             id: 'itemId1',
@@ -39,8 +37,7 @@ export const feed2Fixture: Feed = {
 };
 
 export const feed3Fixture: Feed = {
-    id: 'feedId3',
-    url: 'http://feedId3.url',
+    id: 'http://feedId3.url',
     items: [
         {
             id: 'itemId1',

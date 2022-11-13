@@ -20,7 +20,7 @@ export const initMiddleware: Middleware<
 
         if (loadedState !== undefined) {
             middlewareApi.dispatch(extensionStateLoaded(loadedState));
-            middlewareApi.dispatch(fetchFeedsCommand(loadedState.feeds.feeds.map((x) => x.url)));
+            middlewareApi.dispatch(fetchFeedsCommand(loadedState.feeds.feeds.map((x) => x.id)));
         }
 
         // setup persistence

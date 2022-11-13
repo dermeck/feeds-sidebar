@@ -81,7 +81,7 @@ const Sidebar: FunctionComponent = () => {
             <Header>
                 <FetchAllButton
                     title="Fetch all Feeds"
-                    onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.url)))}>
+                    onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.id)))}>
                     <FetchAllButtonIcon size={22} weight="regular" spin={isLoading} />
                 </FetchAllButton>
 

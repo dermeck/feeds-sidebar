@@ -34,7 +34,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
     yield put(
         sessionSlice.actions.changeFeedsStatus({
             newStatus: 'loaded',
-            feedUrls: updatePayload.map((feed) => feed.url),
+            feedUrls: updatePayload.map((feed) => feed.id),
         }),
     );
 

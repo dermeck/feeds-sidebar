@@ -52,8 +52,7 @@ const processOutline = (
     } else {
         if (isParsedFeedOutline(outline)) {
             parsedFeeds.push({
-                id: outline.xmlUrl, // TODO do we need the id?
-                url: outline.xmlUrl,
+                id: outline.xmlUrl,
                 items: [],
             });
 
@@ -98,19 +97,11 @@ const parseOnlyFeeds = (fileContent: string): ReadonlyArray<Feed> | undefined =>
     }
 
     xml.querySelectorAll('outline[xmlUrl]').forEach((feedNode) => {
-        let id = feedNode.getAttribute('text');
-        if (id === null) {
-            // use title as fallback if text is not present
-            // though it should be there (http://dev.opml.org/spec2.html#textAttribute)
-            id = feedNode.getAttribute('title');
-        }
+        const id = feedNode.getAttribute('xmlUrl');
 
-        const url = feedNode.getAttribute('xmlUrl');
-
-        if (id !== null && url !== null && !parsedFeeds.some((x) => x.id === id)) {
+        if (id !== null && !parsedFeeds.some((x) => x.id === id)) {
             parsedFeeds.push({
                 id,
-                url,
                 items: [],
             });
         }
