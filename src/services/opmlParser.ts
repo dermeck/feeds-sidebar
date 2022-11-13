@@ -56,27 +56,13 @@ const processOutline = (
                 url: outline.xmlUrl,
                 items: [],
             });
-            parent.feedIds = [...parent.feedIds, outline.xmlUrl];
 
-            // TODO remove duplicate code
-            const idx = parsedFolders.findIndex((x) => x.id === parent.id);
-            if (idx === -1) {
-                parsedFolders.push(parent);
-            } else {
-                // replace
-                parsedFolders.splice(idx, 1, parent);
-            }
+            parent.feedIds = [...parent.feedIds, outline.xmlUrl];
+            applyParentChange(parsedFolders, parent);
         } else {
             const folder: Folder = { id: outline.id, title: outline.text, feedIds: [], subfolderIds: [] };
             parent.subfolderIds = [...parent.subfolderIds, outline.id];
-
-            const idx = parsedFolders.findIndex((x) => x.id === parent.id);
-            if (idx === -1) {
-                parsedFolders.push(parent);
-            } else {
-                // replace
-                parsedFolders.splice(idx, 1, parent);
-            }
+            applyParentChange(parsedFolders, parent);
 
             parsedFolders.push(folder);
 
@@ -85,6 +71,17 @@ const processOutline = (
             }
             processOutline(folder, outline.outline, parsedFeeds, parsedFolders);
         }
+    }
+};
+
+const applyParentChange = (parsedFolders: Folder[], parent: Folder) => {
+    const idx = parsedFolders.findIndex((x) => x.id === parent.id);
+    if (idx === -1) {
+        // add
+        parsedFolders.push(parent);
+    } else {
+        // replace / update
+        parsedFolders.splice(idx, 1, parent);
     }
 };
 
