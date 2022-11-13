@@ -239,6 +239,12 @@ const feedsSlice = createSlice({
     name: 'feeds',
     initialState,
     reducers: {
+        replaceFolders(state, action: PayloadAction<ReadonlyArray<Folder>>) {
+            return {
+                ...state,
+                folders: action.payload,
+            };
+        },
         addFolder(state, action: PayloadAction<string>) {
             const newFolderId = uuidv4();
 

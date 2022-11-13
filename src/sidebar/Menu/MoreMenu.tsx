@@ -75,7 +75,11 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
                     if (fileContent === undefined) {
                         alert(`An error occured while parsing file "${file.name}".`);
                     } else {
-                        dispatch(fetchFeedsCommand(fileContent.map((f) => f.url)));
+                        dispatch(fetchFeedsCommand(fileContent.feeds.map((f) => f.url)));
+                        if (fileContent.folders.length > 1) {
+                            dispatch(feedsSlice.actions.updateFeeds(fileContent.feeds)); // ensure referenced feeds exist before folders are created
+                            dispatch(feedsSlice.actions.replaceFolders(fileContent.folders));
+                        }
                     }
 
                     dispatch(sessionSlice.actions.hideMenu());
