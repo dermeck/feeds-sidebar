@@ -50,7 +50,7 @@ describe('updateFeeds action', () => {
     });
 
     describe('updates existing feed', () => {
-        it('always updates id and link', () => {
+        it('always updates link', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 feeds: [feed1Fixture],
@@ -61,13 +61,11 @@ describe('updateFeeds action', () => {
                 feedsSlice.actions.updateFeeds([
                     {
                         ...feed1Fixture,
-                        id: 'newId',
                         link: 'thenewlink',
                     },
                 ]),
             );
 
-            expect(newState.feeds[0].id).toBe('newId');
             expect(newState.feeds[0].link).toBe('thenewlink');
         });
 

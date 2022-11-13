@@ -45,11 +45,11 @@ describe('parseOpml', () => {
         it('returns feeds and folder structure', () => {
             const expectation: ReturnType<typeof parseOpml> = {
                 feeds: [
-                    { id: 'feed1_url', url: 'feed1_url', items: [] },
-                    { id: 'feed2_url', url: 'feed2_url', items: [] },
-                    { id: 'feed3_url', url: 'feed3_url', items: [] },
-                    { id: 'feed4_url', url: 'feed4_url', items: [] },
-                    { id: 'feed5_url', url: 'feed5_url', items: [] },
+                    { id: 'feed1_url', items: [] },
+                    { id: 'feed2_url', items: [] },
+                    { id: 'feed3_url', items: [] },
+                    { id: 'feed4_url', items: [] },
+                    { id: 'feed5_url', items: [] },
                 ],
                 folders: [
                     {
@@ -70,7 +70,7 @@ describe('parseOpml', () => {
 
         it('returns a single feed and root folder if only one feed outline exists (xmlUrl exists)', () => {
             const expectation: ReturnType<typeof parseOpml> = {
-                feeds: [{ id: 'feed1_url', url: 'feed1_url', items: [] }],
+                feeds: [{ id: 'feed1_url', items: [] }],
                 folders: [
                     {
                         id: rootFolderId,
@@ -96,7 +96,7 @@ describe('parseOpml', () => {
             </outline>`;
 
             const expectation: ReturnType<typeof parseOpml> = {
-                feeds: [{ id: 'feed1_url', url: 'feed1_url', items: [] }],
+                feeds: [{ id: 'feed1_url', items: [] }],
                 folders: [
                     {
                         id: rootFolderId,
@@ -117,11 +117,11 @@ describe('parseOpml', () => {
         it('returns only feeds', () => {
             const expectation: ReturnType<typeof parseOpml> = {
                 feeds: [
-                    { id: 'feed 1', url: 'feed1_url', items: [] },
-                    { id: 'feed 2', url: 'feed2_url', items: [] },
-                    { id: 'feed 3', url: 'feed3_url', items: [] },
-                    { id: 'feed 4', url: 'feed4_url', items: [] },
-                    { id: 'feed 5', url: 'feed5_url', items: [] },
+                    { id: 'feed1_url', items: [] },
+                    { id: 'feed2_url', items: [] },
+                    { id: 'feed3_url', items: [] },
+                    { id: 'feed4_url', items: [] },
+                    { id: 'feed5_url', items: [] },
                 ],
                 folders: [],
             };

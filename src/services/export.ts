@@ -110,7 +110,7 @@ const appendFeedNode = (xmlDoc: XMLDocument, rootNode: Element, feed: Feed) => {
     feedNode.setAttribute('type', 'rss'); // TODO export correct type
     feedNode.setAttribute('title', encode(feed.title));
     feedNode.setAttribute('text', encode(feed.title));
-    feedNode.setAttribute('xmlUrl', encode(feed.url));
+    feedNode.setAttribute('xmlUrl', encode(feed.id));
 
     rootNode.appendChild(feedNode);
 };

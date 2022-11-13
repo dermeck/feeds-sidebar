@@ -40,7 +40,7 @@ describe('moveNode action', () => {
                     mode: InsertMode.Into,
                 }),
             ),
-        ).toThrow("Folder can not be moved because the target folder with id 'feedId1' does not exist");
+        ).toThrow("Folder can not be moved because the target folder with id 'http://feedId1.url' does not exist");
     });
 
     describe('when moving folder nodes (InsertMode.Into)', () => {
@@ -370,7 +370,7 @@ describe('moveNode action', () => {
                         mode: InsertMode.Into,
                     }),
                 ),
-            ).toThrowError("Feed can not be moved into node with id: 'feedId2' because it is not a folder.");
+            ).toThrowError("Feed can not be moved into node with id: 'http://feedId2.url' because it is not a folder.");
         });
 
         it('adds moved feed to feedIds of target folder', () => {

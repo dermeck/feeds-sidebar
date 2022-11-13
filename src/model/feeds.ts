@@ -8,10 +8,9 @@ export interface Folder {
 export const rootFolderId = '_root_';
 
 export interface Feed {
-    id: string;
-    url: string;
+    id: string; // feed url
     items: ReadonlyArray<FeedItem>;
-    link?: string;
+    link?: string; // website url
     title?: string;
 }
 

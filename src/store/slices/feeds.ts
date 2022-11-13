@@ -66,7 +66,6 @@ const sampleDataFeeds: ReadonlyArray<Feed> = [
     {
         // sample Atom Feed
         id: 'https://ourworldindata.org/atom.xml',
-        url: 'https://ourworldindata.org/atom.xml',
         items: [],
     },
 
@@ -74,30 +73,25 @@ const sampleDataFeeds: ReadonlyArray<Feed> = [
         // sample RSS 1.0 / RDF Feed
         // https://www.w3schools.com/xml/xml_rdf.asp
         id: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
-        url: 'https://www.dragonball-multiverse.com/flux.rss.php?lang=en',
         items: [],
     },
 
     {
         // sample RSS 2.0 Feed
         id: 'https://www.tagesschau.de/xml/rss2/',
-        url: 'https://www.tagesschau.de/xml/rss2/',
         items: [],
     },
     {
         // sample Youtube Feed (Atom)
         id: 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA',
-        url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA',
         items: [],
     },
     {
         id: 'https://stackoverflow.blog/feed/',
-        url: 'https://stackoverflow.blog/feed/',
         items: [],
     },
     {
         id: 'https://www.quarks.de/feed/',
-        url: 'https://www.quarks.de/feed/',
         items: [],
     },
 ];
@@ -349,9 +343,7 @@ const feedsSlice = createSlice({
             };
         },
         updateFeeds(state, action: PayloadAction<ReadonlyArray<Feed>>) {
-            const newFeeds = action.payload.filter(
-                (updatedFeed) => !state.feeds.some((x) => x.url === updatedFeed.url),
-            );
+            const newFeeds = action.payload.filter((updatedFeed) => !state.feeds.some((x) => x.id === updatedFeed.id));
 
             const folders = state.folders.map((folder) =>
                 folder.id === rootFolderId
@@ -629,7 +621,7 @@ const moveFeed = (
 
 const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Feed>): ReadonlyArray<Feed> => {
     updatedFeeds = feeds.map((feed) => {
-        const updatedFeed = updatedFeeds.find((x) => x.url === feed.url);
+        const updatedFeed = updatedFeeds.find((x) => x.id === feed.id);
         if (updatedFeed === undefined) {
             return feed;
         }
@@ -653,8 +645,7 @@ const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
     });
 
     return {
-        id: updatedFeed.id,
-        url: previous.url,
+        id: previous.id,
         title: previous.title !== undefined ? previous.title : updatedFeed.title,
         link: updatedFeed.link,
         items: [...previous.items, ...newItems],
