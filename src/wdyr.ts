@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from 'react';
 
+/*
 if (process.env.NODE_ENV === 'development') {
     // https://github.com/welldone-software/why-did-you-render/issues/85#issuecomment-590076401
     const ReactRedux = require('react-redux/dist/react-redux.js');
@@ -12,3 +13,4 @@ if (process.env.NODE_ENV === 'development') {
         trackExtraHooks: [[ReactRedux, 'useSelector']],
     });
 }
+*/

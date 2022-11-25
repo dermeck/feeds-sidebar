@@ -155,7 +155,7 @@ const Folder = (props: Props) => {
     );
 };
 
-if (process.env.MODE === 'dev') {
+if (import.meta.env.MODE === 'dev') {
     Folder.whyDidYouRender = true;
 }
 

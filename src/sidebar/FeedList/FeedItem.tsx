@@ -170,7 +170,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
 
 const MemoizedFeedItem = memo(FeedItem);
 
-if (process.env.MODE === 'dev') {
+if (import.meta.env.MODE === 'dev') {
     MemoizedFeedItem.whyDidYouRender = true;
 }
 

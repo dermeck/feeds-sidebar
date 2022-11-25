@@ -99,7 +99,7 @@ const FolderTreeNode = (props: Props) => {
 
 const MemoizedFolderTreeNode = memo(FolderTreeNode);
 
-if (process.env.MODE === 'dev') {
+if (import.meta.env.MODE === 'dev') {
     FolderTreeNode.whyDidYouRender = true;
 }
 

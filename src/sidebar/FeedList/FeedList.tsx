@@ -66,7 +66,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
 
 const MemoizedFeedList = memo(FeedList);
 
-if (process.env.MODE === 'dev') {
+if (import.meta.env.MODE === 'dev') {
     FeedList.whyDidYouRender = true;
 }
 

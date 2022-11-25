@@ -9,7 +9,12 @@ export const loggerMiddleware: Middleware<
     RootState,
     ThunkDispatch<RootState, undefined, AnyAction>
 > = (storeApi) => (next) => (action) => {
-    if (!process.env.ENABLE_LOGGER_MIDDLEWARE || process.env.STAND_ALONE || process.env.NODE_ENV !== 'development') {
+    if (
+        !import.meta.env.ENABLE_LOGGER_MIDDLEWARE ||
+        import.meta.env.STAND_ALONE ||
+        import.meta.env.NODE_ENV !== 'development'
+    ) {
+        const moep: string = 1;
         return next(action);
     }
 

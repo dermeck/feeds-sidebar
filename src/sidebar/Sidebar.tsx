@@ -127,7 +127,7 @@ const Sidebar: FunctionComponent = () => {
     );
 };
 
-if (process.env.MODE === 'dev') {
+if (import.meta.env.MODE === 'dev') {
     Sidebar.whyDidYouRender = true;
 }
 
