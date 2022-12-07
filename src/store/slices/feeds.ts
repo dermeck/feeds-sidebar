@@ -234,9 +234,20 @@ const feedsSlice = createSlice({
     initialState,
     reducers: {
         replaceFolders(state, action: PayloadAction<ReadonlyArray<Folder>>) {
+            // ensure that every feed has a parent
+            const feedsWithParent = action.payload.flatMap((f) => f.feedIds);
+            const orphanedFeedIds = state.feeds.filter((f) => !feedsWithParent.includes(f.id)).map((f) => f.id);
+
             return {
                 ...state,
-                folders: action.payload,
+                folders: action.payload.map((f) =>
+                    f.id === rootFolderId
+                        ? {
+                              ...f,
+                              feedIds: [...f.feedIds, ...orphanedFeedIds],
+                          }
+                        : f,
+                ),
             };
         },
         addFolder(state, action: PayloadAction<string>) {

@@ -1,3 +1,5 @@
+import { FolderSimpleMinus } from 'phosphor-react';
+
 import { Folder, NodeMeta, NodeType } from '../../../model/feeds';
 import { extensionStateLoaded } from '../../actions';
 import { RootState } from '../../store';
@@ -164,5 +166,113 @@ describe('addFolder', () => {
             feedIds: [],
             subfolderIds: ['mocked-uuid'],
         });
+    });
+});
+
+describe('replaceFolders', () => {
+    it('replaces existing folder structure', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            folders: [
+                {
+                    id: '_root_',
+                    title: 'root',
+                    feedIds: [],
+                    subfolderIds: ['mocked-uuid'],
+                },
+                {
+                    id: 'mocked-uuid',
+                    title: 'moepFolder',
+                    subfolderIds: [],
+                    feedIds: [feed1Fixture.id, feed2Fixture.id],
+                },
+            ],
+            feeds: [feed1Fixture, feed2Fixture],
+        };
+
+        const action = feedsSlice.actions.replaceFolders([
+            {
+                id: '_root_',
+                title: 'root',
+                feedIds: [feed1Fixture.id],
+                subfolderIds: ['mocked-uuid2'],
+            },
+            {
+                id: 'mocked-uuid2',
+                title: 'moepFolder2',
+                feedIds: [feed2Fixture.id],
+                subfolderIds: [],
+            },
+        ]);
+
+        const newState = feedsSlice.reducer(prevState, action);
+
+        expect(newState.folders).toStrictEqual([
+            {
+                id: '_root_',
+                title: 'root',
+                feedIds: [feed1Fixture.id],
+                subfolderIds: ['mocked-uuid2'],
+            },
+            {
+                id: 'mocked-uuid2',
+                title: 'moepFolder2',
+                feedIds: [feed2Fixture.id],
+                subfolderIds: [],
+            },
+        ]);
+    });
+
+    it('moves orphaned feeds into root folder (prev. existing folder is missing after import)', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            folders: [
+                {
+                    id: '_root_',
+                    title: 'root',
+                    feedIds: [],
+                    subfolderIds: ['mocked-uuid'],
+                },
+                {
+                    id: 'mocked-uuid',
+                    title: 'moepFolder',
+                    subfolderIds: [],
+                    feedIds: [feed1Fixture.id, feed2Fixture.id],
+                },
+            ],
+            feeds: [feed1Fixture, feed2Fixture],
+        };
+
+        const action = feedsSlice.actions.replaceFolders([
+            {
+                id: '_root_',
+                title: 'root',
+                feedIds: [],
+                subfolderIds: ['mocked-uuid3'],
+            },
+            {
+                id: 'mocked-uuid3',
+                title: 'a new folder',
+                subfolderIds: [],
+                feedIds: [],
+            },
+        ]);
+
+        const newState = feedsSlice.reducer(prevState, action);
+
+        expect(newState.folders).toStrictEqual([
+            {
+                id: '_root_',
+                title: 'root',
+                feedIds: [feed1Fixture.id, feed2Fixture.id],
+                subfolderIds: ['mocked-uuid3'],
+            },
+            {
+                id: 'mocked-uuid3',
+                title: 'a new folder',
+                subfolderIds: [],
+                feedIds: [],
+            },
+        ]);
     });
 });
