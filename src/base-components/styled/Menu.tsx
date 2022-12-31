@@ -31,8 +31,8 @@ export const MenuContainer = styled.div<MenuContainerProps>`
     padding: 1px;
 
     border: 1px solid ${(props) => props.theme.colors.menuBorderColor};
-    background-color: ${(props) => props.theme.colors.sidebarBackground};
     border-radius: 2px;
+    background-color: ${(props) => props.theme.colors.sidebarBackground};
     color: ${(props) => props.theme.colors.sideBarText};
 `;
 

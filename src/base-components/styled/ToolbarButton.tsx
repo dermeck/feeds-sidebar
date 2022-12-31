@@ -6,15 +6,17 @@ export const toolbarButtonSideLengthInPx = 32;
 export const toolbarButtonPaddingInPx = 4;
 
 export const ToolbarButton = styled(Button)`
+    display: inline;
+    width: 100%;
     width: ${toolbarButtonSideLengthInPx}px;
     height: ${toolbarButtonSideLengthInPx}px;
 
     padding: ${toolbarButtonPaddingInPx}px;
+    border-radius: 4px;
     margin: 0;
 
     background-color: ${(props) =>
         props.active ? props.theme.colors.toolbarButtonActiveBackground : props.theme.colors.toolbarBackgroundColor};
-    border-radius: 4px;
     color: ${(props) => props.theme.colors.toolbarTextColor};
     font-size: 13px;
 
