@@ -6,8 +6,6 @@ export const toolbarButtonSideLengthInPx = 32;
 export const toolbarButtonPaddingInPx = 4;
 
 export const ToolbarButton = styled(Button)`
-    display: inline;
-    width: 100%;
     width: ${toolbarButtonSideLengthInPx}px;
     height: ${toolbarButtonSideLengthInPx}px;
 
