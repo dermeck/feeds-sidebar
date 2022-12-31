@@ -51,7 +51,6 @@
         "node-polyfill-webpack-plugin": "^2.0.1",
         "phosphor-react": "^1.4.1",
         "postcss": "^8.4.20",
-        "postcss-scss": "^4.0.6",
         "postcss-styled-components": "^0.2.0",
         "prettier": "^2.7.1",
         "react": "^18.2.0",
@@ -99,7 +98,6 @@
     },
     "packageManager": "yarn@3.2.4",
     "resolutions": {
-        "webext-redux@^2.1.9": "patch:webext-redux@npm%3A2.1.9#./.yarn/patches/webext-redux-npm-2.1.9-e005835987.patch",
-        "postcss": "^8"
+        "webext-redux@^2.1.9": "patch:webext-redux@npm%3A2.1.9#./.yarn/patches/webext-redux-npm-2.1.9-e005835987.patch"
     }
 }
