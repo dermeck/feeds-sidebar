@@ -6087,8 +6087,7 @@ __metadata:
     stream-browserify: ^3.0.0
     stylelint: ^14.16.1
     stylelint-config-idiomatic-order: ^9.0.0
-    stylelint-config-prettier: ^9.0.4
-    stylelint-config-styled-components: ^0.1.1
+    stylelint-config-recommended: ^9.0.0
     stylelint-declaration-block-no-ignored-properties: ^2.6.0
     ts-jest: ^29.0.3
     ts-loader: ^9.4.1
@@ -11879,22 +11878,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stylelint-config-prettier@npm:^9.0.4":
-  version: 9.0.4
-  resolution: "stylelint-config-prettier@npm:9.0.4"
+"stylelint-config-recommended@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "stylelint-config-recommended@npm:9.0.0"
   peerDependencies:
-    stylelint: ">=11.0.0"
-  bin:
-    stylelint-config-prettier: bin/check.js
-    stylelint-config-prettier-check: bin/check.js
-  checksum: cf94f646f6b1756a9e41940524a8c276ec05be9a2a02907fee6cb4ebdc39e3a9049c96ec97e79cc3f3c0487f5870c81b3d68b0a65d1ee81cd9d7700420788cee
-  languageName: node
-  linkType: hard
-
-"stylelint-config-styled-components@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "stylelint-config-styled-components@npm:0.1.1"
-  checksum: 1421187a27d11740f9ee224163231a9f3194c8055c27b0cb3204e76742c55a9397004bc70da9b3feee9988d0afe0d3c839186ef01d847a163ba7ad3299a9759a
+    stylelint: ^14.10.0
+  checksum: 6d94582cb6ef0ba7d0181f0ff500fb12092e465915730d0a7f6b6e8d16e8c920658f18bb2c670115cd177f5d3b481609ff3a91bcee083d546ae31d94fdc03261
   languageName: node
   linkType: hard
 
