@@ -6087,6 +6087,10 @@ __metadata:
     rimraf: ^3.0.2
     stream-browserify: ^3.0.0
     stylelint: ^14.16.1
+    stylelint-config-idiomatic-order: ^9.0.0
+    stylelint-config-prettier: ^9.0.4
+    stylelint-config-styled-components: ^0.1.1
+    stylelint-declaration-block-no-ignored-properties: ^2.6.0
     ts-jest: ^29.0.3
     ts-loader: ^9.4.1
     ts-node: ^10.9.1
@@ -10107,6 +10111,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postcss-sorting@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "postcss-sorting@npm:7.0.1"
+  peerDependencies:
+    postcss: ^8.3.9
+  checksum: 79cca6703ef7c60ea913c3bfb91f85bd7adce35e60b834a40cadd1c7e18f37961d63f0e641387651ee3bf1df1996e952d8fe443f93a271aa2d23f239ea3145bc
+  languageName: node
+  linkType: hard
+
 "postcss-styled-components@npm:^0.2.0":
   version: 0.2.0
   resolution: "postcss-styled-components@npm:0.2.0"
@@ -11851,6 +11864,57 @@ __metadata:
   version: 0.1.0
   resolution: "style-search@npm:0.1.0"
   checksum: 3cfefe335033aad6d47da0725cb48f5db91a73935954c77eab77d9e415e6668cdb406da4a4f7ef9f1aca77853cf5ba7952c45e869caa5bd6439691d88098d468
+  languageName: node
+  linkType: hard
+
+"stylelint-config-idiomatic-order@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "stylelint-config-idiomatic-order@npm:9.0.0"
+  dependencies:
+    stylelint-order: ^5.0.0
+  peerDependencies:
+    stylelint: ">=11"
+  checksum: ff942702442cb60116ef35442f8ab15279fbaeb6ce6ca2e56f3b0fd11c1f5355a8aa4a8cdca5f64d5cfd3b4879f662e1a092333965a16342fc25d9ff230616c6
+  languageName: node
+  linkType: hard
+
+"stylelint-config-prettier@npm:^9.0.4":
+  version: 9.0.4
+  resolution: "stylelint-config-prettier@npm:9.0.4"
+  peerDependencies:
+    stylelint: ">=11.0.0"
+  bin:
+    stylelint-config-prettier: bin/check.js
+    stylelint-config-prettier-check: bin/check.js
+  checksum: cf94f646f6b1756a9e41940524a8c276ec05be9a2a02907fee6cb4ebdc39e3a9049c96ec97e79cc3f3c0487f5870c81b3d68b0a65d1ee81cd9d7700420788cee
+  languageName: node
+  linkType: hard
+
+"stylelint-config-styled-components@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "stylelint-config-styled-components@npm:0.1.1"
+  checksum: 1421187a27d11740f9ee224163231a9f3194c8055c27b0cb3204e76742c55a9397004bc70da9b3feee9988d0afe0d3c839186ef01d847a163ba7ad3299a9759a
+  languageName: node
+  linkType: hard
+
+"stylelint-declaration-block-no-ignored-properties@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "stylelint-declaration-block-no-ignored-properties@npm:2.6.0"
+  peerDependencies:
+    stylelint: ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0
+  checksum: 6fc38ec4bd471443c486f647a82cc001c455eb5654cbcb1e631f2d5fe920586775c0bc90a6d9ad8be254e37ba5f67584d0baa1409fc8a8d18dae74f558292190
+  languageName: node
+  linkType: hard
+
+"stylelint-order@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "stylelint-order@npm:5.0.0"
+  dependencies:
+    postcss: ^8.3.11
+    postcss-sorting: ^7.0.1
+  peerDependencies:
+    stylelint: ^14.0.0
+  checksum: fa3ace3cc65486b9f94165603bd04983636fda5ac959cd29bf87847a95b32f366b16faf612bd49e3b9f96073f8fe28a22a5c5727cc08c8f9d7327c89084b3f30
   languageName: node
   linkType: hard
 
