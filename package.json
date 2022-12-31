@@ -50,6 +50,9 @@
         "jest-environment-jsdom": "^29.2.0",
         "node-polyfill-webpack-plugin": "^2.0.1",
         "phosphor-react": "^1.4.1",
+        "postcss": "^8.4.20",
+        "postcss-scss": "^4.0.6",
+        "postcss-styled-components": "^0.2.0",
         "prettier": "^2.7.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
@@ -58,12 +61,7 @@
         "redux-saga": "^1.2.1",
         "rimraf": "^3.0.2",
         "stream-browserify": "^3.0.0",
-        "stylelint": "^13.13.1",
-        "stylelint-config-idiomatic-order": "^8.1.0",
-        "stylelint-config-prettier": "^9.0.3",
-        "stylelint-config-standard": "^22.0.0",
-        "stylelint-config-styled-components": "^0.1.1",
-        "stylelint-declaration-block-no-ignored-properties": "^2.5.0",
+        "stylelint": "^14.16.1",
         "ts-jest": "^29.0.3",
         "ts-loader": "^9.4.1",
         "ts-node": "^10.9.1",
@@ -97,6 +95,7 @@
     },
     "packageManager": "yarn@3.2.4",
     "resolutions": {
-        "webext-redux@^2.1.9": "patch:webext-redux@npm%3A2.1.9#./.yarn/patches/webext-redux-npm-2.1.9-e005835987.patch"
+        "webext-redux@^2.1.9": "patch:webext-redux@npm%3A2.1.9#./.yarn/patches/webext-redux-npm-2.1.9-e005835987.patch",
+        "postcss": "^8"
     }
 }
