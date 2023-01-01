@@ -13,5 +13,5 @@ export const Drawer = styled.div<DrawerProps>`
     margin-left: ${(props) => (props.visible ? '0' : '-500px')};
 
     background-color: ${(props) => props.theme.colors.sidebarBackground};
-    transition: all 0.5s cubic-bezier(0.62, 0.28, 0.23, 0.99); ;
+    transition: all 0.5s cubic-bezier(0.62, 0.28, 0.23, 0.99);
 `;
