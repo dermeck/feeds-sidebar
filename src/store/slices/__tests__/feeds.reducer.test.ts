@@ -1,5 +1,3 @@
-import { FolderSimpleMinus } from 'phosphor-react';
-
 import { Folder, NodeMeta, NodeType } from '../../../model/feeds';
 import { extensionStateLoaded } from '../../actions';
 import { RootState } from '../../store';
