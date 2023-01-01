@@ -1,6 +1,7 @@
 {
-    "extends": ["stylelint-config-styled-components", "stylelint-config-idiomatic-order", "stylelint-config-prettier"],
+    "extends": ["stylelint-config-recommended", "stylelint-config-idiomatic-order"],
     "plugins": ["stylelint-declaration-block-no-ignored-properties"],
+    "customSyntax": "postcss-styled-components",
     "rules": {
         "no-empty-source": null,
         "declaration-empty-line-before": null,

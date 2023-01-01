@@ -34,8 +34,8 @@ const MessageBox = styled.div<{ show: boolean }>`
     min-height: 2.2rem;
     padding: 0.5rem 1rem;
 
-    background-color: ${(props) => (props.show ? props.theme.colors.messageBackgroundColor : 'inherit')};
     border-radius: 4px;
+    background-color: ${(props) => (props.show ? props.theme.colors.messageBackgroundColor : 'inherit')};
     color: ${(props) => props.theme.colors.messageTextColor};
 `;
 

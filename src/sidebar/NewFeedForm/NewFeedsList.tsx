@@ -12,8 +12,8 @@ const List = styled.ul`
     padding-left: 12px;
     border: 1px solid;
     border-color: ${(props) => props.theme.colors.menuBorderColor};
-    margin-top: 6px;
     border-radius: 4px;
+    margin-top: 6px;
     overflow-y: scroll;
 `;
 

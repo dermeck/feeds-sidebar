@@ -69,9 +69,9 @@ const FolderTitle = styled.label<{ highlight: boolean }>`
 
 const ToggleIndicator = styled.div`
     width: ${({ theme }) => theme.toggleIndicatorSize}px;
+    flex-shrink: 0; /* only shrink title */
     padding-right: ${({ theme }) => theme.iconRightSpacing}px;
     margin-bottom: -6px;
-    flex-shrink: 0; // only shrink title
 `;
 
 const FolderIcon = styled(FolderSimple)`
