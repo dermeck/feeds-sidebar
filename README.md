@@ -2,7 +2,7 @@
 
 A Firefox Extension for managing Web Feeds in the Sidebar.
 
-The goal of this project is to provide a consistent way of following web content and display it in the sidebar with a similar look and feel to the Bookmarks.
+The goal of this project is to provide a consistent way of following web content and display it in the Sidebar with a similar look and feel to the Bookmarks.
 
 ## State of the project
 This project is under development and not fully functional. However, in its current state, I consider it "good enough" for my personal use.
