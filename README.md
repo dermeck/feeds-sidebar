@@ -13,12 +13,15 @@ If you want to try it you can download the latest working version as `.xpi` file
 - adding feeds manually by entering the URL or importing a set of feeds from an OPML file
 - supported feed formats: ATOM, RSS 1.0, RSS 2.0
 - list feeds in the sidebar and organize them into folders with drag & drop
-- update feeds automatically (and also display the number of new items above the toolbar icon)
+- update feeds automatically (and display the number of new items above the toolbar icon)
 - export feeds to an OPML file
 
 *It should also respect the users' color settings by using the colors of the theme or operating system and supporting dark mode. However, right now, this is not heavily tested across different environments (mainly in GNOME / Pop Shell) - feedback on this is always welcome!  :)*
 
 ### Planned features include:
-- synchronization across browser instances (optional)
 - detecting feeds in a web page
+- synchronization across browser instances (optional)
 - various UI improvements
+
+### UI (v0.22.0)
+<img src="./doc/screenshots/screenshot-v0.22.0.png" width="250">
