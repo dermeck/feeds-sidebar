@@ -1,6 +1,4 @@
-import { Dispatch } from '@reduxjs/toolkit';
-
-import { Middleware } from 'redux';
+import { Dispatch, Middleware } from '@reduxjs/toolkit';
 
 import { loadState, saveState } from '../../services/persistence';
 import { extensionStateLoaded, initCommand } from '../actions';

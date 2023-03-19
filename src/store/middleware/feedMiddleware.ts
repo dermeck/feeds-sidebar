@@ -1,4 +1,4 @@
-import { AnyAction, Dispatch, Middleware } from 'redux';
+import { AnyAction, Dispatch, Middleware } from '@reduxjs/toolkit';
 
 import feedsSlice, { selectTotalUnreadItems, fetchAllFeedsCommand, fetchFeedsCommand } from '../slices/feeds';
 import { RootState } from '../store';

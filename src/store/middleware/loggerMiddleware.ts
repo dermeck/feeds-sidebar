@@ -1,4 +1,4 @@
-import { Dispatch, Middleware } from 'redux';
+import { Dispatch, Middleware } from '@reduxjs/toolkit';
 
 import { RootState } from '../store';
 
