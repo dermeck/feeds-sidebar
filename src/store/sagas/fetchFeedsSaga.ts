@@ -7,6 +7,7 @@ import feedsSlice, { fetchFeedsCommand } from '../slices/feeds';
 import { selectOptions } from '../slices/options';
 import sessionSlice from '../slices/session';
 import { RootState } from '../store';
+import { createWorker } from './worker/createWorker';
 import { WorkerRequestAction, WorkerResponseAction } from './worker/workerApi';
 
 export function* watchfetchFeedsSaga() {
@@ -47,7 +48,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
 }
 
 const runworker = async (leftToFetch: string[]): Promise<WorkerResponseAction[]> => {
-    const worker = new Worker(new URL('./worker/index.ts', import.meta.url));
+    const worker = createWorker();
 
     const results: WorkerResponseAction[] = [];
 
