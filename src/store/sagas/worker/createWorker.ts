@@ -1,3 +1,1 @@
-export function createWorker() {
-    return new Worker(new URL('./index.ts', import.meta.url));
-}
+export const createWorker = () => new Worker(new URL('./index.ts', import.meta.url));

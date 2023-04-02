@@ -47,7 +47,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
     );
 }
 
-async function* runworker(leftToFetch: string[]): AsyncGenerator<WorkerResponseAction[]> {
+const runworker = async (leftToFetch: string[]): Promise<WorkerResponseAction[]> => {
     const worker = createWorker();
 
     const results: WorkerResponseAction[] = [];
@@ -73,5 +73,5 @@ async function* runworker(leftToFetch: string[]): AsyncGenerator<WorkerResponseA
 
     worker.terminate();
 
-    yield results;
-}
+    return results;
+};

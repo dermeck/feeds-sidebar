@@ -166,25 +166,7 @@ export default {
     // timers: "real",
 
     // A map from regular expressions to paths to transformers
-    // fix: error TS1343: The 'import.meta' meta-property is only allowed when the '--module' option is 'es2020', 'es2022', 'esnext', 'system', 'node16', or 'nodenext'
-    transform: {
-        '^.+\\.tsx?$': [
-            'ts-jest',
-            {
-                diagnostics: {
-                    ignoreCodes: [1343],
-                },
-                astTransformers: {
-                    before: [
-                        {
-                            path: 'node_modules/ts-jest-mock-import-meta', // or, alternatively, 'ts-jest-mock-import-meta' directly, without node_modules.
-                            options: { metaObjectReplacement: { url: 'https://www.url.com' } },
-                        },
-                    ],
-                },
-            },
-        ],
-    },
+    // transform: undefined,
 
     // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
     // transformIgnorePatterns: [
