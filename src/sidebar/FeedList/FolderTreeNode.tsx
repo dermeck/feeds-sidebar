@@ -1,9 +1,9 @@
-import React, { Fragment, memo, useEffect, useState } from 'react';
+import React, { Fragment, memo, useEffect, useState, useMemo } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import feedsSlice, { selectTreeNode } from '../../store/slices/feeds';
+import feedsSlice, { makeSelectTreeNode } from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
 import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import Folder from './Folder';
@@ -20,6 +20,7 @@ interface Props {
 const contextMenuHeight = 64; // 2 menu items, each 32px
 
 const FolderTreeNode = (props: Props) => {
+    const selectTreeNode = useMemo(makeSelectTreeNode, []);
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
     const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
 

@@ -4,7 +4,7 @@ import feedsSlice, {
     selectDescendentNodeIds,
     selectTopLevelNodes,
     selectTotalUnreadItems,
-    selectTreeNode,
+    makeSelectTreeNode,
 } from '../feeds';
 import {
     feed1Fixture,
@@ -65,12 +65,14 @@ describe('selectTotalUnreadItems', () => {
     });
 });
 
-describe('selectTreeNode', () => {
+describe('makeSelectTreeNode', () => {
     const state: RootState['feeds'] = {
         ...feedsSlice.getInitialState(),
         folders: [folder1Fixture, folder2Fixture, folder3Fixture],
         feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
     };
+
+    const selectTreeNode = makeSelectTreeNode();
 
     it('returns a feedNode if id matches a feed', () => {
         const expectation: FeedNode = {

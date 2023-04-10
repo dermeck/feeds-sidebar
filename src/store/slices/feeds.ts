@@ -1,4 +1,4 @@
-import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAction, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -117,32 +117,39 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
         .map((feed) => feed.items.filter((i) => !i.isRead).length)
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
 
-export const selectTreeNode = (state: FeedSliceState, nodeId: string): FolderNode | FeedNode | undefined => {
-    const folder = state.folders.find((f) => f.id === nodeId);
+/* factory function for creating memoized selector for each component instance (use nodeId from props) */
+export const makeSelectTreeNode = () =>
+    createSelector(
+        (state: FeedSliceState) => state,
+        (_: FeedSliceState, nodeId: string) => nodeId,
+        (state, nodeId): TreeNode | undefined => {
+            const folder = state.folders.find((f) => f.id === nodeId);
 
-    if (folder !== undefined) {
-        return {
-            nodeType: NodeType.Folder,
-            data: folder,
-        };
-    }
+            if (folder !== undefined) {
+                return {
+                    nodeType: NodeType.Folder,
+                    data: folder,
+                };
+            }
 
-    const feed = state.feeds.find((f) => f.id === nodeId);
+            const feed = state.feeds.find((f) => f.id === nodeId);
 
-    if (feed !== undefined) {
-        return {
-            nodeType: NodeType.Feed,
-            data: feed,
-        };
-    }
+            if (feed !== undefined) {
+                return {
+                    nodeType: NodeType.Feed,
+                    data: feed,
+                };
+            }
 
-    // TODO something triggers selectTreeNode with ids that were just deleted
-    // occurs if folders with subfolders are deleted
-    // fix this workaround and throw error again
-    // throw new Error(`Node with id: "${nodeId}" not found.`);
+            // TODO something triggers selectTreeNode with ids that were just deleted
+            // occurs if folders with subfolders are deleted
+            // fix this workaround and throw error again
+            // throw new Error(`Node with id: "${nodeId}" not found.`);
 
-    return undefined;
-};
+            // TODO check if this ist still needed with memoized version
+            return undefined;
+        },
+    );
 
 const folderById = (state: FeedSliceState, id: string) => {
     const folder = state.folders.find((x) => x.id === id);
