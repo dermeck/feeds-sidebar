@@ -21,19 +21,15 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
     switch (node.nodeType) {
         case NodeType.Feed:
             return (
-                <Fragment>
-                    {node.nodeType === NodeType.Feed && (
-                        <FeedItemList
-                            key={node.data.id}
-                            feed={node.data}
-                            filterString={filterString}
-                            indented={showTitle}
-                            nestedLevel={nestedLevel + 1}
-                            selectedId={selectedId}
-                            disabled={isDropNotAllowed}
-                        />
-                    )}
-                </Fragment>
+                <FeedItemList
+                    key={node.data.id}
+                    feed={node.data}
+                    filterString={filterString}
+                    indented={showTitle}
+                    nestedLevel={nestedLevel + 1}
+                    selectedId={selectedId}
+                    disabled={isDropNotAllowed}
+                />
             );
 
         case NodeType.Folder: {
