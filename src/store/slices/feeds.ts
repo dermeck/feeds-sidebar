@@ -130,10 +130,11 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
 /* factory function for creating memoized selector for each component instance (use nodeId from props) */
 export const makeSelectTreeNode = () =>
     createSelector(
-        (state: FeedSliceState) => state,
+        selectFeeds,
+        selectFolders,
         (_: FeedSliceState, nodeId: string) => nodeId,
-        (state, nodeId): TreeNode | undefined => {
-            const folder = state.folders.find((f) => f.id === nodeId);
+        (feeds, folders, nodeId): TreeNode | undefined => {
+            const folder = folders.find((f) => f.id === nodeId);
 
             if (folder !== undefined) {
                 return {
@@ -142,7 +143,7 @@ export const makeSelectTreeNode = () =>
                 };
             }
 
-            const feed = state.feeds.find((f) => f.id === nodeId);
+            const feed = feeds.find((f) => f.id === nodeId);
 
             if (feed !== undefined) {
                 return {
