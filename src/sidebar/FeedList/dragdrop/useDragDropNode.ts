@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { InsertMode, NodeMeta, NodeType } from '../../../model/feeds';
@@ -61,32 +61,37 @@ const useDragDropNode = (nodeMeta: NodeMeta) => {
         draggedNodeDescendents.includes(nodeMeta.nodeId) ||
         (draggedNode !== undefined && draggedNode.nodeType === NodeType.Folder && nodeMeta.nodeType === NodeType.Feed);
 
-    const handleDragStart = () => {
+    const handleDragStart = useCallback(() => {
         if (draggedNode?.nodeId !== nodeMeta.nodeId) {
             setDraggedNode(nodeMeta);
         }
-    };
+    }, [draggedNode]);
 
-    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-        if (draggedNode === undefined) {
-            // if drag over happens very fast this might not be set properly
-            return;
-        }
+    const handleDragOver = useCallback(
+        (event: React.DragEvent<HTMLDivElement>) => {
+            if (draggedNode === undefined) {
+                // if drag over happens very fast this might not be set properly
+                return;
+            }
 
-        if (!isDropNotAllowed) {
-            setRelativDropPosition(calculateRelativeDragDropPosition(draggedNode.nodeType, nodeMeta.nodeType, event));
+            if (!isDropNotAllowed) {
+                setRelativDropPosition(
+                    calculateRelativeDragDropPosition(draggedNode.nodeType, nodeMeta.nodeType, event),
+                );
 
-            event.preventDefault();
-        }
-    };
+                event.preventDefault();
+            }
+        },
+        [draggedNode, isDropNotAllowed],
+    );
 
-    const handleDragLeave = () => {
+    const handleDragLeave = useCallback(() => {
         if (relativeDropPosition !== undefined) {
             setRelativDropPosition(undefined);
         }
-    };
+    }, [relativeDropPosition]);
 
-    const handleDrop = () => {
+    const handleDrop = useCallback(() => {
         if (isDropNotAllowed || draggedNode === undefined || relativeDropPosition === undefined) {
             console.warn(
                 `Could not drop node ${draggedNode} on node ${nodeMeta}, position: ${relativeDragDropPosition}`,
@@ -105,12 +110,12 @@ const useDragDropNode = (nodeMeta: NodeMeta) => {
 
         setDraggedNode(undefined);
         setRelativDropPosition(undefined);
-    };
+    }, [isDropNotAllowed, draggedNode, relativeDropPosition]);
 
-    const handleDragEnd = () => {
+    const handleDragEnd = useCallback(() => {
         setDraggedNode(undefined);
         setRelativDropPosition(undefined);
-    };
+    }, []);
 
     return {
         isDropNotAllowed,
