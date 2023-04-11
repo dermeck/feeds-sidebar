@@ -74,9 +74,13 @@ interface Props {
     nestedLevel: number;
 }
 
-const enum AuxButton {
+const enum MouseEventButton {
+    // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button#value
+    leftMouseButton = 0,
     middleMousButton = 1,
     rightMouseButton = 2,
+    browserBackButton = 3,
+    browserForwardButton = 4,
 }
 
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
@@ -148,7 +152,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     xButtonVisible={showXButton}
                     href={props.item.url}
                     onAuxClick={(e) => {
-                        if (e.button === AuxButton.middleMousButton) {
+                        if (e.button === MouseEventButton.middleMousButton) {
                             // mark item as read if middle mouse button is clicked
                             handleFeedItemClick(props.feedId, props.item.id);
                         }
