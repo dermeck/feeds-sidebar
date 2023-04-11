@@ -4,10 +4,13 @@ import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
 import React, { Fragment, useState } from 'react';
 
+import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { NodeMeta } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectHasVisibleChildren } from '../../store/slices/feeds';
+import sessionSlice from '../../store/slices/session';
 import { RelativeDragDropPosition } from '../../utils/dragdrop';
+import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import { MouseEventButton } from '../../utils/types/web-api';
 import useDragDropNode from './dragdrop/useDragDropNode';
 
@@ -88,8 +91,10 @@ interface Props {
     showTitle: boolean;
     nestedLevel: number;
     children: React.ReactNode;
-    onContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
+
+// TODO find a more robust way to determine menu height
+const contextMenuHeight = 64; // 2 menu items, each 32px
 
 const Folder = (props: Props) => {
     const theme = useTheme();
@@ -98,8 +103,10 @@ const Folder = (props: Props) => {
     const [focus, setFocus] = useState<boolean>(false); // highlight with color
 
     const showToggleIndicator = useAppSelector((state) => selectHasVisibleChildren(state.feeds, props.nodeMeta));
-    const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId); // memo oder außen selecten und als prop
+    const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
     const dispatch = useAppDispatch();
+
+    const { height, width } = useWindowDimensions();
 
     const {
         isDropNotAllowed,
@@ -139,8 +146,23 @@ const Folder = (props: Props) => {
         }
     };
 
-    const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        props.onContextMenu(e); // TODO we might not need this
+    // TODO auslagern nach ContextMenuTarget
+    const handleContextMenuFolder = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.preventDefault();
+
+        if (width === undefined || height === undefined) {
+            console.error('Could not open context menu. Unable to determine dimensions of window.');
+            return;
+        }
+
+        const x = width - e.clientX < menuWidthInPx ? width - menuWidthInPx : e.clientX;
+        const y = height - e.clientY < contextMenuHeight ? height - contextMenuHeight : e.clientY;
+
+        dispatch(sessionSlice.actions.showContextMenu({ x, y }));
+
+        if (selectedId !== props.nodeMeta.nodeId) {
+            dispatch(feedsSlice.actions.select(props.nodeMeta));
+        }
     };
 
     // TODO indicate if folder has unread items
@@ -161,7 +183,7 @@ const Folder = (props: Props) => {
                 tabIndex={0}
                 onMouseDown={handleMouseDown}
                 onBlur={handleBlur}
-                onContextMenu={handleContextMenu}>
+                onContextMenu={handleContextMenuFolder}>
                 <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Top} />
                 <FolderTitleRow>
                     <ToggleIndicator theme={theme}>
