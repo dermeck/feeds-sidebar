@@ -2,10 +2,10 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useMemo, useState } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
-import { NodeMeta } from '../../model/feeds';
+import { TreeNode } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectHasVisibleChildren } from '../../store/slices/feeds';
 import sessionSlice from '../../store/slices/session';
@@ -84,10 +84,8 @@ const FolderIcon = styled(FolderSimple)`
     margin-right: ${({ theme }) => theme.iconRightSpacing}px;
 `;
 
-// TODO rework props
 interface Props {
-    nodeMeta: NodeMeta;
-    title: string;
+    node: TreeNode;
     showTitle: boolean;
     nestedLevel: number;
     children: React.ReactNode;
@@ -96,13 +94,17 @@ interface Props {
 // TODO find a more robust way to determine menu height
 const contextMenuHeight = 64; // 2 menu items, each 32px
 
+const folderTreeNodeLabel = (node: TreeNode) => node.data.title ?? node.data.id;
+
 const Folder = (props: Props) => {
     const theme = useTheme();
+
+    const nodeMeta = useMemo(() => ({ nodeId: props.node.data.id, nodeType: props.node.nodeType }), [props.node]);
 
     const [expanded, setExpanded] = useState<boolean>(true);
     const [focus, setFocus] = useState<boolean>(false); // highlight with color
 
-    const showToggleIndicator = useAppSelector((state) => selectHasVisibleChildren(state.feeds, props.nodeMeta));
+    const showToggleIndicator = useAppSelector((state) => selectHasVisibleChildren(state.feeds, nodeMeta));
     const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
     const dispatch = useAppDispatch();
 
@@ -116,7 +118,7 @@ const Folder = (props: Props) => {
         handleDragLeave,
         handleDrop,
         handleDragEnd,
-    } = useDragDropNode(props.nodeMeta);
+    } = useDragDropNode(nodeMeta);
 
     if (!props.showTitle) {
         return <Fragment>{props.children}</Fragment>;
@@ -135,8 +137,8 @@ const Folder = (props: Props) => {
             setFocus(true);
         }
 
-        if (selectedId !== props.nodeMeta.nodeId) {
-            dispatch(feedsSlice.actions.select(props.nodeMeta));
+        if (selectedId !== nodeMeta.nodeId) {
+            dispatch(feedsSlice.actions.select(nodeMeta));
         }
     };
 
@@ -160,8 +162,8 @@ const Folder = (props: Props) => {
 
         dispatch(sessionSlice.actions.showContextMenu({ x, y }));
 
-        if (selectedId !== props.nodeMeta.nodeId) {
-            dispatch(feedsSlice.actions.select(props.nodeMeta));
+        if (selectedId !== nodeMeta.nodeId) {
+            dispatch(feedsSlice.actions.select(nodeMeta));
         }
     };
 
@@ -173,7 +175,7 @@ const Folder = (props: Props) => {
                 disabled={isDropNotAllowed}
                 focus={focus}
                 nestedLevel={props.nestedLevel}
-                selected={selectedId === props.nodeMeta.nodeId}
+                selected={selectedId === nodeMeta.nodeId}
                 draggable={true}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
@@ -196,7 +198,7 @@ const Folder = (props: Props) => {
                     </ToggleIndicator>
                     <FolderIcon theme={theme} size={theme.folderIconSize} weight="light" />
                     <FolderTitle highlight={relativeDropPosition === RelativeDragDropPosition.Middle}>
-                        {props.title}
+                        {folderTreeNodeLabel(props.node)}
                     </FolderTitle>
                 </FolderTitleRow>
                 <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Bottom} />

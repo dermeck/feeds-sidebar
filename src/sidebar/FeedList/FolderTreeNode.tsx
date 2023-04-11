@@ -1,6 +1,5 @@
 import React, { Fragment, memo, useMemo } from 'react';
 
-import { NodeType } from '../../model/feeds';
 import { useAppSelector } from '../../store/hooks';
 import { makeSelectTreeNode } from '../../store/slices/feeds';
 import Folder from './Folder';
@@ -21,14 +20,8 @@ const FolderTreeNode = (props: Props) => {
         return <Fragment />;
     }
 
-    const { id, title } = node.data;
-
     return (
-        <Folder
-            nodeMeta={{ nodeId: id, nodeType: node.nodeType }}
-            title={title ?? (node.nodeType === NodeType.Feed ? node.data.id : '')}
-            nestedLevel={props.nestedLevel}
-            showTitle={props.showTitle}>
+        <Folder node={node} nestedLevel={props.nestedLevel} showTitle={props.showTitle}>
             <FolderSubTreeNode node={node} {...props} />
         </Folder>
     );
