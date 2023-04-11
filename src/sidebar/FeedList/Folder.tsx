@@ -8,6 +8,7 @@ import { NodeMeta } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectHasVisibleChildren } from '../../store/slices/feeds';
 import { RelativeDragDropPosition } from '../../utils/dragdrop';
+import { MouseEventButton } from '../../utils/types/web-api';
 import useDragDropNode from './dragdrop/useDragDropNode';
 
 interface FolderTitleContainerProps {
@@ -114,14 +115,20 @@ const Folder = (props: Props) => {
         return <Fragment>{props.children}</Fragment>;
     }
 
-    const handleClick = () => {
-        // TODO refactor to use MouseDown?
-        setExpanded(!expanded);
+    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (e.button !== MouseEventButton.leftMouseButton && e.button !== MouseEventButton.rightMouseButton) {
+            return;
+        }
+
+        if (e.button === MouseEventButton.leftMouseButton) {
+            setExpanded(!expanded);
+        }
+
         if (!focus) {
             setFocus(true);
         }
 
-        if (props.nodeMeta !== undefined) {
+        if (selectedId !== props.nodeMeta.nodeId) {
             dispatch(feedsSlice.actions.select(props.nodeMeta));
         }
     };
@@ -134,9 +141,6 @@ const Folder = (props: Props) => {
 
     const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         props.onContextMenu(e); // TODO we might not need this
-        if (!focus) {
-            setFocus(true);
-        }
     };
 
     // TODO indicate if folder has unread items
@@ -155,7 +159,7 @@ const Folder = (props: Props) => {
                 onDrop={handleDrop}
                 onDragEnd={handleDragEnd}
                 tabIndex={0}
-                onClick={handleClick}
+                onMouseDown={handleMouseDown}
                 onBlur={handleBlur}
                 onContextMenu={handleContextMenu}>
                 <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Top} />
