@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useEffect, useState, useMemo } from 'react';
+import React, { Fragment, memo, useMemo } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { NodeType } from '../../model/feeds';
@@ -22,18 +22,7 @@ const contextMenuHeight = 64; // 2 menu items, each 32px
 const FolderTreeNode = (props: Props) => {
     const selectTreeNode = useMemo(makeSelectTreeNode, []);
     const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
-    const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
-
     const dispatch = useAppDispatch();
-
-    useEffect(() => {
-        if (node && selectedId === node.data.id && !focus) {
-            setFocus(true);
-        }
-    }, [selectedId]);
-
-    const [expanded, setExpanded] = useState<boolean>(true);
-    const [focus, setFocus] = useState<boolean>(false);
 
     const { height, width } = useWindowDimensions();
 
@@ -43,26 +32,7 @@ const FolderTreeNode = (props: Props) => {
 
     const { id, title } = node.data;
 
-    const handleClickTitle = () => {
-        if (id !== undefined) {
-            dispatch(feedsSlice.actions.select({ nodeType: node.nodeType, nodeId: id }));
-        }
-    };
-
-    const handleClickFolder = () => {
-        setExpanded(!expanded);
-        if (!focus) {
-            setFocus(true);
-        }
-        handleClickTitle();
-    };
-
-    const handleBlurFolder = () => {
-        if (focus) {
-            setFocus(false);
-        }
-    };
-
+    // TODO auslagern nach ContextMenuTarget
     const handleContextMenuFolder = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.preventDefault();
 
@@ -87,11 +57,6 @@ const FolderTreeNode = (props: Props) => {
             title={title ?? (node.nodeType === NodeType.Feed ? node.data.id : '')}
             nestedLevel={props.nestedLevel}
             showTitle={props.showTitle}
-            selected={selectedId === id}
-            focus={focus}
-            expanded={expanded}
-            onClick={handleClickFolder}
-            onBlur={handleBlurFolder}
             onContextMenu={handleContextMenuFolder}>
             <FolderSubTreeNode node={node} {...props} />
         </Folder>

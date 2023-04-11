@@ -2,11 +2,11 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 
 import { NodeMeta } from '../../model/feeds';
-import { useAppSelector } from '../../store/hooks';
-import { selectHasVisibleChildren } from '../../store/slices/feeds';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import feedsSlice, { selectHasVisibleChildren } from '../../store/slices/feeds';
 import { RelativeDragDropPosition } from '../../utils/dragdrop';
 import useDragDropNode from './dragdrop/useDragDropNode';
 
@@ -80,24 +80,25 @@ const FolderIcon = styled(FolderSimple)`
     margin-right: ${({ theme }) => theme.iconRightSpacing}px;
 `;
 
+// TODO rework props
 interface Props {
     nodeMeta: NodeMeta;
     title: string;
     showTitle: boolean;
     nestedLevel: number;
     children: React.ReactNode;
-    selected: boolean;
-    focus: boolean;
-    expanded: boolean;
-    onClick: () => void;
-    onBlur: () => void;
     onContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 const Folder = (props: Props) => {
     const theme = useTheme();
 
+    const [expanded, setExpanded] = useState<boolean>(true);
+    const [focus, setFocus] = useState<boolean>(false); // highlight with color
+
     const showToggleIndicator = useAppSelector((state) => selectHasVisibleChildren(state.feeds, props.nodeMeta));
+    const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId); // memo oder außen selecten und als prop
+    const dispatch = useAppDispatch();
 
     const {
         isDropNotAllowed,
@@ -113,15 +114,40 @@ const Folder = (props: Props) => {
         return <Fragment>{props.children}</Fragment>;
     }
 
+    const handleClick = () => {
+        // TODO refactor to use MouseDown?
+        setExpanded(!expanded);
+        if (!focus) {
+            setFocus(true);
+        }
+
+        if (props.nodeMeta !== undefined) {
+            dispatch(feedsSlice.actions.select(props.nodeMeta));
+        }
+    };
+
+    const handleBlur = () => {
+        if (focus) {
+            setFocus(false);
+        }
+    };
+
+    const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        props.onContextMenu(e); // TODO we might not need this
+        if (!focus) {
+            setFocus(true);
+        }
+    };
+
     // TODO indicate if folder has unread items
     return (
         <Fragment>
             <FolderTitleContainer
                 theme={theme}
                 disabled={isDropNotAllowed}
-                focus={props.focus}
+                focus={focus}
                 nestedLevel={props.nestedLevel}
-                selected={props.selected}
+                selected={selectedId === props.nodeMeta.nodeId}
                 draggable={true}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
@@ -129,14 +155,14 @@ const Folder = (props: Props) => {
                 onDrop={handleDrop}
                 onDragEnd={handleDragEnd}
                 tabIndex={0}
-                onClick={props.onClick}
-                onBlur={props.onBlur}
-                onContextMenu={props.onContextMenu}>
+                onClick={handleClick}
+                onBlur={handleBlur}
+                onContextMenu={handleContextMenu}>
                 <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Top} />
                 <FolderTitleRow>
                     <ToggleIndicator theme={theme}>
                         {showToggleIndicator &&
-                            (props.expanded ? (
+                            (expanded ? (
                                 <CaretDown size={theme.toggleIndicatorSize} weight="bold" />
                             ) : (
                                 <CaretRight size={theme.toggleIndicatorSize} weight="bold" />
@@ -150,7 +176,7 @@ const Folder = (props: Props) => {
                 <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Bottom} />
             </FolderTitleContainer>
 
-            {props.expanded && props.children}
+            {expanded && props.children}
         </Fragment>
     );
 };
