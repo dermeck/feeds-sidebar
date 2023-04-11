@@ -2,7 +2,7 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 
 import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { NodeMeta } from '../../model/feeds';
@@ -122,32 +122,35 @@ const Folder = (props: Props) => {
         return <Fragment>{props.children}</Fragment>;
     }
 
-    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        if (e.button !== MouseEventButton.leftMouseButton && e.button !== MouseEventButton.rightMouseButton) {
-            return;
-        }
+    const handleMouseDown = useCallback(
+        (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            if (e.button !== MouseEventButton.leftMouseButton && e.button !== MouseEventButton.rightMouseButton) {
+                return;
+            }
 
-        if (e.button === MouseEventButton.leftMouseButton) {
-            setExpanded(!expanded);
-        }
+            if (e.button === MouseEventButton.leftMouseButton) {
+                setExpanded(!expanded);
+            }
 
-        if (!focus) {
-            setFocus(true);
-        }
+            if (!focus) {
+                setFocus(true);
+            }
 
-        if (selectedId !== props.nodeMeta.nodeId) {
-            dispatch(feedsSlice.actions.select(props.nodeMeta));
-        }
-    };
+            if (selectedId !== props.nodeMeta.nodeId) {
+                dispatch(feedsSlice.actions.select(props.nodeMeta));
+            }
+        },
+        [expanded, focus, selectedId],
+    );
 
-    const handleBlur = () => {
+    const handleBlur = useCallback(() => {
         if (focus) {
             setFocus(false);
         }
-    };
+    }, [focus]);
 
     // TODO auslagern nach ContextMenuTarget
-    const handleContextMenuFolder = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const handleContextMenuFolder = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.preventDefault();
 
         if (width === undefined || height === undefined) {
@@ -163,7 +166,7 @@ const Folder = (props: Props) => {
         if (selectedId !== props.nodeMeta.nodeId) {
             dispatch(feedsSlice.actions.select(props.nodeMeta));
         }
-    };
+    }, []);
 
     // TODO indicate if folder has unread items
     return (

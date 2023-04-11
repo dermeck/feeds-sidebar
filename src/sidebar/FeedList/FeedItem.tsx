@@ -75,6 +75,7 @@ interface Props {
     nestedLevel: number;
 }
 
+// TODO optimize rerendering
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 

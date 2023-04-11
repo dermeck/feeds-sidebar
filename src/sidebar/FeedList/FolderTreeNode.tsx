@@ -23,13 +23,25 @@ const FolderTreeNode = (props: Props) => {
 
     const { id, title } = node.data;
 
+    const Child = () => (
+        <FolderSubTreeNode
+            key={node.data.id}
+            node={node}
+            showTitle={props.showTitle}
+            nestedLevel={props.nestedLevel}
+            filterString={props.filterString}
+        />
+    );
+
+    const MemoizedChild = memo(Child);
+
     return (
         <Folder
             nodeMeta={{ nodeId: id, nodeType: node.nodeType }}
             title={title ?? (node.nodeType === NodeType.Feed ? node.data.id : '')}
             nestedLevel={props.nestedLevel}
             showTitle={props.showTitle}>
-            <FolderSubTreeNode node={node} {...props} />
+            <MemoizedChild />
         </Folder>
     );
 };
