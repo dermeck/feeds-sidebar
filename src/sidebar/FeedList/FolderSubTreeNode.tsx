@@ -16,8 +16,7 @@ interface Props {
 
 const FolderSubTreeNode = (props: Props): JSX.Element => {
     const { node, filterString, showTitle, selectedId, nestedLevel } = props;
-    // TODO reanble this + usage
-    // const { isDropNotAllowed } = useDragDropNode({ nodeId: node.data.id, nodeType: node.nodeType });
+    const { isDropNotAllowed } = useDragDropNode({ nodeId: node.data.id, nodeType: node.nodeType });
 
     switch (node.nodeType) {
         case NodeType.Feed:
@@ -29,7 +28,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                     indented={showTitle}
                     nestedLevel={nestedLevel + 1}
                     selectedId={selectedId}
-                    disabled={/*isDropNotAllowed*/ false /* TODO */}
+                    disabled={isDropNotAllowed}
                 />
             );
 
