@@ -7,6 +7,7 @@ import { ToolbarButton } from '../../base-components';
 import { FeedItem as FeedItemType, NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
+import { MouseEventButton } from '../../utils/types/web-api';
 
 const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean; nestedLevel: number }>`
     padding-left: ${(props) =>
@@ -72,15 +73,6 @@ interface Props {
     feedId: string;
     indented: boolean;
     nestedLevel: number;
-}
-
-const enum MouseEventButton {
-    // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button#value
-    leftMouseButton = 0,
-    middleMousButton = 1,
-    rightMouseButton = 2,
-    browserBackButton = 3,
-    browserForwardButton = 4,
 }
 
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
