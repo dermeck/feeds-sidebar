@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { InsertMode, NodeMeta, NodeType } from '../../../model/feeds';
@@ -6,6 +6,7 @@ import { useAppSelector } from '../../../store/hooks';
 import feedsSlice, { selectDescendentNodeIds } from '../../../store/slices/feeds';
 import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../../utils/dragdrop';
+import useNamedCallback from '../../../utils/hooks/useNamedCallback';
 import { DragDropContext } from './dragdrop-context';
 
 const calculateRelativeDragDropPosition = (
@@ -61,13 +62,18 @@ const useDragDropNode = (nodeMeta: NodeMeta) => {
         draggedNodeDescendents.includes(nodeMeta.nodeId) ||
         (draggedNode !== undefined && draggedNode.nodeType === NodeType.Folder && nodeMeta.nodeType === NodeType.Feed);
 
-    const handleDragStart = useCallback(() => {
-        if (draggedNode?.nodeId !== nodeMeta.nodeId) {
-            setDraggedNode(nodeMeta);
-        }
-    }, [draggedNode]);
+    const handleDragStart = useNamedCallback(
+        'handleDragStart',
+        () => {
+            if (draggedNode?.nodeId !== nodeMeta.nodeId) {
+                setDraggedNode(nodeMeta);
+            }
+        },
+        [draggedNode],
+    );
 
-    const handleDragOver = useCallback(
+    const handleDragOver = useNamedCallback(
+        'handleDragOver',
         (event: React.DragEvent<HTMLDivElement>) => {
             if (draggedNode === undefined) {
                 // if drag over happens very fast this might not be set properly
@@ -85,37 +91,49 @@ const useDragDropNode = (nodeMeta: NodeMeta) => {
         [draggedNode, isDropNotAllowed],
     );
 
-    const handleDragLeave = useCallback(() => {
-        if (relativeDropPosition !== undefined) {
-            setRelativDropPosition(undefined);
-        }
-    }, [relativeDropPosition]);
+    const handleDragLeave = useNamedCallback(
+        'useNamesCallback',
+        () => {
+            if (relativeDropPosition !== undefined) {
+                setRelativDropPosition(undefined);
+            }
+        },
+        [relativeDropPosition],
+    );
 
-    const handleDrop = useCallback(() => {
-        if (isDropNotAllowed || draggedNode === undefined || relativeDropPosition === undefined) {
-            console.warn(
-                `Could not drop node ${draggedNode} on node ${nodeMeta}, position: ${relativeDragDropPosition}`,
+    const handleDrop = useNamedCallback(
+        'useNamedCallback',
+        () => {
+            if (isDropNotAllowed || draggedNode === undefined || relativeDropPosition === undefined) {
+                console.warn(
+                    `Could not drop node ${draggedNode} on node ${nodeMeta}, position: ${relativeDragDropPosition}`,
+                );
+
+                return;
+            }
+
+            dispatch(
+                feedsSlice.actions.moveNode({
+                    movedNode: draggedNode,
+                    targetNodeId: nodeMeta.nodeId,
+                    mode: insertModeByRelativeDropPosition(relativeDropPosition),
+                }),
             );
 
-            return;
-        }
+            setDraggedNode(undefined);
+            setRelativDropPosition(undefined);
+        },
+        [isDropNotAllowed, draggedNode, relativeDropPosition],
+    );
 
-        dispatch(
-            feedsSlice.actions.moveNode({
-                movedNode: draggedNode,
-                targetNodeId: nodeMeta.nodeId,
-                mode: insertModeByRelativeDropPosition(relativeDropPosition),
-            }),
-        );
-
-        setDraggedNode(undefined);
-        setRelativDropPosition(undefined);
-    }, [isDropNotAllowed, draggedNode, relativeDropPosition]);
-
-    const handleDragEnd = useCallback(() => {
-        setDraggedNode(undefined);
-        setRelativDropPosition(undefined);
-    }, []);
+    const handleDragEnd = useNamedCallback(
+        'handleDragEnd',
+        () => {
+            setDraggedNode(undefined);
+            setRelativDropPosition(undefined);
+        },
+        [],
+    );
 
     return {
         isDropNotAllowed,
