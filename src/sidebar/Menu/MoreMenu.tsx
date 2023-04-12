@@ -9,7 +9,7 @@ import { Divider } from '../../base-components/styled/Divider';
 import opmlExport from '../../services/export';
 import { readOpmlFile } from '../../services/import';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
+import feedsSlice, { fetchFeedsCommand, selectFeeds, selectFolders } from '../../store/slices/feeds';
 import sessionSlice, { Point, View } from '../../store/slices/session';
 import MenuItem from './MenuItem';
 
@@ -28,9 +28,9 @@ interface Props {
 const MoreMenu: FunctionComponent<Props> = (props: Props) => {
     const inputFileRef = useRef<HTMLInputElement>(null);
 
-    // TODO after MoreMenu was mounted it re-renders every time a folder is clicked - prevent that
     const dispatch = useAppDispatch();
-    const feeds = useAppSelector((state) => state.feeds);
+    const feeds = useAppSelector((state) => selectFeeds(state.feeds));
+    const folders = useAppSelector((state) => selectFolders(state.feeds));
 
     return (
         <MenuContainer anchorTop={props.anchorPoint.y} anchorLeft={props.anchorPoint.x}>
@@ -49,7 +49,7 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
 
                 <Divider />
 
-                <MenuItem icon="export" onMouseDown={() => opmlExport(feeds.folders, feeds.feeds)}>
+                <MenuItem icon="export" onMouseDown={() => opmlExport(folders, feeds)}>
                     Export
                 </MenuItem>
 
