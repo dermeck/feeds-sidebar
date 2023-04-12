@@ -28,6 +28,7 @@ interface Props {
 const MoreMenu: FunctionComponent<Props> = (props: Props) => {
     const inputFileRef = useRef<HTMLInputElement>(null);
 
+    // TODO after MoreMenu was mounted it re-renders every time a folder is clicked - prevent that
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds);
 
