@@ -12,17 +12,22 @@ interface Props {
     filterString: string;
 }
 
-const FolderTreeNode = (props: Props) => {
+const FolderTreeNode = ({ nodeId, showTitle, nestedLevel, filterString }: Props) => {
     const selectTreeNode = useMemo(makeSelectTreeNode, []);
-    const node = useAppSelector((state) => selectTreeNode(state.feeds, props.nodeId));
+    const node = useAppSelector((state) => selectTreeNode(state.feeds, nodeId));
 
     if (!node) {
         return <Fragment />;
     }
 
     return (
-        <Folder node={node} nestedLevel={props.nestedLevel} showTitle={props.showTitle}>
-            <FolderSubTreeNode node={node} {...props} />
+        <Folder node={node} nestedLevel={nestedLevel} showTitle={showTitle}>
+            <FolderSubTreeNode
+                node={node}
+                showTitle={showTitle}
+                nestedLevel={nestedLevel}
+                filterString={filterString}
+            />
         </Folder>
     );
 };
