@@ -17,7 +17,7 @@ interface FeedItemListProps {
     indented: boolean;
     nestedLevel: number;
     filterString: string;
-    disabled: boolean;
+    disabled: boolean; // TODO rework Props, disabled, selectedId may not be needed, instead get them inside this component
 }
 
 const FeedItemList = (props: FeedItemListProps) => {

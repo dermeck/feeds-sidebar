@@ -130,6 +130,7 @@ const Folder = (props: Props) => {
         }
 
         if (e.button === MouseEventButton.leftMouseButton) {
+            // TODO change expanded on mouseUp to prevent it before drag
             setExpanded(!expanded);
         }
 
