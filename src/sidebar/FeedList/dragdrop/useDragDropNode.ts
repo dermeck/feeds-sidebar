@@ -1,9 +1,9 @@
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { InsertMode, NodeMeta, NodeType } from '../../../model/feeds';
 import { useAppSelector } from '../../../store/hooks';
-import feedsSlice, { selectDescendentNodeIds } from '../../../store/slices/feeds';
+import feedsSlice, { makeselectDescendentNodeIds } from '../../../store/slices/feeds';
 import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../../utils/dragdrop';
 import useNamedCallback from '../../../utils/hooks/useNamedCallback';
@@ -53,9 +53,8 @@ const useDragDropNode = (nodeMeta: NodeMeta) => {
 
     const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
 
-    const draggedNodeDescendents = useAppSelector((state) =>
-        draggedNode ? selectDescendentNodeIds(state.feeds, draggedNode.nodeId) : [],
-    );
+    const selectDescendentNodeIds = useMemo(makeselectDescendentNodeIds, [draggedNode]);
+    const draggedNodeDescendents = useAppSelector((state) => selectDescendentNodeIds(state.feeds, draggedNode?.nodeId));
 
     const isDropNotAllowed =
         nodeMeta.nodeId === draggedNode?.nodeId ||

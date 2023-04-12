@@ -201,19 +201,48 @@ const selectChildNodes = (
     return [...folderNodes, ...feedNodes];
 };
 
-export const selectDescendentNodeIds = (state: FeedSliceState, parentId: string): ReadonlyArray<string> => {
-    if (state.folders.find((x) => x.id === parentId) === undefined) {
+export const selectDescendentNodeIds = (
+    feeds: FeedSliceState['feeds'],
+    folders: FeedSliceState['folders'],
+    parentId: string,
+): ReadonlyArray<string> => {
+    if (folders.find((x) => x.id === parentId) === undefined) {
         return [];
     }
 
-    const parentFolder = folderById(state.folders, parentId);
+    const parentFolder = folderById(folders, parentId);
 
     return [
         ...parentFolder.subfolderIds,
         ...parentFolder.feedIds,
-        ...parentFolder.subfolderIds.flatMap((sid) => selectDescendentNodeIds(state, sid)),
+        ...parentFolder.subfolderIds.flatMap((sid) => selectDescendentNodeIds(feeds, folders, sid)),
     ];
 };
+
+/* factory function for creating memoized selector (parentId is a parameter) */
+export const makeselectDescendentNodeIds = () =>
+    createSelector(
+        selectFeeds,
+        selectFolders,
+        (_: FeedSliceState, parentId: string | undefined) => parentId,
+        (feeds, folders, parentId): ReadonlyArray<string> => {
+            if (parentId === undefined) {
+                return [];
+            }
+
+            if (folders.find((x) => x.id === parentId) === undefined) {
+                return [];
+            }
+
+            const parentFolder = folderById(folders, parentId);
+
+            return [
+                ...parentFolder.subfolderIds,
+                ...parentFolder.feedIds,
+                ...parentFolder.subfolderIds.flatMap((sid) => selectDescendentNodeIds(feeds, folders, sid)),
+            ];
+        },
+    );
 
 export const selectHasVisibleChildren = (state: FeedSliceState, nodeMeta: NodeMeta): boolean => {
     const { nodeId, nodeType } = nodeMeta;

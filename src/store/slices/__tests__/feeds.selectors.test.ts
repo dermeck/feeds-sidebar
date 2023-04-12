@@ -1,7 +1,7 @@
 import { FeedNode, NodeType, FolderNode, TreeNode } from '../../../model/feeds';
 import { RootState } from '../../store';
 import feedsSlice, {
-    selectDescendentNodeIds,
+    makeselectDescendentNodeIds,
     selectTopLevelNodes,
     selectTotalUnreadItems,
     makeSelectTreeNode,
@@ -144,6 +144,8 @@ describe('selectDescendentNodeIds', () => {
         ],
         feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
     };
+
+    const selectDescendentNodeIds = makeselectDescendentNodeIds();
 
     it('returns ids of all descendents', () => {
         const expectation = [
