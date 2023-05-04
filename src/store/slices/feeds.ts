@@ -276,9 +276,6 @@ const hasFolderChildren = (state: FeedSliceState, folderId: string): boolean => 
     return folder.subfolderIds.length > 0 || folder.feedIds.length > 0;
 };
 
-/* export const selectTopLevelNodes = (state: FeedSliceState): ReadonlyArray<TreeNode> =>
-    selectChildNodes(state, rootFolderId); */
-
 export const selectTopLevelNodes = createSelector(selectFeeds, selectFolders, (feeds, folders) =>
     selectChildNodes(feeds, folders, rootFolderId),
 );
