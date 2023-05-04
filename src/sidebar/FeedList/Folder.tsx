@@ -2,16 +2,14 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { Fragment, useMemo, useRef, useState } from 'react';
 
-import { menuWidthInPx } from '../../base-components/styled/Menu';
 import { TreeNode } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectHasVisibleChildren } from '../../store/slices/feeds';
-import sessionSlice from '../../store/slices/session';
 import { RelativeDragDropPosition } from '../../utils/dragdrop';
-import useWindowDimensions from '../../utils/hooks/useWindowDimensions';
 import { MouseEventButton } from '../../utils/types/web-api';
+import { useContextMenu } from '../Menu/useContextMenu';
 import useDragDropNode from './dragdrop/useDragDropNode';
 
 interface FolderTitleContainerProps {
@@ -91,9 +89,6 @@ interface Props {
     children: React.ReactNode;
 }
 
-// TODO find a more robust way to determine menu height
-const contextMenuHeight = 64; // 2 menu items, each 32px
-
 const folderTreeNodeLabel = (node: TreeNode) => node.data.title ?? node.data.id;
 
 const Folder = (props: Props) => {
@@ -104,11 +99,12 @@ const Folder = (props: Props) => {
     const [expanded, setExpanded] = useState<boolean>(true);
     const [focus, setFocus] = useState<boolean>(false); // highlight with color
 
+    const titleContainerRef = useRef<HTMLDivElement>(null);
+    useContextMenu(titleContainerRef);
+
     const showToggleIndicator = useAppSelector((state) => selectHasVisibleChildren(state.feeds, nodeMeta));
     const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
     const dispatch = useAppDispatch();
-
-    const { height, width } = useWindowDimensions();
 
     const {
         isDropNotAllowed,
@@ -150,29 +146,11 @@ const Folder = (props: Props) => {
         }
     };
 
-    // TODO auslagern nach ContextMenuTarget
-    const handleContextMenuFolder = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        e.preventDefault();
-
-        if (width === undefined || height === undefined) {
-            console.error('Could not open context menu. Unable to determine dimensions of window.');
-            return;
-        }
-
-        const x = width - e.clientX < menuWidthInPx ? width - menuWidthInPx : e.clientX;
-        const y = height - e.clientY < contextMenuHeight ? height - contextMenuHeight : e.clientY;
-
-        dispatch(sessionSlice.actions.showContextMenu({ x, y }));
-
-        if (selectedId !== nodeMeta.nodeId) {
-            dispatch(feedsSlice.actions.select(nodeMeta));
-        }
-    };
-
     // TODO indicate if folder has unread items
     return (
         <Fragment>
             <FolderTitleContainer
+                ref={titleContainerRef}
                 theme={theme}
                 disabled={isDropNotAllowed}
                 focus={focus}
@@ -187,8 +165,7 @@ const Folder = (props: Props) => {
                 tabIndex={0}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
-                onBlur={handleBlur}
-                onContextMenu={handleContextMenuFolder}>
+                onBlur={handleBlur}>
                 <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Top} />
                 <FolderTitleRow>
                     <ToggleIndicator theme={theme}>
