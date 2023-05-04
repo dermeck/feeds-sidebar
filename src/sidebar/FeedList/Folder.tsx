@@ -2,12 +2,14 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo, useRef, useState } from 'react';
 
-import { NodeMeta } from '../../model/feeds';
-import { useAppSelector } from '../../store/hooks';
-import { selectHasVisibleChildren } from '../../store/slices/feeds';
+import { TreeNode } from '../../model/feeds';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import feedsSlice, { selectHasVisibleChildren } from '../../store/slices/feeds';
 import { RelativeDragDropPosition } from '../../utils/dragdrop';
+import { MouseEventButton } from '../../utils/types/web-api';
+import { useContextMenu } from '../Menu/useContextMenu';
 import useDragDropNode from './dragdrop/useDragDropNode';
 
 interface FolderTitleContainerProps {
@@ -81,23 +83,28 @@ const FolderIcon = styled(FolderSimple)`
 `;
 
 interface Props {
-    nodeMeta: NodeMeta;
-    title: string;
+    node: TreeNode;
     showTitle: boolean;
     nestedLevel: number;
     children: React.ReactNode;
-    selected: boolean;
-    focus: boolean;
-    expanded: boolean;
-    onClick: () => void;
-    onBlur: () => void;
-    onContextMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
+
+const folderTreeNodeLabel = (node: TreeNode) => node.data.title ?? node.data.id;
 
 const Folder = (props: Props) => {
     const theme = useTheme();
 
-    const showToggleIndicator = useAppSelector((state) => selectHasVisibleChildren(state.feeds, props.nodeMeta));
+    const nodeMeta = useMemo(() => ({ nodeId: props.node.data.id, nodeType: props.node.nodeType }), [props.node]);
+
+    const [expanded, setExpanded] = useState<boolean>(true);
+    const [focus, setFocus] = useState<boolean>(false); // highlight with color
+
+    const titleContainerRef = useRef<HTMLDivElement>(null);
+    useContextMenu(titleContainerRef);
+
+    const showToggleIndicator = useAppSelector((state) => selectHasVisibleChildren(state.feeds, nodeMeta));
+    const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
+    const dispatch = useAppDispatch();
 
     const {
         isDropNotAllowed,
@@ -107,21 +114,48 @@ const Folder = (props: Props) => {
         handleDragLeave,
         handleDrop,
         handleDragEnd,
-    } = useDragDropNode(props.nodeMeta);
+    } = useDragDropNode(nodeMeta);
 
     if (!props.showTitle) {
         return <Fragment>{props.children}</Fragment>;
     }
 
+    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (e.button !== MouseEventButton.leftMouseButton && e.button !== MouseEventButton.rightMouseButton) {
+            return;
+        }
+
+        if (!focus) {
+            setFocus(true);
+        }
+
+        if (selectedId !== nodeMeta.nodeId) {
+            dispatch(feedsSlice.actions.select(nodeMeta));
+        }
+    };
+
+    const handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (e.button === MouseEventButton.leftMouseButton) {
+            setExpanded(!expanded);
+        }
+    };
+
+    const handleBlur = () => {
+        if (focus) {
+            setFocus(false);
+        }
+    };
+
     // TODO indicate if folder has unread items
     return (
         <Fragment>
             <FolderTitleContainer
+                ref={titleContainerRef}
                 theme={theme}
                 disabled={isDropNotAllowed}
-                focus={props.focus}
+                focus={focus}
                 nestedLevel={props.nestedLevel}
-                selected={props.selected}
+                selected={selectedId === nodeMeta.nodeId}
                 draggable={true}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
@@ -129,14 +163,14 @@ const Folder = (props: Props) => {
                 onDrop={handleDrop}
                 onDragEnd={handleDragEnd}
                 tabIndex={0}
-                onClick={props.onClick}
-                onBlur={props.onBlur}
-                onContextMenu={props.onContextMenu}>
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onBlur={handleBlur}>
                 <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Top} />
                 <FolderTitleRow>
                     <ToggleIndicator theme={theme}>
                         {showToggleIndicator &&
-                            (props.expanded ? (
+                            (expanded ? (
                                 <CaretDown size={theme.toggleIndicatorSize} weight="bold" />
                             ) : (
                                 <CaretRight size={theme.toggleIndicatorSize} weight="bold" />
@@ -144,13 +178,13 @@ const Folder = (props: Props) => {
                     </ToggleIndicator>
                     <FolderIcon theme={theme} size={theme.folderIconSize} weight="light" />
                     <FolderTitle highlight={relativeDropPosition === RelativeDragDropPosition.Middle}>
-                        {props.title}
+                        {folderTreeNodeLabel(props.node)}
                     </FolderTitle>
                 </FolderTitleRow>
                 <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Bottom} />
             </FolderTitleContainer>
 
-            {props.expanded && props.children}
+            {expanded && props.children}
         </Fragment>
     );
 };

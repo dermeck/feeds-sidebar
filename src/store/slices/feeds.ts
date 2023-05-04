@@ -1,4 +1,4 @@
-import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAction, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -112,40 +112,57 @@ const initialState: FeedSliceState = {
     selectedNode: undefined,
 };
 
+export const selectFeeds = createSelector(
+    (state: FeedSliceState) => state.feeds,
+    (feeds) => feeds,
+);
+
+export const selectFolders = createSelector(
+    (state: FeedSliceState) => state.folders,
+    (folders) => folders,
+);
+
 export const selectTotalUnreadItems = (state: FeedSliceState) =>
     state.feeds
         .map((feed) => feed.items.filter((i) => !i.isRead).length)
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
 
-export const selectTreeNode = (state: FeedSliceState, nodeId: string): FolderNode | FeedNode | undefined => {
-    const folder = state.folders.find((f) => f.id === nodeId);
+/* factory function for creating memoized selector for each component instance (use nodeId from props) */
+export const makeSelectTreeNode = () =>
+    createSelector(
+        selectFeeds,
+        selectFolders,
+        (_: FeedSliceState, nodeId: string) => nodeId,
+        (feeds, folders, nodeId): TreeNode | undefined => {
+            const folder = folders.find((f) => f.id === nodeId);
 
-    if (folder !== undefined) {
-        return {
-            nodeType: NodeType.Folder,
-            data: folder,
-        };
-    }
+            if (folder !== undefined) {
+                return {
+                    nodeType: NodeType.Folder,
+                    data: folder,
+                };
+            }
 
-    const feed = state.feeds.find((f) => f.id === nodeId);
+            const feed = feeds.find((f) => f.id === nodeId);
 
-    if (feed !== undefined) {
-        return {
-            nodeType: NodeType.Feed,
-            data: feed,
-        };
-    }
+            if (feed !== undefined) {
+                return {
+                    nodeType: NodeType.Feed,
+                    data: feed,
+                };
+            }
 
-    // TODO something triggers selectTreeNode with ids that were just deleted
-    // occurs if folders with subfolders are deleted
-    // fix this workaround and throw error again
-    // throw new Error(`Node with id: "${nodeId}" not found.`);
+            // TODO something triggers selectTreeNode with ids that were just deleted
+            // occurs if folders with subfolders are deleted
+            // fix this workaround and throw error again
+            // throw new Error(`Node with id: "${nodeId}" not found.`);
 
-    return undefined;
-};
+            return undefined;
+        },
+    );
 
-const folderById = (state: FeedSliceState, id: string) => {
-    const folder = state.folders.find((x) => x.id === id);
+const folderById = (folders: FeedSliceState['folders'], id: string) => {
+    const folder = folders.find((x) => x.id === id);
 
     if (folder === undefined) {
         throw new Error(`Folder with id: "${id}" not found.`);
@@ -154,8 +171,8 @@ const folderById = (state: FeedSliceState, id: string) => {
     return folder;
 };
 
-const feedById = (state: FeedSliceState, id: string) => {
-    const feed = state.feeds.find((x) => x.id === id);
+const feedById = (feeds: FeedSliceState['feeds'], id: string) => {
+    const feed = feeds.find((x) => x.id === id);
 
     if (feed === undefined) {
         throw new Error(`Feed with id: "${id}" not found.`);
@@ -164,35 +181,68 @@ const feedById = (state: FeedSliceState, id: string) => {
     return feed;
 };
 
-const selectChildNodes = (state: FeedSliceState, parentId: string): ReadonlyArray<TreeNode> => {
-    const parentFolder = folderById(state, parentId);
+const selectChildNodes = (
+    feeds: FeedSliceState['feeds'],
+    folders: FeedSliceState['folders'],
+    parentId: string,
+): ReadonlyArray<TreeNode> => {
+    const parentFolder = folderById(folders, parentId);
 
     const folderNodes: ReadonlyArray<FolderNode> = parentFolder.subfolderIds.map((subFolderId) => ({
         nodeType: NodeType.Folder,
-        data: folderById(state, subFolderId),
+        data: folderById(folders, subFolderId),
     }));
 
     const feedNodes: ReadonlyArray<FeedNode> = parentFolder.feedIds.map((feedId) => ({
         nodeType: NodeType.Feed,
-        data: feedById(state, feedId),
+        data: feedById(feeds, feedId),
     }));
 
     return [...folderNodes, ...feedNodes];
 };
 
-export const selectDescendentNodeIds = (state: FeedSliceState, parentId: string): ReadonlyArray<string> => {
-    if (state.folders.find((x) => x.id === parentId) === undefined) {
+export const selectDescendentNodeIds = (
+    feeds: FeedSliceState['feeds'],
+    folders: FeedSliceState['folders'],
+    parentId: string,
+): ReadonlyArray<string> => {
+    if (folders.find((x) => x.id === parentId) === undefined) {
         return [];
     }
 
-    const parentFolder = folderById(state, parentId);
+    const parentFolder = folderById(folders, parentId);
 
     return [
         ...parentFolder.subfolderIds,
         ...parentFolder.feedIds,
-        ...parentFolder.subfolderIds.flatMap((sid) => selectDescendentNodeIds(state, sid)),
+        ...parentFolder.subfolderIds.flatMap((sid) => selectDescendentNodeIds(feeds, folders, sid)),
     ];
 };
+
+/* factory function for creating memoized selector (parentId is a parameter) */
+export const makeselectDescendentNodeIds = () =>
+    createSelector(
+        selectFeeds,
+        selectFolders,
+        (_: FeedSliceState, parentId: string | undefined) => parentId,
+        (feeds, folders, parentId): ReadonlyArray<string> => {
+            if (parentId === undefined) {
+                return [];
+            }
+
+            if (folders.find((x) => x.id === parentId) === undefined) {
+                return [];
+            }
+
+            const parentFolder = folderById(folders, parentId);
+
+            return [
+                ...parentFolder.subfolderIds,
+                ...parentFolder.feedIds,
+                ...parentFolder.subfolderIds.flatMap((sid) => selectDescendentNodeIds(feeds, folders, sid)),
+            ];
+        },
+    );
 
 export const selectHasVisibleChildren = (state: FeedSliceState, nodeMeta: NodeMeta): boolean => {
     const { nodeId, nodeType } = nodeMeta;
@@ -226,8 +276,9 @@ const hasFolderChildren = (state: FeedSliceState, folderId: string): boolean => 
     return folder.subfolderIds.length > 0 || folder.feedIds.length > 0;
 };
 
-export const selectTopLevelNodes = (state: FeedSliceState): ReadonlyArray<TreeNode> =>
-    selectChildNodes(state, rootFolderId);
+export const selectTopLevelNodes = createSelector(selectFeeds, selectFolders, (feeds, folders) =>
+    selectChildNodes(feeds, folders, rootFolderId),
+);
 
 const feedsSlice = createSlice({
     name: 'feeds',
@@ -340,7 +391,12 @@ const feedsSlice = createSlice({
                 case NodeType.Folder:
                     return {
                         ...state,
-                        feeds: [...markFeedsAsRead(state.feeds, feedIdsByFolderId(state, state.selectedNode.nodeId))],
+                        feeds: [
+                            ...markFeedsAsRead(
+                                state.feeds,
+                                feedIdsByFolderId(state.folders, state.selectedNode.nodeId),
+                            ),
+                        ],
                     };
 
                 default:
@@ -430,11 +486,11 @@ const feedsSlice = createSlice({
                         );
 
                         // delete feeds in selected folder and its subfolders (all levels)
-                        const feedIdsToDelete = feedIdsByFolderId(state, selectedFolderId);
+                        const feedIdsToDelete = feedIdsByFolderId(state.folders, selectedFolderId);
                         state.feeds = state.feeds.filter((feed) => !feedIdsToDelete.some((id) => feed.id === id));
 
                         // delete folder and subfolders (all levels)
-                        const subfolderIdsToDelete = subfolderIdsByFolderId(state, selectedFolderId);
+                        const subfolderIdsToDelete = subfolderIdsByFolderId(state.folders, selectedFolderId);
                         state.folders = state.folders.filter(
                             (folder) => ![selectedFolderId, ...subfolderIdsToDelete].some((id) => folder.id === id),
                         );
@@ -458,18 +514,21 @@ const feedsSlice = createSlice({
     },
 });
 
-const feedIdsByFolderId = (state: FeedSliceState, folderId: string): ReadonlyArray<string> => {
-    const folder = folderById(state, folderId);
+const feedIdsByFolderId = (folders: FeedSliceState['folders'], folderId: string): ReadonlyArray<string> => {
+    const folder = folderById(folders, folderId);
 
-    return [...folder.feedIds, ...folder.subfolderIds.flatMap((subfolder) => [...feedIdsByFolderId(state, subfolder)])];
+    return [
+        ...folder.feedIds,
+        ...folder.subfolderIds.flatMap((subfolder) => [...feedIdsByFolderId(folders, subfolder)]),
+    ];
 };
 
-const subfolderIdsByFolderId = (state: FeedSliceState, folderId: string): ReadonlyArray<string> => {
-    const folder = folderById(state, folderId);
+const subfolderIdsByFolderId = (folders: FeedSliceState['folders'], folderId: string): ReadonlyArray<string> => {
+    const folder = folderById(folders, folderId);
 
     return [
         ...folder.subfolderIds,
-        ...folder.subfolderIds.flatMap((subfolder) => [...subfolderIdsByFolderId(state, subfolder)]),
+        ...folder.subfolderIds.flatMap((subfolder) => [...subfolderIdsByFolderId(folders, subfolder)]),
     ];
 };
 

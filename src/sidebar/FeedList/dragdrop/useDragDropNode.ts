@@ -1,11 +1,12 @@
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { InsertMode, NodeMeta, NodeType } from '../../../model/feeds';
 import { useAppSelector } from '../../../store/hooks';
-import feedsSlice, { selectDescendentNodeIds } from '../../../store/slices/feeds';
+import feedsSlice, { makeselectDescendentNodeIds } from '../../../store/slices/feeds';
 import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
 import { RelativeDragDropPosition, relativeDragDropPosition } from '../../../utils/dragdrop';
+import useNamedCallback from '../../../utils/hooks/useNamedCallback';
 import { DragDropContext } from './dragdrop-context';
 
 const calculateRelativeDragDropPosition = (
@@ -52,65 +53,86 @@ const useDragDropNode = (nodeMeta: NodeMeta) => {
 
     const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
 
-    const draggedNodeDescendents = useAppSelector((state) =>
-        draggedNode ? selectDescendentNodeIds(state.feeds, draggedNode.nodeId) : [],
-    );
+    const selectDescendentNodeIds = useMemo(makeselectDescendentNodeIds, [draggedNode]);
+    const draggedNodeDescendents = useAppSelector((state) => selectDescendentNodeIds(state.feeds, draggedNode?.nodeId));
 
     const isDropNotAllowed =
         nodeMeta.nodeId === draggedNode?.nodeId ||
         draggedNodeDescendents.includes(nodeMeta.nodeId) ||
         (draggedNode !== undefined && draggedNode.nodeType === NodeType.Folder && nodeMeta.nodeType === NodeType.Feed);
 
-    const handleDragStart = () => {
-        if (draggedNode?.nodeId !== nodeMeta.nodeId) {
-            setDraggedNode(nodeMeta);
-        }
-    };
+    const handleDragStart = useNamedCallback(
+        'handleDragStart',
+        () => {
+            if (draggedNode?.nodeId !== nodeMeta.nodeId) {
+                setDraggedNode(nodeMeta);
+            }
+        },
+        [draggedNode],
+    );
 
-    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-        if (draggedNode === undefined) {
-            // if drag over happens very fast this might not be set properly
-            return;
-        }
+    const handleDragOver = useNamedCallback(
+        'handleDragOver',
+        (event: React.DragEvent<HTMLDivElement>) => {
+            if (draggedNode === undefined) {
+                // if drag over happens very fast this might not be set properly
+                return;
+            }
 
-        if (!isDropNotAllowed) {
-            setRelativDropPosition(calculateRelativeDragDropPosition(draggedNode.nodeType, nodeMeta.nodeType, event));
+            if (!isDropNotAllowed) {
+                setRelativDropPosition(
+                    calculateRelativeDragDropPosition(draggedNode.nodeType, nodeMeta.nodeType, event),
+                );
 
-            event.preventDefault();
-        }
-    };
+                event.preventDefault();
+            }
+        },
+        [draggedNode, isDropNotAllowed],
+    );
 
-    const handleDragLeave = () => {
-        if (relativeDropPosition !== undefined) {
-            setRelativDropPosition(undefined);
-        }
-    };
+    const handleDragLeave = useNamedCallback(
+        'useNamesCallback',
+        () => {
+            if (relativeDropPosition !== undefined) {
+                setRelativDropPosition(undefined);
+            }
+        },
+        [relativeDropPosition],
+    );
 
-    const handleDrop = () => {
-        if (isDropNotAllowed || draggedNode === undefined || relativeDropPosition === undefined) {
-            console.warn(
-                `Could not drop node ${draggedNode} on node ${nodeMeta}, position: ${relativeDragDropPosition}`,
+    const handleDrop = useNamedCallback(
+        'useNamedCallback',
+        () => {
+            if (isDropNotAllowed || draggedNode === undefined || relativeDropPosition === undefined) {
+                console.warn(
+                    `Could not drop node ${draggedNode} on node ${nodeMeta}, position: ${relativeDragDropPosition}`,
+                );
+
+                return;
+            }
+
+            dispatch(
+                feedsSlice.actions.moveNode({
+                    movedNode: draggedNode,
+                    targetNodeId: nodeMeta.nodeId,
+                    mode: insertModeByRelativeDropPosition(relativeDropPosition),
+                }),
             );
 
-            return;
-        }
+            setDraggedNode(undefined);
+            setRelativDropPosition(undefined);
+        },
+        [isDropNotAllowed, draggedNode, relativeDropPosition],
+    );
 
-        dispatch(
-            feedsSlice.actions.moveNode({
-                movedNode: draggedNode,
-                targetNodeId: nodeMeta.nodeId,
-                mode: insertModeByRelativeDropPosition(relativeDropPosition),
-            }),
-        );
-
-        setDraggedNode(undefined);
-        setRelativDropPosition(undefined);
-    };
-
-    const handleDragEnd = () => {
-        setDraggedNode(undefined);
-        setRelativDropPosition(undefined);
-    };
+    const handleDragEnd = useNamedCallback(
+        'handleDragEnd',
+        () => {
+            setDraggedNode(undefined);
+            setRelativDropPosition(undefined);
+        },
+        [],
+    );
 
     return {
         isDropNotAllowed,
