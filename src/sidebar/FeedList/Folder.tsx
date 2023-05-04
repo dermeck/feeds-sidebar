@@ -129,17 +129,18 @@ const Folder = (props: Props) => {
             return;
         }
 
-        if (e.button === MouseEventButton.leftMouseButton) {
-            // TODO change expanded on mouseUp to prevent it before drag
-            setExpanded(!expanded);
-        }
-
         if (!focus) {
             setFocus(true);
         }
 
         if (selectedId !== nodeMeta.nodeId) {
             dispatch(feedsSlice.actions.select(nodeMeta));
+        }
+    };
+
+    const handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (e.button === MouseEventButton.leftMouseButton) {
+            setExpanded(!expanded);
         }
     };
 
@@ -185,6 +186,7 @@ const Folder = (props: Props) => {
                 onDragEnd={handleDragEnd}
                 tabIndex={0}
                 onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
                 onBlur={handleBlur}
                 onContextMenu={handleContextMenuFolder}>
                 <Spacer theme={theme} highlight={relativeDropPosition === RelativeDragDropPosition.Top} />
