@@ -12,7 +12,6 @@ export const initMiddleware: Middleware<
     {},
     RootState,
     Dispatch
-    // ThunkDispatch<RootState, undefined, AnyAction>
 > = (middlewareApi) => (next) => async (action) => {
     if (initCommand.match(action)) {
         // initial load from local storage

@@ -14,7 +14,6 @@ export const feedMiddleware: Middleware<
     {},
     RootState,
     Dispatch
-    // ThunkDispatch<RootState, undefined, AnyAction>
 > = (middlewareApi) => (next) => async (action: AnyAction) => {
     if (fetchAllFeedsCommand.match(action)) {
         const feedsTofetch = middlewareApi.getState().feeds.feeds.map((x) => x.id);
