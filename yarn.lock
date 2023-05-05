@@ -1619,10 +1619,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/firefox-webext-browser@npm:^94.0.1":
-  version: 94.0.1
-  resolution: "@types/firefox-webext-browser@npm:94.0.1"
-  checksum: 43f7e34857f5750c6dc6833f3c4735e75782dcc71800dd29eadc8211a58de0e36611cec79ca7a238da855d5ed7badea46992baec4420b067c4dfa4b052e91465
+"@types/firefox-webext-browser@npm:^111.0.1":
+  version: 111.0.1
+  resolution: "@types/firefox-webext-browser@npm:111.0.1"
+  checksum: 1730c2e303cb502dd3e85aeb6ac645e3526c1583da0ae02ea1203ac002485ba5bf045f7183840b6bde4055f43818b366db6dd112e0d611ec1d82c86c74a4589b
   languageName: node
   linkType: hard
 
@@ -1784,16 +1784,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.0.6":
-  version: 18.0.6
-  resolution: "@types/react-dom@npm:18.0.6"
+"@types/react-dom@npm:^18.2.3":
+  version: 18.2.3
+  resolution: "@types/react-dom@npm:18.2.3"
   dependencies:
     "@types/react": "*"
-  checksum: db571047af1a567631758700b9f7d143e566df939cfe5fbf7535347cc0c726a1cdbb5e3f8566d076e54cf708b6c1166689de194a9ba09ee35efc9e1d45911685
+  checksum: 33520610ee36765dbee62bd7d4a448598f0dec6d3ba94a05ff066e239ae536d739cb3bc2cd5269884f57293a3983ce614182844c4489b6e3350015eb5a08dcc7
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18.0.21":
+"@types/react@npm:*":
   version: 18.0.21
   resolution: "@types/react@npm:18.0.21"
   dependencies:
@@ -1801,6 +1801,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 36c1a7c9d507e81e2e629c1ad3db51d7b84d8b010c2d5008da411874286c6a5ccc711ae1d4c470efc0bdc77153cc8804a40e927e929e5164c669ca41b84b846d
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^18.2.5":
+  version: 18.2.5
+  resolution: "@types/react@npm:18.2.5"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 97c4534e849edf991be0820b0911d036e794b8e2599a1544f500c769acbcb4f443ccde1a3f22298f22ce368ee7757f746e4a529e889567fc142a627698e2de39
   languageName: node
   linkType: hard
 
@@ -1883,10 +1894,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^8.3.4":
-  version: 8.3.4
-  resolution: "@types/uuid@npm:8.3.4"
-  checksum: 6f11f3ff70f30210edaa8071422d405e9c1d4e53abbe50fdce365150d3c698fe7bbff65c1e71ae080cbfb8fded860dbb5e174da96fdbbdfcaa3fb3daa474d20f
+"@types/uuid@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "@types/uuid@npm:9.0.1"
+  checksum: c472b8a77cbeded4bc529220b8611afa39bd64677f507838f8083d8aac8033b1f88cb9ddaa2f8589e0dcd2317291d0f6e1379f82d5ceebd6f74f3b4825288e00
   languageName: node
   linkType: hard
 
@@ -6342,11 +6353,11 @@ __metadata:
     "@reduxjs/toolkit": ^1.9.5
     "@trivago/prettier-plugin-sort-imports": ^4.1.1
     "@types/feedparser": ^2.2.5
-    "@types/firefox-webext-browser": ^94.0.1
+    "@types/firefox-webext-browser": ^111.0.1
     "@types/jest": ^29.5.1
-    "@types/react": ^18.0.21
-    "@types/react-dom": ^18.0.6
-    "@types/uuid": ^8.3.4
+    "@types/react": ^18.2.5
+    "@types/react-dom": ^18.2.3
+    "@types/uuid": ^9.0.1
     "@typescript-eslint/eslint-plugin": ^5.59.2
     "@typescript-eslint/parser": ^5.59.2
     "@welldone-software/why-did-you-render": ^7.0.1
