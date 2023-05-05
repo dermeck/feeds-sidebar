@@ -1,5 +1,4 @@
-import { AnyAction, Middleware } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { Dispatch, Middleware } from '@reduxjs/toolkit';
 
 import { loadState, saveState } from '../../services/persistence';
 import { extensionStateLoaded, initCommand } from '../actions';
@@ -12,7 +11,7 @@ export const initMiddleware: Middleware<
     // eslint-disable-next-line @typescript-eslint/ban-types
     {},
     RootState,
-    ThunkDispatch<RootState, undefined, AnyAction>
+    Dispatch
 > = (middlewareApi) => (next) => async (action) => {
     if (initCommand.match(action)) {
         // initial load from local storage
