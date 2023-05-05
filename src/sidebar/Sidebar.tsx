@@ -10,7 +10,7 @@ import { menuWidthInPx } from '../base-components/styled/Menu';
 import { toolbarButtonPaddingInPx, toolbarButtonSideLengthInPx } from '../base-components/styled/ToolbarButton';
 import { spin } from '../base-components/styled/animations';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchFeedsCommand } from '../store/slices/feeds';
+import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
 import sessionSlice, { MenuType, selectIsLoadingFeeds, View } from '../store/slices/session';
 import FeedList from './FeedList';
@@ -65,7 +65,7 @@ const Sidebar: FunctionComponent = () => {
     );
     const showFeedTitles = useAppSelector(selectOptions).showFeedTitles;
     const activeView = useAppSelector((state) => state.session.activeView);
-    const feeds = useAppSelector((state) => state.feeds.feeds);
+    const feeds = useAppSelector((state) => selectFeeds(state.feeds));
     const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
 
     const [filterString, setFilterString] = useState<string>('');

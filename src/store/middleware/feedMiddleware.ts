@@ -1,5 +1,4 @@
-import { AnyAction, Middleware } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction, Dispatch, Middleware } from '@reduxjs/toolkit';
 
 import feedsSlice, { selectTotalUnreadItems, fetchAllFeedsCommand, fetchFeedsCommand } from '../slices/feeds';
 import { RootState } from '../store';
@@ -14,7 +13,7 @@ export const feedMiddleware: Middleware<
     // eslint-disable-next-line @typescript-eslint/ban-types
     {},
     RootState,
-    ThunkDispatch<RootState, undefined, AnyAction>
+    Dispatch
 > = (middlewareApi) => (next) => async (action: AnyAction) => {
     if (fetchAllFeedsCommand.match(action)) {
         const feedsTofetch = middlewareApi.getState().feeds.feeds.map((x) => x.id);

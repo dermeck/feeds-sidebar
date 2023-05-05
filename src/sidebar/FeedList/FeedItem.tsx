@@ -7,6 +7,7 @@ import { ToolbarButton } from '../../base-components';
 import { FeedItem as FeedItemType, NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
+import { MouseEventButton } from '../../utils/types/web-api';
 
 const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean; nestedLevel: number }>`
     padding-left: ${(props) =>
@@ -72,11 +73,6 @@ interface Props {
     feedId: string;
     indented: boolean;
     nestedLevel: number;
-}
-
-const enum AuxButton {
-    middleMousButton = 1,
-    rightMouseButton = 2,
 }
 
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
@@ -148,7 +144,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     xButtonVisible={showXButton}
                     href={props.item.url}
                     onAuxClick={(e) => {
-                        if (e.button === AuxButton.middleMousButton) {
+                        if (e.button === MouseEventButton.middleMousButton) {
                             // mark item as read if middle mouse button is clicked
                             handleFeedItemClick(props.feedId, props.item.id);
                         }
