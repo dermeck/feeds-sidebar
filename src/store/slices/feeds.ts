@@ -303,7 +303,6 @@ const feedsSlice = createSlice({
         },
         addFolder(state, action: PayloadAction<string>) {
             const newFolderId = randomUUID();
-            console.log(newFolderId);
 
             const folders = state.folders.map((f) =>
                 f.id === rootFolderId
