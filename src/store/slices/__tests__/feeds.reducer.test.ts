@@ -15,6 +15,12 @@ import {
 
 type FeedSliceState = RootState['feeds'];
 
+jest.mock('../../../utils/uuid', () => {
+    return {
+        randomUUID: jest.fn().mockReturnValue('mocked-uuid'),
+    };
+});
+
 describe('global extensionStateLoaded action', () => {
     it('replaces previous state with payload', () => {
         const prevState: FeedSliceState = {
@@ -123,15 +129,6 @@ describe('markAllAsRead action', () => {
         expect(feedsSlice.reducer(prevState, action).feeds[0].items[1].isRead).toBe(true);
         expect(feedsSlice.reducer(prevState, action).feeds[1].items[0].isRead).toBe(true);
     });
-});
-
-jest.mock('uuid', () => {
-    const original = jest.requireActual('uuid');
-
-    return {
-        ...original,
-        v4: jest.fn().mockReturnValue('mocked-uuid'),
-    };
 });
 
 describe('addFolder', () => {
