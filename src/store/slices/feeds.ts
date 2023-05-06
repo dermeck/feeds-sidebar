@@ -1,5 +1,4 @@
 import { createAction, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { v4 as uuidv4 } from 'uuid';
 
 import {
     Feed,
@@ -14,6 +13,7 @@ import {
 } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { moveOrInsertElementBefore, moveOrInsertElementAfter } from '../../utils/arrayUtils';
+import { randomUUID } from '../../utils/uuid';
 import { extensionStateLoaded } from '../actions';
 
 type FeedSliceState = {
@@ -302,7 +302,8 @@ const feedsSlice = createSlice({
             };
         },
         addFolder(state, action: PayloadAction<string>) {
-            const newFolderId = uuidv4();
+            const newFolderId = randomUUID();
+            console.log(newFolderId);
 
             const folders = state.folders.map((f) =>
                 f.id === rootFolderId
