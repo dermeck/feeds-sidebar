@@ -8,3 +8,4 @@
 /.yarn/cache
 /.yarn/install-state.gz
 log.md
+.env
