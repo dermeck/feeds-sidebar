@@ -4,7 +4,7 @@ import { GlobeSimple, X } from 'phosphor-react';
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
 import { ToolbarButton } from '../../base-components';
-import { FeedItem as FeedItemType, NodeType } from '../../model/feeds';
+import { NodeType } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice from '../../store/slices/feeds';
 import { MouseEventButton } from '../../utils/types/web-api';
@@ -69,7 +69,11 @@ const XButton = styled(ToolbarButton)({
 });
 
 interface Props {
-    item: FeedItemType;
+    id: string;
+    label: string;
+    title: string;
+    url: string;
+    isRead: boolean;
     feedId: string;
     indented: boolean;
     nestedLevel: number;
@@ -78,7 +82,7 @@ interface Props {
 const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const dispatch = useAppDispatch();
 
-    const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === props.item.id;
+    const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === props.id;
 
     useEffect(() => {
         if (isSelected) {
@@ -90,12 +94,12 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
     const [showXButton, setShowXButton] = useState(false);
     const [xButtonClicked, setXButtonClicked] = useState(false);
 
-    if ((props.item.isRead && !isSelected) || xButtonClicked) {
+    if ((props.isRead && !isSelected) || xButtonClicked) {
         return null;
     }
 
     const handleFeedItemClick = (feedId: string, itemId: string) => {
-        dispatch(feedsSlice.actions.select({ nodeType: NodeType.FeedItem, nodeId: props.item.id }));
+        dispatch(feedsSlice.actions.select({ nodeType: NodeType.FeedItem, nodeId: props.id }));
 
         dispatch(
             feedsSlice.actions.markItemAsRead({
@@ -118,7 +122,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <Container
-            key={props.item.id}
+            key={props.id}
             indented={props.indented}
             nestedLevel={props.nestedLevel}
             selected={isSelected}
@@ -140,22 +144,22 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     <GlobeSimple size={20} weight="light" />
                 </GlobeButton>
                 <Link
-                    title={`${props.item.title} \n${props.item.url}`}
+                    title={props.title}
                     xButtonVisible={showXButton}
-                    href={props.item.url}
+                    href={props.url}
                     onAuxClick={(e) => {
                         if (e.button === MouseEventButton.middleMousButton) {
                             // mark item as read if middle mouse button is clicked
-                            handleFeedItemClick(props.feedId, props.item.id);
+                            handleFeedItemClick(props.feedId, props.id);
                         }
                     }}
                     onContextMenu={(e) => e.preventDefault()}
-                    onClick={() => handleFeedItemClick(props.feedId, props.item.id)}
+                    onClick={() => handleFeedItemClick(props.feedId, props.id)}
                     onDragStart={(e) => e.preventDefault()}>
-                    {props.item.title}
+                    {props.label}
                 </Link>
                 {showXButton && (
-                    <XButton title="Mark as Read" onClick={() => handleXButtonClick(props.feedId, props.item.id)}>
+                    <XButton title="Mark as Read" onClick={() => handleXButtonClick(props.feedId, props.id)}>
                         <X size={20} weight="bold" />
                     </XButton>
                 )}
