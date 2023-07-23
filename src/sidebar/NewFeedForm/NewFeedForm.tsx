@@ -115,6 +115,17 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                     }}>
                     Add New Feed
                 </AddButton>
+                <AddButton
+                    onClick={() => {
+                        // TODO remove this debugging code
+                        return alert(
+                            JSON.stringify(
+                                feeds.map((f) => f.items.filter((i) => !i.isRead)).filter((arr) => arr.length > 0),
+                            ),
+                        );
+                    }}>
+                    Debug
+                </AddButton>
                 <MessageBox theme={theme} show={newFeedUrlMessage !== ''}>
                     {newFeedUrlMessage}
                 </MessageBox>
