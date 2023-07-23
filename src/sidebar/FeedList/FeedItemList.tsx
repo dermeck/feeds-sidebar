@@ -33,7 +33,13 @@ const FeedItemList = (props: FeedItemListProps) => {
                         <FeedItem
                             key={item.id + item.title}
                             feedId={props.feed.id}
-                            item={item}
+                            id={item.id}
+                            label={`${!props.indented && props.feed.title ? `${props.feed.title} | ` : ''}${
+                                item.title
+                            }`}
+                            url={item.url}
+                            isRead={item.isRead ?? false}
+                            title={`${props.feed.title} | ${item.title} \n${item.url}`}
                             indented={props.indented}
                             nestedLevel={props.nestedLevel}
                         />
