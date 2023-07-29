@@ -15,7 +15,7 @@ interface Props {
     onMouseDown: MouseEventHandler<HTMLLIElement>;
 }
 
-export const StyledListItem = styled.li`
+const StyledListItem = styled.li`
     display: flex;
     flex-direction: row;
     align-items: center;

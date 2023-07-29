@@ -201,7 +201,7 @@ const selectChildNodes = (
     return [...folderNodes, ...feedNodes];
 };
 
-export const selectDescendentNodeIds = (
+const selectDescendentNodeIds = (
     feeds: FeedSliceState['feeds'],
     folders: FeedSliceState['folders'],
     parentId: string,
