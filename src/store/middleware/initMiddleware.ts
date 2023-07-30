@@ -7,12 +7,7 @@ import store, { RootState } from '../store';
 
 const feedsAutoUpdateKey = 'feedsAutoUpdate';
 
-export const initMiddleware: Middleware<
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    {},
-    RootState,
-    Dispatch
-> = (middlewareApi) => (next) => async (action) => {
+export const initMiddleware: Middleware<object, RootState, Dispatch> = (middlewareApi) => (next) => async (action) => {
     if (initCommand.match(action)) {
         // initial load from local storage
         const loadedState = await loadState();
