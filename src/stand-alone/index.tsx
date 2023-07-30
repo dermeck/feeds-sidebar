@@ -9,7 +9,6 @@ import store from '../store/store';
 
 const container = document.getElementById('stand-alone-root');
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const root = createRoot(container!);
 
 root.render(

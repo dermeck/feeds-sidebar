@@ -2,12 +2,7 @@ import { Dispatch, Middleware } from '@reduxjs/toolkit';
 
 import { RootState } from '../store';
 
-export const loggerMiddleware: Middleware<
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    {},
-    RootState,
-    Dispatch
-> = (storeApi) => (next) => (action) => {
+export const loggerMiddleware: Middleware<object, RootState, Dispatch> = (storeApi) => (next) => (action) => {
     if (!process.env.ENABLE_LOGGER_MIDDLEWARE || process.env.STAND_ALONE || process.env.NODE_ENV !== 'development') {
         return next(action);
     }
