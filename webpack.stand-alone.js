@@ -22,7 +22,11 @@ module.exports = (env) => ({
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
         // node polyfills
-        fallback: { stream: require.resolve('stream-browserify'), buffer: require.resolve('buffer-browserify') },
+        fallback: {
+            stream: require.resolve('stream-browserify'),
+            buffer: require.resolve('buffer-browserify'),
+            'process/browser': require.resolve('process/browser'),
+        },
     },
 
     plugins: [
@@ -45,6 +49,19 @@ module.exports = (env) => ({
         },
         static: {
             directory: path.join(__dirname, 'src/stand-alone'),
+        },
+        client: {
+            overlay: {
+                runtimeErrors: (error) => {
+                    // TODO resolve this (seems to be an issue with polyfill or virtuoso)
+                    // forward error to the console instead of breaking the whole app
+                    if (error?.message === 'ResizeObserver loop completed with undelivered notifications.') {
+                        console.error(error);
+                        return false;
+                    }
+                    return true;
+                },
+            },
         },
     },
 });

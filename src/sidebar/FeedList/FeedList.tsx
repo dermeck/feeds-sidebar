@@ -10,7 +10,7 @@ import FolderTreeNode from './FolderTreeNode';
 import { DragDropContext } from './dragdrop/dragdrop-context';
 
 interface Props {
-    showFeedTitles: boolean;
+    showFeedTitles: boolean; // TODO view: 'list' | 'folder' | 'date'
     filterString: string;
 }
 
