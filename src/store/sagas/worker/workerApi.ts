@@ -8,11 +8,13 @@ export interface FetchFeedAction {
 interface FetchFeedResultError {
     type: 'fetchError';
     url: string;
+    errorMessage: string;
 }
 
 interface ParseFeedResultError {
     type: 'parseError';
     url: string;
+    errorMessage: string;
 }
 
 interface ParseFeedResultSuccess {

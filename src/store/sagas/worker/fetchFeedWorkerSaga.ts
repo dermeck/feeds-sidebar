@@ -26,13 +26,17 @@ function* fetchFeedWorkerSaga(action: FetchFeedAction) {
                 yield put<WorkerResponseAction>({ type: 'success', parsedFeed });
             } catch (e) {
                 // response is not a feed
-                yield put<WorkerResponseAction>({ type: 'parseError', url: fetchResult.url });
+                yield put<WorkerResponseAction>({
+                    type: 'parseError',
+                    url: fetchResult.url,
+                    errorMessage: `parseError: ${e}`,
+                });
             }
             break;
         }
 
         case 'error': {
-            yield put<WorkerResponseAction>({ type: 'fetchError', url: fetchResult.url });
+            yield put<WorkerResponseAction>({ type: 'fetchError', url: fetchResult.url, errorMessage: 'fetchError' });
             break;
         }
 
