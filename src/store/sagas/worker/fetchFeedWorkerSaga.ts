@@ -43,7 +43,7 @@ function* fetchFeedWorkerSaga(action: FetchFeedAction) {
 const mapFeedItem = (item: Item): FeedItem => ({
     id: item.guid ?? item.link,
     url: item.link,
-    title: item.title ?? item.link,
+    title: item.title ?? item.description,
     published: item.pubdate?.toDateString() || undefined,
     lastModified: item.date?.toDateString() || undefined,
 });
