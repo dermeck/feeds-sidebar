@@ -6,6 +6,7 @@ import { Feed, FeedItem } from '../../../model/feeds';
 import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
 import { fetchFeed, FetchFeedResult } from './fetchFeed';
 import { FetchFeedAction, WorkerResponseAction } from './workerApi';
+import { stripHtmlTags } from '../../../utils/stringUtils';
 
 interface FeedParserInput {
     feedUrl: string;
@@ -43,7 +44,7 @@ function* fetchFeedWorkerSaga(action: FetchFeedAction) {
 const mapFeedItem = (item: Item): FeedItem => ({
     id: item.guid ?? item.link,
     url: item.link,
-    title: item.title ?? item.description,
+    title: item.title ?? stripHtmlTags(item.description),
     published: item.pubdate?.toDateString() || undefined,
     lastModified: item.date?.toDateString() || undefined,
 });
