@@ -22,8 +22,7 @@
     "permissions": ["alarms", "<all_urls>", "storage"],
 
     "background": {
-        "scripts": ["background.js"],
-        "persistent": false
+        "scripts": ["background.js"]
     },
 
     "sidebar_action": {
