@@ -1,6 +1,6 @@
 {
     "name": "feeds",
-    "version": "0.29.1",
+    "version": "0.29.2",
     "description": "A Firefox extension to read RSS feeds",
     "repository": "git@github.com:dermeck/feeds-sidebar.git",
     "author": "dermeck feeds-sb@dermeck.mozmail.com",
@@ -12,7 +12,7 @@
         "build:xpi": "npm run build && npm run sign",
         "build:zip": "npm run build && web-ext build --source-dir=build --artifacts-dir=dist",
         "build": "npm run lint && rimraf build && webpack --mode production && rimraf build/stand-alone  **/*.js.map **/**/*.js.map",
-        "sign": "dotenv -- cross-var web-ext sign --source-dir=build --artifacts-dir=dist --api-key=%FF_API_KEY% --api-secret=%FF_API_SECRET%",
+        "sign": "dotenv -- cross-var web-ext sign --source-dir=build --artifacts-dir=dist --self-hosted --api-key=%FF_API_KEY% --api-secret=%FF_API_SECRET%",
         "lint": "npm run lint:js && npm run lint:styles && npm run find-deadcode",
         "lint:js": "eslint .eslintrc.json src/",
         "lint:styles": "stylelint '**/*.tsx' --config stylelintrc.json",
