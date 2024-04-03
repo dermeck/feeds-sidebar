@@ -28,11 +28,7 @@ module.exports = (env) => ({
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
         // node polyfills
-        fallback: {
-            stream: require.resolve('stream-browserify'),
-            buffer: require.resolve('buffer-browserify'),
-            'process/browser': require.resolve('process/browser'),
-        },
+        fallback: { stream: require.resolve('stream-browserify'), buffer: require.resolve('buffer-browserify') },
     },
 
     plugins: [
