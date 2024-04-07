@@ -99,8 +99,6 @@ const Sidebar: FunctionComponent = () => {
                     title="More Options"
                     active={moreMenuVisible}
                     onClick={(e) => {
-                        // TODO fix issues/204
-                        dispatch(log(`MoreMenu clicked: ${e.target}`)); // TODO
                         const offsetHeight = e.currentTarget.offsetHeight;
                         const offsetLeft = e.currentTarget.offsetLeft;
 
