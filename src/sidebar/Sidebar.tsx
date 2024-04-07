@@ -15,7 +15,6 @@ import optionsSlice, { selectOptions } from '../store/slices/options';
 import sessionSlice, { MenuType, selectIsLoadingFeeds, View } from '../store/slices/session';
 import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
-import { log } from '../store/actions';
 
 const SidebarContainer = styled.div`
     background-color: ${(props) => props.theme.colors.sidebarBackground};

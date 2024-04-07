@@ -2,6 +2,7 @@
 
 - increase the version number in `src/manifest.json` and `package.json`
 - create a new tag with with the version number (eg `git tag v0.12`) and push it (`git push origin v0.12`.
+- (in case it's need, tag can be remove with `git push --delete origin v0.12`)
 
 ## Self hosted xpi (permanent installation)
 To create an installable `.xpi` file the extension must be [signed](https://extensionworkshop.com/documentation/develop/web-ext-command-reference/#web-ext_sign).
