@@ -15,6 +15,7 @@ import optionsSlice, { selectOptions } from '../store/slices/options';
 import sessionSlice, { MenuType, selectIsLoadingFeeds, View } from '../store/slices/session';
 import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
+import { log } from '../store/actions';
 
 const SidebarContainer = styled.div`
     background-color: ${(props) => props.theme.colors.sidebarBackground};
@@ -94,24 +95,25 @@ const Sidebar: FunctionComponent = () => {
                     <FolderSimple size={22} />
                 </ShowFeedTitleButton>
 
-                <MoreMenuButton title="More Options" active={moreMenuVisible}>
-                    <DotsThreeOutline
-                        size={22}
-                        weight="fill"
-                        onClick={(e) => {
-                            const offsetHeight = e.currentTarget.parentElement?.offsetHeight;
-                            const offsetLeft = e.currentTarget.parentElement?.offsetLeft;
+                <MoreMenuButton
+                    title="More Options"
+                    active={moreMenuVisible}
+                    onClick={(e) => {
+                        // TODO fix issues/204
+                        dispatch(log(`MoreMenu clicked: ${e.target}`)); // TODO
+                        const offsetHeight = e.currentTarget.offsetHeight;
+                        const offsetLeft = e.currentTarget.offsetLeft;
 
-                            if (offsetHeight !== undefined && offsetLeft !== undefined) {
-                                dispatch(
-                                    sessionSlice.actions.showMoreMenu({
-                                        x: offsetLeft - menuWidthInPx + toolbarButtonSideLengthInPx,
-                                        y: offsetHeight + 2 * toolbarButtonPaddingInPx,
-                                    }),
-                                );
-                            }
-                        }}
-                    />
+                        if (offsetHeight !== undefined && offsetLeft !== undefined) {
+                            dispatch(
+                                sessionSlice.actions.showMoreMenu({
+                                    x: offsetLeft - menuWidthInPx + toolbarButtonSideLengthInPx,
+                                    y: offsetHeight + 2 * toolbarButtonPaddingInPx,
+                                }),
+                            );
+                        }
+                    }}>
+                    <DotsThreeOutline size={22} weight="fill" />
                 </MoreMenuButton>
             </Header>
 
