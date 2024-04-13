@@ -1,4 +1,4 @@
-import { wrapStore } from 'webext-redux';
+import { wrapStore } from '../store/redux-bridge';
 
 import { initCommand } from '../store/actions';
 import store from '../store/store';

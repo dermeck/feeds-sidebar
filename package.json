@@ -70,7 +70,6 @@
         "typescript": "^5.4.2",
         "web-ext": "7.11.0",
         "web-ext-types": "^3.2.1",
-        "webext-redux": "^2.1.9",
         "webextension-polyfill-ts": "^0.26.0",
         "webpack": "^5.90.3",
         "webpack-cli": "^5.1.4",
@@ -96,5 +95,8 @@
     "packageManager": "yarn@3.2.4",
     "resolutions": {
         "webext-redux@^2.1.9": "patch:webext-redux@npm%3A2.1.9#./.yarn/patches/webext-redux-npm-2.1.9-e005835987.patch"
+    },
+    "dependencies": {
+        "lodash.assignin": "^4.2.0"
     }
 }

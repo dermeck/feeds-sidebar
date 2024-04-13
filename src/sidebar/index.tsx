@@ -1,4 +1,4 @@
-import { Store } from 'webext-redux';
+import { Store } from '../store/redux-bridge';
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
