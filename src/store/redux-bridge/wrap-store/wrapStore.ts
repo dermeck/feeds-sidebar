@@ -1,4 +1,4 @@
-import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE, DEFAULT_PORT_NAME } from '../constants';
+import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE } from '../constants';
 import { getBrowserAPI } from '../util';
 import shallowDiff from '../strategies/shallowDiff/diff';
 
@@ -26,7 +26,6 @@ const promiseResponder = (dispatchResult, send) => {
 };
 
 const defaultOpts = {
-    portName: DEFAULT_PORT_NAME,
     dispatchResponder: promiseResponder,
     diffStrategy: shallowDiff,
 };
@@ -34,36 +33,29 @@ const defaultOpts = {
 /**
  * Wraps a Redux store so that proxy stores can connect to it.
  * @param {Object} store A Redux store
- * @param {Object} options An object of form {portName, dispatchResponder, serializer, deserializer}, where `portName` is a required string and defines the name of the port for state transition changes, `dispatchResponder` is a function that takes the result of a store dispatch and optionally implements custom logic for responding to the original dispatch message,`serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and diffStrategy is one of the included diffing strategies (default is shallow diff) or a custom diffing function.
+ * @param {Object} options An object of form {dispatchResponder, serializer, deserializer}, where `portName` is a required string and defines the name of the port for state transition changes, `dispatchResponder` is a function that takes the result of a store dispatch and optionally implements custom logic for responding to the original dispatch message,`serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and diffStrategy is one of the included diffing strategies (default is shallow diff) or a custom diffing function.
  */
 export default (
     store,
-    {
-        portName = defaultOpts.portName,
-        dispatchResponder = defaultOpts.dispatchResponder,
-        diffStrategy = defaultOpts.diffStrategy,
-    } = defaultOpts,
+    { dispatchResponder = defaultOpts.dispatchResponder, diffStrategy = defaultOpts.diffStrategy } = defaultOpts,
 ) => {
-    if (!portName) {
-        throw new Error('portName is required in options');
-    }
-
     const browserAPI = getBrowserAPI();
 
     /**
      * Respond to dispatches from UI components
      */
     const dispatchResponse = (request, sender, sendResponse) => {
-        if (request.type === DISPATCH_TYPE && request.portName === portName) {
+        if (request.type === DISPATCH_TYPE) {
             const action = Object.assign({}, request.payload, {
                 _sender: sender,
             });
 
-            let dispatchResult = null;
+            let dispatchResult: unknown = null;
 
             try {
                 dispatchResult = store.dispatch(action);
-            } catch (e) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch (e: any) {
                 dispatchResult = Promise.reject(e.message);
                 console.error(e);
             }
@@ -105,7 +97,6 @@ export default (
             serializedMessagePoster({
                 type: PATCH_STATE_TYPE,
                 payload: diff,
-                portName, // Notifying what extension is broadcasting the state changes
             });
         }
     };
@@ -117,11 +108,10 @@ export default (
     serializedMessagePoster({
         type: STATE_TYPE,
         payload: currentState,
-        portName, // Notifying what extension is broadcasting the state changes
     });
 
     const withPayloadDeserializer = (payload) => payload;
-    const shouldDeserialize = (request) => request.type === DISPATCH_TYPE && request.portName === portName;
+    const shouldDeserialize = (request) => request.type === DISPATCH_TYPE;
 
     /**
      * State provider for content-script initialization
@@ -129,7 +119,7 @@ export default (
     browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const state = store.getState();
 
-        if (request.type === FETCH_STATE_TYPE && request.portName === portName) {
+        if (request.type === FETCH_STATE_TYPE) {
             sendResponse({
                 type: FETCH_STATE_TYPE,
                 payload: state,

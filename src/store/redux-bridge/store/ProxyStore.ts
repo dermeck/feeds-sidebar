@@ -1,6 +1,6 @@
 import assignIn from 'lodash.assignin';
 
-import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE, DEFAULT_PORT_NAME } from '../constants';
+import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE } from '../constants';
 import shallowDiff from '../strategies/shallowDiff/patch';
 import { getBrowserAPI } from '../util';
 
@@ -9,7 +9,6 @@ const backgroundErrPrefix =
     'You might want to inspect your background page for more details.\n';
 
 const defaultOpts = {
-    portName: DEFAULT_PORT_NAME,
     state: {},
     extensionId: null,
     patchStrategy: shallowDiff,
@@ -22,7 +21,6 @@ declare global {
 }
 
 class ProxyStore {
-    portName;
     readyResolved;
     readyPromise;
     readyResolve;
@@ -39,25 +37,19 @@ class ProxyStore {
 
     /**
      * Creates a new Proxy store
-     * @param  {object} options An object of form {portName, state, extensionId, serializer, deserializer, diffStrategy}, where `portName` is a required string and defines the name of the port for state transition changes, `state` is the initial state of this store (default `{}`) `extensionId` is the extension id as defined by browserAPI when extension is loaded (default `''`), `serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and patchStrategy is one of the included patching strategies (default is shallow diff) or a custom patching function.
+     * @param  {object} options An object of form {state, extensionId, serializer, deserializer, diffStrategy}, where `portName` is a required string and defines the name of the port for state transition changes, `state` is the initial state of this store (default `{}`) `extensionId` is the extension id as defined by browserAPI when extension is loaded (default `''`), `serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and patchStrategy is one of the included patching strategies (default is shallow diff) or a custom patching function.
      */
     constructor({
-        portName = defaultOpts.portName,
         state = defaultOpts.state,
         extensionId = defaultOpts.extensionId,
         patchStrategy = defaultOpts.patchStrategy,
     } = defaultOpts) {
-        if (!portName) {
-            throw new Error('portName is required in options');
-        }
-
         if (typeof patchStrategy !== 'function') {
             throw new Error(
                 'patchStrategy must be one of the included patching strategies or a custom patching function',
             );
         }
 
-        this.portName = portName;
         this.readyResolved = false;
         this.readyPromise = new Promise((resolve) => (this.readyResolve = resolve));
 
@@ -68,7 +60,7 @@ class ProxyStore {
         // We request the latest available state data to initialise our store
         this.browserAPI.runtime.sendMessage(
             this.extensionId,
-            { type: FETCH_STATE_TYPE, portName },
+            { type: FETCH_STATE_TYPE },
             undefined,
             this.initializeStore,
         );
@@ -81,24 +73,22 @@ class ProxyStore {
 
         // Don't use shouldDeserialize here, since no one else should be using this port
         this.serializedPortListener((message) => {
-            if (message.portName === this.portName) {
-                switch (message.type) {
-                    case STATE_TYPE:
-                        this.replaceState(message.payload);
+            switch (message.type) {
+                case STATE_TYPE:
+                    this.replaceState(message.payload);
 
-                        if (!this.readyResolved) {
-                            this.readyResolved = true;
-                            this.readyResolve();
-                        }
-                        break;
+                    if (!this.readyResolved) {
+                        this.readyResolved = true;
+                        this.readyResolve();
+                    }
+                    break;
 
-                    case PATCH_STATE_TYPE:
-                        this.patchState(message.payload);
-                        break;
+                case PATCH_STATE_TYPE:
+                    this.patchState(message.payload);
+                    break;
 
-                    default:
-                    // do nothing
-                }
+                default:
+                // do nothing
             }
         });
 
@@ -178,7 +168,6 @@ class ProxyStore {
                 this.extensionId,
                 {
                     type: DISPATCH_TYPE,
-                    portName: this.portName,
                     payload: data,
                 },
                 null,
