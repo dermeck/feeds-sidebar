@@ -10,7 +10,6 @@ const backgroundErrPrefix =
 
 const defaultOpts = {
     state: {},
-    extensionId: null,
     patchStrategy: shallowDiff,
 };
 
@@ -25,8 +24,6 @@ class ProxyStore {
     readyPromise;
     readyResolve;
     browserAPI;
-    extensionId;
-
     deserializer;
     serializedPortListener;
     serializedMessageSender;
@@ -37,13 +34,9 @@ class ProxyStore {
 
     /**
      * Creates a new Proxy store
-     * @param  {object} options An object of form {state, extensionId, serializer, deserializer, diffStrategy}, where `portName` is a required string and defines the name of the port for state transition changes, `state` is the initial state of this store (default `{}`) `extensionId` is the extension id as defined by browserAPI when extension is loaded (default `''`), `serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and patchStrategy is one of the included patching strategies (default is shallow diff) or a custom patching function.
+     * @param  {object} options An object of form {state,  serializer, deserializer, diffStrategy}, where `portName` is a required string and defines the name of the port for state transition changes, `state` is the initial state of this store (default `{}`) `extensionId` is the extension id as defined by browserAPI when extension is loaded (default `''`), `serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and patchStrategy is one of the included patching strategies (default is shallow diff) or a custom patching function.
      */
-    constructor({
-        state = defaultOpts.state,
-        extensionId = defaultOpts.extensionId,
-        patchStrategy = defaultOpts.patchStrategy,
-    } = defaultOpts) {
+    constructor({ state = defaultOpts.state, patchStrategy = defaultOpts.patchStrategy } = defaultOpts) {
         if (typeof patchStrategy !== 'function') {
             throw new Error(
                 'patchStrategy must be one of the included patching strategies or a custom patching function',
@@ -54,16 +47,10 @@ class ProxyStore {
         this.readyPromise = new Promise((resolve) => (this.readyResolve = resolve));
 
         this.browserAPI = getBrowserAPI();
-        this.extensionId = extensionId; // keep the extensionId as an instance variable
         this.initializeStore = this.initializeStore.bind(this);
 
         // We request the latest available state data to initialise our store
-        this.browserAPI.runtime.sendMessage(
-            this.extensionId,
-            { type: FETCH_STATE_TYPE },
-            undefined,
-            this.initializeStore,
-        );
+        this.browserAPI.runtime.sendMessage({ type: FETCH_STATE_TYPE }, undefined, this.initializeStore);
 
         this.serializedPortListener = (...args) => this.browserAPI.runtime.onMessage.addListener(...args);
         this.serializedMessageSender = (...args) => this.browserAPI.runtime.sendMessage(...args);
@@ -165,7 +152,6 @@ class ProxyStore {
     dispatch(data) {
         return new Promise((resolve, reject) => {
             this.serializedMessageSender(
-                this.extensionId,
                 {
                     type: DISPATCH_TYPE,
                     payload: data,
