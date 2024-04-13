@@ -1,7 +1,6 @@
 import assignIn from 'lodash.assignin';
 
 import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE, DEFAULT_PORT_NAME } from '../constants';
-import { withSerializer, withDeserializer, noop } from '../serialization';
 import shallowDiff from '../strategies/shallowDiff/patch';
 import { getBrowserAPI } from '../util';
 
@@ -13,8 +12,6 @@ const defaultOpts = {
     portName: DEFAULT_PORT_NAME,
     state: {},
     extensionId: null,
-    serializer: noop,
-    deserializer: noop,
     patchStrategy: shallowDiff,
 };
 
@@ -48,19 +45,12 @@ class ProxyStore {
         portName = defaultOpts.portName,
         state = defaultOpts.state,
         extensionId = defaultOpts.extensionId,
-        serializer = defaultOpts.serializer,
-        deserializer = defaultOpts.deserializer,
         patchStrategy = defaultOpts.patchStrategy,
     } = defaultOpts) {
         if (!portName) {
             throw new Error('portName is required in options');
         }
-        if (typeof serializer !== 'function') {
-            throw new Error('serializer must be a function');
-        }
-        if (typeof deserializer !== 'function') {
-            throw new Error('deserializer must be a function');
-        }
+
         if (typeof patchStrategy !== 'function') {
             throw new Error(
                 'patchStrategy must be one of the included patching strategies or a custom patching function',
@@ -83,14 +73,8 @@ class ProxyStore {
             this.initializeStore,
         );
 
-        this.deserializer = deserializer;
-        this.serializedPortListener = withDeserializer(deserializer)((...args) =>
-            this.browserAPI.runtime.onMessage.addListener(...args),
-        );
-        this.serializedMessageSender = withSerializer(serializer)(
-            (...args) => this.browserAPI.runtime.sendMessage(...args),
-            1,
-        );
+        this.serializedPortListener = (...args) => this.browserAPI.runtime.onMessage.addListener(...args);
+        this.serializedMessageSender = (...args) => this.browserAPI.runtime.sendMessage(...args);
         this.listeners = [];
         this.state = state;
         this.patchStrategy = patchStrategy;
