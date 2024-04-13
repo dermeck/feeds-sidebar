@@ -1,7 +1,7 @@
 import assignIn from 'lodash.assignin';
 
 import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE } from '../constants';
-import shallowDiff from '../strategies/shallowDiff/patch';
+import shallowDiff from '../utils/patch';
 import { getBrowserAPI } from '../util';
 
 const backgroundErrPrefix =
@@ -10,7 +10,6 @@ const backgroundErrPrefix =
 
 const defaultOpts = {
     state: {},
-    patchStrategy: shallowDiff,
 };
 
 declare global {
@@ -34,15 +33,9 @@ class ProxyStore {
 
     /**
      * Creates a new Proxy store
-     * @param  {object} options An object of form {state,  serializer, deserializer, diffStrategy}, where `portName` is a required string and defines the name of the port for state transition changes, `state` is the initial state of this store (default `{}`) `extensionId` is the extension id as defined by browserAPI when extension is loaded (default `''`), `serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and patchStrategy is one of the included patching strategies (default is shallow diff) or a custom patching function.
+     * @param  {object} options An object of form {state, extensionId, serializer, deserializer, diffStrategy}, where `portName` is a required string and defines the name of the port for state transition changes, `state` is the initial state of this store (default `{}`) `extensionId` is the extension id as defined by browserAPI when extension is loaded (default `''`), `serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and patchStrategy is one of the included patching strategies (default is shallow diff) or a custom patching function.
      */
-    constructor({ state = defaultOpts.state, patchStrategy = defaultOpts.patchStrategy } = defaultOpts) {
-        if (typeof patchStrategy !== 'function') {
-            throw new Error(
-                'patchStrategy must be one of the included patching strategies or a custom patching function',
-            );
-        }
-
+    constructor({ state = defaultOpts.state } = defaultOpts) {
         this.readyResolved = false;
         this.readyPromise = new Promise((resolve) => (this.readyResolve = resolve));
 
@@ -56,7 +49,6 @@ class ProxyStore {
         this.serializedMessageSender = (...args) => this.browserAPI.runtime.sendMessage(...args);
         this.listeners = [];
         this.state = state;
-        this.patchStrategy = patchStrategy;
 
         // Don't use shouldDeserialize here, since no one else should be using this port
         this.serializedPortListener((message) => {
@@ -115,7 +107,7 @@ class ProxyStore {
      * @param {object} state the new (partial) redux state
      */
     patchState(difference) {
-        this.state = this.patchStrategy(this.state, difference);
+        this.state = shallowDiff(this.state, difference);
         this.listeners.forEach((l) => l());
     }
 

@@ -1,6 +1,6 @@
 import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE } from '../constants';
 import { getBrowserAPI } from '../util';
-import shallowDiff from '../strategies/shallowDiff/diff';
+import shallowDiff from '../utils/diff';
 
 /**
  * Responder for promisified results
@@ -27,7 +27,6 @@ const promiseResponder = (dispatchResult, send) => {
 
 const defaultOpts = {
     dispatchResponder: promiseResponder,
-    diffStrategy: shallowDiff,
 };
 
 /**
@@ -35,10 +34,7 @@ const defaultOpts = {
  * @param {Object} store A Redux store
  * @param {Object} options An object of form {dispatchResponder, serializer, deserializer}, where `portName` is a required string and defines the name of the port for state transition changes, `dispatchResponder` is a function that takes the result of a store dispatch and optionally implements custom logic for responding to the original dispatch message,`serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and diffStrategy is one of the included diffing strategies (default is shallow diff) or a custom diffing function.
  */
-export default (
-    store,
-    { dispatchResponder = defaultOpts.dispatchResponder, diffStrategy = defaultOpts.diffStrategy } = defaultOpts,
-) => {
+export default (store, { dispatchResponder = defaultOpts.dispatchResponder } = defaultOpts) => {
     const browserAPI = getBrowserAPI();
 
     /**
@@ -89,7 +85,7 @@ export default (
 
     const patchState = () => {
         const newState = store.getState();
-        const diff = diffStrategy(currentState, newState);
+        const diff = shallowDiff(currentState, newState);
 
         if (diff.length) {
             currentState = newState;
