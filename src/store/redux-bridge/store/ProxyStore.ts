@@ -24,7 +24,7 @@ declare global {
     }
 }
 
-class Store {
+class ProxyStore {
     portName;
     readyResolved;
     readyPromise;
@@ -234,4 +234,4 @@ class Store {
     }
 }
 
-export default Store;
+export default ProxyStore;

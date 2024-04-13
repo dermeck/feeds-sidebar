@@ -1,6 +1,6 @@
-import Store from './store/Store';
+import ProxyStore from './store/ProxyStore';
 import applyMiddleware from './store/applyMiddleware';
 import wrapStore from './wrap-store/wrapStore';
 import alias from './alias/alias';
 
-export {Store, applyMiddleware, wrapStore, alias};
+export { ProxyStore, applyMiddleware, wrapStore, alias };
