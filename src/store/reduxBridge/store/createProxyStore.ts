@@ -3,32 +3,38 @@ import { MessageType } from '../messaging/message';
 import shallowDiff from '../utils/patch'; // TODO refactor
 
 // Creates a proxy store that interacts with the real redux store in the background script via messages
-export function createProxyStore(): { readyPromise: Promise<unknown>; store: Store } {
+export function createProxyStore(): { storePromise: Promise<Store> } {
     let state = {};
     let listeners: (() => void)[] = [];
-    const browserAPI = browser;
-    let readyResolved = false;
 
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    let resolveReady: Function;
-    const readyPromise = new Promise((resolve) => (resolveReady = resolve));
+    // TODO enable no implicit any
+    // TODO
 
-    browserAPI.runtime.onMessage.addListener(processMessage);
+    browser.runtime.onMessage.addListener(processMessage);
 
-    const init = () => {
-        sendMessage({ type: MessageType.GetFullStateRequest }, undefined, processMessage);
-    };
+    let resolveStore: () => void;
+
+    // resolved when the store is ready (messaging set up)
+    const storePromise = new Promise<Store>((resolve) => {
+        resolveStore = () => resolve(store);
+    });
+
+    // get full state on init
+    browser.runtime
+        .sendMessage({ type: MessageType.GetFullStateRequest })
+        .then((result) => {
+            processMessage(result);
+            // messaging is established
+            resolveStore();
+        })
+        .catch((reason) => console.error(`Error sending message, reasone: ${reason}`));
 
     function processMessage(message) {
         console.log('Proxy process message', message);
+
         switch (message.type) {
             case MessageType.GetFullStateResponse:
                 replaceState(message.payload);
-
-                if (!readyResolved) {
-                    readyResolved = true;
-                    resolveReady();
-                }
                 break;
 
             case MessageType.PatchState:
@@ -50,9 +56,6 @@ export function createProxyStore(): { readyPromise: Promise<unknown>; store: Sto
         listeners.forEach((l) => l());
     }
 
-    // TODO typings are strange here?
-    const sendMessage = (message, a, b) => browserAPI.runtime.sendMessage(message, a, b);
-
     function replaceReducer() {
         return;
     }
@@ -66,36 +69,11 @@ export function createProxyStore(): { readyPromise: Promise<unknown>; store: Sto
     }
 
     function dispatch(action: UnknownAction) {
-        console.log('proxy dispatch', action);
-        return new Promise((resolve, reject) => {
-            const cb = (resp) => {
-                if (!resp) {
-                    const error = browserAPI.runtime.lastError;
-                    reject(new Error(`error in background script, dispatch response is undefined: ${error}`));
-                    return;
-                }
-
-                const { error, value } = resp; // TODO improve typings
-
-                if (error) {
-                    reject(new Error(`error in background script: ${error}`));
-                } else {
-                    resolve(value && value.payload);
-                }
-            };
-
-            sendMessage(
-                {
-                    type: MessageType.DispatchAction,
-                    action,
-                },
-                null,
-                cb,
-            );
+        browser.runtime.sendMessage({
+            type: MessageType.DispatchAction,
+            action,
         });
     }
-
-    init();
 
     const store = {
         dispatch: dispatch,
@@ -105,5 +83,5 @@ export function createProxyStore(): { readyPromise: Promise<unknown>; store: Sto
         [Symbol.observable]: undefined,
     } as unknown as Store<unknown, UnknownAction, unknown>; // TODO fix type?
 
-    return { readyPromise, store };
+    return { storePromise };
 }

@@ -6,9 +6,9 @@ import { Provider } from 'react-redux';
 
 import App from './App';
 
-const { readyPromise, store } = createProxyStore();
+const { storePromise } = createProxyStore();
 
-readyPromise.then(() => {
+storePromise.then((store) => {
     const container = document.getElementById('sidebar-root');
 
     const root = createRoot(container!);
