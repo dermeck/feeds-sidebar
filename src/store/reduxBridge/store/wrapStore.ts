@@ -4,15 +4,7 @@ import { MessageType } from '../messaging/message';
 
 // Wraps a Redux store and provides messaging interface for Proxystores
 export const wrapStore = (store: Store) => {
-    console.log('wrapStore');
     let messagingActive = false;
-
-    const browserAPI = browser;
-
-    const sendMessage = (message) => {
-        browserAPI.runtime.sendMessage(message);
-    };
-
     let currentState = store.getState();
 
     const onStoreChanged = () => {
@@ -27,7 +19,7 @@ export const wrapStore = (store: Store) => {
             currentState = newState;
 
             // notify proxy stores
-            sendMessage({
+            browser.runtime.sendMessage({
                 type: MessageType.PatchState,
                 payload: diff,
             });
@@ -36,40 +28,20 @@ export const wrapStore = (store: Store) => {
 
     store.subscribe(onStoreChanged);
 
-    browserAPI.runtime.onMessage.addListener((request, _, sendResponse) => {
+    browser.runtime.onMessage.addListener((request) => {
         messagingActive = true;
-        console.log('wrapstore listener');
 
         // Provide state for content-script initialization
         if (request.type === MessageType.GetFullStateRequest) {
-            console.log('send request response');
-
-            const state = store.getState();
-            sendResponse({
+            return Promise.resolve({
                 type: MessageType.GetFullStateResponse,
-                payload: state,
+                payload: store.getState(),
             });
         }
 
         if (request.type === MessageType.DispatchAction) {
-            // Respond to dispatch from content-scripts
-            store
-                .dispatch(request.action)
-                .then((res) => {
-                    sendResponse({
-                        error: null,
-                        value: res,
-                    });
-                })
-                .catch((err) => {
-                    console.error('error dispatching result:', err);
-                    sendResponse({
-                        error: err.message,
-                        value: null,
-                    });
-                });
-
-            return true;
+            // Forward dispatch from content-script
+            return store.dispatch(request.action);
         }
     });
 };
