@@ -1,59 +1,38 @@
-import assignIn from 'lodash.assignin';
-
 import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE } from '../constants';
 import shallowDiff from '../utils/patch';
-import { getBrowserAPI } from '../util';
-
-const backgroundErrPrefix =
-    '\nLooks like there is an error in the background page. ' +
-    'You might want to inspect your background page for more details.\n';
-
-const defaultOpts = {
-    state: {},
-};
-
-declare global {
-    interface SymbolConstructor {
-        readonly observable: symbol;
-    }
-}
+import { getBrowserAPI } from '../util'; // TODO mr remove
+import { UnknownAction } from '@reduxjs/toolkit';
 
 class ProxyStore {
     readyResolved;
     readyPromise;
     readyResolve;
     browserAPI;
-    deserializer;
-    serializedPortListener;
-    serializedMessageSender;
+    processMessage;
+    sendMessage;
     listeners;
     state;
-    patchStrategy;
     [Symbol.observable];
 
-    /**
-     * Creates a new Proxy store
-     * @param  {object} options An object of form {state, extensionId, serializer, deserializer, diffStrategy}, where `portName` is a required string and defines the name of the port for state transition changes, `state` is the initial state of this store (default `{}`) `extensionId` is the extension id as defined by browserAPI when extension is loaded (default `''`), `serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and patchStrategy is one of the included patching strategies (default is shallow diff) or a custom patching function.
-     */
-    constructor({ state = defaultOpts.state } = defaultOpts) {
+    constructor() {
         this.readyResolved = false;
         this.readyPromise = new Promise((resolve) => (this.readyResolve = resolve));
 
         this.browserAPI = getBrowserAPI();
         this.initializeStore = this.initializeStore.bind(this);
 
-        // We request the latest available state data to initialise our store
+        // init store
         this.browserAPI.runtime.sendMessage({ type: FETCH_STATE_TYPE }, undefined, this.initializeStore);
 
-        this.serializedPortListener = (...args) => this.browserAPI.runtime.onMessage.addListener(...args);
-        this.serializedMessageSender = (...args) => this.browserAPI.runtime.sendMessage(...args);
+        this.processMessage = (message) => this.browserAPI.runtime.onMessage.addListener(message);
+        this.sendMessage = (...args) => this.browserAPI.runtime.sendMessage(...args);
         this.listeners = [];
-        this.state = state;
+        this.state = {};
 
-        // Don't use shouldDeserialize here, since no one else should be using this port
-        this.serializedPortListener((message) => {
+        this.processMessage((message) => {
             switch (message.type) {
                 case STATE_TYPE:
+                case FETCH_STATE_TYPE:
                     this.replaceState(message.payload);
 
                     if (!this.readyResolved) {
@@ -141,33 +120,31 @@ class ProxyStore {
      * @param  {object} data The action data to dispatch
      * @return {Promise}     Promise that will resolve/reject based on the action response from the background
      */
-    dispatch(data) {
+    dispatch(action: UnknownAction) {
         return new Promise((resolve, reject) => {
-            this.serializedMessageSender(
+            const cb = (resp) => {
+                if (!resp) {
+                    const error = this.browserAPI.runtime.lastError;
+                    reject(new Error(`error in background script, dispatch response is undefined: ${error}`));
+                    return;
+                }
+
+                const { error, value } = resp; // TODO improve typings
+
+                if (error) {
+                    reject(new Error(`error in background script: ${error}`));
+                } else {
+                    resolve(value && value.payload);
+                }
+            };
+
+            this.sendMessage(
                 {
-                    type: DISPATCH_TYPE,
-                    payload: data,
+                    type: DISPATCH_TYPE, // TODO Message type!
+                    action,
                 },
                 null,
-                (resp) => {
-                    if (!resp) {
-                        const error = this.browserAPI.runtime.lastError;
-                        const bgErr = new Error(`${backgroundErrPrefix}${error}`);
-
-                        reject(assignIn(bgErr, error));
-                        return;
-                    }
-
-                    const { error, value } = resp;
-
-                    if (error) {
-                        const bgErr = new Error(`${backgroundErrPrefix}${error}`);
-
-                        reject(assignIn(bgErr, error));
-                    } else {
-                        resolve(value && value.payload);
-                    }
-                },
+                cb,
             );
         });
     }
@@ -185,4 +162,4 @@ class ProxyStore {
     }
 }
 
-export default ProxyStore;
+export { ProxyStore };

@@ -92,8 +92,5 @@
         ],
         "importOrderSeparation": true
     },
-    "packageManager": "yarn@3.2.4",
-    "dependencies": {
-        "lodash.assignin": "^4.2.0"
-    }
+    "packageManager": "yarn@3.2.4"
 }

@@ -1,70 +1,16 @@
+import { Store } from 'redux';
 import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE } from '../constants';
 import { getBrowserAPI } from '../util';
 import shallowDiff from '../utils/diff';
 
-/**
- * Responder for promisified results
- * @param  {object} dispatchResult The result from `store.dispatch()`
- * @param  {function} send         The function used to respond to original message
- * @return {undefined}
- */
-const promiseResponder = (dispatchResult, send) => {
-    Promise.resolve(dispatchResult)
-        .then((res) => {
-            send({
-                error: null,
-                value: res,
-            });
-        })
-        .catch((err) => {
-            console.error('error dispatching result:', err);
-            send({
-                error: err.message,
-                value: null,
-            });
-        });
-};
-
-const defaultOpts = {
-    dispatchResponder: promiseResponder,
-};
-
-/**
- * Wraps a Redux store so that proxy stores can connect to it.
- * @param {Object} store A Redux store
- * @param {Object} options An object of form {dispatchResponder, serializer, deserializer}, where `portName` is a required string and defines the name of the port for state transition changes, `dispatchResponder` is a function that takes the result of a store dispatch and optionally implements custom logic for responding to the original dispatch message,`serializer` is a function to serialize outgoing message payloads (default is passthrough), `deserializer` is a function to deserialize incoming message payloads (default is passthrough), and diffStrategy is one of the included diffing strategies (default is shallow diff) or a custom diffing function.
- */
-export default (store, { dispatchResponder = defaultOpts.dispatchResponder } = defaultOpts) => {
+// Wraps a Redux store and provides messaging interface for Proxystores
+export const wrapStore = (store: Store) => {
     const browserAPI = getBrowserAPI();
-
-    /**
-     * Respond to dispatches from UI components
-     */
-    const dispatchResponse = (request, sender, sendResponse) => {
-        if (request.type === DISPATCH_TYPE) {
-            const action = Object.assign({}, request.payload, {
-                _sender: sender,
-            });
-
-            let dispatchResult: unknown = null;
-
-            try {
-                dispatchResult = store.dispatch(action);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (e: any) {
-                dispatchResult = Promise.reject(e.message);
-                console.error(e);
-            }
-
-            dispatchResponder(dispatchResult, sendResponse);
-            return true;
-        }
-    };
 
     /**
      * Setup for state updates
      */
-    const serializedMessagePoster = (...args) => {
+    const sendMessage = (...args) => {
         const onErrorCallback = () => {
             if (browserAPI.runtime.lastError) {
                 // do nothing - errors can be present
@@ -73,7 +19,7 @@ export default (store, { dispatchResponder = defaultOpts.dispatchResponder } = d
         };
 
         browserAPI.runtime.sendMessage(...args, onErrorCallback);
-        // We will broadcast state changes to all tabs to sync state across content scripts
+        // broadcast state changes to all tabs to sync state across content scripts
         return browserAPI.tabs.query({}, (tabs) => {
             for (const tab of tabs) {
                 browserAPI.tabs.sendMessage(tab.id, ...args, onErrorCallback);
@@ -90,7 +36,7 @@ export default (store, { dispatchResponder = defaultOpts.dispatchResponder } = d
         if (diff.length) {
             currentState = newState;
 
-            serializedMessagePoster({
+            sendMessage({
                 type: PATCH_STATE_TYPE,
                 payload: diff,
             });
@@ -101,18 +47,15 @@ export default (store, { dispatchResponder = defaultOpts.dispatchResponder } = d
     store.subscribe(patchState);
 
     // Send store's initial state through port
-    serializedMessagePoster({
+    sendMessage({
         type: STATE_TYPE,
         payload: currentState,
     });
 
-    const withPayloadDeserializer = (payload) => payload;
-    const shouldDeserialize = (request) => request.type === DISPATCH_TYPE;
-
     /**
      * State provider for content-script initialization
      */
-    browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    browserAPI.runtime.onMessage.addListener((request, _, sendResponse) => {
         const state = store.getState();
 
         if (request.type === FETCH_STATE_TYPE) {
@@ -123,17 +66,27 @@ export default (store, { dispatchResponder = defaultOpts.dispatchResponder } = d
         }
     });
 
-    /**
-     * Setup action handler
-     */
-    withPayloadDeserializer((...args) => browserAPI.runtime.onMessage.addListener(...args))(dispatchResponse);
+    // Respond to dispatch from content-scripts
+    browserAPI.runtime.onMessage.addListener((request, _, sendResponse) => {
+        // TODO typings for message types // Request/Response
+        if (request.type === DISPATCH_TYPE) {
+            store
+                .dispatch(request.action)
+                .then((res) => {
+                    sendResponse({
+                        error: null,
+                        value: res,
+                    });
+                })
+                .catch((err) => {
+                    console.error('error dispatching result:', err);
+                    sendResponse({
+                        error: err.message,
+                        value: null,
+                    });
+                });
 
-    /**
-     * Setup external action handler
-     */
-    if (browserAPI.runtime.onMessageExternal) {
-        (...args) => browserAPI.runtime.onMessageExternal.addListener(...args)(dispatchResponse, shouldDeserialize);
-    } else {
-        console.warn('runtime.onMessageExternal is not supported');
-    }
+            return true;
+        }
+    });
 };

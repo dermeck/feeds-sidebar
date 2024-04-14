@@ -6961,7 +6961,6 @@ __metadata:
     html-entities: ^2.5.2
     jest: ^29.7.0
     jest-environment-jsdom: ^29.7.0
-    lodash.assignin: ^4.2.0
     node-polyfill-webpack-plugin: ^3.0.0
     phosphor-react: ^1.4.1
     postcss: ^8.4.35
@@ -9939,13 +9938,6 @@ __metadata:
   version: 4.2.0
   resolution: "lodash.assign@npm:4.2.0"
   checksum: 75bbc6733c9f577c448031b4051f990f068802708891f94be9d4c2faffd6a9ec67a2c49671dafc908a068d35687765464853282842b4560b662e6c903d11cc90
-  languageName: node
-  linkType: hard
-
-"lodash.assignin@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "lodash.assignin@npm:4.2.0"
-  checksum: 4b55bc1d65ccd7648fdba8a4316d10546929bf0beb5950830d86c559948cf170f0e65b77c95e66b45b511b85a31161714de8b2008d2537627ef3c7759afe36a6
   languageName: node
   linkType: hard
 
