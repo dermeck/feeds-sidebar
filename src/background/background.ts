@@ -1,4 +1,4 @@
-import { wrapStore } from '../store/redux-bridge';
+import { wrapStore } from '../store/reduxBridge';
 
 import { initCommand } from '../store/actions';
 import store from '../store/store';

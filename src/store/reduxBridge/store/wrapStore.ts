@@ -1,5 +1,4 @@
 import { Store } from 'redux';
-import { getBrowserAPI } from '../util';
 import shallowDiff from '../utils/diff';
 import { MessageType } from '../messaging/message';
 
@@ -8,7 +7,7 @@ export const wrapStore = (store: Store) => {
     console.log('wrapStore');
     let messagingActive = false;
 
-    const browserAPI = getBrowserAPI();
+    const browserAPI = browser;
 
     const sendMessage = (message) => {
         browserAPI.runtime.sendMessage(message);
