@@ -1,75 +1,59 @@
 import { Store } from 'redux';
-import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE } from '../constants';
 import { getBrowserAPI } from '../util';
 import shallowDiff from '../utils/diff';
+import { MessageType } from '../messaging/message';
 
 // Wraps a Redux store and provides messaging interface for Proxystores
 export const wrapStore = (store: Store) => {
+    console.log('wrapStore');
+    let messagingActive = false;
+
     const browserAPI = getBrowserAPI();
 
-    /**
-     * Setup for state updates
-     */
-    const sendMessage = (...args) => {
-        const onErrorCallback = () => {
-            if (browserAPI.runtime.lastError) {
-                // do nothing - errors can be present
-                // if no content script exists on receiver
-            }
-        };
-
-        browserAPI.runtime.sendMessage(...args, onErrorCallback);
-        // broadcast state changes to all tabs to sync state across content scripts
-        return browserAPI.tabs.query({}, (tabs) => {
-            for (const tab of tabs) {
-                browserAPI.tabs.sendMessage(tab.id, ...args, onErrorCallback);
-            }
-        });
+    const sendMessage = (message) => {
+        browserAPI.runtime.sendMessage(message);
     };
 
     let currentState = store.getState();
 
-    const patchState = () => {
+    const onStoreChanged = () => {
+        if (!messagingActive) {
+            // message receiver not yet set up in proxy store
+            return;
+        }
         const newState = store.getState();
         const diff = shallowDiff(currentState, newState);
 
         if (diff.length) {
             currentState = newState;
 
+            // notify proxy stores
             sendMessage({
-                type: PATCH_STATE_TYPE,
+                type: MessageType.PatchState,
                 payload: diff,
             });
         }
     };
 
-    // Send patched state down connected port on every redux store state change
-    store.subscribe(patchState);
+    store.subscribe(onStoreChanged);
 
-    // Send store's initial state through port
-    sendMessage({
-        type: STATE_TYPE,
-        payload: currentState,
-    });
-
-    /**
-     * State provider for content-script initialization
-     */
     browserAPI.runtime.onMessage.addListener((request, _, sendResponse) => {
-        const state = store.getState();
+        messagingActive = true;
+        console.log('wrapstore listener');
 
-        if (request.type === FETCH_STATE_TYPE) {
+        // Provide state for content-script initialization
+        if (request.type === MessageType.GetFullStateRequest) {
+            console.log('send request response');
+
+            const state = store.getState();
             sendResponse({
-                type: FETCH_STATE_TYPE,
+                type: MessageType.GetFullStateResponse,
                 payload: state,
             });
         }
-    });
 
-    // Respond to dispatch from content-scripts
-    browserAPI.runtime.onMessage.addListener((request, _, sendResponse) => {
-        // TODO typings for message types // Request/Response
-        if (request.type === DISPATCH_TYPE) {
+        if (request.type === MessageType.DispatchAction) {
+            // Respond to dispatch from content-scripts
             store
                 .dispatch(request.action)
                 .then((res) => {

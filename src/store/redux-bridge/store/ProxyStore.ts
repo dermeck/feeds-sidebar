@@ -1,54 +1,35 @@
-import { DISPATCH_TYPE, FETCH_STATE_TYPE, STATE_TYPE, PATCH_STATE_TYPE } from '../constants';
 import shallowDiff from '../utils/patch';
 import { getBrowserAPI } from '../util'; // TODO mr remove
 import { UnknownAction } from '@reduxjs/toolkit';
+import { MessageType } from '../messaging/message';
 
 class ProxyStore {
     readyResolved;
     readyPromise;
     readyResolve;
     browserAPI;
-    processMessage;
     sendMessage;
     listeners;
     state;
     [Symbol.observable];
 
     constructor() {
+        console.log('Proxy constructor');
         this.readyResolved = false;
         this.readyPromise = new Promise((resolve) => (this.readyResolve = resolve));
 
         this.browserAPI = getBrowserAPI();
-        this.initializeStore = this.initializeStore.bind(this);
+        this.processMessage = this.processMessage.bind(this);
 
-        // init store
-        this.browserAPI.runtime.sendMessage({ type: FETCH_STATE_TYPE }, undefined, this.initializeStore);
-
-        this.processMessage = (message) => this.browserAPI.runtime.onMessage.addListener(message);
+        this.browserAPI.runtime.onMessage.addListener(this.processMessage);
         this.sendMessage = (...args) => this.browserAPI.runtime.sendMessage(...args);
+
         this.listeners = [];
         this.state = {};
 
-        this.processMessage((message) => {
-            switch (message.type) {
-                case STATE_TYPE:
-                case FETCH_STATE_TYPE:
-                    this.replaceState(message.payload);
-
-                    if (!this.readyResolved) {
-                        this.readyResolved = true;
-                        this.readyResolve();
-                    }
-                    break;
-
-                case PATCH_STATE_TYPE:
-                    this.patchState(message.payload);
-                    break;
-
-                default:
-                // do nothing
-            }
-        });
+        // init store
+        this.sendMessage({ type: MessageType.GetFullStateRequest }, undefined, this.processMessage); // TODO figure out why we need to add cb
+        // this.browserAPI.runtime.sendMessage({ type: MessageType.RequestState }, undefined, this.initializeStore);
 
         this.dispatch = this.dispatch.bind(this); // add this context to dispatch
         this.getState = this.getState.bind(this); // add this context to getState
@@ -140,7 +121,7 @@ class ProxyStore {
 
             this.sendMessage(
                 {
-                    type: DISPATCH_TYPE, // TODO Message type!
+                    type: MessageType.DispatchAction,
                     action,
                 },
                 null,
@@ -149,15 +130,24 @@ class ProxyStore {
         });
     }
 
-    initializeStore(message) {
-        if (message && message.type === FETCH_STATE_TYPE) {
-            this.replaceState(message.payload);
+    processMessage(message) {
+        console.log('Proxy process message', message);
+        switch (message.type) {
+            case MessageType.GetFullStateResponse:
+                this.replaceState(message.payload);
 
-            // Resolve if readyPromise has not been resolved.
-            if (!this.readyResolved) {
-                this.readyResolved = true;
-                this.readyResolve();
-            }
+                if (!this.readyResolved) {
+                    this.readyResolved = true;
+                    this.readyResolve();
+                }
+                break;
+
+            case MessageType.PatchState:
+                this.patchState(message.payload);
+                break;
+
+            default:
+            // do nothing
         }
     }
 }
