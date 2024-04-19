@@ -1,8 +1,8 @@
 import { Store } from 'redux';
 import shallowDiff from '../utils/diff';
-import { MessageType } from '../messaging/message';
+import { MessageType, addMessageListener, sendMessageToContentScripts } from '../messaging/message';
 
-// Wraps a Redux store and provides messaging interface for Proxystores
+// Wraps a Redux store and provides messaging interface for proxy store
 export const wrapStore = (store: Store) => {
     let messagingActive = false;
     let currentState = store.getState();
@@ -19,7 +19,7 @@ export const wrapStore = (store: Store) => {
             currentState = newState;
 
             // notify proxy stores
-            browser.runtime.sendMessage({
+            sendMessageToContentScripts({
                 type: MessageType.PatchState,
                 payload: diff,
             });
@@ -28,7 +28,7 @@ export const wrapStore = (store: Store) => {
 
     store.subscribe(onStoreChanged);
 
-    browser.runtime.onMessage.addListener((request) => {
+    addMessageListener((request) => {
         messagingActive = true;
 
         // Provide state for content-script initialization

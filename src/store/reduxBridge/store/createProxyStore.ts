@@ -1,16 +1,19 @@
 import { Store, UnknownAction } from 'redux';
-import { MessageType } from '../messaging/message';
+import {
+    BackgroundScriptMessage,
+    MessageType,
+    addMessageListener,
+    sendMessageToBackgroundScript,
+} from '../messaging/message';
 import shallowDiff from '../utils/patch'; // TODO refactor
 
-// Creates a proxy store that interacts with the real redux store in the background script via messages
+// Creates a proxy store that interacts with the real Redux store in the background script via messages
 export function createProxyStore(): { storePromise: Promise<Store> } {
     let state = {};
     let listeners: (() => void)[] = [];
 
     // TODO enable no implicit any
-    // TODO
-
-    browser.runtime.onMessage.addListener(processMessage);
+    addMessageListener(processMessage);
 
     let resolveStore: () => void;
 
@@ -20,8 +23,7 @@ export function createProxyStore(): { storePromise: Promise<Store> } {
     });
 
     // get full state on init
-    browser.runtime
-        .sendMessage({ type: MessageType.GetFullStateRequest })
+    sendMessageToBackgroundScript({ type: MessageType.GetFullStateRequest })
         .then((result) => {
             processMessage(result);
             // messaging is established
@@ -29,7 +31,7 @@ export function createProxyStore(): { storePromise: Promise<Store> } {
         })
         .catch((reason) => console.error(`Error sending message, reasone: ${reason}`));
 
-    function processMessage(message) {
+    function processMessage(message: BackgroundScriptMessage) {
         console.log('Proxy process message', message);
 
         switch (message.type) {
@@ -40,7 +42,6 @@ export function createProxyStore(): { storePromise: Promise<Store> } {
             case MessageType.PatchState:
                 patchState(message.payload);
                 break;
-
             default:
             // do nothing
         }
@@ -69,7 +70,7 @@ export function createProxyStore(): { storePromise: Promise<Store> } {
     }
 
     function dispatch(action: UnknownAction) {
-        browser.runtime.sendMessage({
+        sendMessageToBackgroundScript({
             type: MessageType.DispatchAction,
             action,
         });
