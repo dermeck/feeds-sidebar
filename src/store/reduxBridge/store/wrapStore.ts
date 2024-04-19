@@ -1,5 +1,5 @@
 import { Store } from 'redux';
-import shallowDiff from '../utils/diff';
+import { shallowDiff } from '../utils/changeUtils';
 import { MessageType, addMessageListener, sendMessageToContentScripts } from '../messaging/message';
 
 // Wraps a Redux store and provides messaging interface for proxy store

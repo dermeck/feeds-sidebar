@@ -5,7 +5,7 @@ import {
     addMessageListener,
     sendMessageToBackgroundScript,
 } from '../messaging/message';
-import shallowDiff from '../utils/patch'; // TODO refactor
+import { applyChanges } from '../utils/changeUtils';
 
 // Creates a proxy store that interacts with the real Redux store in the background script via messages
 export function createProxyStore(): { storePromise: Promise<Store> } {
@@ -53,7 +53,7 @@ export function createProxyStore(): { storePromise: Promise<Store> } {
     }
 
     function patchState(difference) {
-        state = shallowDiff(state, difference);
+        state = applyChanges(state, difference);
         listeners.forEach((l) => l());
     }
 
