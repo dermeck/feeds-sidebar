@@ -112,15 +112,8 @@ const initialState: FeedSliceState = {
     selectedNode: undefined,
 };
 
-export const selectFeeds = createSelector(
-    (state: FeedSliceState) => state.feeds,
-    (feeds) => feeds,
-);
-
-export const selectFolders = createSelector(
-    (state: FeedSliceState) => state.folders,
-    (folders) => folders,
-);
+export const selectFeeds = (state: FeedSliceState) => state.feeds;
+export const selectFolders = (state: FeedSliceState) => state.folders;
 
 export const selectTotalUnreadItems = (state: FeedSliceState) =>
     state.feeds
