@@ -1,5 +1,5 @@
-import { createProxyStore } from './store/createProxyStore';
-import { wrapStore } from './store/wrapStore';
+import { createProxyStore } from './createProxyStore';
+import { wrapStore } from './wrapStore';
 /**
  * Create Redux store in the background-script and wrap it with wrapStore which provides messaging interface to the Redux store.
  *

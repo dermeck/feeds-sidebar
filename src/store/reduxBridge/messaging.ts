@@ -1,6 +1,6 @@
 import { UnknownAction } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
-import { Changes } from '../utils/changeUtils';
+import { RootState } from '../store';
+import { Changes } from './utils/changeUtils';
 
 export const enum MessageType {
     // proxy => background

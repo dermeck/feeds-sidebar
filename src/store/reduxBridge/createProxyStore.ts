@@ -1,14 +1,9 @@
 import { Store, UnknownAction } from 'redux';
-import {
-    BackgroundScriptMessage,
-    MessageType,
-    addMessageListener,
-    sendMessageToBackgroundScript,
-} from '../messaging/message';
-import { Changes, applyChanges } from '../utils/changeUtils';
-import { RootState } from '../../store';
+import { BackgroundScriptMessage, MessageType, addMessageListener, sendMessageToBackgroundScript } from './messaging';
+import { Changes, applyChanges } from './utils/changeUtils';
+import { RootState } from '../store';
 import { Dispatch } from '@reduxjs/toolkit';
-import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 
 // Creates a proxy store that interacts with the real Redux store in the background script via messages
 export function createProxyStore(): { storePromise: Promise<Store<RootState>> } {

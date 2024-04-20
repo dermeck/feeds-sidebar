@@ -1,12 +1,7 @@
 import { Store } from 'redux';
-import { shallowDiff } from '../utils/changeUtils';
-import {
-    ContenScriptMessage,
-    MessageType,
-    addMessageListener,
-    sendMessageToContentScripts,
-} from '../messaging/message';
-import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
+import { shallowDiff } from './utils/changeUtils';
+import { ContenScriptMessage, MessageType, addMessageListener, sendMessageToContentScripts } from './messaging';
+import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 
 // Wraps a Redux store and provides messaging interface for proxy store
 export const wrapStore = (store: Store) => {
