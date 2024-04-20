@@ -14,7 +14,7 @@ const calculateRelativeDragDropPosition = (
     targetNodeType: NodeType,
     event: React.DragEvent<HTMLDivElement>,
 ) => {
-    let value = undefined;
+    let value: RelativeDragDropPosition | undefined = undefined;
 
     if (draggedNodeType === NodeType.Feed && targetNodeType === NodeType.Folder) {
         // feeds can only be inserted into folders

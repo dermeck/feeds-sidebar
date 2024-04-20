@@ -1,4 +1,4 @@
-import { Store } from 'webext-redux';
+import { createProxyStore } from '../store/reduxBridge';
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
@@ -6,9 +6,9 @@ import { Provider } from 'react-redux';
 
 import App from './App';
 
-const store = new Store();
+const { storePromise } = createProxyStore();
 
-store.ready().then(() => {
+storePromise.then((store) => {
     const container = document.getElementById('sidebar-root');
 
     const root = createRoot(container!);
