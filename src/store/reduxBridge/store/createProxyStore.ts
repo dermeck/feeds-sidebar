@@ -5,14 +5,16 @@ import {
     addMessageListener,
     sendMessageToBackgroundScript,
 } from '../messaging/message';
-import { applyChanges } from '../utils/changeUtils';
+import { Changes, applyChanges } from '../utils/changeUtils';
+import { RootState } from '../../store';
+import { Dispatch } from '@reduxjs/toolkit';
+import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
 
 // Creates a proxy store that interacts with the real Redux store in the background script via messages
-export function createProxyStore(): { storePromise: Promise<Store> } {
+export function createProxyStore(): { storePromise: Promise<Store<RootState>> } {
     let state = {};
     let listeners: (() => void)[] = [];
 
-    // TODO enable no implicit any
     addMessageListener(processMessage);
 
     let resolveStore: () => void;
@@ -32,9 +34,9 @@ export function createProxyStore(): { storePromise: Promise<Store> } {
         .catch((reason) => console.error(`Error sending message, reasone: ${reason}`));
 
     function processMessage(message: BackgroundScriptMessage) {
-        console.log('Proxy process message', message);
+        const type = message.type;
 
-        switch (message.type) {
+        switch (type) {
             case MessageType.GetFullStateResponse:
                 replaceState(message.payload);
                 break;
@@ -42,23 +44,20 @@ export function createProxyStore(): { storePromise: Promise<Store> } {
             case MessageType.PatchState:
                 patchState(message.payload);
                 break;
+
             default:
-            // do nothing
+                throw new UnreachableCaseError(type);
         }
     }
 
-    function replaceState(newState) {
+    function replaceState(newState: RootState) {
         state = newState;
         listeners.forEach((l) => l());
     }
 
-    function patchState(difference) {
-        state = applyChanges(state, difference);
+    function patchState(changes: Changes) {
+        state = applyChanges(state, changes);
         listeners.forEach((l) => l());
-    }
-
-    function replaceReducer() {
-        return;
     }
 
     function subscribe(listener: () => void) {
@@ -76,13 +75,32 @@ export function createProxyStore(): { storePromise: Promise<Store> } {
         });
     }
 
+    /* fake implementations to satisfy Redux store typings */
+    function fakedReplaceReducer() {
+        console.error('replaceReducer is not implemented in proxy store');
+        return;
+    }
+
+    function fakedObservable() {
+        return {
+            subscribe() {
+                console.error('observable is not implemented in proxy store');
+                return { unsubscribe: () => undefined };
+            },
+
+            [Symbol.observable]() {
+                return this;
+            },
+        };
+    }
+
     const store = {
-        dispatch: dispatch,
+        dispatch: dispatch as Dispatch<UnknownAction>,
         subscribe,
         getState: () => state,
-        replaceReducer,
-        [Symbol.observable]: undefined,
-    } as unknown as Store<unknown, UnknownAction, unknown>; // TODO fix type?
+        replaceReducer: fakedReplaceReducer,
+        [Symbol.observable]: fakedObservable,
+    } as unknown as Store<RootState, UnknownAction, unknown>;
 
     return { storePromise };
 }

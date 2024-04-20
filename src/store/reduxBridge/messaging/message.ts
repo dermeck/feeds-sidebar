@@ -1,4 +1,6 @@
 import { UnknownAction } from '@reduxjs/toolkit';
+import { RootState } from '../../store';
+import { Changes } from '../utils/changeUtils';
 
 export const enum MessageType {
     // proxy => background
@@ -11,8 +13,8 @@ export const enum MessageType {
 
 type DispatchRequest = { type: MessageType.DispatchAction; action: UnknownAction };
 type GeFullStateRequest = { type: MessageType.GetFullStateRequest };
-type GeFullStateResponse = { type: MessageType.GetFullStateResponse; payload: unknown };
-type PatchStateMessage = { type: MessageType.PatchState; payload: unknown }; // TODO remove unknown
+type GeFullStateResponse = { type: MessageType.GetFullStateResponse; payload: RootState };
+type PatchStateMessage = { type: MessageType.PatchState; payload: Changes };
 
 export type ContenScriptMessage = DispatchRequest | GeFullStateRequest;
 export type BackgroundScriptMessage = GeFullStateResponse | PatchStateMessage;

@@ -1,6 +1,12 @@
 import { Store } from 'redux';
 import { shallowDiff } from '../utils/changeUtils';
-import { MessageType, addMessageListener, sendMessageToContentScripts } from '../messaging/message';
+import {
+    ContenScriptMessage,
+    MessageType,
+    addMessageListener,
+    sendMessageToContentScripts,
+} from '../messaging/message';
+import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
 
 // Wraps a Redux store and provides messaging interface for proxy store
 export const wrapStore = (store: Store) => {
@@ -28,20 +34,24 @@ export const wrapStore = (store: Store) => {
 
     store.subscribe(onStoreChanged);
 
-    addMessageListener((request) => {
+    addMessageListener((request: ContenScriptMessage) => {
         messagingActive = true;
+        const type = request.type;
 
-        // Provide state for content-script initialization
-        if (request.type === MessageType.GetFullStateRequest) {
-            return Promise.resolve({
-                type: MessageType.GetFullStateResponse,
-                payload: store.getState(),
-            });
-        }
+        switch (type) {
+            case MessageType.GetFullStateRequest:
+                // Provide state for content-script initialization
+                return Promise.resolve({
+                    type: MessageType.GetFullStateResponse,
+                    payload: store.getState(),
+                });
 
-        if (request.type === MessageType.DispatchAction) {
-            // Forward dispatch from content-script
-            return store.dispatch(request.action);
+            case MessageType.DispatchAction:
+                // Forward dispatch from content-script
+                return store.dispatch(request.action);
+
+            default:
+                throw new UnreachableCaseError(type);
         }
     });
 };

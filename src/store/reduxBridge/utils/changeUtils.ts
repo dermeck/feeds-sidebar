@@ -6,7 +6,7 @@ export type Changes = {
     deletedProperties: string[];
 };
 
-export const shallowDiff = (oldObject: object, newObject: object): Changes => {
+export const shallowDiff = (oldObject: { [key: string]: unknown }, newObject: { [key: string]: unknown }): Changes => {
     const difference: Changes = {
         updatedProperties: [],
         deletedProperties: [],
@@ -27,7 +27,7 @@ export const shallowDiff = (oldObject: object, newObject: object): Changes => {
     return difference;
 };
 
-export const applyChanges = (oldObject: object, changes: Changes) => {
+export const applyChanges = (oldObject: { [key: string]: unknown }, changes: Changes) => {
     const newObject = Object.assign({}, oldObject);
 
     changes.updatedProperties.forEach(({ key, value }) => {
