@@ -18,7 +18,7 @@ export const shallowDiff = (oldObject: { [key: string]: unknown }, newObject: { 
         }
     });
 
-    Object.keys(oldObject).forEach(([key]) => {
+    Object.keys(oldObject).forEach((key) => {
         if (!Object.prototype.hasOwnProperty.call(newObject, key)) {
             difference.deletedProperties.push(key);
         }
