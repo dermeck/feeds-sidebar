@@ -15,7 +15,7 @@ export const wrapStore = (store: Store) => {
         const newState = store.getState();
         const diff = shallowDiff(currentState, newState);
 
-        if (diff.length) {
+        if (diff.updatedProperties.length > 0 || diff.deletedProperties.length > 0) {
             currentState = newState;
 
             // notify proxy stores
