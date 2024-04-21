@@ -33,13 +33,13 @@
     "sidebar_action": {
         "default_title": "Feeds",
         "default_panel": "/sidebar/sidebar.html",
-        "default_icon": "test.svg",
+        "default_icon": "rss.svg",
         "browser_style": true
     },
 
     "browser_action": {
         "browser_style": true,
-        "default_icon": "test.svg",
+        "default_icon": "rss.svg",
         "default_title": "Feeds"
     }
 }
