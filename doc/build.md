@@ -33,5 +33,6 @@ will perform a prod build and bundle the output into a zip file in the `/dist` f
 ---
 
 ## Further information
+- https://mozilla.github.io/addons-server/topics/api/addons.html#version-create
 - https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/
 - https://extensionworkshop.com/documentation/publish/submitting-an-add-on/
