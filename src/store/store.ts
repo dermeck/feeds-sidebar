@@ -3,7 +3,6 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
 import { feedMiddleware } from './middleware/feedMiddleware';
-import { initMiddleware } from './middleware/initMiddleware';
 import { loggerMiddleware } from './middleware/loggerMiddleware';
 import { rootSaga } from './sagas';
 import feedsSlice from './slices/feeds';
@@ -20,7 +19,7 @@ const rootReducer = combineReducers({
 
 const store = configureStore({
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().prepend(loggerMiddleware).concat([initMiddleware, sagaMiddleware, feedMiddleware]),
+        getDefaultMiddleware().prepend(loggerMiddleware).concat([sagaMiddleware, feedMiddleware]),
     reducer: rootReducer,
 });
 
