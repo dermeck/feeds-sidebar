@@ -16,7 +16,11 @@
     },
 
     "icons": {
-        "48": "rss.svg"
+        "16": "rss.svg",
+        "32": "rss.svg",
+        "48": "rss.svg",
+        "96": "rss.svg",
+        "128": "rss.svg"
     },
 
     "permissions": ["alarms", "<all_urls>", "storage"],
@@ -28,13 +32,13 @@
     "sidebar_action": {
         "default_title": "Feeds",
         "default_panel": "/sidebar/sidebar.html",
-        "default_icon": "rss.svg",
+        "default_icon": "test.svg",
         "browser_style": true
     },
 
     "browser_action": {
         "browser_style": true,
-        "default_icon": "rss.svg",
+        "default_icon": "test.svg",
         "default_title": "Feeds"
     }
 }
