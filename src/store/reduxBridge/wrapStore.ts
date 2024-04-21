@@ -4,15 +4,10 @@ import { ContenScriptMessage, MessageType, addMessageListener, sendMessageToCont
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 
 // Wraps a Redux store and provides messaging interface for proxy store
-export const wrapStore = (store: Store) => {
-    let messagingActive = false;
+export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
     let currentState = store.getState();
 
     const onStoreChanged = () => {
-        if (!messagingActive) {
-            // message receiver not yet set up in proxy store
-            return;
-        }
         const newState = store.getState();
         const diff = shallowDiff(currentState, newState);
 
@@ -23,14 +18,17 @@ export const wrapStore = (store: Store) => {
             sendMessageToContentScripts({
                 type: MessageType.PatchState,
                 payload: diff,
+            }).catch(() => {
+                // TODO find better way to solve this then swallowing the error
+                // receiving end in content-script not yet ready which happens on initial load
+                // but we need this message for proper behavior when background-scrip re-initialized
             });
         }
     };
 
-    store.subscribe(onStoreChanged);
+    const unsubscribe = store.subscribe(onStoreChanged);
 
-    addMessageListener((request: ContenScriptMessage) => {
-        messagingActive = true;
+    const processmessage = (request: ContenScriptMessage) => {
         const type = request.type;
 
         switch (type) {
@@ -48,5 +46,13 @@ export const wrapStore = (store: Store) => {
             default:
                 throw new UnreachableCaseError(type);
         }
-    });
+    };
+
+    // process messages that were received during re-init
+    messages.forEach((message) => processmessage(message));
+
+    // setup listener for new messsages
+    addMessageListener(processmessage);
+
+    return unsubscribe;
 };

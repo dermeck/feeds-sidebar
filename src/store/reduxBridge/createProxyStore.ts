@@ -26,7 +26,7 @@ export function createProxyStore(): { storePromise: Promise<Store<RootState>> } 
             // messaging is established
             resolveStore();
         })
-        .catch((reason) => console.error(`Error sending message, reasone: ${reason}`));
+        .catch((reason) => console.error(`Error sending message, reason: ${reason}`));
 
     function processMessage(message: BackgroundScriptMessage) {
         const type = message.type;
@@ -67,7 +67,7 @@ export function createProxyStore(): { storePromise: Promise<Store<RootState>> } 
         sendMessageToBackgroundScript({
             type: MessageType.DispatchAction,
             action,
-        });
+        }).catch((reason) => console.error(`Error sending Dispatch message, reason: ${reason}`));
     }
 
     /* fake implementations to satisfy Redux store typings */
