@@ -22,11 +22,14 @@ export function createProxyStore(): { storePromise: Promise<Store<RootState>> } 
     // get full state on init
     sendMessageToBackgroundScript({ type: MessageType.GetFullStateRequest })
         .then((result) => {
+            if (result === undefined) {
+                return;
+            }
             processMessage(result);
             // messaging is established
             resolveStore();
         })
-        .catch((reason) => console.error(`Error sending message, reason: ${reason}`));
+        .catch((reason) => console.error(`Error sending message, reason: ${reason.message}`));
 
     function processMessage(message: BackgroundScriptMessage) {
         const type = message.type;
@@ -34,6 +37,7 @@ export function createProxyStore(): { storePromise: Promise<Store<RootState>> } 
         switch (type) {
             case MessageType.GetFullStateResponse:
                 replaceState(message.payload);
+                resolveStore(); // TODO mr nur einmalig machen?
                 break;
 
             case MessageType.PatchState:
