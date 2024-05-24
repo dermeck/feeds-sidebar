@@ -4,7 +4,7 @@ import { extensionStateLoaded } from '../store/actions';
 import store from '../store/store';
 import { loadState, saveState } from '../services/persistence';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
-import { ContenScriptMessage, addMessageListener } from '../store/reduxBridge/messaging';
+import { ContenScriptMessage, MessageType, addMessageListener } from '../store/reduxBridge/messaging';
 
 const feedsAutoUpdateKey = 'feedsAutoUpdate';
 const SECOND = 1000;
@@ -17,6 +17,7 @@ const messageBuffer: ContenScriptMessage[] = [];
 // immediatly provide receiving end for content-script messages
 // waiting for store would take too long when background script re-initializes
 addMessageListener((request: ContenScriptMessage) => {
+    console.log('received', request, initialized);
     if (initialized) {
         return;
     }
@@ -38,6 +39,21 @@ browser.runtime.onSuspend.addListener(() => {
 browser.browserAction.onClicked.addListener(() => {
     browser.sidebarAction.open();
 });
+
+function detectFeeds(tabId: number, changes: browser.tabs._OnUpdatedChangeInfo) {
+    // TODO mr only if option is set local storage?
+    if (changes.status === 'complete') {
+        // tab reloaded
+        browser.tabs
+            .sendMessage(tabId, { type: MessageType.StartFeedDetection })
+            .then((result) => {
+                console.log('bg feeds detected', result);
+            })
+            .catch(() => {});
+    }
+}
+
+browser.tabs.onUpdated.addListener(detectFeeds);
 
 async function init() {
     const loadedState = await loadState();

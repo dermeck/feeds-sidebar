@@ -30,11 +30,22 @@
         "persistent": false
     },
 
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["page.js"]
+        }
+    ],
+
     "sidebar_action": {
         "default_title": "Feeds",
         "default_panel": "/sidebar/sidebar.html",
         "default_icon": "rss.svg",
         "browser_style": true
+    },
+
+    "page_action": {
+        "default_icon": "rss.svg"
     },
 
     "browser_action": {

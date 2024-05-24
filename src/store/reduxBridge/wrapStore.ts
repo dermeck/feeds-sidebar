@@ -45,7 +45,7 @@ export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
                 return store.dispatch(request.action);
 
             default:
-                throw new UnreachableCaseError(type);
+            // throw new UnreachableCaseError(type); // TODO add this again
         }
     };
 
