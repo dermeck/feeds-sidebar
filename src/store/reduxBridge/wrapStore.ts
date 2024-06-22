@@ -34,10 +34,11 @@ export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
         switch (type) {
             case MessageType.GetFullStateRequest:
                 // Provide state for content-script initialization
-                return Promise.resolve({
+                sendMessageToContentScripts({
                     type: MessageType.GetFullStateResponse,
                     payload: store.getState(),
                 });
+                break;
 
             case MessageType.DispatchAction:
                 // Forward dispatch from content-script
