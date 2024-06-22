@@ -20,20 +20,16 @@ export function createProxyStore(): { storePromise: Promise<Store<RootState>> } 
     });
 
     // get full state on init
-    sendMessageToBackgroundScript({ type: MessageType.GetFullStateRequest })
-        .then((result) => {
-            processMessage(result);
-            // messaging is established
-            resolveStore();
-        })
-        .catch((reason) => console.error(`Error sending message, reason: ${reason}`));
+    sendMessageToBackgroundScript({ type: MessageType.GetFullStateRequest });
 
     function processMessage(message: BackgroundScriptMessage) {
         const type = message.type;
 
         switch (type) {
             case MessageType.GetFullStateResponse:
+                // init of extension or background-scrip re-initialized
                 replaceState(message.payload);
+                resolveStore();
                 break;
 
             case MessageType.PatchState:
