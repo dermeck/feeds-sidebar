@@ -35,6 +35,10 @@ browser.runtime.onSuspend.addListener(() => {
     initResultPromise.then((result) => result()).catch((reason) => console.error(reason));
 });
 
+browser.browserAction.onClicked.addListener(() => {
+    browser.sidebarAction.open();
+});
+
 async function init() {
     const loadedState = await loadState();
     if (loadedState !== undefined) {
@@ -50,10 +54,6 @@ async function init() {
     const unsubscribe = wrapStore(store, messageBuffer);
 
     const updateIntervall = store.getState().options.feedUpdatePeriodInMinutes;
-
-    browser.browserAction.onClicked.addListener(() => {
-        browser.sidebarAction.open();
-    });
 
     // setup cyclic update of all feeds
     browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes: updateIntervall });
