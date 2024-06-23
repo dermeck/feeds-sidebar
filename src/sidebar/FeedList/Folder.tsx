@@ -23,6 +23,8 @@ const FolderTitleContainer = styled.div<FolderTitleContainerProps>`
     display: flex;
     flex-direction: column;
     padding-left: ${(props) => (props.nestedLevel > 0 ? `${8 + props.nestedLevel * 15}px` : '8px')};
+
+    // ensure that drag drop indicator stays at same position when switched between "insert-before" and "insert-after"
     margin-top: -${(props) => props.theme.spacerHeight}px;
     margin-bottom: -${(props) => props.theme.spacerHeight}px;
 
