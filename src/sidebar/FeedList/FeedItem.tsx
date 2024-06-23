@@ -61,6 +61,7 @@ const Link = styled.a<{ xButtonVisible: boolean }>`
 const XButton = styled(ToolbarButton)({
     width: '22px',
     height: '22px',
+    marginTop: '2px', // account for negative margin for spacerHeight
     gridColumn: '3',
     padding: '1px',
     ':hover': {
@@ -91,7 +92,7 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
     }, [isSelected]);
 
     const [focus, setFocus] = useState<boolean>(false);
-    const [showXButton, setShowXButton] = useState(false);
+    const [showXButton, setShowXButton] = useState(false); // TODO control visibility via CSS
     const [xButtonClicked, setXButtonClicked] = useState(false);
 
     if ((props.isRead && !isSelected) || xButtonClicked) {
