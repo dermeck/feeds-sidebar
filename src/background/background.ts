@@ -40,16 +40,15 @@ browser.browserAction.onClicked.addListener(() => {
     browser.sidebarAction.open();
 });
 
-function detectFeeds(tabId: number, changes: browser.tabs._OnUpdatedChangeInfo) {
-    // TODO mr only if option is set local storage?
+async function detectFeeds(tabId: number, changes: browser.tabs._OnUpdatedChangeInfo) {
     if (changes.status === 'complete') {
+        const options = await browser.storage.sync.get(['detectionEnabled']);
+
+        if (!options?.detectionEnabled) {
+            return;
+        }
         // tab reloaded
-        browser.tabs
-            .sendMessage(tabId, { type: MessageType.StartFeedDetection })
-            .then((result) => {
-                console.log('bg feeds detected', result);
-            })
-            .catch(() => {});
+        browser.tabs.sendMessage(tabId, { type: MessageType.StartFeedDetection });
     }
 }
 
@@ -70,6 +69,8 @@ async function init() {
     const unsubscribe = wrapStore(store, messageBuffer);
 
     const updateIntervall = store.getState().options.feedUpdatePeriodInMinutes;
+
+    browser.storage.sync.set({ detectionEnabled: true }); // TODO mr set this based on options
 
     // setup cyclic update of all feeds
     browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes: updateIntervall });
