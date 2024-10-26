@@ -14,9 +14,9 @@ export const loggerMiddleware: Middleware<object, RootState, Dispatch> = (storeA
     const result = next(action);
     if (isAction(action)) {
         if (isPayloadAction(action)) {
-            //console.log('action', action.type, action.payload, storeApi.getState());
+            console.log('payloadaction', action.type, action.payload, storeApi.getState());
         } else {
-            //console.log('payloadaction', action.type, storeApi.getState());
+            console.log('action', action.type, storeApi.getState());
         }
     }
 

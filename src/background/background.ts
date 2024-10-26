@@ -4,6 +4,7 @@ import { extensionStateLoaded } from '../store/actions';
 import store from '../store/store';
 import { loadState, saveState } from '../services/persistence';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
+import sessionSlice from '../store/slices/session';
 import { ContenScriptMessage, MessageType, addMessageListener } from '../store/reduxBridge/messaging';
 
 const feedsAutoUpdateKey = 'feedsAutoUpdate';
@@ -16,12 +17,11 @@ const messageBuffer: ContenScriptMessage[] = [];
 
 // immediatly provide receiving end for content-script messages
 // waiting for store would take too long when background script re-initializes
-addMessageListener((request: ContenScriptMessage) => {
-    console.log('received', request, initialized);
+addMessageListener((message: ContenScriptMessage) => {
     if (initialized) {
         return;
     }
-    messageBuffer.push(request);
+    messageBuffer.push(message);
 });
 
 browser.alarms.onAlarm.addListener((alarm) => {
@@ -47,8 +47,20 @@ async function detectFeeds(tabId: number, changes: browser.tabs._OnUpdatedChange
         if (!options?.detectionEnabled) {
             return;
         }
+
         // tab reloaded
-        browser.tabs.sendMessage(tabId, { type: MessageType.StartFeedDetection });
+        const tabUrl = (await browser.tabs.get(tabId)).url;
+        if (tabUrl === undefined) {
+            return;
+        }
+
+        const alreadyDetectedFeeds = await browser.storage.session.get(tabUrl);
+        if (alreadyDetectedFeeds[tabUrl] !== undefined) {
+            // detection was already triggered once during this session
+            store.dispatch(sessionSlice.actions.feedsDetected(alreadyDetectedFeeds[tabUrl]));
+        } else {
+            browser.tabs.sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tabUrl } }); // changes.url need "tabs" permission
+        }
     }
 }
 

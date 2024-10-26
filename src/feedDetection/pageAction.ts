@@ -36,26 +36,13 @@ function processMessage(message: BackgroundScriptMessage) {
 
     const feeds = detectFeeds();
 
-    sendMessageToBackgroundScript({ type: MessageType.FeedsDetected, feeds: feeds });
-
-    // console.log('feeds', feeds);
-
-    // TODO mr dispatch?
-    /*
-    browser.runtime
-        .sendMessage({
-            type: 'moep',
-            feeds: feeds,
-        })
-        .catch(() => {});
-        */
+    sendMessageToBackgroundScript({
+        type: MessageType.FeedsDetected,
+        payload: { url: message.payload.url, feeds: feeds },
+    });
 }
 
 // background-script detects tab reload and notifies us
 addMessageListener(processMessage);
 
-// TODO mr add the popup => analyze state in background script (welche schon geaddet sind/ welche nicht) => sieht gut aus!
-// dann von hier aus dispatch messages verwenden?
-
-// TODO mayby only show this, when we open the NewFeed view or have it open
-// detectFeeds();
+// TODO add Popup with detected feeds

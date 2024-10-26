@@ -20,10 +20,10 @@ type DispatchRequest = { type: MessageType.DispatchAction; action: UnknownAction
 type GeFullStateRequest = { type: MessageType.GetFullStateRequest };
 type GeFullStateResponse = { type: MessageType.GetFullStateResponse; payload: RootState };
 type PatchStateMessage = { type: MessageType.PatchState; payload: Changes };
-type StartFeedDetectionMessage = { type: MessageType.StartFeedDetection };
-type FeedsDetectedMessage = { type: MessageType.FeedsDetected; feeds: DetectedFeeds };
+type StartFeedDetectionMessage = { type: MessageType.StartFeedDetection; payload: { url: string } };
+type FeedsDetectedMessage = { type: MessageType.FeedsDetected; payload: { url: string; feeds: DetectedFeeds } };
 
-export type ContenScriptMessage = DispatchRequest | GeFullStateRequest;
+export type ContenScriptMessage = DispatchRequest | GeFullStateRequest | PageActionMessage;
 export type BackgroundScriptMessage = GeFullStateResponse | PatchStateMessage | StartFeedDetectionMessage;
 export type PageActionMessage = FeedsDetectedMessage;
 

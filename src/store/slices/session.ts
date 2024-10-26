@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import feedsSlice from './feeds';
+import { DetectedFeeds } from '../../feedDetection/pageAction';
 
 type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
@@ -33,6 +34,7 @@ type SessionSliceState = {
     menuContext?: MenuContext;
     menuVisible: boolean;
     newFolderEditActive: boolean;
+    detectedFeeds: DetectedFeeds;
 };
 
 export const initialState: SessionSliceState = {
@@ -42,6 +44,7 @@ export const initialState: SessionSliceState = {
     menuContext: undefined,
     menuVisible: false,
     newFolderEditActive: false,
+    detectedFeeds: [],
 };
 
 export const selectIsLoadingFeeds = (state: SessionSliceState) => state.feedStatus.some((x) => x.status === 'loading');
@@ -101,6 +104,9 @@ const sessionSlice = createSlice({
                 .filter((i) => i !== undefined) as ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
 
             state.feedStatus = [...updated, ...newEntries];
+        },
+        feedsDetected(state, action: PayloadAction<DetectedFeeds>) {
+            state.detectedFeeds = action.payload;
         },
     },
     extraReducers: (builder) => {
