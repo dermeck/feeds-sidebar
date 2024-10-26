@@ -436,22 +436,14 @@ const feedsSlice = createSlice({
                         const selectedFeedId = state.selectedNode.nodeId;
                         // const selectedIndex = state.feeds.findIndex((f) => f.id === selectedFeedId); // TODO
 
-                        // delete relation in parent
-                        state.folders = state.folders.map((folder) =>
-                            folder.feedIds.some((feedId) => feedId === selectedFeedId)
-                                ? {
-                                      ...folder,
-                                      feedIds: folder.feedIds.filter((feedId) => feedId !== selectedFeedId),
-                                  }
-                                : folder,
-                        );
-
-                        // delete feed
-                        state.feeds = state.feeds.filter((f) => f.id !== selectedFeedId);
+                        const newState = deleteFeed(state, selectedFeedId);
+                        return {
+                            ...newState,
+                            selectedNode: undefined,
+                        };
 
                         // if possible select the the next feed
                         // TODO consider changed selection
-                        state.selectedNode = undefined;
                         /*state.selectedNodeId =
                     state.feeds.length === 0
                     ? ''
@@ -496,6 +488,9 @@ const feedsSlice = createSlice({
                 default:
                     throw new UnreachableCaseError(state.selectedNode.nodeType);
             }
+        },
+        deleteFeed(state, action: PayloadAction<{ url: string }>) {
+            return deleteFeed(state, action.payload.url);
         },
     },
     extraReducers: (builder) => {
@@ -695,6 +690,26 @@ const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Fee
     });
 
     return updatedFeeds;
+};
+
+const deleteFeed = (prevState: FeedSliceState, feedUrl: string) => {
+    // delete relation in parent
+    const folders = prevState.folders.map((folder) =>
+        folder.feedIds.some((feedId) => feedId === feedUrl)
+            ? {
+                  ...folder,
+                  feedIds: folder.feedIds.filter((feedId) => feedId !== feedUrl),
+              }
+            : folder,
+    );
+
+    // delete feed
+    const feeds = prevState.feeds.filter((f) => f.id !== feedUrl);
+    return {
+        ...prevState,
+        folders: folders,
+        feeds: feeds,
+    };
 };
 
 // keep old items, update existing items, add new items

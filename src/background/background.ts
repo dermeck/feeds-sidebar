@@ -59,7 +59,7 @@ async function detectFeeds(tabId: number, changes: browser.tabs._OnUpdatedChange
             // detection was already triggered once during this session
             store.dispatch(sessionSlice.actions.feedsDetected(alreadyDetectedFeeds[tabUrl]));
         } else {
-            browser.tabs.sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tabUrl } }); // changes.url need "tabs" permission
+            browser.tabs.sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tabUrl } });
         }
     }
 }
@@ -81,8 +81,10 @@ async function init() {
     const unsubscribe = wrapStore(store, messageBuffer);
 
     const updateIntervall = store.getState().options.feedUpdatePeriodInMinutes;
+    const detectionEnabled = store.getState().options.feedDetectionEnabled;
 
-    browser.storage.sync.set({ detectionEnabled: true }); // TODO mr set this based on options
+    console.log('detectionEnabled', detectionEnabled);
+    browser.storage.sync.set({ detectionEnabled: detectionEnabled });
 
     // setup cyclic update of all feeds
     browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes: updateIntervall });

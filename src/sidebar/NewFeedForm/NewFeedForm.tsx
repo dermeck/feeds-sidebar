@@ -6,9 +6,10 @@ import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 
 import { Button, ToolbarContainer, Input, ToolbarButton, Label, toolbarContainerheight } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchFeedsCommand } from '../../store/slices/feeds';
+import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import sessionSlice, { View } from '../../store/slices/session';
 import NewFeedsList from './NewFeedsList';
+import DetectedFeeds from './DetectedFeeds/DetectedFeeds';
 
 const Container = styled.div`
     height: 100%;
@@ -58,11 +59,22 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
 
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
+    const feedDetactionEnabled = useAppSelector((state) => state.options.feedDetectionEnabled);
 
     const [newFeedUrl, setNewFeedUrl] = useState('');
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
     const [addButtonActive, setAddButtonActive] = useState(false);
     const [addedFeedUrls, setAddedFeedUrls] = useState<string[]>([]);
+
+    const addNewFeed = (url: string) => {
+        setAddedFeedUrls((oldItems) => (oldItems.includes(url) ? oldItems : [...oldItems, url]));
+        dispatch(fetchFeedsCommand([url]));
+    };
+
+    const removeFeed = (feedUrl: string) => {
+        setAddedFeedUrls((oldItems) => oldItems.filter((x) => x !== feedUrl));
+        dispatch(feedsSlice.actions.deleteFeed({ url: feedUrl }));
+    };
 
     return (
         <Container>
@@ -107,8 +119,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                         const existingFeed = feeds.find((x) => x.id === newFeedUrl);
 
                         if (existingFeed === undefined) {
-                            setAddedFeedUrls((oldItems) => [...oldItems, newFeedUrl]);
-                            dispatch(fetchFeedsCommand([newFeedUrl]));
+                            addNewFeed(newFeedUrl);
                         } else {
                             setNewFeedUrlMessage(`You are already subscribed to that feed (${existingFeed.title})`);
                         }
@@ -119,6 +130,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                     {newFeedUrlMessage}
                 </MessageBox>
 
+                {feedDetactionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
             </ContentContainer>
         </Container>
