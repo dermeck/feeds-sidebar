@@ -41,11 +41,13 @@ browser.browserAction.onClicked.addListener(() => {
 });
 
 async function detectFeeds(tabId: number) {
+    /* TODO
     const options = await browser.storage.sync.get(['detectionEnabled']);
 
     if (!options?.detectionEnabled) {
         return;
     }
+    */
 
     const tab = await browser.tabs.get(tabId);
     if (tab.url === undefined) {

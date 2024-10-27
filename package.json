@@ -1,6 +1,6 @@
 {
     "name": "feeds",
-    "version": "0.30.6",
+    "version": "0.30.7",
     "description": "A Firefox extension to read RSS feeds",
     "repository": "git@github.com:dermeck/feeds-sidebar.git",
     "author": "dermeck feeds-sb@dermeck.mozmail.com",
