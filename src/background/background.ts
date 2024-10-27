@@ -40,31 +40,51 @@ browser.browserAction.onClicked.addListener(() => {
     browser.sidebarAction.open();
 });
 
-async function detectFeeds(tabId: number, changes: browser.tabs._OnUpdatedChangeInfo) {
-    if (changes.status === 'complete') {
-        const options = await browser.storage.sync.get(['detectionEnabled']);
+async function detectFeeds(tabId: number) {
+    const options = await browser.storage.sync.get(['detectionEnabled']);
 
-        if (!options?.detectionEnabled) {
-            return;
-        }
+    if (!options?.detectionEnabled) {
+        return;
+    }
 
-        // tab reloaded
-        const tabUrl = (await browser.tabs.get(tabId)).url;
-        if (tabUrl === undefined) {
-            return;
-        }
+    const tab = await browser.tabs.get(tabId);
+    if (tab.url === undefined) {
+        return;
+    }
 
-        const alreadyDetectedFeeds = await browser.storage.session.get(tabUrl);
-        if (alreadyDetectedFeeds[tabUrl] !== undefined) {
-            // detection was already triggered once during this session
-            store.dispatch(sessionSlice.actions.feedsDetected(alreadyDetectedFeeds[tabUrl]));
-        } else {
-            browser.tabs.sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tabUrl } });
-        }
+    const alreadyDetectedFeeds = await browser.storage.session.get(tab.url);
+    if (alreadyDetectedFeeds[tab.url] !== undefined) {
+        // detection was already triggered once during this session
+        store.dispatch(sessionSlice.actions.feedsDetected(alreadyDetectedFeeds[tab.url]));
+    } else {
+        browser.tabs
+            .sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tab.url } })
+            .then(() => {
+                return;
+            })
+            .catch((error) => {
+                if (error === 'Error: Could not establish connection. Receiving end does not exist.') {
+                    // active tab does not have content script (e.g. no page found on localhost)
+                    return;
+                }
+            });
     }
 }
 
-browser.tabs.onUpdated.addListener(detectFeeds);
+function handleTabUpdated(tabId: number, changes: browser.tabs._OnUpdatedChangeInfo) {
+    if (changes.status === 'complete') {
+        // tab was reloaded
+        detectFeeds(tabId);
+    }
+}
+
+function handleTabAcivated(activeInfo: browser.tabs._OnActivatedActiveInfo) {
+    // tab was selected
+    detectFeeds(activeInfo.tabId);
+}
+
+browser.tabs.onUpdated.addListener(handleTabUpdated);
+browser.tabs.onActivated.addListener(handleTabAcivated);
 
 async function init() {
     const loadedState = await loadState();

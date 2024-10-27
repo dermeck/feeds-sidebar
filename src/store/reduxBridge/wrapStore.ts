@@ -19,10 +19,11 @@ export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
             sendMessageToContentScripts({
                 type: MessageType.PatchState,
                 payload: diff,
-            }).catch(() => {
-                // TODO find better way to solve this then swallowing the error
-                // receiving end in content-script not yet ready which happens on initial load
-                // but we need this message for proper behavior when background-scrip re-initialized
+            }).catch((error) => {
+                if (error === 'Error: Could not establish connection. Receiving end does not exist.') {
+                    // content-script is not yet ready which happens on initial load
+                    // but we need this message for proper behavior when background-scrip re-initialized
+                }
             });
         }
     };

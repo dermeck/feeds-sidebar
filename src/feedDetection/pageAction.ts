@@ -19,7 +19,7 @@ function processMessage(message: BackgroundScriptMessage) {
     });
 }
 
-// background-script detects tab reload and notifies us
+// background-script detects relevant tab events and notifies us
 addMessageListener(processMessage);
 
 // TODO add Popup with detected feeds
