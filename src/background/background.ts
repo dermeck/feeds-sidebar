@@ -51,6 +51,8 @@ async function detectFeeds(tabId: number) {
 
     const tab = await browser.tabs.get(tabId);
     if (tab.url === undefined) {
+        // pages like about:debugging
+        store.dispatch(sessionSlice.actions.feedsDetected([]));
         return;
     }
 
@@ -65,6 +67,7 @@ async function detectFeeds(tabId: number) {
                 return;
             })
             .catch((error) => {
+                store.dispatch(sessionSlice.actions.feedsDetected([]));
                 if (error === 'Error: Could not establish connection. Receiving end does not exist.') {
                     // active tab does not have content script (e.g. no page found on localhost)
                     return;
