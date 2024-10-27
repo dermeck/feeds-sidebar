@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import feedsSlice from './feeds';
-import { DetectedFeeds } from '../../feedDetection/feedDetection';
+import { DetectedFeeds } from '../../services/feedDetection/feedDetection';
 
 type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 

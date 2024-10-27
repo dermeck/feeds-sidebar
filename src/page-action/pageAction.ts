@@ -4,7 +4,7 @@ import {
     addMessageListener,
     sendMessageToBackgroundScript,
 } from '../store/reduxBridge/messaging';
-import { detectFeeds } from './feedDetection';
+import { detectFeeds } from '../services/feedDetection/feedDetection';
 
 function processMessage(message: BackgroundScriptMessage) {
     if (message.type !== MessageType.StartFeedDetection) {

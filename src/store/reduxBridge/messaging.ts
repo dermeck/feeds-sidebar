@@ -1,7 +1,7 @@
 import { UnknownAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { Changes } from './utils/changeUtils';
-import { DetectedFeeds } from '../../feedDetection/feedDetection';
+import { DetectedFeeds } from '../../services/feedDetection/feedDetection';
 
 export const enum MessageType {
     // proxy => background

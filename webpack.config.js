@@ -6,7 +6,7 @@ module.exports = (env) => ({
     entry: {
         'sidebar/sidebar': './src/sidebar/index.tsx',
         background: './src/background/background.ts',
-        page: './src/feedDetection/pageAction.ts',
+        page: './src/page-action/pageAction.ts',
     },
 
     output: {

@@ -25,7 +25,7 @@ const filterLink = (link: HTMLLinkElement) => {
 };
 
 export const detectFeedsInLinks = (): DetectedFeeds => {
-    const QUERY = 'link[rel="alternate"][type]';
+    const QUERY = 'link[type]';
     const LINKS: HTMLLinkElement[] = Array.from(document.querySelectorAll(QUERY));
     const feedLinks = LINKS.filter(filterLink).map(mapLink);
     return feedLinks.length > 0 ? feedLinks : [];
