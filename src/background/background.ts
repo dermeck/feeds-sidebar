@@ -4,7 +4,8 @@ import { extensionStateLoaded } from '../store/actions';
 import store from '../store/store';
 import { loadState, saveState } from '../services/persistence';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
-import { ContenScriptMessage, addMessageListener } from '../store/reduxBridge/messaging';
+import sessionSlice from '../store/slices/session';
+import { ContenScriptMessage, MessageType, addMessageListener } from '../store/reduxBridge/messaging';
 
 const feedsAutoUpdateKey = 'feedsAutoUpdate';
 const SECOND = 1000;
@@ -16,11 +17,11 @@ const messageBuffer: ContenScriptMessage[] = [];
 
 // immediatly provide receiving end for content-script messages
 // waiting for store would take too long when background script re-initializes
-addMessageListener((request: ContenScriptMessage) => {
+addMessageListener((message: ContenScriptMessage) => {
     if (initialized) {
         return;
     }
-    messageBuffer.push(request);
+    messageBuffer.push(message);
 });
 
 browser.alarms.onAlarm.addListener((alarm) => {
@@ -39,6 +40,52 @@ browser.browserAction.onClicked.addListener(() => {
     browser.sidebarAction.open();
 });
 
+async function detectFeeds(tabId: number) {
+    const options = await browser.storage.sync.get(['detectionEnabled']);
+
+    if (!options?.detectionEnabled) {
+        return;
+    }
+
+    const tab = await browser.tabs.get(tabId);
+    if (tab.url === undefined) {
+        return;
+    }
+
+    const alreadyDetectedFeeds = await browser.storage.session.get(tab.url);
+    if (alreadyDetectedFeeds[tab.url] !== undefined) {
+        // detection was already triggered once during this session
+        store.dispatch(sessionSlice.actions.feedsDetected(alreadyDetectedFeeds[tab.url]));
+    } else {
+        browser.tabs
+            .sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tab.url } })
+            .then(() => {
+                return;
+            })
+            .catch((error) => {
+                if (error === 'Error: Could not establish connection. Receiving end does not exist.') {
+                    // active tab does not have content script (e.g. no page found on localhost)
+                    return;
+                }
+            });
+    }
+}
+
+function handleTabUpdated(tabId: number, changes: browser.tabs._OnUpdatedChangeInfo) {
+    if (changes.status === 'complete') {
+        // tab was reloaded
+        detectFeeds(tabId);
+    }
+}
+
+function handleTabAcivated(activeInfo: browser.tabs._OnActivatedActiveInfo) {
+    // tab was selected
+    detectFeeds(activeInfo.tabId);
+}
+
+browser.tabs.onUpdated.addListener(handleTabUpdated);
+browser.tabs.onActivated.addListener(handleTabAcivated);
+
 async function init() {
     const loadedState = await loadState();
     if (loadedState !== undefined) {
@@ -54,6 +101,9 @@ async function init() {
     const unsubscribe = wrapStore(store, messageBuffer);
 
     const updateIntervall = store.getState().options.feedUpdatePeriodInMinutes;
+    const detectionEnabled = store.getState().options.feedDetectionEnabled;
+
+    browser.storage.sync.set({ detectionEnabled: detectionEnabled });
 
     // setup cyclic update of all feeds
     browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes: updateIntervall });

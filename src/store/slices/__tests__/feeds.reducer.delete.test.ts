@@ -13,6 +13,32 @@ import {
 
 type FeedSliceState = RootState['feeds'];
 
+describe('deleteFeed action', () => {
+    it('deletes the selected feed', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [feed1Fixture, feed2Fixture],
+        };
+
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteFeed({ url: feed1Fixture.id }));
+
+        expect(newState.feeds).toHaveLength(1);
+        expect(newState.feeds[0]).toStrictEqual(feed2Fixture);
+    });
+
+    it('deletes the relation in the parent folder', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [feed1Fixture],
+            folders: [{ ...folder1Fixture, feedIds: [feed1Fixture.id] }],
+        };
+
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteFeed({ url: feed1Fixture.id }));
+
+        expect(newState.folders).toHaveLength(1);
+    });
+});
+
 describe('deleteSelectedNode action', () => {
     describe('when selected node is a feed', () => {
         it('deletes the selected feed', () => {

@@ -1,6 +1,7 @@
 import { UnknownAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { Changes } from './utils/changeUtils';
+import { DetectedFeeds } from '../../services/feedDetection/feedDetection';
 
 export const enum MessageType {
     // proxy => background
@@ -9,20 +10,33 @@ export const enum MessageType {
     // background => proxy
     GetFullStateResponse = 'msg-full-state',
     PatchState = 'msg-patch-state',
+    // background => page
+    StartFeedDetection = 'msg-page-start-feed-detection',
+    // pageAction => background
+    FeedsDetected = 'msg-page-feeds-detected',
+    LogMessage = 'msg-log',
 }
 
 type DispatchRequest = { type: MessageType.DispatchAction; action: UnknownAction };
 type GeFullStateRequest = { type: MessageType.GetFullStateRequest };
 type GeFullStateResponse = { type: MessageType.GetFullStateResponse; payload: RootState };
 type PatchStateMessage = { type: MessageType.PatchState; payload: Changes };
+type StartFeedDetectionMessage = { type: MessageType.StartFeedDetection; payload: { url: string } };
+type FeedsDetectedMessage = { type: MessageType.FeedsDetected; payload: { url: string; feeds: DetectedFeeds } };
+type LogMessage = { type: MessageType.LogMessage; payload: { message: string; data: unknown } };
 
-export type ContenScriptMessage = DispatchRequest | GeFullStateRequest;
-export type BackgroundScriptMessage = GeFullStateResponse | PatchStateMessage;
+export type ContenScriptMessage = DispatchRequest | GeFullStateRequest | PageActionMessage;
+export type BackgroundScriptMessage = GeFullStateResponse | PatchStateMessage | StartFeedDetectionMessage;
+export type PageActionMessage = FeedsDetectedMessage | LogMessage;
 
-const sendMessage = (message: ContenScriptMessage | BackgroundScriptMessage) => browser.runtime.sendMessage(message);
-export const sendMessageToBackgroundScript = (message: ContenScriptMessage) => sendMessage(message);
+const sendMessage = (message: ContenScriptMessage | BackgroundScriptMessage | PageActionMessage) =>
+    browser.runtime.sendMessage(message);
+export const sendMessageToBackgroundScript = (message: ContenScriptMessage | PageActionMessage) => sendMessage(message);
 export const sendMessageToContentScripts = (message: BackgroundScriptMessage) => sendMessage(message);
 
 export const addMessageListener = (
-    cb: ((message: ContenScriptMessage) => void) | ((message: BackgroundScriptMessage) => void),
+    cb:
+        | ((message: ContenScriptMessage) => void)
+        | ((message: BackgroundScriptMessage) => void)
+        | ((message: PageActionMessage) => void),
 ) => browser.runtime.onMessage.addListener(cb);

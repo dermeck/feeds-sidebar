@@ -2,6 +2,7 @@ import { Store } from 'redux';
 import { shallowDiff } from './utils/changeUtils';
 import { ContenScriptMessage, MessageType, addMessageListener, sendMessageToContentScripts } from './messaging';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
+import sessionSlice from '../slices/session';
 
 // Wraps a Redux store and provides messaging interface for proxy store
 export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
@@ -18,18 +19,19 @@ export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
             sendMessageToContentScripts({
                 type: MessageType.PatchState,
                 payload: diff,
-            }).catch(() => {
-                // TODO find better way to solve this then swallowing the error
-                // receiving end in content-script not yet ready which happens on initial load
-                // but we need this message for proper behavior when background-scrip re-initialized
+            }).catch((error) => {
+                if (error === 'Error: Could not establish connection. Receiving end does not exist.') {
+                    // content-script is not yet ready which happens on initial load
+                    // but we need this message for proper behavior when background-scrip re-initialized
+                }
             });
         }
     };
 
     const unsubscribe = store.subscribe(onStoreChanged);
 
-    const processmessage = (request: ContenScriptMessage) => {
-        const type = request.type;
+    const processmessage = (message: ContenScriptMessage) => {
+        const type = message.type;
 
         switch (type) {
             case MessageType.GetFullStateRequest:
@@ -42,7 +44,20 @@ export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
 
             case MessageType.DispatchAction:
                 // Forward dispatch from content-script
-                return store.dispatch(request.action);
+                return store.dispatch(message.action);
+
+            case MessageType.FeedsDetected: {
+                const data = { [message.payload.url]: message.payload.feeds };
+                browser.storage.session.set(data);
+                store.dispatch(sessionSlice.actions.feedsDetected(message.payload.feeds));
+                break;
+            }
+
+            case MessageType.LogMessage: {
+                // log message from the content-scripts in the extension dev tools for background script
+                console.log(message.payload.message, message.payload.data);
+                break;
+            }
 
             default:
                 throw new UnreachableCaseError(type);

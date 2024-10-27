@@ -6,6 +6,7 @@ module.exports = (env) => ({
     entry: {
         'sidebar/sidebar': './src/sidebar/index.tsx',
         background: './src/background/background.ts',
+        page: './src/page-action/pageAction.ts',
     },
 
     output: {
@@ -21,6 +22,10 @@ module.exports = (env) => ({
                 exclude: /node_modules/,
                 test: /\.tsx?$/,
                 use: 'ts-loader',
+            },
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
             },
         ],
     },

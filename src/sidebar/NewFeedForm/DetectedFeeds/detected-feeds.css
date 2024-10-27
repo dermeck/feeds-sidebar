@@ -1,0 +1,51 @@
+.detected-feeds-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* TODO mr use css custom properties for colors */
+.detected-feed {
+    display: grid;
+    width: 100%;
+    grid-column-gap: 4px;
+    grid-template-columns: 28px 1fr 32px;
+    height: 32px;
+    border: 1px solid ButtonFace;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
+.detected-feed-icon {
+    padding: 6px 4px;
+}
+
+.detected-feed-label {
+    height: 32px;
+    line-height: 32px;
+}
+
+/* TODO mr extract the styles / replace Button component?  */
+.detected-feed-action {
+    border: none;
+    border-radius: 4px;
+    background-color: ButtonFace;
+    color: ButtonText;
+    font-size: 13px;
+    line-height: 27px;
+    height: 32px;
+    width: 32px;
+    padding: 6px;
+}
+
+.detected-feed-action:hover {
+    color: -moz-ButtonHoverText;
+    background-color: -moz-ButtonHoverFace;
+    opacity: 0.9;
+}
+
+.detected-feed-action:active {
+    /* button is clicked */
+    color: -moz-ButtonHoverText;
+    background-color: -moz-ButtonHoverFace;
+    opacity: 1;
+}

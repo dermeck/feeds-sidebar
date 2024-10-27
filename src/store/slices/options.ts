@@ -7,12 +7,14 @@ type OptionsSliceState = {
     feedUpdatePeriodInMinutes: number;
     fetchThreadsCount: number;
     showFeedTitles: boolean;
+    feedDetectionEnabled: boolean;
 };
 
 export const initialState: OptionsSliceState = {
     feedUpdatePeriodInMinutes: 30,
     fetchThreadsCount: 4,
     showFeedTitles: true,
+    feedDetectionEnabled: true,
 };
 
 export const selectOptions = (state: RootState) => state.options;
