@@ -103,7 +103,6 @@ async function init() {
     const updateIntervall = store.getState().options.feedUpdatePeriodInMinutes;
     const detectionEnabled = store.getState().options.feedDetectionEnabled;
 
-    console.log('detectionEnabled', detectionEnabled);
     browser.storage.sync.set({ detectionEnabled: detectionEnabled });
 
     // setup cyclic update of all feeds

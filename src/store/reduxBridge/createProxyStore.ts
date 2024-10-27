@@ -44,6 +44,7 @@ export function createProxyStore(): { storePromise: Promise<Store<RootState>> } 
 
             case MessageType.StartFeedDetection:
             case MessageType.FeedsDetected:
+            case MessageType.LogMessage:
                 // ignore
                 break;
 

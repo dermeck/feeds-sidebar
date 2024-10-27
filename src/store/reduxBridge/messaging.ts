@@ -14,6 +14,7 @@ export const enum MessageType {
     StartFeedDetection = 'msg-page-start-feed-detection',
     // pageAction => background
     FeedsDetected = 'msg-page-feeds-detected',
+    LogMessage = 'msg-log',
 }
 
 type DispatchRequest = { type: MessageType.DispatchAction; action: UnknownAction };
@@ -22,10 +23,11 @@ type GeFullStateResponse = { type: MessageType.GetFullStateResponse; payload: Ro
 type PatchStateMessage = { type: MessageType.PatchState; payload: Changes };
 type StartFeedDetectionMessage = { type: MessageType.StartFeedDetection; payload: { url: string } };
 type FeedsDetectedMessage = { type: MessageType.FeedsDetected; payload: { url: string; feeds: DetectedFeeds } };
+type LogMessage = { type: MessageType.LogMessage; payload: { message: string; data: unknown } };
 
 export type ContenScriptMessage = DispatchRequest | GeFullStateRequest | PageActionMessage;
 export type BackgroundScriptMessage = GeFullStateResponse | PatchStateMessage | StartFeedDetectionMessage;
-export type PageActionMessage = FeedsDetectedMessage;
+export type PageActionMessage = FeedsDetectedMessage | LogMessage;
 
 const sendMessage = (message: ContenScriptMessage | BackgroundScriptMessage | PageActionMessage) =>
     browser.runtime.sendMessage(message);

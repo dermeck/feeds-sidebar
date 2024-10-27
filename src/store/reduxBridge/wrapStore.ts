@@ -53,6 +53,12 @@ export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
                 break;
             }
 
+            case MessageType.LogMessage: {
+                // log message from the content-scripts in the extension dev tools for background script
+                console.log(message.payload.message, message.payload.data);
+                break;
+            }
+
             default:
                 throw new UnreachableCaseError(type);
         }
