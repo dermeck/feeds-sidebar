@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "version": "0.30.7",
+    "version": "0.30.8",
     "name": "Feeds",
     "description": "Manage your Web Feeds in the Sidebar.",
     "developer": {
@@ -23,7 +23,7 @@
         "128": "rss.svg"
     },
 
-    "permissions": ["alarms", "<all_urls>", "storage", "activeTab", "tabs"],
+    "permissions": ["alarms", "<all_urls>", "storage"],
 
     "background": {
         "scripts": ["background.js"],
