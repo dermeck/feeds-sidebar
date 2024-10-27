@@ -23,7 +23,7 @@
         "128": "rss.svg"
     },
 
-    "permissions": ["alarms", "<all_urls>", "storage", "tabs"],
+    "permissions": ["alarms", "<all_urls>", "storage", "activeTab", "tabs"],
 
     "background": {
         "scripts": ["background.js"],
