@@ -25,7 +25,7 @@ describe('global extensionStateLoaded action', () => {
             feedUpdatePeriodInMinutes: 45,
             fetchThreadsCount: 8,
             showFeedTitles: false,
-            feedDetactionEnabled: false,
+            feedDetectionEnabled: false,
         });
     });
 });

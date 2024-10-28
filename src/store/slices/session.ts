@@ -20,13 +20,7 @@ export interface MenuContext {
     anchorPoint: Point;
 }
 
-export const enum View {
-    feedList,
-    subscribe,
-}
-
 type SessionSliceState = {
-    activeView: View;
     // feedStatus is managed separately because it can contain entries that have no corresponding feed in feedSlice
     // (recently added and not successfully fetched or parsed)
     feedStatus: ReadonlyArray<{ url: string; status: FeedFetchStatus }>;
@@ -38,7 +32,6 @@ type SessionSliceState = {
 };
 
 export const initialState: SessionSliceState = {
-    activeView: View.feedList,
     feedStatus: [],
 
     menuContext: undefined,
@@ -53,10 +46,6 @@ const sessionSlice = createSlice({
     name: 'session',
     initialState,
     reducers: {
-        changeView(state, action: PayloadAction<View>) {
-            state.activeView = action.payload;
-        },
-
         showContextMenu(state, action: PayloadAction<Point>) {
             state.menuContext = {
                 type: MenuType.contextMenu,

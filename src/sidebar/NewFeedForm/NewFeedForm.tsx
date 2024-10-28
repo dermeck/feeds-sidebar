@@ -7,7 +7,6 @@ import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { Button, ToolbarContainer, Input, ToolbarButton, Label, toolbarContainerheight } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
-import sessionSlice, { View } from '../../store/slices/session';
 import NewFeedsList from './NewFeedsList';
 import DetectedFeeds from './DetectedFeeds/DetectedFeeds';
 
@@ -51,6 +50,7 @@ const isValidURL = (str: string) => {
 
 interface NewFeedFormProps {
     urlInputRef: RefObject<HTMLInputElement>;
+    onClose: () => void;
 }
 
 const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
@@ -59,7 +59,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
 
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
-    const feedDetactionEnabled = useAppSelector((state) => state.options.feedDetectionEnabled);
+    const feedDetectionEnabled = useAppSelector((state) => state.options.feedDetectionEnabled);
 
     const [newFeedUrl, setNewFeedUrl] = useState('');
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
@@ -79,9 +79,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
     return (
         <Container>
             <ToolbarContainer>
-                <ToolbarButton
-                    title="Back to Feed List"
-                    onClick={() => dispatch(sessionSlice.actions.changeView(View.feedList))}>
+                <ToolbarButton title="Back to Feed List" onClick={props.onClose}>
                     <ArrowLeft size={22} />
                 </ToolbarButton>
                 <Title>Add New Feed</Title>
@@ -130,7 +128,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                     {newFeedUrlMessage}
                 </MessageBox>
 
-                {feedDetactionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
+                {feedDetectionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
             </ContentContainer>
         </Container>
