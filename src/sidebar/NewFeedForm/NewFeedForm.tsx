@@ -59,7 +59,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
 
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
-    const feedDetactionEnabled = useAppSelector((state) => state.options.feedDetectionEnabled);
+    const feedDetectionEnabled = useAppSelector((state) => state.options.feedDetectionEnabled);
 
     const [newFeedUrl, setNewFeedUrl] = useState('');
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
@@ -128,7 +128,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                     {newFeedUrlMessage}
                 </MessageBox>
 
-                {feedDetactionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
+                {feedDetectionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
             </ContentContainer>
         </Container>
