@@ -8,7 +8,12 @@ export type DetectedFeeds = {
 }[];
 
 export function detectFeeds() {
-    const result = [...detectFeedsInLinks(), ...detectFeedsYoutube()];
+    const detectedFeeds = [...detectFeedsInLinks(), ...detectFeedsYoutube()];
 
-    return result;
+    const deduplicatedDetectedFeeds = new Map();
+    detectedFeeds.forEach((x) => {
+        deduplicatedDetectedFeeds.set(x.href, x);
+    });
+
+    return [...deduplicatedDetectedFeeds.values()];
 }
