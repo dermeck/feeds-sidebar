@@ -21,8 +21,9 @@ export interface MenuContext {
 }
 
 export const enum View {
-    feedList,
-    subscribe,
+    default = 'default', // needed to switch view on back button after background script was terminated
+    feedList = 'feedList',
+    subscribe = 'subscribe',
 }
 
 type SessionSliceState = {
@@ -38,7 +39,7 @@ type SessionSliceState = {
 };
 
 export const initialState: SessionSliceState = {
-    activeView: View.feedList,
+    activeView: View.default,
     feedStatus: [],
 
     menuContext: undefined,
