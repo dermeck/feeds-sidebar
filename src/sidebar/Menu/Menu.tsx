@@ -1,8 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-import { FunctionComponent } from 'react';
-
 import { MenuBackdrop } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import sessionSlice, { MenuContext, MenuType } from '../../store/slices/session';
@@ -38,7 +36,7 @@ const Menu = ({ changeView }: { changeView: (value: View) => void }) => {
         return null;
     }
 
-    // TODO mr refactor the whole menu thing to not use redux
+    // TODO mr refactor the whole menu thing to not use redux / use local state instead like 'changeView'
     return (
         <MenuBackdrop visible={visible} onMouseDown={hideMenu} onContextMenu={(e) => e.preventDefault()}>
             {renderMenu(context, changeView)}

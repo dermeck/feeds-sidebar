@@ -3,7 +3,7 @@ import { jsx } from '@emotion/react';
 import styled from '@emotion/styled';
 import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react';
 
-import { FunctionComponent, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../base-components';
 import { menuWidthInPx } from '../base-components/styled/Menu';
