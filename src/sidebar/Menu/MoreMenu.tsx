@@ -10,8 +10,9 @@ import opmlExport from '../../services/export';
 import { readOpmlFile } from '../../services/import';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand, selectFeeds, selectFolders } from '../../store/slices/feeds';
-import sessionSlice, { Point, View } from '../../store/slices/session';
+import sessionSlice, { Point } from '../../store/slices/session';
 import MenuItem from './MenuItem';
+import { View } from '../App';
 
 const ImportInput = styled.input`
     /* do not take up any space */
@@ -23,6 +24,7 @@ const ImportInput = styled.input`
 
 interface Props {
     anchorPoint: Point;
+    changeView: (value: View) => void;
 }
 
 const MoreMenu: FunctionComponent<Props> = (props: Props) => {
@@ -35,7 +37,7 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
     return (
         <MenuContainer anchorTop={props.anchorPoint.y} anchorLeft={props.anchorPoint.x}>
             <MenuList>
-                <MenuItem icon="plus" onMouseDown={() => dispatch(sessionSlice.actions.changeView(View.subscribe))}>
+                <MenuItem icon="plus" onMouseDown={() => props.changeView(View.subscribe)}>
                     Add New Feeds
                 </MenuItem>
 

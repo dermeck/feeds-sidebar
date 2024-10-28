@@ -12,9 +12,10 @@ import { spin } from '../base-components/styled/animations';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
-import sessionSlice, { MenuType, selectIsLoadingFeeds, View } from '../store/slices/session';
+import sessionSlice, { MenuType, selectIsLoadingFeeds } from '../store/slices/session';
 import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
+import { View } from './App';
 
 const SidebarContainer = styled.div`
     background-color: ${(props) => props.theme.colors.sidebarBackground};
@@ -57,14 +58,19 @@ const FetchAllButtonIcon = styled(ArrowsClockwise, {
     animation-timing-function: linear;
 `;
 
-const Sidebar: FunctionComponent = () => {
+type SideBarProps = {
+    activeView: View;
+    changeView: (value: View) => void;
+};
+
+const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const dispatch = useAppDispatch();
     const urlInputRef = useRef<HTMLInputElement>(null);
+
     const moreMenuVisible = useAppSelector(
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
     const showFeedTitles = useAppSelector(selectOptions).showFeedTitles;
-    const activeView = useAppSelector((state) => state.session.activeView);
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));
     const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
 
@@ -120,7 +126,7 @@ const Sidebar: FunctionComponent = () => {
             />
 
             <Drawer visible={activeView === View.subscribe}>
-                <NewFeedForm urlInputRef={urlInputRef} />
+                <NewFeedForm urlInputRef={urlInputRef} onClose={() => changeView(View.feedList)} />
             </Drawer>
         </SidebarContainer>
     );

@@ -7,7 +7,6 @@ import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { Button, ToolbarContainer, Input, ToolbarButton, Label, toolbarContainerheight } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
-import sessionSlice, { View } from '../../store/slices/session';
 import NewFeedsList from './NewFeedsList';
 import DetectedFeeds from './DetectedFeeds/DetectedFeeds';
 
@@ -51,6 +50,7 @@ const isValidURL = (str: string) => {
 
 interface NewFeedFormProps {
     urlInputRef: RefObject<HTMLInputElement>;
+    onClose: () => void;
 }
 
 const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
@@ -79,9 +79,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
     return (
         <Container>
             <ToolbarContainer>
-                <ToolbarButton
-                    title="Back to Feed List"
-                    onClick={() => dispatch(sessionSlice.actions.changeView(View.feedList))}>
+                <ToolbarButton title="Back to Feed List" onClick={props.onClose}>
                     <ArrowLeft size={22} />
                 </ToolbarButton>
                 <Title>Add New Feed</Title>
