@@ -1,0 +1,6 @@
+.menu__divider {
+    border: none;
+    border-bottom: 1px solid var(--menu-border-color);
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+}

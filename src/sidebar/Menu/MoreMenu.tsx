@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { FunctionComponent, useRef } from 'react';
 
 import { MenuContainer, MenuList } from '../../base-components';
-import { Divider } from '../../base-components/styled/Divider';
 import opmlExport from '../../services/export';
 import { readOpmlFile } from '../../services/import';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -49,7 +48,7 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
                     Mark All Read
                 </MenuItem>
 
-                <Divider />
+                <hr className="menu__divider" />
 
                 <MenuItem icon="export" onMouseDown={() => opmlExport(folders, feeds)}>
                     Export
