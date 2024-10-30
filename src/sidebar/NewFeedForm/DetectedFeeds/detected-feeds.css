@@ -3,14 +3,13 @@
     padding: 0;
 }
 
-/* TODO mr use css custom properties for colors */
 .detected-feed {
     display: grid;
     width: 100%;
     grid-column-gap: 4px;
     grid-template-columns: 28px 1fr 32px;
     height: 32px;
-    border: 1px solid ButtonFace;
+    border: 1px solid var(--menu-border-color);
     border-radius: 4px;
     margin-bottom: 4px;
 }
@@ -28,24 +27,24 @@
 .detected-feed-action {
     border: none;
     border-radius: 4px;
-    background-color: ButtonFace;
-    color: ButtonText;
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
     font-size: 13px;
     line-height: 27px;
     height: 32px;
     width: 32px;
     padding: 6px;
-}
 
-.detected-feed-action:hover {
-    color: -moz-ButtonHoverText;
-    background-color: -moz-ButtonHoverFace;
-    opacity: 0.9;
-}
+    &:hover {
+        color: var(--button-hover-text-color);
+        background-color: var(--button-hover-background-color);
+        opacity: 0.9;
+    }
 
-.detected-feed-action:active {
-    /* button is clicked */
-    color: -moz-ButtonHoverText;
-    background-color: -moz-ButtonHoverFace;
-    opacity: 1;
+    &:active {
+        /* button is clicked */
+        color: var(--button-active-text-color);
+        background-color: var(--button-active-background-color);
+        opacity: 1;
+    }
 }

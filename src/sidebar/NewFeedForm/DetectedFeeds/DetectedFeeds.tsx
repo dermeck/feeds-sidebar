@@ -1,7 +1,6 @@
 import { GlobeSimple, PlusCircle, MinusCircle } from 'phosphor-react';
 import React from 'react';
 import { Label } from '../../../base-components';
-import './detected-feeds.css';
 import { useAppSelector } from '../../../store/hooks';
 
 const DetectedFeeds = ({

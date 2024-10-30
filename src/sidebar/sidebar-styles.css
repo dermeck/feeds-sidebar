@@ -1,2 +1,3 @@
 @import '../base-styles/base-styles.css';
 @import './Menu/menu.css';
+@import './NewFeedForm/DetectedFeeds/detected-feeds.css';
