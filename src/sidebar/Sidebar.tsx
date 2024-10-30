@@ -5,9 +5,8 @@ import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react'
 
 import { useRef, useState } from 'react';
 
-import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../base-components';
+import { Drawer, ToolbarContainer, Input } from '../base-components';
 import { menuWidthInPx } from '../base-components/styled/Menu';
-import { toolbarButtonPaddingInPx, toolbarButtonSideLengthInPx } from '../base-components/styled/ToolbarButton';
 import { spin } from '../base-components/styled/animations';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
@@ -17,6 +16,10 @@ import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
 import { View } from './App';
 import './sidebar-styles.css';
+import { Button } from '../base-components/Button/Button';
+
+const toolbarButtonSideLengthInPx = 32;
+const toolbarButtonPaddingInPx = 4; // TODO mr this should be 5?
 
 const SidebarContainer = styled.div`
     background-color: ${(props) => props.theme.colors.sidebarBackground};
@@ -30,25 +33,11 @@ const Header = styled(ToolbarContainer)`
     grid-template-columns: 32px 1fr 32px 32px;
 `;
 
-const FetchAllButton = styled(ToolbarButton)({
-    gridColumn: '1',
-    padding: '5px',
-});
-
-const ShowFeedTitleButton = styled(ToolbarButton)({
-    gridColumn: '3',
-    padding: '5px',
-});
-
-const MoreMenuButton = styled(ToolbarButton)({
-    gridColumn: '4',
-});
-
 const FilterInput = styled(Input)({
-    gridColumn: '2',
     width: '100%',
 });
 
+// TODO mr create toolbar button that accepts icon name
 const FetchAllButtonIcon = styled(ArrowsClockwise, {
     // prevent "Warning: Received `true` for a non-boolean attribute `spin`."
     shouldForwardProp: (props) => props !== 'spin',
@@ -86,22 +75,25 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
             }}
             onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
             <Header>
-                <FetchAllButton
+                <Button
+                    variant="toolbar"
                     title="Fetch all Feeds"
                     onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.id)))}>
                     <FetchAllButtonIcon size={22} weight="regular" spin={isLoading} />
-                </FetchAllButton>
+                </Button>
 
                 <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
 
-                <ShowFeedTitleButton
+                <Button
+                    variant="toolbar"
                     title="Toggle Show Folders"
                     onClick={() => dispatch(optionsSlice.actions.toggleShowFeedTitles())}
                     active={showFeedTitles}>
                     <FolderSimple size={22} />
-                </ShowFeedTitleButton>
+                </Button>
 
-                <MoreMenuButton
+                <Button
+                    variant="toolbar"
                     title="More Options"
                     active={moreMenuVisible}
                     onClick={(e) => {
@@ -118,7 +110,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                         }
                     }}>
                     <DotsThreeOutline size={22} weight="fill" />
-                </MoreMenuButton>
+                </Button>
             </Header>
 
             <FeedList

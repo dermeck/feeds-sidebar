@@ -4946,6 +4946,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clsx@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: acd3e1ab9d8a433ecb3cc2f6a05ab95fe50b4a3cfc5ba47abb6cbf3754585fcb87b84e90c822a1f256c4198e3b41c7f6c391577ffc8678ad587fc0976b24fd57
+  languageName: node
+  linkType: hard
+
 "co@npm:^4.6.0":
   version: 4.6.0
   resolution: "co@npm:4.6.0"
@@ -6974,6 +6981,7 @@ __metadata:
     "@typescript-eslint/parser": ^7.2.0
     "@welldone-software/why-did-you-render": ^7.0.1
     buffer-browserify: ^0.2.5
+    clsx: ^2.1.1
     copy-webpack-plugin: ^12.0.2
     cross-var: ^1.1.0
     css-loader: ^7.1.2

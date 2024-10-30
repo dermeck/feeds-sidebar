@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import React, { Fragment } from 'react';
 
 import { Feed } from '../../model/feeds';
-import FeedItem from './FeedItem';
+import FeedItem from './FeedItem/FeedItem';
 
 const FeedContainer = styled.ul<{ disabled: boolean }>`
     padding-left: 0;

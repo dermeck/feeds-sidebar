@@ -3,11 +3,11 @@ import { GlobeSimple, X } from 'phosphor-react';
 
 import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 
-import { ToolbarButton } from '../../base-components';
-import { NodeType } from '../../model/feeds';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import feedsSlice from '../../store/slices/feeds';
-import { MouseEventButton } from '../../utils/types/web-api';
+import { NodeType } from '../../../model/feeds';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import feedsSlice from '../../../store/slices/feeds';
+import { MouseEventButton } from '../../../utils/types/web-api';
+import { Button } from '../../../base-components/Button/Button';
 
 const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean; nestedLevel: number }>`
     padding-left: ${(props) =>
@@ -28,6 +28,7 @@ const Container = styled.li<{ focus: boolean; indented: boolean; selected: boole
     list-style: none;
 `;
 
+// TODO mr remove this next to feed-item__grid
 const GridContainer = styled.div`
     display: grid;
     width: 100%;
@@ -42,13 +43,12 @@ const GlobeButton = styled.div`
     grid: '1';
 `;
 
-const Link = styled.a<{ xButtonVisible: boolean }>`
+const Link = styled.a`
     overflow: hidden;
     padding-top: 4px;
     padding-bottom: 4px;
 
     color: inherit;
-    grid-column: ${(props) => (props.xButtonVisible ? 2 : '2 / span 2')};
     text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -57,17 +57,6 @@ const Link = styled.a<{ xButtonVisible: boolean }>`
         text-decoration: underline;
     }
 `;
-
-const XButton = styled(ToolbarButton)({
-    width: '22px',
-    height: '22px',
-    marginTop: '2px', // account for negative margin for spacerHeight
-    gridColumn: '3',
-    padding: '1px',
-    ':hover': {
-        cursor: 'pointer',
-    },
-});
 
 interface Props {
     id: string;
@@ -92,7 +81,6 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
     }, [isSelected]);
 
     const [focus, setFocus] = useState<boolean>(false);
-    const [showXButton, setShowXButton] = useState(false); // TODO control visibility via CSS
     const [xButtonClicked, setXButtonClicked] = useState(false);
 
     if ((props.isRead && !isSelected) || xButtonClicked) {
@@ -131,22 +119,14 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
             onClick={() => setFocus(true)}
             onBlur={() => {
                 setFocus(false);
-            }}
-            onMouseEnter={() => {
-                if (!showXButton) {
-                    setShowXButton(true);
-                }
-            }}
-            onMouseLeave={() => {
-                setShowXButton(false);
             }}>
-            <GridContainer>
+            <GridContainer className="feed-item__grid">
                 <GlobeButton>
                     <GlobeSimple size={20} weight="light" />
                 </GlobeButton>
                 <Link
+                    className="feed-item__link"
                     title={props.title}
-                    xButtonVisible={showXButton}
                     href={props.url}
                     onAuxClick={(e) => {
                         if (e.button === MouseEventButton.middleMousButton) {
@@ -159,11 +139,12 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     onDragStart={(e) => e.preventDefault()}>
                     {props.label}
                 </Link>
-                {showXButton && (
-                    <XButton title="Mark as Read" onClick={() => handleXButtonClick(props.feedId, props.id)}>
-                        <X size={20} weight="bold" />
-                    </XButton>
-                )}
+                <Button
+                    className="feed-item__remove-button"
+                    title="Mark as Read"
+                    onClick={() => handleXButtonClick(props.feedId, props.id)}>
+                    <X size={20} weight="bold" />
+                </Button>
             </GridContainer>
         </Container>
     );

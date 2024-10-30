@@ -1,0 +1,27 @@
+.feed-item__remove-button {
+    display: none;
+    width: 22px;
+    height: 22px;
+    margin-top: 2px; /* account for negative margin for spacerHeight */
+    padding: 1px;
+    grid-column: 3;
+    opacity: 0.9;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.feed-item__link {
+    grid-column: 2 / span 2;
+}
+
+.feed-item__grid:hover {
+    .feed-item__link {
+        grid-column: 2;
+    }
+
+    .feed-item__remove-button {
+        display: block;
+    }
+}

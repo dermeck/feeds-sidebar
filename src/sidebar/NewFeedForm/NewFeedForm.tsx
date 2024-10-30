@@ -4,11 +4,12 @@ import { ArrowLeft } from 'phosphor-react';
 
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 
-import { Button, ToolbarContainer, Input, ToolbarButton, Label, toolbarContainerheight } from '../../base-components';
+import { Button, ToolbarContainer, Input, Label, toolbarContainerheight } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import NewFeedsList from './NewFeedsList';
 import DetectedFeeds from './DetectedFeeds/DetectedFeeds';
+import { Button as Button2 } from '../../base-components/Button/Button'; // TODO mr rename this
 
 const Container = styled.div`
     height: 100%;
@@ -79,9 +80,9 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
     return (
         <Container>
             <ToolbarContainer>
-                <ToolbarButton title="Back to Feed List" onClick={props.onClose}>
+                <Button2 variant="toolbar" title="Back to Feed List" onClick={props.onClose}>
                     <ArrowLeft size={22} />
-                </ToolbarButton>
+                </Button2>
                 <Title>Add New Feed</Title>
             </ToolbarContainer>
             <ContentContainer>
