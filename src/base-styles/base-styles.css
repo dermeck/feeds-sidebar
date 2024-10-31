@@ -41,6 +41,8 @@
     --message-background-color: -moz-Dialog;
     --message-text-color: -moz-DialogText;
 
+    --header-height: 48px;
+
     /* TODO size variables */
     /* 
         folderIconSize: 20,

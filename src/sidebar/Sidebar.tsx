@@ -5,7 +5,7 @@ import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react'
 
 import { useRef, useState } from 'react';
 
-import { Drawer, ToolbarContainer, Input } from '../base-components';
+import { Drawer, Input } from '../base-components';
 import { menuWidthInPx } from '../base-components/styled/Menu';
 import { spin } from '../base-components/styled/animations';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -17,6 +17,7 @@ import NewFeedForm from './NewFeedForm';
 import { View } from './App';
 import './sidebar-styles.css';
 import { Button } from '../base-components/Button/Button';
+import { Header } from '../base-components/Header/Header';
 
 const toolbarButtonSideLengthInPx = 32;
 const toolbarButtonPaddingInPx = 4; // TODO mr this should be 5?
@@ -24,13 +25,6 @@ const toolbarButtonPaddingInPx = 4; // TODO mr this should be 5?
 const SidebarContainer = styled.div`
     background-color: ${(props) => props.theme.colors.sidebarBackground};
     color: ${(props) => props.theme.colors.sideBarText};
-`;
-
-const Header = styled(ToolbarContainer)`
-    display: grid;
-    align-items: center;
-    grid-column-gap: 4px;
-    grid-template-columns: 32px 1fr 32px 32px;
 `;
 
 const FilterInput = styled(Input)({
@@ -74,7 +68,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                 }
             }}
             onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
-            <Header>
+            <Header className="main__header">
                 <Button
                     variant="toolbar"
                     title="Fetch all Feeds"

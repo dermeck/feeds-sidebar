@@ -5,3 +5,10 @@
 @import './FeedList/FeedItem/feed-item.css';
 
 /* TODO mr organize imports */
+
+.main__header {
+    display: grid;
+    align-items: center;
+    grid-column-gap: 4px;
+    grid-template-columns: 32px 1fr 32px 32px;
+}
