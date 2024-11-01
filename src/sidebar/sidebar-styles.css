@@ -2,7 +2,7 @@
 @import '../base-components/base-components.css';
 @import './Menu/menu.css';
 @import './NewFeedForm/DetectedFeeds/detected-feeds.css';
-@import './FeedList/FeedItem/feed-item.css';
+@import './FeedList/feed-list.css';
 
 /* TODO mr organize imports */
 

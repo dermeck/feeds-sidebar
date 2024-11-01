@@ -2,7 +2,7 @@ import React, { Fragment, memo, useMemo } from 'react';
 
 import { useAppSelector } from '../../store/hooks';
 import { makeSelectTreeNode } from '../../store/slices/feeds';
-import Folder from './Folder';
+import Folder from './Folder/Folder';
 import FolderSubTreeNode from './FolderSubTreeNode';
 
 interface Props {
