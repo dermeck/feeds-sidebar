@@ -5,7 +5,7 @@ import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react'
 
 import { useRef, useState } from 'react';
 
-import { Drawer, Input } from '../base-components';
+import { Drawer } from '../base-components';
 import { menuWidthInPx } from '../base-components/styled/Menu';
 import { spin } from '../base-components/styled/animations';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -26,10 +26,6 @@ const SidebarContainer = styled.div`
     background-color: ${(props) => props.theme.colors.sidebarBackground};
     color: ${(props) => props.theme.colors.sideBarText};
 `;
-
-const FilterInput = styled(Input)({
-    width: '100%',
-});
 
 // TODO mr create toolbar button that accepts icon name
 const FetchAllButtonIcon = styled(ArrowsClockwise, {
@@ -76,7 +72,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     <FetchAllButtonIcon size={22} weight="regular" spin={isLoading} />
                 </Button>
 
-                <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
+                <input value={filterString} onChange={(e) => setFilterString(e.target.value)} />
 
                 <Button
                     variant="toolbar"
@@ -112,8 +108,10 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                 filterString={filterString.trim()}
             />
 
-            <Drawer visible={activeView === View.subscribe}>
-                <NewFeedForm urlInputRef={urlInputRef} onClose={() => changeView(View.feedList)} />
+            <Drawer visible={activeView !== View.feedList}>
+                {activeView === View.subscribe && (
+                    <NewFeedForm urlInputRef={urlInputRef} onClose={() => changeView(View.feedList)} />
+                )}
             </Drawer>
         </SidebarContainer>
     );

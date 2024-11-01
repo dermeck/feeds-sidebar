@@ -8,6 +8,8 @@
     --sidebar-background-dark-color: Canvas;
     --sidebar-text-dark-color: CanvasText;
 
+    --control-border-color: ButtonBorder;
+
     --button-background-color: ButtonFace;
     --button-text-color: ButtonText;
     --button-hover-background-color: -moz-ButtonHoverFace;

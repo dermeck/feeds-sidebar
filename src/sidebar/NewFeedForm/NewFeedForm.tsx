@@ -4,7 +4,7 @@ import { ArrowLeft } from 'phosphor-react';
 
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 
-import { Button, Input, Label } from '../../base-components';
+import { Button, Label } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import NewFeedsList from './NewFeedsList';
@@ -57,6 +57,7 @@ interface NewFeedFormProps {
     onClose: () => void;
 }
 
+// TODO mr SubScribeView
 const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
     const addButtonRef = useRef<HTMLButtonElement>(null);
     const theme = useTheme();
@@ -90,7 +91,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
             </Header>
             <ContentContainer>
                 <Label>Feed URL</Label>
-                <Input
+                <input
                     ref={props.urlInputRef}
                     placeholder="https://blog.mozilla.org/en/feed/"
                     value={newFeedUrl}

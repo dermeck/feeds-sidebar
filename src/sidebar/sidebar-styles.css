@@ -12,3 +12,10 @@
     grid-column-gap: 4px;
     grid-template-columns: 32px 1fr 32px 32px;
 }
+
+input {
+    height: 32px;
+    border: 1px solid var(--control-border-color);
+    border-radius: 2px;
+    padding-inline: 8px;
+}
