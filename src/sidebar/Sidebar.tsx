@@ -7,7 +7,6 @@ import { useRef, useState } from 'react';
 
 import { Drawer } from '../base-components';
 import { menuWidthInPx } from '../base-components/styled/Menu';
-import { spin } from '../base-components/styled/animations';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
@@ -15,9 +14,9 @@ import sessionSlice, { MenuType, selectIsLoadingFeeds } from '../store/slices/se
 import FeedList from './FeedList';
 import NewFeedForm from './NewFeedForm';
 import { View } from './App';
-import './sidebar-styles.css';
 import { Button } from '../base-components/Button/Button';
 import { Header } from '../base-components/Header/Header';
+import clsx from 'clsx';
 
 const toolbarButtonSideLengthInPx = 32;
 const toolbarButtonPaddingInPx = 4; // TODO mr this should be 5?
@@ -25,17 +24,6 @@ const toolbarButtonPaddingInPx = 4; // TODO mr this should be 5?
 const SidebarContainer = styled.div`
     background-color: ${(props) => props.theme.colors.sidebarBackground};
     color: ${(props) => props.theme.colors.sideBarText};
-`;
-
-// TODO mr create toolbar button that accepts icon name
-const FetchAllButtonIcon = styled(ArrowsClockwise, {
-    // prevent "Warning: Received `true` for a non-boolean attribute `spin`."
-    shouldForwardProp: (props) => props !== 'spin',
-})<{ spin: boolean }>`
-    animation: ${(props) => (props.spin ? spin : 'none')};
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
 `;
 
 type SideBarProps = {
@@ -69,7 +57,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     variant="toolbar"
                     title="Fetch all Feeds"
                     onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.id)))}>
-                    <FetchAllButtonIcon size={22} weight="regular" spin={isLoading} />
+                    <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={22} weight="regular" />
                 </Button>
 
                 <input value={filterString} onChange={(e) => setFilterString(e.target.value)} />
