@@ -1,6 +1,5 @@
 import React, { FunctionComponent, memo, useMemo, useState } from 'react';
 
-import { FullHeightScrollContainer } from '../../base-components';
 import { NodeMeta } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectTopLevelNodes } from '../../store/slices/feeds';
@@ -27,7 +26,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <DragDropContext.Provider value={contextValue}>
-            <FullHeightScrollContainer>
+            <div className="sidebar__content">
                 {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
                 {topLevelNodes.map((node) => (
                     <FolderTreeNode
@@ -38,7 +37,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                         filterString={props.filterString}
                     />
                 ))}
-            </FullHeightScrollContainer>
+            </div>
         </DragDropContext.Provider>
     );
 };
