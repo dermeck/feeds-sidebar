@@ -92,6 +92,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
             <ContentContainer>
                 <Label>Feed URL</Label>
                 <input
+                    className="text-input"
                     ref={props.urlInputRef}
                     placeholder="https://blog.mozilla.org/en/feed/"
                     value={newFeedUrl}

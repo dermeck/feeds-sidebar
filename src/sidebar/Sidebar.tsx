@@ -64,7 +64,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={22} weight="regular" />
                 </Button>
 
-                <input value={filterString} onChange={(e) => setFilterString(e.target.value)} />
+                <input className="text-input" value={filterString} onChange={(e) => setFilterString(e.target.value)} />
 
                 <Button
                     variant="toolbar"
