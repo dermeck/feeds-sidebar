@@ -6,6 +6,11 @@
 
 /* TODO mr organize imports */
 
+.sidebar__container {
+    background-color: var(--sidebar-background-color);
+    color: var(--sidebar-text-color);
+}
+
 .main__header {
     display: grid;
     align-items: center;
@@ -18,20 +23,4 @@ input {
     border: 1px solid var(--control-border-color);
     border-radius: 2px;
     padding-inline: 8px;
-}
-
-.animation-spin {
-    animation: 'spin';
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
 }

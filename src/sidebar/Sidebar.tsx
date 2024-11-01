@@ -1,10 +1,5 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
-import styled from '@emotion/styled';
+import React, { useRef, useState } from 'react';
 import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react';
-
-import { useRef, useState } from 'react';
-
 import { Drawer } from '../base-components';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
@@ -17,16 +12,6 @@ import { Button } from '../base-components/Button/Button';
 import { Header } from '../base-components/Header/Header';
 import clsx from 'clsx';
 import { getCssCustomPropertyNumberValue } from '../utils/getCssCustomProperty';
-
-const SidebarContainer = styled.div`
-    background-color: ${(props) => props.theme.colors.sidebarBackground};
-    color: ${(props) => props.theme.colors.sideBarText};
-`;
-
-type SideBarProps = {
-    activeView: View;
-    changeView: (value: View) => void;
-};
 
 const getMoreMenuCoordinates = (target: HTMLButtonElement): { x: number; y: number } => {
     // target offset is the top left corner of the button
@@ -43,10 +28,16 @@ const getMoreMenuCoordinates = (target: HTMLButtonElement): { x: number; y: numb
     return { x, y };
 };
 
+type SideBarProps = {
+    activeView: View;
+    changeView: (value: View) => void;
+};
+
 const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const dispatch = useAppDispatch();
     const urlInputRef = useRef<HTMLInputElement>(null);
 
+    // TODO mr move this to local state
     const moreMenuVisible = useAppSelector(
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
@@ -57,7 +48,8 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const [filterString, setFilterString] = useState<string>('');
 
     return (
-        <SidebarContainer
+        <div
+            className="siderbar__container"
             onContextMenu={(e) => {
                 if (urlInputRef.current !== e.target) {
                     e.preventDefault();
@@ -103,7 +95,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     <NewFeedForm urlInputRef={urlInputRef} onClose={() => changeView(View.feedList)} />
                 )}
             </Drawer>
-        </SidebarContainer>
+        </div>
     );
 };
 

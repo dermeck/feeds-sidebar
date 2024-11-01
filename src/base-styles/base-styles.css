@@ -5,10 +5,14 @@
     color-scheme: light dark;
 
     /*color: light-dark(var(--light-color), var(--dark-color));*/
+    /*
     --sidebar-background-light-color: Field;
     --sidebar-text-light-color: FieldText;
     --sidebar-background-dark-color: Canvas;
     --sidebar-text-dark-color: CanvasText;
+    */
+    --sidebar-background-color: Canvas;
+    --sidebar-text-color: CanvasText;
 
     --control-border-color: ButtonBorder;
 
