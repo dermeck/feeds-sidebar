@@ -46,6 +46,8 @@
     --message-text-color: -moz-DialogText;
 
     --header-height: 48px;
+    --control-height: 32px;
+    --menu-width: 200px;
 
     /* TODO size variables */
     /* 

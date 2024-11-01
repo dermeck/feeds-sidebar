@@ -6,7 +6,6 @@ import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react'
 import { useRef, useState } from 'react';
 
 import { Drawer } from '../base-components';
-import { menuWidthInPx } from '../base-components/styled/Menu';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
@@ -17,9 +16,7 @@ import { View } from './App';
 import { Button } from '../base-components/Button/Button';
 import { Header } from '../base-components/Header/Header';
 import clsx from 'clsx';
-
-const toolbarButtonSideLengthInPx = 32;
-const toolbarButtonPaddingInPx = 4; // TODO mr this should be 5?
+import { getCssCustomPropertyNumberValue } from '../utils/getCssCustomProperty';
 
 const SidebarContainer = styled.div`
     background-color: ${(props) => props.theme.colors.sidebarBackground};
@@ -29,6 +26,21 @@ const SidebarContainer = styled.div`
 type SideBarProps = {
     activeView: View;
     changeView: (value: View) => void;
+};
+
+const getMoreMenuCoordinates = (target: HTMLButtonElement): { x: number; y: number } => {
+    // target offset is the top left corner of the button
+
+    // end of menu should fit end of the button
+    const menuWidth = getCssCustomPropertyNumberValue('--menu-width');
+    const x = target.offsetLeft + target.clientWidth - menuWidth;
+
+    // menu should be positioned at the bottom of the button
+    // so we need to calculatate the gap between the top of the container (header) and the top of the button
+    const headerHeight = getCssCustomPropertyNumberValue('--header-height');
+    const y = target.offsetHeight + (headerHeight - target.clientHeight) / 2;
+
+    return { x, y };
 };
 
 const Sidebar = ({ activeView, changeView }: SideBarProps) => {
@@ -75,17 +87,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     title="More Options"
                     active={moreMenuVisible}
                     onClick={(e) => {
-                        const offsetHeight = e.currentTarget.offsetHeight;
-                        const offsetLeft = e.currentTarget.offsetLeft;
-
-                        if (offsetHeight !== undefined && offsetLeft !== undefined) {
-                            dispatch(
-                                sessionSlice.actions.showMoreMenu({
-                                    x: offsetLeft - menuWidthInPx + toolbarButtonSideLengthInPx,
-                                    y: offsetHeight + 2 * toolbarButtonPaddingInPx,
-                                }),
-                            );
-                        }
+                        dispatch(sessionSlice.actions.showMoreMenu(getMoreMenuCoordinates(e.currentTarget)));
                     }}>
                     <DotsThreeOutline size={22} weight="fill" />
                 </Button>
