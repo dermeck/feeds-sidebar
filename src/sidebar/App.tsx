@@ -6,7 +6,7 @@ import { FunctionComponent } from 'react';
 
 import { darkTheme, lightTheme } from '../theme';
 import usePrefersColorSchemeDark from '../utils/hooks/usePrefersColorSchemeDark';
-import Menu from './Menu';
+import Menu from './Menu/Menu';
 import Sidebar from './Sidebar';
 
 export const enum View {

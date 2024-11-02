@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import feedsSlice, { selectHasVisibleChildren } from '../../../store/slices/feeds';
 import { RelativeDragDropPosition } from '../../../utils/dragdrop';
 import { MouseEventButton } from '../../../utils/types/web-api';
-import { useContextMenu } from '../../Menu/useContextMenu';
+import { useContextMenu } from '../../Menu/ContextMenu/useContextMenu';
 import useDragDropNode from '../dragdrop/useDragDropNode';
 import { clsx } from 'clsx';
 

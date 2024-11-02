@@ -1,32 +1,19 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
-import styled from '@emotion/styled';
+import React, { useRef } from 'react';
 
-import { FunctionComponent, useRef } from 'react';
-
-import { MenuContainer, MenuList } from '../../base-components';
-import opmlExport from '../../services/export';
-import { readOpmlFile } from '../../services/import';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import feedsSlice, { fetchFeedsCommand, selectFeeds, selectFolders } from '../../store/slices/feeds';
-import sessionSlice, { Point } from '../../store/slices/session';
-import MenuItem from './MenuItem';
-import { View } from '../App';
-
-const ImportInput = styled.input`
-    /* do not take up any space */
-    display: block;
-    height: 0;
-
-    visibility: hidden;
-`;
+import opmlExport from '../../../services/export';
+import { readOpmlFile } from '../../../services/import';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import feedsSlice, { fetchFeedsCommand, selectFeeds, selectFolders } from '../../../store/slices/feeds';
+import sessionSlice, { Point } from '../../../store/slices/session';
+import { MenuListItem } from '../MenuListItem/MenuItem';
+import { View } from '../../App';
 
 interface Props {
     anchorPoint: Point;
     changeView: (value: View) => void;
 }
 
-const MoreMenu: FunctionComponent<Props> = (props: Props) => {
+export const MoreMenu = (props: Props) => {
     const inputFileRef = useRef<HTMLInputElement>(null);
 
     const dispatch = useAppDispatch();
@@ -34,36 +21,46 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
     const folders = useAppSelector((state) => selectFolders(state.feeds));
 
     return (
-        <MenuContainer anchorTop={props.anchorPoint.y} anchorLeft={props.anchorPoint.x}>
-            <MenuList>
-                <MenuItem icon="plus" onMouseDown={() => props.changeView(View.subscribe)}>
+        <div
+            className="menu__container"
+            style={
+                {
+                    '--menu-anchor-left': `${props.anchorPoint.x}px`,
+                    '--menu-anchor-top': `${props.anchorPoint.y}px`,
+                } as React.CSSProperties
+            }>
+            <ul className="menu__list">
+                <MenuListItem icon="plus" onMouseDown={() => props.changeView(View.subscribe)}>
                     Add New Feeds
-                </MenuItem>
+                </MenuListItem>
 
-                <MenuItem icon="folder-plus" onMouseDown={() => dispatch(sessionSlice.actions.newFolder())}>
+                <MenuListItem icon="folder-plus" onMouseDown={() => dispatch(sessionSlice.actions.newFolder())}>
                     New Folder
-                </MenuItem>
+                </MenuListItem>
 
-                <MenuItem icon="check-square" onMouseDown={() => dispatch(feedsSlice.actions.markAllAsRead())}>
+                <MenuListItem icon="check-square" onMouseDown={() => dispatch(feedsSlice.actions.markAllAsRead())}>
                     Mark All Read
-                </MenuItem>
+                </MenuListItem>
 
                 <hr className="menu__divider" />
 
-                <MenuItem icon="export" onMouseDown={() => opmlExport(folders, feeds)}>
+                <MenuListItem icon="export" onMouseDown={() => opmlExport(folders, feeds)}>
                     Export
-                </MenuItem>
+                </MenuListItem>
 
-                <MenuItem
+                <MenuListItem
                     icon="import"
                     onMouseDown={(e) => {
                         e.stopPropagation();
                         inputFileRef.current?.click();
                     }}>
                     Import
-                </MenuItem>
-            </MenuList>
-            <ImportInput
+                </MenuListItem>
+            </ul>
+            <input
+                className="more-menu__import-input"
+                aria-label="import-input"
+                aria-hidden="true"
                 ref={inputFileRef}
                 type="file"
                 accept=".xml,.opml"
@@ -87,8 +84,6 @@ const MoreMenu: FunctionComponent<Props> = (props: Props) => {
                     dispatch(sessionSlice.actions.hideMenu());
                 }}
             />
-        </MenuContainer>
+        </div>
     );
 };
-
-export default MoreMenu;
