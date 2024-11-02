@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react';
-import { Drawer } from '../base-components';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
@@ -12,6 +11,7 @@ import { Button } from '../base-components/Button/Button';
 import { Header } from '../base-components/Header/Header';
 import clsx from 'clsx';
 import { getCssCustomPropertyNumberValue } from '../utils/getCssCustomProperty';
+import { Drawer } from '../base-components/Drawer/Drawer';
 
 const getMoreMenuCoordinates = (target: HTMLButtonElement): { x: number; y: number } => {
     // target offset is the top left corner of the button
@@ -64,7 +64,12 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={22} weight="regular" />
                 </Button>
 
-                <input className="text-input" value={filterString} onChange={(e) => setFilterString(e.target.value)} />
+                <input
+                    aria-label="filter text"
+                    className="text-input"
+                    value={filterString}
+                    onChange={(e) => setFilterString(e.target.value)}
+                />
 
                 <Button
                     variant="toolbar"
