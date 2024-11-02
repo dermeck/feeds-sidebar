@@ -6,7 +6,7 @@ import React, { RefObject, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
-import NewFeedsList from './NewFeedsList';
+import { NewFeedsList } from './NewFeedsList/NewFeedsList';
 import DetectedFeeds from './DetectedFeeds/DetectedFeeds';
 import { Button } from '../../base-components/Button/Button';
 import { Header } from '../../base-components/Header/Header';

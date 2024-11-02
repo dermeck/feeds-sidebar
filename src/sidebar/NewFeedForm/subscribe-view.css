@@ -1,3 +1,6 @@
+@import './DetectedFeeds/detected-feeds.css';
+@import './NewFeedsList/new-feeds-list.css';
+
 .subscribe-view__section-heading {
     font-size: 1rem;
     font-weight: 600;
