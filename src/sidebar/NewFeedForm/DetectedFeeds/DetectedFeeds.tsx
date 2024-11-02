@@ -1,6 +1,5 @@
 import { GlobeSimple, PlusCircle, MinusCircle } from 'phosphor-react';
 import React from 'react';
-import { Label } from '../../../base-components';
 import { useAppSelector } from '../../../store/hooks';
 
 const DetectedFeeds = ({
@@ -15,7 +14,7 @@ const DetectedFeeds = ({
 
     return (
         <>
-            <Label>Detected Feeds</Label>
+            <label className="subscribe-view__section-heading">Detected Feeds</label>
             <ul className="detected-feeds-list">
                 {detectedFeeds.map((feed) => {
                     return (

@@ -3,7 +3,6 @@ import { Warning, Spinner, Check } from 'phosphor-react';
 
 import React, { Fragment, FunctionComponent } from 'react';
 
-import { Label } from '../../base-components';
 import { useAppSelector } from '../../store/hooks';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 
@@ -38,7 +37,7 @@ const NewFeedsList: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <Fragment>
-            <Label>Recently added Feeds:</Label>
+            <label className="subscribe-view__section-heading">Recently added Feeds:</label>
             {props.newFeedUrls.length > 0 && (
                 <List>
                     {props.newFeedUrls.map((newFeedUrl) => {

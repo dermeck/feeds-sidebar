@@ -4,7 +4,6 @@ import { ArrowLeft } from 'phosphor-react';
 
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 
-import { Label } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import NewFeedsList from './NewFeedsList';
@@ -89,7 +88,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                 <Title>Add New Feed</Title>
             </Header>
             <ContentContainer>
-                <Label>Feed URL</Label>
+                <label className="subscribe-view__section-heading">Feed URL</label>
                 <input
                     className="text-input"
                     ref={props.urlInputRef}
@@ -111,7 +110,7 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                 />
                 <Button
                     className="subscribe-view__add-button"
-                    ref={addButtonRef}
+                    ref={addButtonRef} // TODO mr use a form and prevent console error
                     active={addButtonActive}
                     onClick={() => {
                         if (!isValidURL(newFeedUrl)) {
