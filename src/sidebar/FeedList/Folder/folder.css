@@ -9,7 +9,7 @@
     .folder__title-container {
         display: flex;
         flex-direction: column;
-        padding-left: calc(var(--nested-level) * 15px + 8px);
+        padding-left: calc(var(--folder-nested-level) * 15px + 8px);
 
         /* ensure that drag drop indicator stays at same position 
         when switched between "insert-before" and "insert-after" */

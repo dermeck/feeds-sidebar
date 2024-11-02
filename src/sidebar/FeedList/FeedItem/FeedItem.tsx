@@ -1,62 +1,13 @@
-import styled from '@emotion/styled';
 import { GlobeSimple, X } from 'phosphor-react';
 
-import React, { FunctionComponent, memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import { NodeType } from '../../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import feedsSlice from '../../../store/slices/feeds';
 import { MouseEventButton } from '../../../utils/types/web-api';
 import { Button } from '../../../base-components/Button/Button';
-
-const Container = styled.li<{ focus: boolean; indented: boolean; selected: boolean; nestedLevel: number }>`
-    padding-left: ${(props) =>
-        !props.indented || props.nestedLevel === 0 ? '20px' : `${25 + props.nestedLevel * 15}px`};
-
-    background-color: ${(props) =>
-        props.selected
-            ? props.focus
-                ? props.theme.colors.selectedItemBackgroundColor
-                : props.theme.colors.selectedItemNoFocusBackgroundColor
-            : 'inherit'};
-    color: ${(props) =>
-        props.selected
-            ? props.focus
-                ? props.theme.colors.selectedItemTextColor
-                : props.theme.colors.selectedItemNoFocusTextColor
-            : 'inherit'};
-    list-style: none;
-`;
-
-// TODO mr remove this next to feed-item__grid
-const GridContainer = styled.div`
-    display: grid;
-    width: 100%;
-    align-items: center;
-    padding-right: 6px;
-    grid-column-gap: 4px;
-    grid-template-columns: 18px 1fr 22px;
-`;
-
-const GlobeButton = styled.div`
-    display: inherit;
-    grid: '1';
-`;
-
-const Link = styled.a`
-    overflow: hidden;
-    padding-top: 4px;
-    padding-bottom: 4px;
-
-    color: inherit;
-    text-decoration: none;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    &:hover {
-        text-decoration: underline;
-    }
-`;
+import { clsx } from 'clsx';
 
 interface Props {
     id: string;
@@ -69,18 +20,18 @@ interface Props {
     nestedLevel: number;
 }
 
-const FeedItem: FunctionComponent<Props> = (props: Props) => {
+export const FeedItem = (props: Props) => {
     const dispatch = useAppDispatch();
 
     const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === props.id;
 
     useEffect(() => {
         if (isSelected) {
-            setFocus(true);
+            setUiActive(true);
         }
     }, [isSelected]);
 
-    const [focus, setFocus] = useState<boolean>(false);
+    const [uiActive, setUiActive] = useState<boolean>(false);
     const [xButtonClicked, setXButtonClicked] = useState(false);
 
     if ((props.isRead && !isSelected) || xButtonClicked) {
@@ -110,21 +61,23 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
     };
 
     return (
-        <Container
+        <li
+            className={clsx(
+                'feed-item',
+                props.indented && 'feed-item--indented',
+                isSelected && 'feed-item--selected',
+                uiActive && 'feed-item--ui-active',
+            )}
+            style={{ '--item-nested-level': props.nestedLevel } as React.CSSProperties}
             key={props.id}
-            indented={props.indented}
-            nestedLevel={props.nestedLevel}
-            selected={isSelected}
-            focus={focus}
-            onClick={() => setFocus(true)}
+            onClick={() => setUiActive(true)}
             onBlur={() => {
-                setFocus(false);
+                // TODO mr blur triggers immediatly after selection => fix or remove it? (bookmarks are also not focused after click)
+                setUiActive(false);
             }}>
-            <GridContainer className="feed-item__grid">
-                <GlobeButton>
-                    <GlobeSimple size={20} weight="light" />
-                </GlobeButton>
-                <Link
+            <div className="feed-item__grid">
+                <GlobeSimple size={20} weight="light" />
+                <a
                     className="feed-item__link"
                     title={props.title}
                     href={props.url}
@@ -138,15 +91,15 @@ const FeedItem: FunctionComponent<Props> = (props: Props) => {
                     onClick={() => handleFeedItemClick(props.feedId, props.id)}
                     onDragStart={(e) => e.preventDefault()}>
                     {props.label}
-                </Link>
+                </a>
                 <Button
                     className="feed-item__remove-button"
                     title="Mark as Read"
                     onClick={() => handleXButtonClick(props.feedId, props.id)}>
                     <X size={20} weight="bold" />
                 </Button>
-            </GridContainer>
-        </Container>
+            </div>
+        </li>
     );
 };
 

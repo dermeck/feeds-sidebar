@@ -71,7 +71,7 @@ const Folder = (props: Props) => {
                     isDropNotAllowed && 'folder__title-container--disabled',
                     selectedId === nodeMeta.nodeId && 'folder__title-container--selected',
                 )}
-                style={{ '--nested-level': props.nestedLevel } as React.CSSProperties}
+                style={{ '--folder-nested-level': props.nestedLevel } as React.CSSProperties}
                 ref={titleContainerRef}
                 draggable={true}
                 onDragStart={handleDragStart}
