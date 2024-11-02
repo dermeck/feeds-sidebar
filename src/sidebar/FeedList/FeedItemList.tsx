@@ -1,15 +1,8 @@
-import styled from '@emotion/styled';
-
 import React, { Fragment } from 'react';
 
 import { Feed } from '../../model/feeds';
 import FeedItem from './FeedItem/FeedItem';
-
-const FeedContainer = styled.ul<{ disabled: boolean }>`
-    padding-left: 0;
-    margin: 0;
-    opacity: ${(props) => (props.disabled ? 0.3 : 0.9)};
-`;
+import { clsx } from 'clsx';
 
 interface FeedItemListProps {
     feed: Feed;
@@ -26,7 +19,7 @@ const FeedItemList = (props: FeedItemListProps) => {
     }
 
     return (
-        <FeedContainer disabled={props.disabled}>
+        <ul className={clsx('feed-item-list', props.disabled && 'feed-item-list--disabled')}>
             {props.feed.items.map(
                 (item) =>
                     item.title?.toLowerCase().includes(props.filterString.toLowerCase()) && (
@@ -45,7 +38,7 @@ const FeedItemList = (props: FeedItemListProps) => {
                         />
                     ),
             )}
-        </FeedContainer>
+        </ul>
     );
 };
 
