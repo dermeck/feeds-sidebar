@@ -5,7 +5,7 @@ import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
 import sessionSlice, { MenuType, selectIsLoadingFeeds } from '../store/slices/session';
 import FeedList from './FeedList';
-import NewFeedForm from './NewFeedForm';
+import { SubscribeView } from './SubscribeView/SubscribeView';
 import { View } from './App';
 import { Button } from '../base-components/Button/Button';
 import { Header } from '../base-components/Header/Header';
@@ -97,7 +97,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
 
             <Drawer visible={activeView !== View.feedList}>
                 {activeView === View.subscribe && (
-                    <NewFeedForm urlInputRef={urlInputRef} onClose={() => changeView(View.feedList)} />
+                    <SubscribeView urlInputRef={urlInputRef} onClose={() => changeView(View.feedList)} />
                 )}
             </Drawer>
         </div>

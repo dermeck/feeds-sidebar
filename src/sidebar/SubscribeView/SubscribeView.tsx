@@ -17,13 +17,12 @@ const isValidURL = (str: string) => {
     return res !== null;
 };
 
-interface NewFeedFormProps {
+interface SubscribeViewProps {
     urlInputRef: RefObject<HTMLInputElement>;
     onClose: () => void;
 }
 
-// TODO mr SubScribeView
-const NewFeedForm = (props: NewFeedFormProps) => {
+export const SubscribeView = (props: SubscribeViewProps) => {
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
     const feedDetectionEnabled = useAppSelector((state) => state.options.feedDetectionEnabled);
@@ -98,5 +97,3 @@ const NewFeedForm = (props: NewFeedFormProps) => {
         </div>
     );
 };
-
-export default NewFeedForm;
