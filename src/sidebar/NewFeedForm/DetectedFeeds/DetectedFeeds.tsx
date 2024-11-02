@@ -2,7 +2,7 @@ import { GlobeSimple, PlusCircle, MinusCircle } from 'phosphor-react';
 import React from 'react';
 import { useAppSelector } from '../../../store/hooks';
 
-const DetectedFeeds = ({
+export const DetectedFeeds = ({
     addNewFeed,
     removeFeed,
 }: {
@@ -37,5 +37,3 @@ const DetectedFeeds = ({
         </>
     );
 };
-
-export default DetectedFeeds;

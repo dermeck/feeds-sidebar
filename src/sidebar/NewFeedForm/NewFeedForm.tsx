@@ -1,5 +1,3 @@
-import { useTheme } from '@emotion/react';
-import styled from '@emotion/styled';
 import { ArrowLeft } from 'phosphor-react';
 
 import React, { RefObject, useState } from 'react';
@@ -7,41 +5,10 @@ import React, { RefObject, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import { NewFeedsList } from './NewFeedsList/NewFeedsList';
-import DetectedFeeds from './DetectedFeeds/DetectedFeeds';
+import { DetectedFeeds } from './DetectedFeeds/DetectedFeeds';
 import { Button } from '../../base-components/Button/Button';
 import { Header } from '../../base-components/Header/Header';
-
-const Container = styled.div`
-    height: 100%;
-`;
-
-const toolbarContainerheight = '48px'; // TODO mr use var or FullHeightScrollCOntainer / main content container
-
-const ContentContainer = styled.div`
-    display: flex;
-    height: calc(100vh - ${toolbarContainerheight});
-    gap: 4px;
-
-    flex-direction: column;
-    padding: 0.5rem;
-`;
-
-const Title = styled.h1`
-    align-self: center;
-    margin: auto;
-
-    font-size: 1.1rem;
-    font-weight: 600;
-`;
-
-const MessageBox = styled.div<{ show: boolean }>`
-    min-height: 2.2rem;
-    padding: 0.5rem 1rem;
-
-    border-radius: 4px;
-    background-color: ${(props) => (props.show ? props.theme.colors.messageBackgroundColor : 'inherit')};
-    color: ${(props) => props.theme.colors.messageTextColor};
-`;
+import { clsx } from 'clsx';
 
 const isValidURL = (str: string) => {
     const res = str.match(
@@ -57,8 +24,6 @@ interface NewFeedFormProps {
 
 // TODO mr SubScribeView
 const NewFeedForm = (props: NewFeedFormProps) => {
-    const theme = useTheme();
-
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
     const feedDetectionEnabled = useAppSelector((state) => state.options.feedDetectionEnabled);
@@ -93,14 +58,14 @@ const NewFeedForm = (props: NewFeedFormProps) => {
     };
 
     return (
-        <Container>
+        <div className="subscribe-view">
             <Header>
                 <Button variant="toolbar" title="Back to Feed List" onClick={props.onClose}>
                     <ArrowLeft size={22} />
                 </Button>
-                <Title>Add New Feed</Title>
+                <h1 className="subscribe-view__title">Add New Feed</h1>
             </Header>
-            <ContentContainer>
+            <div className="subscribe-view__content">
                 <form
                     className="subscribe-view__add-form"
                     onSubmit={(e) => {
@@ -120,13 +85,17 @@ const NewFeedForm = (props: NewFeedFormProps) => {
                         Add New Feed
                     </Button>
                 </form>
-                <MessageBox theme={theme} show={newFeedUrlMessage !== ''}>
+                <div
+                    className={clsx(
+                        'subscribe-view__message-box',
+                        newFeedUrlMessage !== '' && 'subscribe-view__message-box--visible',
+                    )}>
                     {newFeedUrlMessage}
-                </MessageBox>
+                </div>
                 {feedDetectionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
-            </ContentContainer>
-        </Container>
+            </div>
+        </div>
     );
 };
 
