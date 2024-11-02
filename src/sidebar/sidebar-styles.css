@@ -4,8 +4,6 @@
 @import './SubscribeView/subscribe-view.css';
 @import './FeedList/feed-list.css';
 
-/* TODO mr organize imports */
-
 .sidebar__container {
     background-color: var(--sidebar-background-color);
     color: var(--sidebar-text-color);

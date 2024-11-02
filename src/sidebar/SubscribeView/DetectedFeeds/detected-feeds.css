@@ -23,28 +23,8 @@
     line-height: 32px;
 }
 
-/* TODO mr extract the styles / replace Button component?  */
 .detected-feed-action {
-    border: none;
-    border-radius: 4px;
-    background-color: var(--button-background-color);
-    color: var(--button-text-color);
-    font-size: 13px;
-    line-height: 27px;
     height: 32px;
     width: 32px;
     padding: 6px;
-
-    &:hover {
-        color: var(--button-hover-text-color);
-        background-color: var(--button-hover-background-color);
-        opacity: 0.9;
-    }
-
-    &:active {
-        /* button is clicked */
-        color: var(--button-active-text-color);
-        background-color: var(--button-active-background-color);
-        opacity: 1;
-    }
 }

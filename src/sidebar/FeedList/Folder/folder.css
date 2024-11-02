@@ -1,10 +1,5 @@
 .folder {
-    /* TODO cleanup */
-    /* toggleIndicatorSize */
-    --folder-toggle-indicator-size: 12; /* TODO is this used? */
     --folder-spacer-height: 2px;
-    /* iconRightSpacing */
-    /*--folder-toggle-indicator-right-padding: 4; */
 
     .folder__title-container {
         display: flex;

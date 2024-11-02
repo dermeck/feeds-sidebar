@@ -23,7 +23,7 @@ export const DetectedFeeds = ({
                                 <GlobeSimple size={20} weight="light" />
                             </div>
                             <label className="detected-feed-label">{feed.title}</label>
-                            <button className="detected-feed-action">
+                            <button className="button detected-feed-action">
                                 {feeds.find((x) => x.id === feed.href) !== undefined ? (
                                     <MinusCircle size={20} weight="bold" onClick={() => removeFeed(feed.href)} />
                                 ) : (

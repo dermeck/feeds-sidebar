@@ -25,17 +25,6 @@
 
     --toolbar-background-color: -moz-Dialog;
     --toolbar-text-color: -moz-DialogText;
-    /* TODO Toolbar Button calculations
-        Background = -moz-Dialog (F6F6F6)
-        Foreground DDDDDD
-        UI Active Opacity 40% => B8B8B8
-        UI-Active + Hover 45% => BEBEBE
-        normal Hover 80% => D7D7D7 (chaeck dark mode)
-        use DialogText with opacity 30/40?
-    */
-    /*toolbarButtonHoverBackground: rgba(resolveColorKeyword('-moz-DialogText'), 0.17), // TODO mr just use the color and add opcacity
-    toolbarButtonActiveBackground: rgba(resolveColorKeyword('-moz-DialogText'), 0.3),
-*/
 
     --selected-item-background-color: SelectedItem;
     --selected-item-text-color: SelectedItemText;
@@ -52,12 +41,4 @@
     --header-height: 48px;
     --control-height: 32px;
     --menu-width: 200px;
-
-    /* TODO size variables */
-    /* 
-        folderIconSize: 20,
-        toggleIndicatorSize: 12,
-        iconRightSpacing: 4,
-        spacerHeight: 2,
-    */
 }
