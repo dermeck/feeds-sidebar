@@ -4,12 +4,12 @@ import { ArrowLeft } from 'phosphor-react';
 
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 
-import { Button, Label } from '../../base-components';
+import { Label } from '../../base-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import NewFeedsList from './NewFeedsList';
 import DetectedFeeds from './DetectedFeeds/DetectedFeeds';
-import { Button as Button2 } from '../../base-components/Button/Button'; // TODO mr rename this
+import { Button } from '../../base-components/Button/Button';
 import { Header } from '../../base-components/Header/Header';
 
 const Container = styled.div`
@@ -21,6 +21,7 @@ const toolbarContainerheight = '48px'; // TODO mr use var or FullHeightScrollCOn
 const ContentContainer = styled.div`
     display: flex;
     height: calc(100vh - ${toolbarContainerheight});
+    gap: 4px;
 
     flex-direction: column;
     padding: 0.5rem;
@@ -42,8 +43,6 @@ const MessageBox = styled.div<{ show: boolean }>`
     background-color: ${(props) => (props.show ? props.theme.colors.messageBackgroundColor : 'inherit')};
     color: ${(props) => props.theme.colors.messageTextColor};
 `;
-
-const AddButton = styled(Button)({ alignSelf: 'flex-end' });
 
 const isValidURL = (str: string) => {
     const res = str.match(
@@ -84,9 +83,9 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
     return (
         <Container>
             <Header>
-                <Button2 variant="toolbar" title="Back to Feed List" onClick={props.onClose}>
+                <Button variant="toolbar" title="Back to Feed List" onClick={props.onClose}>
                     <ArrowLeft size={22} />
-                </Button2>
+                </Button>
                 <Title>Add New Feed</Title>
             </Header>
             <ContentContainer>
@@ -110,8 +109,8 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                         }
                     }}
                 />
-
-                <AddButton
+                <Button
+                    className="subscribe-view__add-button"
                     ref={addButtonRef}
                     active={addButtonActive}
                     onClick={() => {
@@ -129,11 +128,10 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                         }
                     }}>
                     Add New Feed
-                </AddButton>
+                </Button>
                 <MessageBox theme={theme} show={newFeedUrlMessage !== ''}>
                     {newFeedUrlMessage}
                 </MessageBox>
-
                 {feedDetectionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
             </ContentContainer>
