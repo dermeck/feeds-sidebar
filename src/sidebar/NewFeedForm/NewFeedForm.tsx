@@ -2,7 +2,7 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { ArrowLeft } from 'phosphor-react';
 
-import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
+import React, { RefObject, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
@@ -56,8 +56,7 @@ interface NewFeedFormProps {
 }
 
 // TODO mr SubScribeView
-const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
-    const addButtonRef = useRef<HTMLButtonElement>(null);
+const NewFeedForm = (props: NewFeedFormProps) => {
     const theme = useTheme();
 
     const dispatch = useAppDispatch();
@@ -66,7 +65,6 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
 
     const [newFeedUrl, setNewFeedUrl] = useState('');
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
-    const [addButtonActive, setAddButtonActive] = useState(false);
     const [addedFeedUrls, setAddedFeedUrls] = useState<string[]>([]);
 
     const addNewFeed = (url: string) => {
@@ -79,6 +77,21 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
         dispatch(feedsSlice.actions.deleteFeed({ url: feedUrl }));
     };
 
+    const addFeed = () => {
+        if (!isValidURL(newFeedUrl)) {
+            setNewFeedUrlMessage('The ented URL is invalid.');
+            return;
+        }
+
+        const existingFeed = feeds.find((x) => x.id === newFeedUrl);
+
+        if (existingFeed === undefined) {
+            addNewFeed(newFeedUrl);
+        } else {
+            setNewFeedUrlMessage(`You are already subscribed to that feed (${existingFeed.title})`);
+        }
+    };
+
     return (
         <Container>
             <Header>
@@ -88,46 +101,25 @@ const NewFeedForm: FunctionComponent<NewFeedFormProps> = (props) => {
                 <Title>Add New Feed</Title>
             </Header>
             <ContentContainer>
-                <label className="subscribe-view__section-heading">Feed URL</label>
-                <input
-                    className="text-input"
-                    ref={props.urlInputRef}
-                    placeholder="https://blog.mozilla.org/en/feed/"
-                    value={newFeedUrl}
-                    onChange={(e) => setNewFeedUrl(e.target.value)}
-                    onFocus={() => setNewFeedUrlMessage('')}
-                    onKeyDown={(e) => {
-                        if (e.code === 'Enter') {
-                            setAddButtonActive(true);
-                            addButtonRef.current?.click();
-                        }
-                    }}
-                    onKeyUp={(e) => {
-                        if (e.code === 'Enter') {
-                            setAddButtonActive(false);
-                        }
-                    }}
-                />
-                <Button
-                    className="subscribe-view__add-button"
-                    ref={addButtonRef} // TODO mr use a form and prevent console error
-                    active={addButtonActive}
-                    onClick={() => {
-                        if (!isValidURL(newFeedUrl)) {
-                            setNewFeedUrlMessage('The ented URL is invalid.');
-                            return;
-                        }
-
-                        const existingFeed = feeds.find((x) => x.id === newFeedUrl);
-
-                        if (existingFeed === undefined) {
-                            addNewFeed(newFeedUrl);
-                        } else {
-                            setNewFeedUrlMessage(`You are already subscribed to that feed (${existingFeed.title})`);
-                        }
+                <form
+                    className="subscribe-view__add-form"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        addFeed();
                     }}>
-                    Add New Feed
-                </Button>
+                    <label className="subscribe-view__section-heading">Feed URL</label>
+                    <input
+                        className="text-input"
+                        ref={props.urlInputRef}
+                        placeholder="https://blog.mozilla.org/en/feed/"
+                        value={newFeedUrl}
+                        onChange={(e) => setNewFeedUrl(e.target.value)}
+                        onFocus={() => setNewFeedUrlMessage('')}
+                    />
+                    <Button type="submit" className="subscribe-view__add-button">
+                        Add New Feed
+                    </Button>
+                </form>
                 <MessageBox theme={theme} show={newFeedUrlMessage !== ''}>
                     {newFeedUrlMessage}
                 </MessageBox>

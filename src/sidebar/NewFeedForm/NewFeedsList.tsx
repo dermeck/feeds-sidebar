@@ -50,7 +50,7 @@ const NewFeedsList: FunctionComponent<Props> = (props: Props) => {
                         switch (status) {
                             case 'loading':
                                 return (
-                                    <ListItem>
+                                    <ListItem key={newFeedUrl}>
                                         <Spinner size={18} />
                                         loading...
                                     </ListItem>
@@ -60,7 +60,7 @@ const NewFeedsList: FunctionComponent<Props> = (props: Props) => {
                                 const loadedFeed = feeds.find((f) => f.id === newFeedUrl);
                                 if (loadedFeed !== undefined) {
                                     return (
-                                        <ListItem>
+                                        <ListItem key={newFeedUrl}>
                                             <Check size={18} />
                                             {loadedFeed.title}
                                         </ListItem>
@@ -72,7 +72,7 @@ const NewFeedsList: FunctionComponent<Props> = (props: Props) => {
 
                             case 'error':
                                 return (
-                                    <ListItem>
+                                    <ListItem key={newFeedUrl}>
                                         <Warning size={18} /> {newFeedUrl}
                                     </ListItem>
                                 );
