@@ -1,25 +1,29 @@
 import React from 'react';
-import FolderTreeNode from '../folder-tree/FolderTreeNode'; // TODO mr
-import { TreeNode } from '../../../model/feeds';
+import { useAppSelector } from '../../../store/hooks';
+import { FeedItemList } from '../FeedList/FeedItemList';
+import { Feed, FeedItem } from '../../../model/feeds';
 
 interface Props {
     filterString: string;
-    nodes: ReadonlyArray<TreeNode>;
 }
 
-export const MainViewPlainList = ({ nodes, filterString }: Props) => {
-    // TODO mr just get all feeds and render the plain list
+export const MainViewPlainList = ({ filterString }: Props) => {
+    const feeds = useAppSelector((state) => state.feeds.feeds);
+
+    const getItemLabel = (feed: Feed, item: FeedItem) => `${feed.title ? `${feed.title} | ` : ''}${item.title}`;
+
     return (
         <>
-            {nodes.map((node) => (
-                <FolderTreeNode
-                    key={node.data.id}
-                    nodeId={node.data.id}
-                    nestedLevel={0}
-                    showTitle={false} // TODO mr
-                    filterString={filterString}
-                />
-            ))}
+            {feeds.map((feed) => {
+                return (
+                    <FeedItemList
+                        key={feed.id}
+                        feed={feed}
+                        filterString={filterString}
+                        getItemLabel={(item) => getItemLabel(feed, item)}
+                    />
+                );
+            })}
         </>
     );
 };

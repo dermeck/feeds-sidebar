@@ -2,20 +2,19 @@ import React, { Fragment } from 'react';
 
 import { NodeType, TreeNode } from '../../../model/feeds';
 import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
-import FeedItemList from '../FeedList/FeedItemList';
+import { FeedItemList } from '../FeedList/FeedItemList';
 import FolderTreeNode from './FolderTreeNode';
 import useDragDropNode from './dragdrop/useDragDropNode';
 
 interface Props {
     node: TreeNode;
-    selectedId?: string;
     showTitle: boolean;
     nestedLevel: number;
     filterString: string;
 }
 
 const FolderSubTreeNode = (props: Props): JSX.Element => {
-    const { node, filterString, showTitle, selectedId, nestedLevel } = props;
+    const { node, filterString, showTitle, nestedLevel } = props;
     const { isDropNotAllowed } = useDragDropNode({ nodeId: node.data.id, nodeType: node.nodeType });
 
     switch (node.nodeType) {
@@ -25,9 +24,7 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                     key={node.data.id}
                     feed={node.data}
                     filterString={filterString}
-                    indented={showTitle}
                     nestedLevel={nestedLevel + 1}
-                    selectedId={selectedId}
                     disabled={isDropNotAllowed}
                 />
             );

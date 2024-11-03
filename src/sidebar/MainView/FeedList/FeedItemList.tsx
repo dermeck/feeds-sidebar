@@ -1,45 +1,45 @@
 import React, { Fragment } from 'react';
 
-import { Feed } from '../../../model/feeds';
+import { Feed, FeedItem } from '../../../model/feeds';
 import { FeedListItem } from './item/FeedListItem';
 import { clsx } from 'clsx';
 
-interface FeedItemListProps {
+type FeedItemListProps = {
     feed: Feed;
-    selectedId?: string;
-    indented: boolean; // TODO mr do we need 2 props nested AND indented?
-    nestedLevel: number;
+    nestedLevel?: number;
     filterString: string;
-    disabled: boolean; // TODO rework Props, disabled, selectedId may not be needed, instead get them inside this component
-}
+    disabled?: boolean;
+    getItemLabel?: (item: FeedItem) => string;
+};
 
-const FeedItemList = (props: FeedItemListProps) => {
-    if (!props.feed.items.some((x) => !x.isRead || x.id === props.selectedId)) {
+export const FeedItemList = ({
+    feed,
+    nestedLevel = 0,
+    filterString,
+    disabled = false,
+    getItemLabel,
+}: FeedItemListProps) => {
+    if (!feed.items.some((x) => !x.isRead)) {
         return <Fragment />;
     }
 
     return (
-        <ul className={clsx('feed-item-list', props.disabled && 'feed-item-list--disabled')}>
-            {props.feed.items.map(
+        <ul className={clsx('feed-item-list', disabled && 'feed-item-list--disabled')}>
+            {feed.items.map(
                 (item) =>
-                    item.title?.toLowerCase().includes(props.filterString.toLowerCase()) && (
+                    item.title?.toLowerCase().includes(filterString.toLowerCase()) && (
                         <FeedListItem
                             key={item.id + item.title}
-                            feedId={props.feed.id}
+                            feedId={feed.id}
                             id={item.id}
-                            label={`${!props.indented && props.feed.title ? `${props.feed.title} | ` : ''}${
-                                item.title
-                            }`}
+                            label={getItemLabel ? getItemLabel(item) : item.title}
                             url={item.url}
                             isRead={item.isRead ?? false}
-                            title={`${props.feed.title} | ${item.title} \n${item.url}`}
-                            indented={props.indented}
-                            nestedLevel={props.nestedLevel}
+                            title={`${feed.title} | ${item.title} \n${item.url}`}
+                            nestedLevel={nestedLevel}
                         />
                     ),
             )}
         </ul>
     );
 };
-
-export default FeedItemList;
