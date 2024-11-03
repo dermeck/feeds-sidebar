@@ -17,12 +17,16 @@ export const DetectedFeeds = ({
             <label className="subscribe-view__section-heading">Detected Feeds</label>
             <ul className="detected-feeds-list">
                 {detectedFeeds.map((feed) => {
+                    const labelText = feed.title === '' ? feed.href : feed.title;
+
                     return (
                         <li className="detected-feed" key={feed.href}>
                             <div className="detected-feed-icon">
                                 <GlobeSimple size={20} weight="light" />
                             </div>
-                            <label className="detected-feed-label">{feed.title}</label>
+                            <label title={labelText} className="detected-feed-label">
+                                {labelText}
+                            </label>
                             <button className="button detected-feed-action">
                                 {feeds.find((x) => x.id === feed.href) !== undefined ? (
                                     <MinusCircle size={20} weight="bold" onClick={() => removeFeed(feed.href)} />
