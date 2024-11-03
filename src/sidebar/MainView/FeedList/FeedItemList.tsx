@@ -7,7 +7,7 @@ import { clsx } from 'clsx';
 interface FeedItemListProps {
     feed: Feed;
     selectedId?: string;
-    indented: boolean;
+    indented: boolean; // TODO mr do we need 2 props nested AND indented?
     nestedLevel: number;
     filterString: string;
     disabled: boolean; // TODO rework Props, disabled, selectedId may not be needed, instead get them inside this component

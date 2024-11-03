@@ -91,7 +91,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
             </Header>
 
             <MainView
-                showFeedTitles={showFeedTitles && filterString.trim() === ''}
+                displayMode={showFeedTitles && filterString.trim() === '' ? 'folder-tree' : 'plain-list'}
                 filterString={filterString.trim()}
             />
 
