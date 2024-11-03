@@ -1,10 +1,9 @@
-import React, { FunctionComponent, memo, useMemo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 
-import { FullHeightScrollContainer } from '../../base-components';
 import { NodeMeta } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectTopLevelNodes } from '../../store/slices/feeds';
-import FolderEdit from './FolderEdit';
+import { FolderEdit } from './FolderEdit/FolderEdit';
 import FolderTreeNode from './FolderTreeNode';
 import { DragDropContext } from './dragdrop/dragdrop-context';
 
@@ -13,9 +12,9 @@ interface Props {
     filterString: string;
 }
 
-const FeedList: FunctionComponent<Props> = (props: Props) => {
+const FeedList = (props: Props) => {
     const dispatch = useAppDispatch();
-    const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive);
+    const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive); // TODO mr move to local state
     const topLevelNodes = useAppSelector((state) => selectTopLevelNodes(state.feeds));
 
     const handleEditComplete = (title: string) => {
@@ -27,7 +26,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <DragDropContext.Provider value={contextValue}>
-            <FullHeightScrollContainer>
+            <div className="sidebar__content">
                 {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
                 {topLevelNodes.map((node) => (
                     <FolderTreeNode
@@ -38,7 +37,7 @@ const FeedList: FunctionComponent<Props> = (props: Props) => {
                         filterString={props.filterString}
                     />
                 ))}
-            </FullHeightScrollContainer>
+            </div>
         </DragDropContext.Provider>
     );
 };

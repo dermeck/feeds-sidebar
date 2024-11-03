@@ -1,0 +1,13 @@
+@import './Folder/folder.css';
+@import './FolderEdit/folder-edit.css';
+@import './FeedItem/feed-item.css';
+
+.feed-item-list {
+    padding-left: 0;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.feed-item-list--disabled {
+    opacity: 0.3;
+}

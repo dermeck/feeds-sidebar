@@ -1,62 +1,32 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
-import styled from '@emotion/styled';
+import React, { useRef, useState } from 'react';
 import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react';
-
-import { useRef, useState } from 'react';
-
-import { Drawer, ToolbarContainer, Input, ToolbarButton } from '../base-components';
-import { menuWidthInPx } from '../base-components/styled/Menu';
-import { toolbarButtonPaddingInPx, toolbarButtonSideLengthInPx } from '../base-components/styled/ToolbarButton';
-import { spin } from '../base-components/styled/animations';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
 import sessionSlice, { MenuType, selectIsLoadingFeeds } from '../store/slices/session';
 import FeedList from './FeedList';
-import NewFeedForm from './NewFeedForm';
+import { SubscribeView } from './SubscribeView/SubscribeView';
 import { View } from './App';
+import { Button } from '../base-components/Button/Button';
+import { Header } from '../base-components/Header/Header';
+import clsx from 'clsx';
+import { getCssCustomPropertyNumberValue } from '../utils/getCssCustomProperty';
+import { Drawer } from '../base-components/Drawer/Drawer';
 
-const SidebarContainer = styled.div`
-    background-color: ${(props) => props.theme.colors.sidebarBackground};
-    color: ${(props) => props.theme.colors.sideBarText};
-`;
+const getMoreMenuCoordinates = (target: HTMLButtonElement): { x: number; y: number } => {
+    // target offset is the top left corner of the button
 
-const Header = styled(ToolbarContainer)`
-    display: grid;
-    align-items: center;
-    grid-column-gap: 4px;
-    grid-template-columns: 32px 1fr 32px 32px;
-`;
+    // end of menu should fit end of the button
+    const menuWidth = getCssCustomPropertyNumberValue('--menu-width');
+    const x = target.offsetLeft + target.clientWidth - menuWidth;
 
-const FetchAllButton = styled(ToolbarButton)({
-    gridColumn: '1',
-    padding: '5px',
-});
+    // menu should be positioned at the bottom of the button
+    // so we need to calculatate the gap between the top of the container (header) and the top of the button
+    const headerHeight = getCssCustomPropertyNumberValue('--header-height');
+    const y = target.offsetHeight + (headerHeight - target.clientHeight) / 2;
 
-const ShowFeedTitleButton = styled(ToolbarButton)({
-    gridColumn: '3',
-    padding: '5px',
-});
-
-const MoreMenuButton = styled(ToolbarButton)({
-    gridColumn: '4',
-});
-
-const FilterInput = styled(Input)({
-    gridColumn: '2',
-    width: '100%',
-});
-
-const FetchAllButtonIcon = styled(ArrowsClockwise, {
-    // prevent "Warning: Received `true` for a non-boolean attribute `spin`."
-    shouldForwardProp: (props) => props !== 'spin',
-})<{ spin: boolean }>`
-    animation: ${(props) => (props.spin ? spin : 'none')};
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-`;
+    return { x, y };
+};
 
 type SideBarProps = {
     activeView: View;
@@ -67,6 +37,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const dispatch = useAppDispatch();
     const urlInputRef = useRef<HTMLInputElement>(null);
 
+    // TODO mr move this to local state
     const moreMenuVisible = useAppSelector(
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
@@ -77,47 +48,46 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const [filterString, setFilterString] = useState<string>('');
 
     return (
-        <SidebarContainer
+        <div
+            className="siderbar__container"
             onContextMenu={(e) => {
                 if (urlInputRef.current !== e.target) {
                     e.preventDefault();
                 }
             }}
             onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
-            <Header>
-                <FetchAllButton
+            <Header className="main__header">
+                <Button
+                    variant="toolbar"
                     title="Fetch all Feeds"
                     onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.id)))}>
-                    <FetchAllButtonIcon size={22} weight="regular" spin={isLoading} />
-                </FetchAllButton>
+                    <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={22} weight="regular" />
+                </Button>
 
-                <FilterInput value={filterString} onChange={(e) => setFilterString(e.target.value)} />
+                <input
+                    aria-label="filter text"
+                    className="text-input"
+                    value={filterString}
+                    onChange={(e) => setFilterString(e.target.value)}
+                />
 
-                <ShowFeedTitleButton
+                <Button
+                    variant="toolbar"
                     title="Toggle Show Folders"
                     onClick={() => dispatch(optionsSlice.actions.toggleShowFeedTitles())}
                     active={showFeedTitles}>
                     <FolderSimple size={22} />
-                </ShowFeedTitleButton>
+                </Button>
 
-                <MoreMenuButton
+                <Button
+                    variant="toolbar"
                     title="More Options"
                     active={moreMenuVisible}
                     onClick={(e) => {
-                        const offsetHeight = e.currentTarget.offsetHeight;
-                        const offsetLeft = e.currentTarget.offsetLeft;
-
-                        if (offsetHeight !== undefined && offsetLeft !== undefined) {
-                            dispatch(
-                                sessionSlice.actions.showMoreMenu({
-                                    x: offsetLeft - menuWidthInPx + toolbarButtonSideLengthInPx,
-                                    y: offsetHeight + 2 * toolbarButtonPaddingInPx,
-                                }),
-                            );
-                        }
+                        dispatch(sessionSlice.actions.showMoreMenu(getMoreMenuCoordinates(e.currentTarget)));
                     }}>
                     <DotsThreeOutline size={22} weight="fill" />
-                </MoreMenuButton>
+                </Button>
             </Header>
 
             <FeedList
@@ -125,10 +95,12 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                 filterString={filterString.trim()}
             />
 
-            <Drawer visible={activeView === View.subscribe}>
-                <NewFeedForm urlInputRef={urlInputRef} onClose={() => changeView(View.feedList)} />
+            <Drawer visible={activeView !== View.feedList}>
+                {activeView === View.subscribe && (
+                    <SubscribeView urlInputRef={urlInputRef} onClose={() => changeView(View.feedList)} />
+                )}
             </Drawer>
-        </SidebarContainer>
+        </div>
     );
 };
 

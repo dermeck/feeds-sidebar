@@ -1,0 +1,30 @@
+@import '../base-styles/base-styles.css';
+@import '../base-components/base-components.css';
+@import './Menu/menu.css';
+@import './SubscribeView/subscribe-view.css';
+@import './FeedList/feed-list.css';
+
+.sidebar__container {
+    background-color: var(--sidebar-background-color);
+    color: var(--sidebar-text-color);
+}
+
+.sidebar__content {
+    padding-top: 4px;
+    height: calc(100vh - var(--header-height));
+    overflow-x: scroll;
+}
+
+.main__header {
+    display: grid;
+    align-items: center;
+    grid-column-gap: 4px;
+    grid-template-columns: 32px 1fr 32px 32px;
+}
+
+.text-input {
+    height: 32px;
+    border: 1px solid var(--control-border-color);
+    border-radius: 2px;
+    padding-inline: 8px;
+}

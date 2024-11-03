@@ -1,13 +1,11 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
-
-import { MenuBackdrop } from '../../base-components';
+import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import sessionSlice, { MenuContext, MenuType } from '../../store/slices/session';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import ContextMenu from './ContextMenu';
-import MoreMenu from './MoreMenu';
+import { ContextMenu } from './ContextMenu/ContextMenu';
+import { MoreMenu } from './MoreMenu/MoreMenu';
 import { View } from '../App';
+import { clsx } from 'clsx';
 
 const renderMenu = (context: MenuContext, changeView: (value: View) => void) => {
     switch (context.type) {
@@ -38,9 +36,12 @@ const Menu = ({ changeView }: { changeView: (value: View) => void }) => {
 
     // TODO mr refactor the whole menu thing to not use redux / use local state instead like 'changeView'
     return (
-        <MenuBackdrop visible={visible} onMouseDown={hideMenu} onContextMenu={(e) => e.preventDefault()}>
+        <div
+            className={clsx('menu__backdrop', !visible && 'menu__backdrop--hidden')}
+            onMouseDown={hideMenu}
+            onContextMenu={(e) => e.preventDefault()}>
             {renderMenu(context, changeView)}
-        </MenuBackdrop>
+        </div>
     );
 };
 

@@ -1,0 +1,44 @@
+@import './animations.css';
+
+:root {
+    /* this has to be set to switch between light or dark */
+    color-scheme: light dark;
+
+    /*color: light-dark(var(--light-color), var(--dark-color));*/
+    /*
+    --sidebar-background-light-color: Field;
+    --sidebar-text-light-color: FieldText;
+    --sidebar-background-dark-color: Canvas;
+    --sidebar-text-dark-color: CanvasText;
+    */
+    --sidebar-background-color: Canvas;
+    --sidebar-text-color: CanvasText;
+
+    --control-border-color: ButtonBorder;
+
+    --button-background-color: ButtonFace;
+    --button-text-color: ButtonText;
+    --button-hover-background-color: -moz-ButtonHoverFace;
+    --button-hover-text-color: -moz-ButtonHoverText;
+    --button-active-background-color: -moz-ButtonHoverFace;
+    --button-active-text-color: -moz-ButtonHoverText;
+
+    --toolbar-background-color: -moz-Dialog;
+    --toolbar-text-color: -moz-DialogText;
+
+    --selected-item-background-color: SelectedItem;
+    --selected-item-text-color: SelectedItemText;
+    --selected-item-no-focus-background-color: -moz-CellHighlight;
+    --selected-item--no-focus-background-color: -moz-CellHighlightText;
+
+    --menu-hover-background-color: -moz-MenuHover;
+    --menu-hover-text-color: -moz-MenuHoverText;
+    --menu-border-color: ButtonFace;
+
+    --message-background-color: -moz-Dialog;
+    --message-text-color: -moz-DialogText;
+
+    --header-height: 48px;
+    --control-height: 32px;
+    --menu-width: 200px;
+}

@@ -1,0 +1,72 @@
+.folder {
+    --folder-spacer-height: 2px;
+
+    .folder__title-container {
+        display: flex;
+        flex-direction: column;
+        padding-left: calc(var(--folder-nested-level) * 15px + 8px);
+
+        /* ensure that drag drop indicator stays at same position 
+        when switched between "insert-before" and "insert-after" */
+        margin-top: var(--folder-spacer-height);
+        margin-bottom: var(--folder-spacer-height);
+        opacity: 0.9;
+    }
+
+    .folder__title-container--disabled {
+        opacity: 0.3;
+    }
+
+    .folder__title-container--selected {
+        color: var(--selected-item-no-focus-text-color);
+        background-color: var(--selected-item-no-focus-background-color);
+
+        &:focus {
+            color: var(--selected-item-text-color);
+            background-color: var(--selected-item-background-color);
+        }
+    }
+
+    .folder__title-row {
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+        align-items: center;
+        padding: 1px 0; /* TODO check if the height is correct */
+        height: 20px;
+
+        .folder__toggle-indicator {
+            display: flex;
+
+            svg {
+                height: 12px;
+                width: 12px;
+            }
+        }
+
+        .folder__icon {
+            flex-shrink: 0;
+            margin-top: -2px; /* align with label */
+        }
+
+        .folder__label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .folder__label--highlight {
+            background-color: var(--selected-item-background-color);
+        }
+    }
+
+    .folder__spacer {
+        width: 48px;
+        height: var(--folder-spacer-height);
+        background-color: inherit;
+    }
+
+    .folder__spacer--highlight {
+        background-color: var(--selected-item-background-color);
+    }
+}
