@@ -2,11 +2,11 @@ import { GlobeSimple, X } from 'phosphor-react';
 
 import React, { memo, useEffect, useState } from 'react';
 
-import { NodeType } from '../../../model/feeds';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import feedsSlice from '../../../store/slices/feeds';
-import { MouseEventButton } from '../../../utils/types/web-api';
-import { Button } from '../../../base-components/Button/Button';
+import { NodeType } from '../../../../model/feeds';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import feedsSlice from '../../../../store/slices/feeds';
+import { MouseEventButton } from '../../../../utils/types/web-api';
+import { Button } from '../../../../base-components/Button/Button';
 import { clsx } from 'clsx';
 
 interface Props {
@@ -20,7 +20,7 @@ interface Props {
     nestedLevel: number;
 }
 
-export const FeedItem = (props: Props) => {
+const FeedListItem = (props: Props) => {
     const dispatch = useAppDispatch();
 
     const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === props.id;
@@ -103,10 +103,10 @@ export const FeedItem = (props: Props) => {
     );
 };
 
-const MemoizedFeedItem = memo(FeedItem);
+const MemoizedFeedListItem = memo(FeedListItem);
 
 if (process.env.MODE === 'dev') {
-    MemoizedFeedItem.whyDidYouRender = true;
+    MemoizedFeedListItem.whyDidYouRender = true;
 }
 
-export default MemoizedFeedItem;
+export { MemoizedFeedListItem as FeedListItem };

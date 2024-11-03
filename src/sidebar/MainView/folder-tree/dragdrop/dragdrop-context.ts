@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-import { NodeMeta } from '../../../model/feeds';
+import { NodeMeta } from '../../../../model/feeds';
 
 export const DragDropContext = createContext<{
     draggedNode: NodeMeta | undefined;

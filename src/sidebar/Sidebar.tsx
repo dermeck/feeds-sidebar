@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
 import sessionSlice, { MenuType, selectIsLoadingFeeds } from '../store/slices/session';
-import FeedList from './FeedList';
+import { MainView } from './MainView/MainView';
 import { SubscribeView } from './SubscribeView/SubscribeView';
 import { View } from './App';
 import { Button } from '../base-components/Button/Button';
@@ -90,7 +90,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                 </Button>
             </Header>
 
-            <FeedList
+            <MainView
                 showFeedTitles={showFeedTitles && filterString.trim() === ''}
                 filterString={filterString.trim()}
             />

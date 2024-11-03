@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 
-import { NodeType, TreeNode } from '../../model/feeds';
-import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
-import FeedItemList from './FeedItemList';
+import { NodeType, TreeNode } from '../../../model/feeds';
+import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
+import FeedItemList from '../FeedList/FeedItemList';
 import FolderTreeNode from './FolderTreeNode';
 import useDragDropNode from './dragdrop/useDragDropNode';
 

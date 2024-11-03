@@ -1,6 +1,4 @@
-@import './Folder/folder.css';
-@import './FolderEdit/folder-edit.css';
-@import './FeedItem/feed-item.css';
+@import './item/feed-list-item.css';
 
 .feed-item-list {
     padding-left: 0;

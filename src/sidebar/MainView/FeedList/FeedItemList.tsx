@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
-import { Feed } from '../../model/feeds';
-import FeedItem from './FeedItem/FeedItem';
+import { Feed } from '../../../model/feeds';
+import { FeedListItem } from './item/FeedListItem';
 import { clsx } from 'clsx';
 
 interface FeedItemListProps {
@@ -23,7 +23,7 @@ const FeedItemList = (props: FeedItemListProps) => {
             {props.feed.items.map(
                 (item) =>
                     item.title?.toLowerCase().includes(props.filterString.toLowerCase()) && (
-                        <FeedItem
+                        <FeedListItem
                             key={item.id + item.title}
                             feedId={props.feed.id}
                             id={item.id}

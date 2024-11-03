@@ -3,16 +3,16 @@ import React, { memo, useMemo, useState } from 'react';
 import { NodeMeta } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { selectTopLevelNodes } from '../../store/slices/feeds';
-import { FolderEdit } from './FolderEdit/FolderEdit';
-import FolderTreeNode from './FolderTreeNode';
-import { DragDropContext } from './dragdrop/dragdrop-context';
+import { FolderEdit } from './folder-tree/FolderEdit/FolderEdit';
+import FolderTreeNode from './folder-tree/FolderTreeNode';
+import { DragDropContext } from './folder-tree/dragdrop/dragdrop-context';
 
 interface Props {
     showFeedTitles: boolean; // TODO view: 'list' | 'folder' | 'date'
     filterString: string;
 }
 
-const FeedList = (props: Props) => {
+const MainView = (props: Props) => {
     const dispatch = useAppDispatch();
     const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive); // TODO mr move to local state
     const topLevelNodes = useAppSelector((state) => selectTopLevelNodes(state.feeds));
@@ -42,10 +42,10 @@ const FeedList = (props: Props) => {
     );
 };
 
-const MemoizedFeedList = memo(FeedList);
+const MemoizedMainView = memo(MainView);
 
 if (process.env.MODE === 'dev') {
-    FeedList.whyDidYouRender = true;
+    MainView.whyDidYouRender = true;
 }
 
-export default MemoizedFeedList;
+export { MemoizedMainView as MainView };
