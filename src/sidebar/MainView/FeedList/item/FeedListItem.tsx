@@ -1,4 +1,4 @@
-import { GlobeSimple, X } from 'phosphor-react';
+import { GlobeSimple, X } from '@phosphor-icons/react';
 
 import React, { memo, useEffect, useState } from 'react';
 

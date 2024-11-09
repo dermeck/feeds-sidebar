@@ -7,7 +7,7 @@ describe('global extensionStateLoaded action', () => {
         const prevState: RootState['options'] = {
             feedUpdatePeriodInMinutes: 30,
             fetchThreadsCount: 4,
-            showFeedTitles: true,
+            mainViewDisplayMode: 'folder-tree',
             feedDetectionEnabled: true,
         };
 
@@ -16,7 +16,7 @@ describe('global extensionStateLoaded action', () => {
             options: {
                 feedUpdatePeriodInMinutes: 45,
                 fetchThreadsCount: 8,
-                showFeedTitles: false,
+                mainViewDisplayMode: 'plain-list',
                 feedDetectionEnabled: false,
             },
         });
@@ -24,7 +24,7 @@ describe('global extensionStateLoaded action', () => {
         expect(optionsSlice.reducer(prevState, action)).toStrictEqual({
             feedUpdatePeriodInMinutes: 45,
             fetchThreadsCount: 8,
-            showFeedTitles: false,
+            mainViewDisplayMode: 'plain-list',
             feedDetectionEnabled: false,
         });
     });

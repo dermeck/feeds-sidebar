@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { ArrowsClockwise, FolderSimple, DotsThreeOutline } from 'phosphor-react';
+import { ArrowsClockwise, DotsThreeOutline, List, TreeView, CalendarBlank } from '@phosphor-icons/react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
@@ -41,7 +41,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const moreMenuVisible = useAppSelector(
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
-    const showFeedTitles = useAppSelector(selectOptions).showFeedTitles;
+    const mainViewDisplayMode = useAppSelector(selectOptions).mainViewDisplayMode;
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));
     const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
 
@@ -52,11 +52,12 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
             className="siderbar__container"
             onContextMenu={(e) => {
                 if (urlInputRef.current !== e.target) {
+                    // allow paste into url input but prevent all other context menus
                     e.preventDefault();
                 }
             }}
             onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
-            <Header className="main__header">
+            <Header className="sidebar__main-header">
                 <Button
                     variant="toolbar"
                     title="Fetch all Feeds"
@@ -71,13 +72,31 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     onChange={(e) => setFilterString(e.target.value)}
                 />
 
-                <Button
-                    variant="toolbar"
-                    title="Toggle Show Folders"
-                    onClick={() => dispatch(optionsSlice.actions.toggleShowFeedTitles())}
-                    active={showFeedTitles}>
-                    <FolderSimple size={22} />
-                </Button>
+                <div className="sidebar__display-mode-switch">
+                    <Button
+                        variant="toolbar"
+                        title="Show Plain List"
+                        onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('plain-list'))}
+                        active={mainViewDisplayMode === 'plain-list'}>
+                        <List size={22} />
+                    </Button>
+
+                    <Button
+                        variant="toolbar"
+                        title="Show Folders"
+                        onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('folder-tree'))}
+                        active={mainViewDisplayMode === 'folder-tree'}>
+                        <TreeView size={22} />
+                    </Button>
+
+                    <Button
+                        variant="toolbar"
+                        title="Show Date Sorted List"
+                        onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('date-sorted-list'))}
+                        active={mainViewDisplayMode === 'date-sorted-list'}>
+                        <CalendarBlank size={22} />
+                    </Button>
+                </div>
 
                 <Button
                     variant="toolbar"
@@ -90,10 +109,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                 </Button>
             </Header>
 
-            <MainView
-                displayMode={showFeedTitles && filterString.trim() === '' ? 'folder-tree' : 'plain-list'}
-                filterString={filterString.trim()}
-            />
+            <MainView displayMode={mainViewDisplayMode} filterString={filterString.trim()} />
 
             <Drawer visible={activeView !== View.feedList}>
                 {activeView === View.subscribe && (

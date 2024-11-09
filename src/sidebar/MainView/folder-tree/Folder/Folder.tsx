@@ -1,4 +1,4 @@
-import { FolderSimple, CaretDown, CaretRight } from 'phosphor-react';
+import { FolderSimple, CaretDown, CaretRight } from '@phosphor-icons/react';
 
 import React, { Fragment, useMemo, useRef, useState } from 'react';
 

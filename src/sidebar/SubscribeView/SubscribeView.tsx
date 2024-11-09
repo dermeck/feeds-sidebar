@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'phosphor-react';
+import { ArrowLeft } from '@phosphor-icons/react';
 
 import React, { RefObject, useState } from 'react';
 

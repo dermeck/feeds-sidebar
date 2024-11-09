@@ -1332,6 +1332,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@phosphor-icons/react@npm:^2.1.7":
+  version: 2.1.7
+  resolution: "@phosphor-icons/react@npm:2.1.7"
+  peerDependencies:
+    react: ">= 16.8"
+    react-dom: ">= 16.8"
+  checksum: 306b9607f5629404e8f9ac1a7a9c800393c9bd9d8a14cb65369c9c7441579fb2ce5530d48b86bd3aaf7ca173031dca5c3a99fc80a0e15a1ef4ac83ae96695afe
+  languageName: node
+  linkType: hard
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -6653,6 +6663,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "feeds@workspace:."
   dependencies:
+    "@phosphor-icons/react": ^2.1.7
     "@reduxjs/toolkit": ^2.2.1
     "@total-typescript/ts-reset": ^0.5.1
     "@trivago/prettier-plugin-sort-imports": ^4.3.0
@@ -6679,7 +6690,6 @@ __metadata:
     jest: ^29.7.0
     jest-environment-jsdom: ^29.7.0
     node-polyfill-webpack-plugin: ^3.0.0
-    phosphor-react: ^1.4.1
     prettier: ^3.2.5
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -10822,15 +10832,6 @@ __metadata:
   version: 2.1.0
   resolution: "performance-now@npm:2.1.0"
   checksum: 534e641aa8f7cba160f0afec0599b6cecefbb516a2e837b512be0adbe6c1da5550e89c78059c7fabc5c9ffdf6627edabe23eb7c518c4500067a898fa65c2b550
-  languageName: node
-  linkType: hard
-
-"phosphor-react@npm:^1.4.1":
-  version: 1.4.1
-  resolution: "phosphor-react@npm:1.4.1"
-  peerDependencies:
-    react: ">=16"
-  checksum: 94aa316eca7bc64b09f146f7d3578d8bd66bc7dbec8f92b6407a5ab6e86a5f42ef97eeb5ec678f355037a0eaa08a9a5303f26fe5d7491f102e0af3a4686acf2d
   languageName: node
   linkType: hard
 

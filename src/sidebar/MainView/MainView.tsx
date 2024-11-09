@@ -8,12 +8,14 @@ import { DragDropContext } from './folder-tree/dragdrop/dragdrop-context';
 import { MainViewFolderTree } from './folder-tree/MainViewFolderTree';
 import { MainViewPlainList } from './plain-list/MainViewPlainList';
 
-interface Props {
-    displayMode: 'folder-tree' | 'plain-list' | 'date-sorted-list';
-    filterString: string;
-}
+export type MainViewDisplayMode = 'folder-tree' | 'plain-list' | 'date-sorted-list';
 
-const MainView = (props: Props) => {
+type MainViewProps = {
+    displayMode: MainViewDisplayMode;
+    filterString: string;
+};
+
+const MainView = ({ displayMode, filterString }: MainViewProps) => {
     const dispatch = useAppDispatch();
     const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive); // TODO mr move to local state
     const topLevelNodes = useAppSelector((state) => selectTopLevelNodes(state.feeds));
@@ -30,14 +32,14 @@ const MainView = (props: Props) => {
             <div className="sidebar__content">
                 {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
 
-                {props.displayMode === 'folder-tree' && (
+                {displayMode === 'folder-tree' && (
                     // TODO mr only add DragDropCOntext ü FolderEdit in this view?
-                    <MainViewFolderTree nodes={topLevelNodes} filterString={props.filterString} />
+                    <MainViewFolderTree nodes={topLevelNodes} filterString={filterString} />
                 )}
-                {props.displayMode === 'plain-list' && <MainViewPlainList filterString={props.filterString} />}
-                {props.displayMode === 'date-sorted-list' && (
+                {displayMode === 'plain-list' && <MainViewPlainList filterString={filterString} />}
+                {displayMode === 'date-sorted-list' && (
                     // TODO mr implement MainViewDateSortedList
-                    <MainViewPlainList filterString={props.filterString} />
+                    <MainViewPlainList filterString={filterString} />
                 )}
             </div>
         </DragDropContext.Provider>
