@@ -1,4 +1,4 @@
-import { Warning, Spinner, Check } from 'phosphor-react';
+import { Warning, Spinner, Check } from '@phosphor-icons/react';
 
 import React, { FunctionComponent } from 'react';
 

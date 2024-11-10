@@ -3,17 +3,19 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { extensionStateLoaded } from '../actions';
 import { RootState } from '../store';
 
+export type MainViewDisplayMode = 'folder-tree' | 'plain-list' | 'date-sorted-list';
+
 type OptionsSliceState = {
     feedUpdatePeriodInMinutes: number;
     fetchThreadsCount: number;
-    showFeedTitles: boolean;
+    mainViewDisplayMode: MainViewDisplayMode;
     feedDetectionEnabled: boolean;
 };
 
 export const initialState: OptionsSliceState = {
     feedUpdatePeriodInMinutes: 30,
     fetchThreadsCount: 4,
-    showFeedTitles: true,
+    mainViewDisplayMode: 'folder-tree',
     feedDetectionEnabled: true,
 };
 
@@ -26,8 +28,8 @@ const optionsSlice = createSlice({
         changeFeedUpdatePeriodInMinutes(state, action: PayloadAction<number>) {
             state.feedUpdatePeriodInMinutes = action.payload;
         },
-        toggleShowFeedTitles(state) {
-            state.showFeedTitles = !state.showFeedTitles;
+        mainViewDisplayModeChanged(state, action: PayloadAction<MainViewDisplayMode>) {
+            state.mainViewDisplayMode = action.payload;
         },
     },
 

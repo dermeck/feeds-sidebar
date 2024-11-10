@@ -1,4 +1,4 @@
-import { FolderSimple } from 'phosphor-react';
+import { FolderSimple } from '@phosphor-icons/react';
 
 import React, { ChangeEvent, useState } from 'react';
 

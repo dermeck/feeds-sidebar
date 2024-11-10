@@ -1,12 +1,12 @@
 import { useContext, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { InsertMode, NodeMeta, NodeType } from '../../../model/feeds';
-import { useAppSelector } from '../../../store/hooks';
-import feedsSlice, { makeselectDescendentNodeIds } from '../../../store/slices/feeds';
-import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
-import { RelativeDragDropPosition, relativeDragDropPosition } from '../../../utils/dragdrop';
-import useNamedCallback from '../../../utils/hooks/useNamedCallback';
+import { InsertMode, NodeMeta, NodeType } from '../../../../model/feeds';
+import { useAppSelector } from '../../../../store/hooks';
+import feedsSlice, { makeselectDescendentNodeIds } from '../../../../store/slices/feeds';
+import { UnreachableCaseError } from '../../../../utils/UnreachableCaseError';
+import { RelativeDragDropPosition, relativeDragDropPosition } from '../../../../utils/dragdrop';
+import useNamedCallback from '../../../../utils/hooks/useNamedCallback';
 import { DragDropContext } from './dragdrop-context';
 
 const calculateRelativeDragDropPosition = (

@@ -1,4 +1,4 @@
-import { DownloadSimple, UploadSimple, CheckSquare, Plus, FolderSimplePlus } from 'phosphor-react';
+import { DownloadSimple, UploadSimple, CheckSquare, Plus, FolderSimplePlus } from '@phosphor-icons/react';
 
 import React, { MouseEventHandler } from 'react';
 

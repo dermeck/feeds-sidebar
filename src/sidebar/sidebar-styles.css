@@ -1,5 +1,6 @@
 @import '../base-styles/base-styles.css';
 @import '../base-components/base-components.css';
+@import './MainView/main-view.css';
 @import './Menu/menu.css';
 @import './SubscribeView/subscribe-view.css';
 @import './FeedList/feed-list.css';
@@ -15,11 +16,59 @@
     overflow-x: scroll;
 }
 
-.main__header {
+.sidebar__main-header {
     display: grid;
     align-items: center;
     grid-column-gap: 4px;
-    grid-template-columns: 32px 1fr 32px 32px;
+    grid-template-columns: 32px 1fr 100px 32px;
+}
+
+/* TODO create Toolbar element (1 focus and navigate with arrow keys) */
+.sidebar__display-mode-switch {
+    /* width 100px = 3*32px (icon) + 2 (2*gap) + 2 (padding) */
+    display: flex;
+    gap: 1px;
+    padding: 0 1px;
+    border-radius: 4px;
+
+    .toolbar-button:nth-child(1) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .toolbar-button:nth-child(2) {
+        border-radius: 0;
+    }
+
+    .toolbar-button:nth-child(3) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .toolbar-button {
+        background-color: var(--button-background-color);
+
+        &:hover {
+            color: var(--button-hover-text-color);
+            background-color: var(--button-hover-background-color);
+            opacity: 0.9;
+        }
+
+        &:active {
+            color: var(--button-active-text-color);
+            background-color: var(--button-active-background-color);
+            opacity: 1;
+        }
+
+        &:focus {
+            z-index: 1;
+        }
+
+        &.button--ui-active {
+            color: var(--button-active-text-color);
+            background-color: var(--button-active-background-color);
+        }
+    }
 }
 
 .text-input {

@@ -1,29 +1,30 @@
-import { GlobeSimple, X } from 'phosphor-react';
+import { GlobeSimple, X } from '@phosphor-icons/react';
 
 import React, { memo, useEffect, useState } from 'react';
 
-import { NodeType } from '../../../model/feeds';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import feedsSlice from '../../../store/slices/feeds';
-import { MouseEventButton } from '../../../utils/types/web-api';
-import { Button } from '../../../base-components/Button/Button';
+import { FeedItem, NodeType } from '../../../../model/feeds';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import feedsSlice from '../../../../store/slices/feeds';
+import { MouseEventButton } from '../../../../utils/types/web-api';
+import { Button } from '../../../../base-components/Button/Button';
 import { clsx } from 'clsx';
 
-interface Props {
+type Props = {
     id: string;
     label: string;
     title: string;
     url: string;
     isRead: boolean;
     feedId: string;
-    indented: boolean;
     nestedLevel: number;
-}
+};
 
-export const FeedItem = (props: Props) => {
+export type FeedListItemModel = FeedItem & { parentId: string; parentTitle?: string };
+
+const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel }: Props) => {
     const dispatch = useAppDispatch();
 
-    const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === props.id;
+    const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === id;
 
     useEffect(() => {
         if (isSelected) {
@@ -34,12 +35,12 @@ export const FeedItem = (props: Props) => {
     const [uiActive, setUiActive] = useState<boolean>(false);
     const [xButtonClicked, setXButtonClicked] = useState(false);
 
-    if ((props.isRead && !isSelected) || xButtonClicked) {
+    if ((isRead && !isSelected) || xButtonClicked) {
         return null;
     }
 
     const handleFeedItemClick = (feedId: string, itemId: string) => {
-        dispatch(feedsSlice.actions.select({ nodeType: NodeType.FeedItem, nodeId: props.id }));
+        dispatch(feedsSlice.actions.select({ nodeType: NodeType.FeedItem, nodeId: id }));
 
         dispatch(
             feedsSlice.actions.markItemAsRead({
@@ -64,12 +65,12 @@ export const FeedItem = (props: Props) => {
         <li
             className={clsx(
                 'feed-item',
-                props.indented && 'feed-item--indented',
+                nestedLevel > 0 && 'feed-item--indented',
                 isSelected && 'feed-item--selected',
                 uiActive && 'feed-item--ui-active',
             )}
-            style={{ '--item-nested-level': props.nestedLevel } as React.CSSProperties}
-            key={props.id}
+            style={{ '--item-nested-level': nestedLevel } as React.CSSProperties}
+            key={id}
             onClick={() => setUiActive(true)}
             onBlur={() => {
                 // TODO mr blur triggers immediatly after selection => fix or remove it? (bookmarks are also not focused after click)
@@ -79,23 +80,23 @@ export const FeedItem = (props: Props) => {
                 <GlobeSimple size={20} weight="light" />
                 <a
                     className="feed-item__link"
-                    title={props.title}
-                    href={props.url}
+                    title={title}
+                    href={url}
                     onAuxClick={(e) => {
                         if (e.button === MouseEventButton.middleMousButton) {
                             // mark item as read if middle mouse button is clicked
-                            handleFeedItemClick(props.feedId, props.id);
+                            handleFeedItemClick(feedId, id);
                         }
                     }}
                     onContextMenu={(e) => e.preventDefault()}
-                    onClick={() => handleFeedItemClick(props.feedId, props.id)}
+                    onClick={() => handleFeedItemClick(feedId, id)}
                     onDragStart={(e) => e.preventDefault()}>
-                    {props.label}
+                    {label}
                 </a>
                 <Button
                     className="feed-item__remove-button"
                     title="Mark as Read"
-                    onClick={() => handleXButtonClick(props.feedId, props.id)}>
+                    onClick={() => handleXButtonClick(feedId, id)}>
                     <X size={20} weight="bold" />
                 </Button>
             </div>
@@ -103,10 +104,10 @@ export const FeedItem = (props: Props) => {
     );
 };
 
-const MemoizedFeedItem = memo(FeedItem);
+const MemoizedFeedListItem = memo(FeedListItem);
 
 if (process.env.MODE === 'dev') {
-    MemoizedFeedItem.whyDidYouRender = true;
+    MemoizedFeedListItem.whyDidYouRender = true;
 }
 
-export default MemoizedFeedItem;
+export { MemoizedFeedListItem as FeedListItem };

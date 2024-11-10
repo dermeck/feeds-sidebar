@@ -1,4 +1,4 @@
-import { GlobeSimple, PlusCircle, MinusCircle } from 'phosphor-react';
+import { GlobeSimple, PlusCircle, MinusCircle } from '@phosphor-icons/react';
 import React from 'react';
 import { useAppSelector } from '../../../store/hooks';
 
