@@ -1,5 +1,6 @@
 @import '../base-styles/base-styles.css';
 @import '../base-components/base-components.css';
+@import './MainView/main-view.css';
 @import './Menu/menu.css';
 @import './SubscribeView/subscribe-view.css';
 @import './FeedList/feed-list.css';

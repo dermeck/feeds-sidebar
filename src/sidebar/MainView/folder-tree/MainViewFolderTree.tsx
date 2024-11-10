@@ -3,13 +3,14 @@ import FolderTreeNode from './FolderTreeNode';
 import { TreeNode } from '../../../model/feeds';
 
 interface Props {
+    className: string;
     filterString: string;
     nodes: ReadonlyArray<TreeNode>;
 }
 
-export const MainViewFolderTree = ({ nodes, filterString }: Props) => {
+export const MainViewFolderTree = ({ className, nodes, filterString }: Props) => {
     return (
-        <>
+        <div className={className}>
             {nodes.map((node) => (
                 <FolderTreeNode
                     key={node.data.id}
@@ -19,6 +20,6 @@ export const MainViewFolderTree = ({ nodes, filterString }: Props) => {
                     filterString={filterString}
                 />
             ))}
-        </>
+        </div>
     );
 };

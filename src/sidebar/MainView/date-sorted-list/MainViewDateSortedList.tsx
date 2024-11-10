@@ -3,7 +3,6 @@ import { useAppSelector } from '../../../store/hooks';
 import { FeedItemList } from '../FeedList/FeedItemList';
 import { FeedListItemModel } from '../FeedList/item/FeedListItem';
 import { Expander } from '../../../base-components/Expander/Expander';
-import { clsx } from 'clsx';
 
 type Section = keyof DateSortedFeedItems;
 
@@ -16,10 +15,8 @@ type DateSortedFeedItems = {
 };
 
 interface MainViewPlainListProps {
-    show: boolean;
+    className: string;
     filterString: string;
-    // expandedSections: Section[];
-    //onSectionClick: (section: Section) => void;
 }
 
 const getItemLabel = (item: FeedListItemModel) => `${item.parentTitle ? `${item.parentTitle} | ` : ''}${item.title}`;
@@ -49,7 +46,7 @@ const compareDateDayMonthYear = (date1: Date, date2: Date): DateComparisonResult
     return 'after';
 };
 
-export const MainViewDateSortedList = ({ show, filterString }: MainViewPlainListProps) => {
+export const MainViewDateSortedList = ({ className, filterString }: MainViewPlainListProps) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
     const [expandedSections, setExpandedSections] = useState<Section[]>([
         'today',
@@ -121,9 +118,8 @@ export const MainViewDateSortedList = ({ show, filterString }: MainViewPlainList
         [expandedSections],
     );
 
-    // TODO mr add expander with child prop
     return (
-        <div className={clsx(!show && 'view-hidden')}>
+        <div className={className}>
             <Expander title="Today" expanded={isExpanded('today')} onClick={() => toggleExpand('today')}>
                 <FeedItemList
                     items={sortedFeeds.today}

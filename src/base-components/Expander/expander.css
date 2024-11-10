@@ -20,7 +20,7 @@
 }
 
 .expander__content--expanded {
-    visibility: visible;
+    visibility: inherit;
     height: 100%;
 }
 

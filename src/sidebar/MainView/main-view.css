@@ -1,6 +1,16 @@
 @import './folder-tree/folder-tree.css';
 @import './FeedList/feed-list.css';
 
+.view-visible {
+    height: 100%;
+    visibility: visible;
+}
+
 .view-hidden {
+    height: 0;
     visibility: hidden;
+}
+
+.view-hidden div {
+    height: 0; /* hidden children should not claim space*/
 }

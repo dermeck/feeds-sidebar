@@ -8,6 +8,7 @@ import { DragDropContext } from './folder-tree/dragdrop/dragdrop-context';
 import { MainViewFolderTree } from './folder-tree/MainViewFolderTree';
 import { MainViewPlainList } from './plain-list/MainViewPlainList';
 import { MainViewDateSortedList } from './date-sorted-list/MainViewDateSortedList';
+import { clsx } from 'clsx';
 
 export type MainViewDisplayMode = 'folder-tree' | 'plain-list' | 'date-sorted-list';
 
@@ -33,12 +34,20 @@ const MainView = ({ displayMode, filterString }: MainViewProps) => {
             <div className="sidebar__content">
                 {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
 
-                {displayMode === 'folder-tree' && (
-                    // TODO mr only add DragDropCOntext ü FolderEdit in this view?
-                    <MainViewFolderTree nodes={topLevelNodes} filterString={filterString} />
-                )}
-                {displayMode === 'plain-list' && <MainViewPlainList filterString={filterString} />}
-                <MainViewDateSortedList show={displayMode === 'date-sorted-list'} filterString={filterString} />
+                {/* TODO mr only add DragDropCOntext ü FolderEdit in this view? */}
+                <MainViewFolderTree
+                    className={clsx(displayMode === 'folder-tree' ? 'view-visble' : 'view-hidden')}
+                    nodes={topLevelNodes}
+                    filterString={filterString}
+                />
+                <MainViewPlainList
+                    className={clsx(displayMode === 'plain-list' ? 'view-visible' : 'view-hidden')}
+                    filterString={filterString}
+                />
+                <MainViewDateSortedList
+                    className={clsx(displayMode === 'date-sorted-list' ? 'view-visible' : 'view-hidden')}
+                    filterString={filterString}
+                />
             </div>
         </DragDropContext.Provider>
     );
