@@ -18,7 +18,7 @@ export const MainViewPlainList = ({ filterString }: Props) => {
                 return (
                     <FeedItemList
                         key={feed.id}
-                        feed={feed}
+                        items={feed.items.map((item) => ({ ...item, parentId: feed.id, parentTitle: feed.title }))}
                         filterString={filterString}
                         getItemLabel={(item) => getItemLabel(feed, item)}
                     />

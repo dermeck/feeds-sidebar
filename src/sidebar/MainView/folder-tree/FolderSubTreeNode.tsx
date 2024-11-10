@@ -22,7 +22,11 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
             return (
                 <FeedItemList
                     key={node.data.id}
-                    feed={node.data}
+                    items={node.data.items.map((item) => ({
+                        ...item,
+                        parentId: node.data.id,
+                        parentTitle: node.data.title,
+                    }))}
                     filterString={filterString}
                     nestedLevel={nestedLevel + 1}
                     disabled={isDropNotAllowed}

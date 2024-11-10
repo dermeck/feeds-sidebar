@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 
-import { Feed, FeedItem } from '../../../model/feeds';
+import { FeedItem } from '../../../model/feeds';
 import { FeedListItem } from './item/FeedListItem';
 import { clsx } from 'clsx';
 
 type FeedItemListProps = {
-    feed: Feed;
+    items: (FeedItem & { parentId: string; parentTitle?: string })[];
     nestedLevel?: number;
     filterString: string;
     disabled?: boolean;
@@ -13,29 +13,29 @@ type FeedItemListProps = {
 };
 
 export const FeedItemList = ({
-    feed,
+    items,
     nestedLevel = 0,
     filterString,
     disabled = false,
     getItemLabel,
 }: FeedItemListProps) => {
-    if (!feed.items.some((x) => !x.isRead)) {
+    if (!items.some((x) => !x.isRead)) {
         return <Fragment />;
     }
 
     return (
         <ul className={clsx('feed-item-list', disabled && 'feed-item-list--disabled')}>
-            {feed.items.map(
+            {items.map(
                 (item) =>
                     item.title?.toLowerCase().includes(filterString.toLowerCase()) && (
                         <FeedListItem
                             key={item.id + item.title}
-                            feedId={feed.id}
+                            feedId={item.parentId}
                             id={item.id}
                             label={getItemLabel ? getItemLabel(item) : item.title}
                             url={item.url}
                             isRead={item.isRead ?? false}
-                            title={`${feed.title} | ${item.title} \n${item.url}`}
+                            title={`${item.parentTitle} | ${item.title} \n${item.url}`}
                             nestedLevel={nestedLevel}
                         />
                     ),
