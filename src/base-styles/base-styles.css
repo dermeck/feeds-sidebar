@@ -26,10 +26,12 @@
     --toolbar-background-color: -moz-Dialog;
     --toolbar-text-color: -moz-DialogText;
 
+    --item-hover-background-color: -moz-CellHighlight;
+    --item-hover-text-color: -moz-CellHighlightText;
     --selected-item-background-color: SelectedItem;
     --selected-item-text-color: SelectedItemText;
     --selected-item-no-focus-background-color: -moz-CellHighlight;
-    --selected-item--no-focus-background-color: -moz-CellHighlightText;
+    --selected-item-no-focus-text-color: -moz-CellHighlightText;
 
     --menu-hover-background-color: -moz-MenuHover;
     --menu-hover-text-color: -moz-MenuHoverText;

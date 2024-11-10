@@ -1,22 +1,28 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useAppSelector } from '../../../store/hooks';
 import { FeedItemList } from '../FeedList/FeedItemList';
-import { Feed, FeedItem } from '../../../model/feeds';
+import { FeedListItemModel } from '../FeedList/item/FeedListItem';
+import { Expander } from '../../../base-components/Expander/Expander';
+import { clsx } from 'clsx';
 
-// TODO mr group by parent instead of repetition
+type Section = keyof DateSortedFeedItems;
+
 type DateSortedFeedItems = {
-    today: (FeedItem & { parentId: string; parentTitle?: string })[];
-    yesterday: (FeedItem & { parentId: string; parentTitle?: string })[];
-    lastWeek: (FeedItem & { parentId: string; parentTitle?: string })[];
-    older: (FeedItem & { parentId: string; parentTitle?: string })[];
-    unknown: (FeedItem & { parentId: string; parentTitle?: string })[];
+    today: FeedListItemModel[];
+    yesterday: FeedListItemModel[];
+    lastWeek: FeedListItemModel[];
+    older: FeedListItemModel[];
+    unknown: FeedListItemModel[];
 };
 
 interface MainViewPlainListProps {
+    show: boolean;
     filterString: string;
+    // expandedSections: Section[];
+    //onSectionClick: (section: Section) => void;
 }
 
-const getItemLabel = (feed: Feed, item: FeedItem) => `${feed.title ? `${feed.title} | ` : ''}${item.title}`;
+const getItemLabel = (item: FeedListItemModel) => `${item.parentTitle ? `${item.parentTitle} | ` : ''}${item.title}`;
 
 type DateComparisonResult = 'equal' | 'before' | 'after';
 
@@ -40,14 +46,18 @@ const compareDateDayMonthYear = (date1: Date, date2: Date): DateComparisonResult
         return 'before';
     }
 
-    // console.log('after');
     return 'after';
 };
 
-export const MainViewDateSortedList = ({ filterString }: MainViewPlainListProps) => {
+export const MainViewDateSortedList = ({ show, filterString }: MainViewPlainListProps) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
-    console.log('feeds', feeds);
-
+    const [expandedSections, setExpandedSections] = useState<Section[]>([
+        'today',
+        'yesterday',
+        'lastWeek',
+        'older',
+        'unknown',
+    ]);
     const sortedFeeds: DateSortedFeedItems = useMemo(() => {
         const today = new Date();
         const yesterday = new Date();
@@ -91,19 +101,67 @@ export const MainViewDateSortedList = ({ filterString }: MainViewPlainListProps)
         return result;
     }, [feeds]);
 
-    // TODO mr refactor FeedItemList
+    const isExpanded = useCallback(
+        (section: Section) => {
+            console.log('isExpanded', expandedSections.includes(section));
+            return expandedSections.includes(section);
+        },
+        [expandedSections],
+    );
+
+    const toggleExpand = useCallback(
+        (section: Section) => {
+            console.log('toggleExpand', section, expandedSections);
+            if (expandedSections.includes(section)) {
+                setExpandedSections(expandedSections.filter((x) => x !== section));
+            } else {
+                setExpandedSections([...expandedSections, section]);
+            }
+        },
+        [expandedSections],
+    );
+
+    // TODO mr add expander with child prop
     return (
-        <>
-            {feeds.map((feed) => {
-                return (
+        <div className={clsx(!show && 'view-hidden')}>
+            <Expander title="Today" expanded={isExpanded('today')} onClick={() => toggleExpand('today')}>
+                <FeedItemList
+                    items={sortedFeeds.today}
+                    filterString={filterString}
+                    getItemLabel={(item) => getItemLabel(item)}
+                />
+            </Expander>
+            <Expander title="Yesterday" expanded={isExpanded('yesterday')} onClick={() => toggleExpand('yesterday')}>
+                <FeedItemList
+                    items={sortedFeeds.yesterday}
+                    filterString={filterString}
+                    getItemLabel={(item) => getItemLabel(item)}
+                />
+            </Expander>
+            <Expander title="Last Week" expanded={isExpanded('lastWeek')} onClick={() => toggleExpand('lastWeek')}>
+                <FeedItemList
+                    items={sortedFeeds.lastWeek}
+                    filterString={filterString}
+                    getItemLabel={(item) => getItemLabel(item)}
+                />
+            </Expander>
+            <Expander title="Older" expanded={isExpanded('older')} onClick={() => toggleExpand('older')}>
+                <FeedItemList
+                    items={sortedFeeds.older}
+                    filterString={filterString}
+                    getItemLabel={(item) => getItemLabel(item)}
+                />
+            </Expander>
+
+            {sortedFeeds.unknown.length > 0 && (
+                <Expander title="Unknown" expanded={isExpanded('unknown')} onClick={() => toggleExpand('unknown')}>
                     <FeedItemList
-                        key={feed.id}
-                        items={feed.items.map((item) => ({ ...item, parentId: feed.id, parentTitle: feed.title }))}
+                        items={sortedFeeds.unknown}
                         filterString={filterString}
-                        getItemLabel={(item) => getItemLabel(feed, item)}
+                        getItemLabel={(item) => getItemLabel(item)}
                     />
-                );
-            })}
-        </>
+                </Expander>
+            )}
+        </div>
     );
 };

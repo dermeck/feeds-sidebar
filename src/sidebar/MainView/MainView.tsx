@@ -38,10 +38,7 @@ const MainView = ({ displayMode, filterString }: MainViewProps) => {
                     <MainViewFolderTree nodes={topLevelNodes} filterString={filterString} />
                 )}
                 {displayMode === 'plain-list' && <MainViewPlainList filterString={filterString} />}
-                {displayMode === 'date-sorted-list' && (
-                    // TODO mr implement MainViewDateSortedList !
-                    <MainViewDateSortedList filterString={filterString} />
-                )}
+                <MainViewDateSortedList show={displayMode === 'date-sorted-list'} filterString={filterString} />
             </div>
         </DragDropContext.Provider>
     );

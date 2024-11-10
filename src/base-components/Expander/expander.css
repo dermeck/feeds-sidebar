@@ -1,0 +1,30 @@
+.expander__header {
+    height: 24px;
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    padding: 2px 8px;
+    line-height: 24px;
+
+    &:hover {
+        background-color: var(--item-hover-background-color);
+        color: var(--item-hover-text-color);
+        cursor: pointer;
+    }
+}
+
+.expander__header-title {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+.expander__content--expanded {
+    visibility: visible;
+    height: 100%;
+}
+
+.expander__content--collapsed {
+    visibility: collapse;
+    height: 0;
+}

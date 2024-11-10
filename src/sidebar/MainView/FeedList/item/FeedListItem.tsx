@@ -2,7 +2,7 @@ import { GlobeSimple, X } from '@phosphor-icons/react';
 
 import React, { memo, useEffect, useState } from 'react';
 
-import { NodeType } from '../../../../model/feeds';
+import { FeedItem, NodeType } from '../../../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import feedsSlice from '../../../../store/slices/feeds';
 import { MouseEventButton } from '../../../../utils/types/web-api';
@@ -18,6 +18,8 @@ type Props = {
     feedId: string;
     nestedLevel: number;
 };
+
+export type FeedListItemModel = FeedItem & { parentId: string; parentTitle?: string };
 
 const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel }: Props) => {
     const dispatch = useAppDispatch();

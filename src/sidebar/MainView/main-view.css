@@ -1,2 +1,6 @@
 @import './folder-tree/folder-tree.css';
 @import './FeedList/feed-list.css';
+
+.view-hidden {
+    visibility: hidden;
+}

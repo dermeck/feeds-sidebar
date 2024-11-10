@@ -1,15 +1,14 @@
 import React, { Fragment } from 'react';
 
-import { FeedItem } from '../../../model/feeds';
-import { FeedListItem } from './item/FeedListItem';
+import { FeedListItem, FeedListItemModel } from './item/FeedListItem';
 import { clsx } from 'clsx';
 
 type FeedItemListProps = {
-    items: (FeedItem & { parentId: string; parentTitle?: string })[];
+    items: FeedListItemModel[];
     nestedLevel?: number;
     filterString: string;
     disabled?: boolean;
-    getItemLabel?: (item: FeedItem) => string;
+    getItemLabel?: (item: FeedListItemModel) => string;
 };
 
 export const FeedItemList = ({
