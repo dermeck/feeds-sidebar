@@ -94,21 +94,13 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
                 }
             }
         }
-        console.log(result);
         return result;
     }, [feeds]);
 
-    const isExpanded = useCallback(
-        (section: Section) => {
-            console.log('isExpanded', expandedSections.includes(section));
-            return expandedSections.includes(section);
-        },
-        [expandedSections],
-    );
+    const isExpanded = useCallback((section: Section) => expandedSections.includes(section), [expandedSections]);
 
     const toggleExpand = useCallback(
         (section: Section) => {
-            console.log('toggleExpand', section, expandedSections);
             if (expandedSections.includes(section)) {
                 setExpandedSections(expandedSections.filter((x) => x !== section));
             } else {
