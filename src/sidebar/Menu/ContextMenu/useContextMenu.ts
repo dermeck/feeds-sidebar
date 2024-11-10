@@ -13,24 +13,28 @@ export const useContextMenu = (containerRef: React.RefObject<HTMLDivElement>) =>
     const { height, width } = useWindowDimensions();
     const dispatch = useDispatch();
 
-    const handleContextMenuFolder = useCallback((event: Event) => {
-        const e = event as MouseEvent;
-        e.preventDefault();
+    const handleContextMenuFolder = useCallback(
+        (event: Event) => {
+            const e = event as MouseEvent;
+            e.preventDefault();
 
-        if (width === undefined || height === undefined) {
-            console.error('Could not open context menu. Unable to determine dimensions of window.');
-            return;
-        }
+            if (width === undefined || height === undefined) {
+                console.error('Could not open context menu. Unable to determine dimensions of window.');
+                return;
+            }
 
-        const x = width - e.clientX < menuWidthInPx ? width - menuWidthInPx : e.clientX;
-        const y = height - e.clientY < contextMenuHeight ? height - contextMenuHeight : e.clientY;
+            const x = width - e.clientX < menuWidthInPx ? width - menuWidthInPx : e.clientX;
+            const y = height - e.clientY < contextMenuHeight ? height - contextMenuHeight : e.clientY;
 
-        dispatch(sessionSlice.actions.showContextMenu({ x, y }));
-    }, []);
+            dispatch(sessionSlice.actions.showContextMenu({ x, y }));
+        },
+        [dispatch, height, width],
+    );
 
     useEffect(() => {
-        containerRef.current?.addEventListener('contextmenu', handleContextMenuFolder);
+        const element = containerRef.current;
+        element?.addEventListener('contextmenu', handleContextMenuFolder);
 
-        return () => containerRef.current?.removeEventListener('contextmenu', handleContextMenuFolder);
-    }, []);
+        return () => element?.removeEventListener('contextmenu', handleContextMenuFolder);
+    }, [containerRef, handleContextMenuFolder]);
 };

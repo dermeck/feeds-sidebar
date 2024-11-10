@@ -4,7 +4,7 @@ import { DependencyList, useCallback, useDebugValue } from 'react';
 // eslint-disable-next-line @typescript-eslint/ban-types
 function useNamedCallback<T extends Function>(name: string, callback: T, deps: DependencyList): T {
     useDebugValue(name);
-    return useCallback(callback, deps);
+    return useCallback(callback, [...deps, callback]);
 }
 
 export default useNamedCallback;
