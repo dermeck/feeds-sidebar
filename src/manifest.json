@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "version": "0.30.11",
+    "version": "0.30.12",
     "name": "Feeds",
     "description": "Manage your Web Feeds in the Sidebar.",
     "developer": {
@@ -11,7 +11,7 @@
     "browser_specific_settings": {
         "gecko": {
             "id": "{5ec8f44f-ecf4-44ba-aa3b-56af66c6459d}",
-            "strict_min_version": "132.0"
+            "strict_min_version": "13.0"
         }
     },
 
