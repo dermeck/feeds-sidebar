@@ -7,10 +7,10 @@ interface Props {
     filterString: string;
 }
 
+const getItemLabel = (feed: Feed, item: FeedItem) => `${feed.title ? `${feed.title} | ` : ''}${item.title}`;
+
 export const MainViewPlainList = ({ filterString }: Props) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
-
-    const getItemLabel = (feed: Feed, item: FeedItem) => `${feed.title ? `${feed.title} | ` : ''}${item.title}`;
 
     return (
         <>

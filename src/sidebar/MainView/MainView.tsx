@@ -7,6 +7,7 @@ import { FolderEdit } from './folder-tree/FolderEdit/FolderEdit';
 import { DragDropContext } from './folder-tree/dragdrop/dragdrop-context';
 import { MainViewFolderTree } from './folder-tree/MainViewFolderTree';
 import { MainViewPlainList } from './plain-list/MainViewPlainList';
+import { MainViewDateSortedList } from './date-sorted-list/MainViewDateSortedList';
 
 export type MainViewDisplayMode = 'folder-tree' | 'plain-list' | 'date-sorted-list';
 
@@ -38,8 +39,8 @@ const MainView = ({ displayMode, filterString }: MainViewProps) => {
                 )}
                 {displayMode === 'plain-list' && <MainViewPlainList filterString={filterString} />}
                 {displayMode === 'date-sorted-list' && (
-                    // TODO mr implement MainViewDateSortedList
-                    <MainViewPlainList filterString={filterString} />
+                    // TODO mr implement MainViewDateSortedList !
+                    <MainViewDateSortedList filterString={filterString} />
                 )}
             </div>
         </DragDropContext.Provider>
