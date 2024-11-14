@@ -75,21 +75,23 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
                     const itemDateString = feedItem.lastModified ?? feedItem.published;
                     if (!itemDateString) {
                         result.unknown.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
+                        continue;
+                    }
+                    const itemDate = new Date(itemDateString);
+                    if (compareDateDayMonthYear(today, itemDate) === 'equal') {
+                        result.today.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
+                        continue;
+                    }
+
+                    if (compareDateDayMonthYear(yesterday, itemDate) === 'equal') {
+                        result.yesterday.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
+                        continue;
+                    }
+
+                    if (compareDateDayMonthYear(lastWeek, itemDate) === 'before') {
+                        result.lastWeek.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
                     } else {
-                        const itemDate = new Date(itemDateString);
-                        if (compareDateDayMonthYear(today, itemDate) === 'equal') {
-                            result.today.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
-                        }
-
-                        if (compareDateDayMonthYear(yesterday, itemDate) === 'equal') {
-                            result.yesterday.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
-                        }
-
-                        if (compareDateDayMonthYear(lastWeek, itemDate) === 'before') {
-                            result.lastWeek.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
-                        } else {
-                            result.older.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
-                        }
+                        result.older.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
                     }
                 }
             }
