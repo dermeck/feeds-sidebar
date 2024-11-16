@@ -41,7 +41,7 @@ browser.browserAction.onClicked.addListener(() => {
 });
 
 async function detectFeeds(tabId: number) {
-    /* TODO
+    /* TODO consider options, also trigger this after pageAction reports 'ready' state instead of relying in setTimeout
     const options = await browser.storage.sync.get(['detectionEnabled']);
 
     if (!options?.detectionEnabled) {
@@ -68,10 +68,26 @@ async function detectFeeds(tabId: number) {
             })
             .catch((error) => {
                 store.dispatch(sessionSlice.actions.feedsDetected([]));
-                if (error === 'Error: Could not establish connection. Receiving end does not exist.') {
-                    // active tab does not have content script (e.g. no page found on localhost)
+                if (error.message !== 'Could not establish connection. Receiving end does not exist.') {
+                    console.error(error);
                     return;
                 }
+
+                // active tab does not have content script (e.g. no page found on localhost)
+                // OR pageAction is not loaded yet => retry once
+                setTimeout(() => {
+                    browser.tabs
+                        .sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tab.url } })
+                        .then(() => {
+                            return;
+                        })
+                        .catch((error) => {
+                            if (error.message === 'Could not establish connection. Receiving end does not exist.') {
+                                return;
+                            }
+                        });
+                }, 500);
+                return;
             });
     }
 }
