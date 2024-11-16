@@ -7,7 +7,7 @@
     "license": "MIT",
     "scripts": {
         "start": "webpack --mode development --watch --env enableLoggerMiddleware=true",
-        "test": "jest --no-cache",
+        "test": "jest --no-cache --coverage=false",
         "start:stand-alone": "webpack serve --config webpack.stand-alone.js --mode development",
         "build:xpi": "npm run build && npm run sign",
         "build:zip": "npm run build && web-ext build --source-dir=build --artifacts-dir=dist",
