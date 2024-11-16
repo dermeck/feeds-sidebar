@@ -35,8 +35,8 @@ const compareDateDayMonthYear = (date1: Date, date2: Date): DateComparisonResult
 };
 
 export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>) => {
-    const today = new Date();
-    const yesterday = new Date();
+    const today = new Date(Date.now());
+    const yesterday = new Date(Date.now());
     yesterday.setDate(today.getDate() - 1);
     const lastWeek = new Date();
     lastWeek.setDate(today.getDate() - 7);
@@ -52,11 +52,12 @@ export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>) => {
         for (const feedItem of feed.items) {
             if (!feedItem.isRead) {
                 const itemDateString = feedItem.lastModified ?? feedItem.published;
-                if (!itemDateString) {
+                const itemDate = itemDateString ? new Date(itemDateString) : undefined;
+
+                if (itemDate === undefined || itemDate.toString() === 'Invalid Date') {
                     result.unknown.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
                     continue;
                 }
-                const itemDate = new Date(itemDateString);
                 if (compareDateDayMonthYear(today, itemDate) === 'equal') {
                     result.today.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
                     continue;
