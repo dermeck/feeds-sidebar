@@ -76,4 +76,5 @@
     border: 1px solid var(--control-border-color);
     border-radius: 2px;
     padding-inline: 8px;
+    min-width: 75px; /* prevent cutting off more menu button */
 }
