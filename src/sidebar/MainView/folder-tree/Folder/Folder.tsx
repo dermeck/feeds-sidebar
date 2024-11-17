@@ -10,6 +10,7 @@ import { MouseEventButton } from '../../../../utils/types/web-api';
 import { useContextMenu } from '../../../Menu/ContextMenu/useContextMenu';
 import useDragDropNode from '../dragdrop/useDragDropNode';
 import { clsx } from 'clsx';
+import { DragDropIndicator } from '../dragdrop/indicator/DragDropIndicator';
 
 interface Props {
     node: TreeNode;
@@ -61,7 +62,6 @@ const Folder = (props: Props) => {
             setExpanded(!expanded);
         }
     };
-
     // TODO indicate if folder has unread items
     return (
         <div className="folder">
@@ -82,12 +82,7 @@ const Folder = (props: Props) => {
                 tabIndex={0}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}>
-                <div
-                    className={clsx(
-                        'folder__spacer',
-                        relativeDropPosition === RelativeDragDropPosition.Top && 'folder__spacer--highlight',
-                    )}
-                />
+                <DragDropIndicator active={relativeDropPosition === RelativeDragDropPosition.Top} />
                 <div className="folder__title-row">
                     <div className="folder__toggle-indicator">
                         {showToggleIndicator && (expanded ? <CaretDown weight="bold" /> : <CaretRight weight="bold" />)}
@@ -101,12 +96,7 @@ const Folder = (props: Props) => {
                         {folderTreeNodeLabel(props.node)}
                     </label>
                 </div>
-                <div
-                    className={clsx(
-                        'folder__spacer',
-                        relativeDropPosition === RelativeDragDropPosition.Bottom && 'folder__spacer--highlight',
-                    )}
-                />
+                <DragDropIndicator active={relativeDropPosition === RelativeDragDropPosition.Bottom} />
             </div>
 
             {expanded && props.children}

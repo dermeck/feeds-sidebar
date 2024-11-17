@@ -1,0 +1,9 @@
+.drago-drop__indicator {
+    width: 48px;
+    height: 2px; /* var(--folder-spacer-height); TODO mr */
+    background-color: inherit;
+}
+
+.drago-drop__indicator--active {
+    background-color: var(--selected-item-background-color);
+}

@@ -60,14 +60,4 @@
             background-color: var(--selected-item-background-color);
         }
     }
-
-    .folder__spacer {
-        width: 48px;
-        height: var(--folder-spacer-height);
-        background-color: inherit;
-    }
-
-    .folder__spacer--highlight {
-        background-color: var(--selected-item-background-color);
-    }
 }
