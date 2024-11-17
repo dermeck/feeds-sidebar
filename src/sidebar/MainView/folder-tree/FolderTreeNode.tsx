@@ -7,12 +7,11 @@ import FolderSubTreeNode from './FolderSubTreeNode';
 
 interface Props {
     nodeId: string;
-    showTitle: boolean;
     nestedLevel: number;
     filterString: string;
 }
 
-const FolderTreeNode = ({ nodeId, showTitle, nestedLevel, filterString }: Props) => {
+const FolderTreeNode = ({ nodeId, nestedLevel, filterString }: Props) => {
     const selectTreeNode = useMemo(makeSelectTreeNode, []);
     const node = useAppSelector((state) => selectTreeNode(state.feeds, nodeId));
 
@@ -21,13 +20,8 @@ const FolderTreeNode = ({ nodeId, showTitle, nestedLevel, filterString }: Props)
     }
 
     return (
-        <Folder node={node} nestedLevel={nestedLevel} showTitle={showTitle}>
-            <FolderSubTreeNode
-                node={node}
-                showTitle={showTitle}
-                nestedLevel={nestedLevel}
-                filterString={filterString}
-            />
+        <Folder node={node} nestedLevel={nestedLevel}>
+            <FolderSubTreeNode node={node} nestedLevel={nestedLevel} filterString={filterString} />
         </Folder>
     );
 };

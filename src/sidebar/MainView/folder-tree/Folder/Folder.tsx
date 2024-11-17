@@ -1,6 +1,6 @@
 import { FolderSimple, CaretDown, CaretRight } from '@phosphor-icons/react';
 
-import React, { Fragment, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
 import { TreeNode } from '../../../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
@@ -14,7 +14,6 @@ import { DragDropIndicator } from '../dragdrop/indicator/DragDropIndicator';
 
 interface Props {
     node: TreeNode;
-    showTitle: boolean;
     nestedLevel: number;
     children: React.ReactNode;
 }
@@ -42,10 +41,6 @@ const Folder = (props: Props) => {
         handleDrop,
         handleDragEnd,
     } = useDragDropNode(nodeMeta);
-
-    if (!props.showTitle) {
-        return <Fragment>{props.children}</Fragment>;
-    }
 
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (e.button !== MouseEventButton.leftMouseButton && e.button !== MouseEventButton.rightMouseButton) {

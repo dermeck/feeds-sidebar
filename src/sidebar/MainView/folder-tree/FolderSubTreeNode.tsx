@@ -8,13 +8,12 @@ import useDragDropNode from './dragdrop/useDragDropNode';
 
 interface Props {
     node: TreeNode;
-    showTitle: boolean;
     nestedLevel: number;
     filterString: string;
 }
 
 const FolderSubTreeNode = (props: Props): JSX.Element => {
-    const { node, filterString, showTitle, nestedLevel } = props;
+    const { node, filterString, nestedLevel } = props;
     const { isDropNotAllowed } = useDragDropNode({ nodeId: node.data.id, nodeType: node.nodeType });
 
     switch (node.nodeType) {
@@ -44,7 +43,6 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                                 key={childId}
                                 nodeId={childId}
                                 nestedLevel={nestedLevel + 1}
-                                showTitle={showTitle}
                                 filterString={filterString}
                             />
                         );
