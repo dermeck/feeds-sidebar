@@ -58,11 +58,12 @@ const Folder = (props: Props) => {
         }
     };
     // TODO indicate if folder has unread items
+    // TODO mr separate draggable and folder (draggable row should contain other row)
     return (
         <div className="folder">
             <div
                 className={clsx(
-                    'folder__title-container',
+                    'folder__title-container draggable-row drop-target drag-drop__container',
                     isDropNotAllowed && 'folder__title-container--disabled',
                     selectedId === nodeMeta.nodeId && 'folder__title-container--selected',
                 )}
@@ -77,7 +78,7 @@ const Folder = (props: Props) => {
                 tabIndex={0}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}>
-                <DragDropIndicator active={relativeDropPosition === RelativeDragDropPosition.Top} />
+                <DragDropIndicator type="top" active={relativeDropPosition === RelativeDragDropPosition.Top} />
                 <div className="folder__title-row">
                     <div className="folder__toggle-indicator">
                         {showToggleIndicator && (expanded ? <CaretDown weight="bold" /> : <CaretRight weight="bold" />)}
@@ -91,7 +92,7 @@ const Folder = (props: Props) => {
                         {folderTreeNodeLabel(props.node)}
                     </label>
                 </div>
-                <DragDropIndicator active={relativeDropPosition === RelativeDragDropPosition.Bottom} />
+                <DragDropIndicator type="bottom" active={relativeDropPosition === RelativeDragDropPosition.Bottom} />
             </div>
 
             {expanded && props.children}

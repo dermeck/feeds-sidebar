@@ -1,9 +1,23 @@
-.drago-drop__indicator {
-    width: 48px;
-    height: 2px; /* var(--folder-spacer-height); TODO mr */
-    background-color: inherit;
+.drag-drop__container {
+    position: relative; /* TODO mr this should have its own place */
 }
 
-.drago-drop__indicator--active {
+.drag-drop__indicator {
+    width: 48px;
+    height: 2px;
+    background-color: transparent;
+    position: absolute;
+}
+
+/* top + bot indicators should overlap to avoid UI shifts */
+.drag-drop__indicator-top {
+    top: -1px; /*1/2 height*/
+}
+
+.drag-drop__indicator-bottom {
+    bottom: -1px; /*1/2 height*/
+}
+
+.drag-drop__indicator--active {
     background-color: var(--selected-item-background-color);
 }

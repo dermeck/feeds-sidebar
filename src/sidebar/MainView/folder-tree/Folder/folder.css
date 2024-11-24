@@ -1,17 +1,14 @@
-/* TODO add hover background */
 .folder {
-    --folder-spacer-height: 2px;
-
     .folder__title-container {
         display: flex;
         flex-direction: column;
         padding-left: calc(var(--folder-nested-level) * 15px + 8px);
 
-        /* ensure that drag drop indicator stays at same position 
-        when switched between "insert-before" and "insert-after" */
-        margin-top: var(--folder-spacer-height);
-        margin-bottom: var(--folder-spacer-height);
-        opacity: 0.9;
+        &:hover {
+            background-color: var(--item-hover-background-color);
+            opacity: 0.9;
+            color: var(--item-hover-text-color);
+        }
     }
 
     .folder__title-container--disabled {
@@ -34,7 +31,7 @@
         gap: 4px;
         align-items: center;
         padding: 1px 0; /* TODO check if the height is correct */
-        height: 20px;
+        height: 24px;
 
         .folder__toggle-indicator {
             display: flex;
