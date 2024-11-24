@@ -2,16 +2,16 @@ import React, { Fragment, memo, useMemo } from 'react';
 
 import { useAppSelector } from '../../../store/hooks';
 import { makeSelectTreeNode } from '../../../store/slices/feeds';
-import Folder from './Folder/Folder';
-import FolderSubTreeNode from './FolderSubTreeNode';
+import { Folder } from './Folder/Folder';
+import { FolderSubTreeNode } from './FolderSubTreeNode';
 
-interface Props {
+type FolderTreeNode = {
     nodeId: string;
     nestedLevel: number;
     filterString: string;
-}
+};
 
-const FolderTreeNode = ({ nodeId, nestedLevel, filterString }: Props) => {
+const FolderTreeNode = ({ nodeId, nestedLevel, filterString }: FolderTreeNode) => {
     const selectTreeNode = useMemo(makeSelectTreeNode, []);
     const node = useAppSelector((state) => selectTreeNode(state.feeds, nodeId));
 
@@ -32,4 +32,4 @@ if (process.env.MODE === 'dev') {
     FolderTreeNode.whyDidYouRender = true;
 }
 
-export default MemoizedFolderTreeNode;
+export { MemoizedFolderTreeNode as FolderTreeNode };

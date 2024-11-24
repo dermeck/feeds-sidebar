@@ -10,16 +10,16 @@ import { useContextMenu } from '../../../Menu/ContextMenu/useContextMenu';
 import { DragDropContainer } from '../dragdrop/container/DragDropContainer';
 import { clsx } from 'clsx';
 
-interface Props {
+type FolderProps = {
     node: TreeNode;
     nestedLevel: number;
     children: React.ReactNode;
-}
+};
 
 const folderTreeNodeLabel = (node: TreeNode) => node.data.title ?? node.data.id;
 
-const Folder = (props: Props) => {
-    const nodeMeta = useMemo(() => ({ nodeId: props.node.data.id, nodeType: props.node.nodeType }), [props.node]);
+export const Folder = ({ node, nestedLevel, children }: FolderProps) => {
+    const nodeMeta = useMemo(() => ({ nodeId: node.data.id, nodeType: node.nodeType }), [node]);
 
     const [expanded, setExpanded] = useState<boolean>(true);
 
@@ -55,7 +55,7 @@ const Folder = (props: Props) => {
                 )}
                 nodeMeta={nodeMeta}
                 selected={selectedId === nodeMeta.nodeId}
-                style={{ '--folder-nested-level': props.nestedLevel } as React.CSSProperties}
+                style={{ '--folder-nested-level': nestedLevel } as React.CSSProperties}
                 ref={titleContainerRef}
                 tabIndex={0}
                 onMouseDown={handleMouseDown}
@@ -65,17 +65,11 @@ const Folder = (props: Props) => {
                         {showToggleIndicator && (expanded ? <CaretDown weight="bold" /> : <CaretRight weight="bold" />)}
                     </div>
                     <FolderSimple className="folder__icon" size={20} weight="light" />
-                    <label className="folder__label">{folderTreeNodeLabel(props.node)}</label>
+                    <label className="folder__label">{folderTreeNodeLabel(node)}</label>
                 </div>
             </DragDropContainer>
 
-            {expanded && props.children}
+            {expanded && children}
         </div>
     );
 };
-
-if (process.env.MODE === 'dev') {
-    Folder.whyDidYouRender = true;
-}
-
-export default Folder;

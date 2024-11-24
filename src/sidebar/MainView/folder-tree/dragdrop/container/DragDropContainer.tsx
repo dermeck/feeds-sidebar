@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import React from 'react';
 import { NodeType } from '../../../../../model/feeds';
-import useDragDropNode from '../useDragDropNode';
+import { useDragDropNode } from '../useDragDropNode';
 import { DragDropIndicator } from '../indicator/DragDropIndicator';
 import { RelativeDragDropPosition } from '../../../../../utils/dragdrop';
 
@@ -40,7 +40,6 @@ export const DragDropContainer = ({ nodeMeta, children, className, ...rest }: Dr
             onDrop={handleDrop}
             onDragEnd={handleDragEnd}>
             <DragDropIndicator type="top" active={relativeDropPosition === RelativeDragDropPosition.Top} />
-
             {children}
             <DragDropIndicator type="bottom" active={relativeDropPosition === RelativeDragDropPosition.Bottom} />
         </div>
