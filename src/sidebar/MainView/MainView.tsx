@@ -30,26 +30,25 @@ const MainView = ({ displayMode, filterString }: MainViewProps) => {
     const contextValue = useMemo(() => ({ draggedNode, setDraggedNode }), [draggedNode]);
 
     return (
-        <DragDropContext.Provider value={contextValue}>
-            <div className="sidebar__content">
-                {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
+        <div className="sidebar__content">
+            {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
 
-                {/* TODO mr only add DragDropCOntext ü FolderEdit in this view? */}
+            <DragDropContext.Provider value={contextValue}>
                 <MainViewFolderTree
                     className={clsx(displayMode === 'folder-tree' ? 'view-visble' : 'view-hidden')}
                     nodes={topLevelNodes}
                     filterString={filterString}
                 />
-                <MainViewPlainList
-                    className={clsx(displayMode === 'plain-list' ? 'view-visible' : 'view-hidden')}
-                    filterString={filterString}
-                />
-                <MainViewDateSortedList
-                    className={clsx(displayMode === 'date-sorted-list' ? 'view-visible' : 'view-hidden')}
-                    filterString={filterString}
-                />
-            </div>
-        </DragDropContext.Provider>
+            </DragDropContext.Provider>
+            <MainViewPlainList
+                className={clsx(displayMode === 'plain-list' ? 'view-visible' : 'view-hidden')}
+                filterString={filterString}
+            />
+            <MainViewDateSortedList
+                className={clsx(displayMode === 'date-sorted-list' ? 'view-visible' : 'view-hidden')}
+                filterString={filterString}
+            />
+        </div>
     );
 };
 
