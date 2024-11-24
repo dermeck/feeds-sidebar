@@ -5,12 +5,10 @@ import React, { useMemo, useRef, useState } from 'react';
 import { TreeNode } from '../../../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import feedsSlice, { selectHasVisibleChildren } from '../../../../store/slices/feeds';
-import { RelativeDragDropPosition } from '../../../../utils/dragdrop';
 import { MouseEventButton } from '../../../../utils/types/web-api';
 import { useContextMenu } from '../../../Menu/ContextMenu/useContextMenu';
-import useDragDropNode from '../dragdrop/useDragDropNode';
+import { DragDropContainer } from '../dragdrop/container/DragDropContainer';
 import { clsx } from 'clsx';
-import { DragDropIndicator } from '../dragdrop/indicator/DragDropIndicator';
 
 interface Props {
     node: TreeNode;
@@ -32,16 +30,6 @@ const Folder = (props: Props) => {
     const selectedId = useAppSelector((state) => state.feeds.selectedNode?.nodeId);
     const dispatch = useAppDispatch();
 
-    const {
-        isDropNotAllowed,
-        relativeDropPosition,
-        handleDragStart,
-        handleDragOver,
-        handleDragLeave,
-        handleDrop,
-        handleDragEnd,
-    } = useDragDropNode(nodeMeta);
-
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (e.button !== MouseEventButton.leftMouseButton && e.button !== MouseEventButton.rightMouseButton) {
             return;
@@ -58,42 +46,28 @@ const Folder = (props: Props) => {
         }
     };
     // TODO indicate if folder has unread items
-    // TODO mr separate draggable and folder (draggable row should contain other row)
     return (
         <div className="folder">
-            <div
+            <DragDropContainer
                 className={clsx(
-                    'folder__title-container draggable-row drop-target drag-drop__container',
-                    isDropNotAllowed && 'folder__title-container--disabled',
+                    'folder__title-container',
                     selectedId === nodeMeta.nodeId && 'folder__title-container--selected',
                 )}
+                nodeMeta={nodeMeta}
+                selected={selectedId === nodeMeta.nodeId}
                 style={{ '--folder-nested-level': props.nestedLevel } as React.CSSProperties}
                 ref={titleContainerRef}
-                draggable={true}
-                onDragStart={handleDragStart}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onDragEnd={handleDragEnd}
                 tabIndex={0}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}>
-                <DragDropIndicator type="top" active={relativeDropPosition === RelativeDragDropPosition.Top} />
                 <div className="folder__title-row">
                     <div className="folder__toggle-indicator">
                         {showToggleIndicator && (expanded ? <CaretDown weight="bold" /> : <CaretRight weight="bold" />)}
                     </div>
                     <FolderSimple className="folder__icon" size={20} weight="light" />
-                    <label
-                        className={clsx(
-                            'folder__label',
-                            relativeDropPosition === RelativeDragDropPosition.Middle && 'folder__label--highlight',
-                        )}>
-                        {folderTreeNodeLabel(props.node)}
-                    </label>
+                    <label className="folder__label">{folderTreeNodeLabel(props.node)}</label>
                 </div>
-                <DragDropIndicator type="bottom" active={relativeDropPosition === RelativeDragDropPosition.Bottom} />
-            </div>
+            </DragDropContainer>
 
             {expanded && props.children}
         </div>

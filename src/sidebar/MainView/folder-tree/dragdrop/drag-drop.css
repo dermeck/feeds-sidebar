@@ -1,5 +1,5 @@
 .drag-drop__container {
-    position: relative; /* TODO mr this should have its own place */
+    position: relative;
 }
 
 .drag-drop__indicator {

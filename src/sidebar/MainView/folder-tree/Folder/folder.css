@@ -11,10 +11,6 @@
         }
     }
 
-    .folder__title-container--disabled {
-        opacity: 0.3;
-    }
-
     .folder__title-container--selected {
         color: var(--selected-item-no-focus-text-color);
         background-color: var(--selected-item-no-focus-background-color);
@@ -52,9 +48,13 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+    }
 
-        .folder__label--highlight {
-            background-color: var(--selected-item-background-color);
-        }
+    .folder__title-container.drag-drop__container--disabled {
+        opacity: 0.3;
+    }
+
+    .folder__title-container.drag-drop__container--drag-middle-actice .folder__label {
+        background-color: var(--selected-item-background-color);
     }
 }
