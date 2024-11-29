@@ -2,17 +2,16 @@ import React, { Fragment, memo, useMemo } from 'react';
 
 import { useAppSelector } from '../../../store/hooks';
 import { makeSelectTreeNode } from '../../../store/slices/feeds';
-import Folder from './Folder/Folder';
-import FolderSubTreeNode from './FolderSubTreeNode';
+import { Folder } from './Folder/Folder';
+import { FolderSubTreeNode } from './FolderSubTreeNode';
 
-interface Props {
+type FolderTreeNode = {
     nodeId: string;
-    showTitle: boolean;
     nestedLevel: number;
     filterString: string;
-}
+};
 
-const FolderTreeNode = ({ nodeId, showTitle, nestedLevel, filterString }: Props) => {
+const FolderTreeNode = ({ nodeId, nestedLevel, filterString }: FolderTreeNode) => {
     const selectTreeNode = useMemo(makeSelectTreeNode, []);
     const node = useAppSelector((state) => selectTreeNode(state.feeds, nodeId));
 
@@ -21,13 +20,8 @@ const FolderTreeNode = ({ nodeId, showTitle, nestedLevel, filterString }: Props)
     }
 
     return (
-        <Folder node={node} nestedLevel={nestedLevel} showTitle={showTitle}>
-            <FolderSubTreeNode
-                node={node}
-                showTitle={showTitle}
-                nestedLevel={nestedLevel}
-                filterString={filterString}
-            />
+        <Folder node={node} nestedLevel={nestedLevel}>
+            <FolderSubTreeNode node={node} nestedLevel={nestedLevel} filterString={filterString} />
         </Folder>
     );
 };
@@ -38,4 +32,4 @@ if (process.env.MODE === 'dev') {
     FolderTreeNode.whyDidYouRender = true;
 }
 
-export default MemoizedFolderTreeNode;
+export { MemoizedFolderTreeNode as FolderTreeNode };

@@ -1,0 +1,23 @@
+.drag-drop__container {
+    position: relative;
+}
+
+.drag-drop__indicator {
+    width: 48px;
+    height: 2px;
+    background-color: transparent;
+    position: absolute;
+}
+
+/* top + bot indicators should overlap to avoid UI shifts */
+.drag-drop__indicator-top {
+    top: -1px; /*1/2 height*/
+}
+
+.drag-drop__indicator-bottom {
+    bottom: -1px; /*1/2 height*/
+}
+
+.drag-drop__indicator--active {
+    background-color: var(--selected-item-background-color);
+}

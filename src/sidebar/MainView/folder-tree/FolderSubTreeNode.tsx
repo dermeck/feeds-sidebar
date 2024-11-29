@@ -3,19 +3,16 @@ import React, { Fragment } from 'react';
 import { NodeType, TreeNode } from '../../../model/feeds';
 import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
 import { FeedItemList } from '../FeedList/FeedItemList';
-import FolderTreeNode from './FolderTreeNode';
-import useDragDropNode from './dragdrop/useDragDropNode';
+import { FolderTreeNode } from './FolderTreeNode';
 
-interface Props {
+type FolderSubTreeNodeProps = {
     node: TreeNode;
-    showTitle: boolean;
     nestedLevel: number;
     filterString: string;
-}
+};
 
-const FolderSubTreeNode = (props: Props): JSX.Element => {
-    const { node, filterString, showTitle, nestedLevel } = props;
-    const { isDropNotAllowed } = useDragDropNode({ nodeId: node.data.id, nodeType: node.nodeType });
+export const FolderSubTreeNode = (props: FolderSubTreeNodeProps): JSX.Element => {
+    const { node, filterString, nestedLevel } = props;
 
     switch (node.nodeType) {
         case NodeType.Feed:
@@ -29,7 +26,6 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                     }))}
                     filterString={filterString}
                     nestedLevel={nestedLevel + 1}
-                    disabled={isDropNotAllowed}
                 />
             );
 
@@ -44,7 +40,6 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
                                 key={childId}
                                 nodeId={childId}
                                 nestedLevel={nestedLevel + 1}
-                                showTitle={showTitle}
                                 filterString={filterString}
                             />
                         );
@@ -57,5 +52,3 @@ const FolderSubTreeNode = (props: Props): JSX.Element => {
             throw new UnreachableCaseError(node);
     }
 };
-
-export default FolderSubTreeNode;

@@ -10,7 +10,10 @@
     --sidebar-text-light-color: FieldText;
     --sidebar-background-dark-color: Canvas;
     --sidebar-text-dark-color: CanvasText;
-    */
+
+    /* background-color: color-mix(in srgb, var(--item-hover-background-color), white 30%); */
+    /* background-color: color-mix(in srgb, var(--item-hover-background-color), white 5%); */
+
     --sidebar-background-color: Canvas;
     --sidebar-text-color: CanvasText;
 

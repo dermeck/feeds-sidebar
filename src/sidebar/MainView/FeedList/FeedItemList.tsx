@@ -1,29 +1,25 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
 
 import { FeedListItem, FeedListItemModel } from './item/FeedListItem';
 import { clsx } from 'clsx';
+import { DragDropContext } from '../folder-tree/dragdrop/dragdrop-context';
 
 type FeedItemListProps = {
     items: FeedListItemModel[];
     nestedLevel?: number;
     filterString: string;
-    disabled?: boolean;
     getItemLabel?: (item: FeedListItemModel) => string;
 };
 
-export const FeedItemList = ({
-    items,
-    nestedLevel = 0,
-    filterString,
-    disabled = false,
-    getItemLabel,
-}: FeedItemListProps) => {
+export const FeedItemList = ({ items, nestedLevel = 0, filterString, getItemLabel }: FeedItemListProps) => {
+    const { draggedNode } = useContext(DragDropContext);
+
     if (!items.some((x) => !x.isRead)) {
         return <Fragment />;
     }
 
     return (
-        <ul className={clsx('feed-item-list', disabled && 'feed-item-list--disabled')}>
+        <ul className={clsx('feed-item-list', draggedNode !== undefined && 'feed-item-list--disabled')}>
             {items.map(
                 (item) =>
                     item.title?.toLowerCase().includes(filterString.toLowerCase()) && (

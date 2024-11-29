@@ -145,4 +145,4 @@ const useDragDropNode = (nodeMeta: NodeMeta) => {
     };
 };
 
-export default useDragDropNode;
+export { useDragDropNode };
