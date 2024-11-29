@@ -56,7 +56,7 @@ export const Folder = ({ node, nestedLevel, children }: FolderProps) => {
                 nodeMeta={nodeMeta}
                 selected={selectedId === nodeMeta.nodeId}
                 style={{ '--folder-nested-level': nestedLevel } as React.CSSProperties}
-                ref={titleContainerRef}
+                refObj={titleContainerRef}
                 tabIndex={0}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}>

@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import React from 'react';
+import React, { RefObject } from 'react';
 import { NodeType } from '../../../../../model/feeds';
 import { useDragDropNode } from '../useDragDropNode';
 import { DragDropIndicator } from '../indicator/DragDropIndicator';
@@ -9,9 +9,10 @@ type DragDropContainerProps = {
     nodeMeta: { nodeId: string; nodeType: NodeType };
     selected: boolean;
     className: string;
+    refObj: RefObject<HTMLDivElement>;
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-export const DragDropContainer = ({ nodeMeta, children, className, ...rest }: DragDropContainerProps) => {
+export const DragDropContainer = ({ nodeMeta, children, className, refObj, ...rest }: DragDropContainerProps) => {
     const {
         isDropNotAllowed,
         relativeDropPosition,
@@ -25,6 +26,7 @@ export const DragDropContainer = ({ nodeMeta, children, className, ...rest }: Dr
     return (
         <div
             {...rest}
+            ref={refObj}
             className={clsx(
                 className,
                 'drag-drop__container',
