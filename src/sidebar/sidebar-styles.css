@@ -10,12 +10,6 @@
     color: var(--sidebar-text-color);
 }
 
-.sidebar__content {
-    padding-top: 4px;
-    height: calc(100vh - var(--header-height));
-    overflow-x: scroll;
-}
-
 .sidebar__main-header {
     display: grid;
     align-items: center;
