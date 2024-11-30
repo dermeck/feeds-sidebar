@@ -9,6 +9,7 @@
 .view-hidden {
     height: 0;
     visibility: hidden;
+    overflow: hidden;
 }
 
 .view-hidden div {
