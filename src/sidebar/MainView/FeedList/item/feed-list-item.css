@@ -18,26 +18,40 @@
 }
 
 .feed-item__grid {
+    position: relative;
     display: grid;
     width: 100%;
     align-items: center;
     padding-right: 4px;
     grid-column-gap: 4px;
-    grid-template-columns: 18px 1fr 22px;
+    grid-template-columns: 18px 1fr calc(var(--scrollbar-background-width) + 22px);
+}
+
+.feed-item__remove-button-container {
+    height: 100%;
+    width: 100%;
+    background-color: var(--sidebar-background-color);
+    display: none;
 }
 
 .feed-item__remove-button {
+    grid-column: 3;
+    position: absolute;
+    top: 1px;
+    right: 4px; /* no scrollbar */
     display: none;
     width: 22px;
     height: 22px;
-    margin-top: 2px; /* account for negative margin for spacerHeight */
     padding: 1px;
-    grid-column: 3;
     opacity: 0.9;
 
     &:hover {
         cursor: pointer;
     }
+}
+
+.main-view--scroll .feed-item__remove-button {
+    right: calc(var(--scrollbar-background-width) + 4px);
 }
 
 .feed-item__link {

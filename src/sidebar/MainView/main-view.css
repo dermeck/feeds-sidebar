@@ -2,17 +2,20 @@
 @import './FeedList/feed-list.css';
 
 .main-view {
+    position: relative;
     padding-top: 4px;
     height: calc(100vh - var(--header-height));
     overflow-x: scroll;
 }
 
-.main-view--scroll {
-    padding-right: 12px;
-
-    .feed-item__grid {
-        padding-right: 0px;
-    }
+.main-view__scrollbar-background {
+    /* make visual space for the scrollbar without shifting content*/
+    width: var(--scrollbar-background-width);
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--sidebar-background-color);
 }
 
 .view-visible {

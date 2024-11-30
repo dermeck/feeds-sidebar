@@ -51,6 +51,7 @@ const MainView = ({ displayMode, filterString }: MainViewProps) => {
                 className={clsx(displayMode === 'date-sorted-list' ? 'view-visible' : 'view-hidden')}
                 filterString={filterString}
             />
+            {scrollbarVisible && <div className="main-view__scrollbar-background" />}
         </div>
     );
 };
