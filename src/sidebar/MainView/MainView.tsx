@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useMemo, useRef, useState } from 'react';
 
 import { NodeMeta } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -9,6 +9,7 @@ import { MainViewFolderTree } from './folder-tree/MainViewFolderTree';
 import { MainViewPlainList } from './plain-list/MainViewPlainList';
 import { MainViewDateSortedList } from './date-sorted-list/MainViewDateSortedList';
 import { clsx } from 'clsx';
+import { useHasScrollbar } from '../../utils/hooks/useHasScrollbar';
 
 export type MainViewDisplayMode = 'folder-tree' | 'plain-list' | 'date-sorted-list';
 
@@ -18,6 +19,8 @@ type MainViewProps = {
 };
 
 const MainView = ({ displayMode, filterString }: MainViewProps) => {
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const scrollbarVisible = useHasScrollbar({ ref: scrollContainerRef });
     const dispatch = useAppDispatch();
     const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive); // TODO mr move to local state
     const topLevelNodes = useAppSelector((state) => selectTopLevelNodes(state.feeds));
@@ -30,7 +33,7 @@ const MainView = ({ displayMode, filterString }: MainViewProps) => {
     const contextValue = useMemo(() => ({ draggedNode, setDraggedNode }), [draggedNode]);
 
     return (
-        <div className="sidebar__content">
+        <div className={clsx('main-view', scrollbarVisible && 'main-view--scroll')} ref={scrollContainerRef}>
             {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
 
             <DragDropContext.Provider value={contextValue}>
