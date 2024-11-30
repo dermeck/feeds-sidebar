@@ -86,7 +86,7 @@ async function detectFeeds(tabId: number) {
                                 return;
                             }
                         });
-                }, 500);
+                }, 2500);
                 return;
             });
     }
