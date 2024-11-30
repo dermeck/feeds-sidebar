@@ -66,7 +66,7 @@ async function detectFeeds(tabId: number) {
             .then(() => {
                 return;
             })
-            .catch((error) => {
+            .catch((error: { message: string }) => {
                 store.dispatch(sessionSlice.actions.feedsDetected([]));
                 if (error.message !== 'Could not establish connection. Receiving end does not exist.') {
                     console.error(error);
@@ -81,7 +81,7 @@ async function detectFeeds(tabId: number) {
                         .then(() => {
                             return;
                         })
-                        .catch((error) => {
+                        .catch((error: { message: string }) => {
                             if (error.message === 'Could not establish connection. Receiving end does not exist.') {
                                 return;
                             }

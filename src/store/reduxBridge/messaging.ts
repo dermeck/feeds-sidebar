@@ -1,7 +1,7 @@
 import { UnknownAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { Changes } from './utils/changeUtils';
-import { DetectedFeeds } from '../../services/feedDetection/feedDetection';
+import { DetectedFeed } from '../../services/feedDetection/feedDetection';
 
 export const enum MessageType {
     // proxy => background
@@ -22,7 +22,7 @@ type GeFullStateRequest = { type: MessageType.GetFullStateRequest };
 type GeFullStateResponse = { type: MessageType.GetFullStateResponse; payload: RootState };
 type PatchStateMessage = { type: MessageType.PatchState; payload: Changes };
 type StartFeedDetectionMessage = { type: MessageType.StartFeedDetection; payload: { url: string } };
-type FeedsDetectedMessage = { type: MessageType.FeedsDetected; payload: { url: string; feeds: DetectedFeeds } };
+type FeedsDetectedMessage = { type: MessageType.FeedsDetected; payload: { url: string; feeds: DetectedFeed[] } };
 type LogMessage = { type: MessageType.LogMessage; payload: { message: string; data: unknown } };
 
 export type ContenScriptMessage = DispatchRequest | GeFullStateRequest | PageActionMessage;

@@ -1505,10 +1505,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@total-typescript/ts-reset@npm:^0.5.1":
-  version: 0.5.1
-  resolution: "@total-typescript/ts-reset@npm:0.5.1"
-  checksum: f773a2b91707fab677c361837ef7855522d470e8a3abc0b9209a04832715feb0aa1ef0d10db880c1232acbd2c84222ec7c1bbf3f92d1d34d18c18ce08d304e45
+"@total-typescript/ts-reset@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "@total-typescript/ts-reset@npm:0.6.1"
+  checksum: 42481486822274ea9e3a5a6e82b384d8540ee6a7454bca658b73897b939905d0226266e6a13933e568a9c1684ee9cddf29ff47b341a2a8ca9876478100739b1a
   languageName: node
   linkType: hard
 
@@ -6674,7 +6674,7 @@ __metadata:
   dependencies:
     "@phosphor-icons/react": ^2.1.7
     "@reduxjs/toolkit": ^2.2.1
-    "@total-typescript/ts-reset": ^0.5.1
+    "@total-typescript/ts-reset": ^0.6.1
     "@trivago/prettier-plugin-sort-imports": ^4.3.0
     "@types/feedparser": ^2.2.8
     "@types/firefox-webext-browser": ^120.0.3
