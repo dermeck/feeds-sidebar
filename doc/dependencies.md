@@ -42,7 +42,6 @@
 | ts-prune                              | **deprecated**, replace                                                           |
 | typescript                            |                                                                                   |
 | web-ext                               |                                                                                   |
-| web-ext-types                         | **check if still needed**                                                         |
 | webextension-polyfill-ts              |                                                                                   |
 | webpack                               |                                                                                   |
 | webpack-cli                           |                                                                                   |

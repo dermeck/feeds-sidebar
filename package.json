@@ -63,7 +63,6 @@
         "ts-prune": "^0.10.3",
         "typescript": "^5.4.2",
         "web-ext": "7.11.0",
-        "web-ext-types": "^3.2.1",
         "webextension-polyfill-ts": "^0.26.0",
         "webpack": "^5.90.3",
         "webpack-cli": "^5.1.4",
