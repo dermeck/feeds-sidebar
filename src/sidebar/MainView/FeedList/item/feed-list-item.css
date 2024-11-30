@@ -22,7 +22,7 @@
     display: grid;
     width: 100%;
     align-items: center;
-    padding-right: 4px;
+    padding-right: 6px;
     grid-column-gap: 4px;
     grid-template-columns: 18px 1fr calc(var(--scrollbar-background-width) + 22px);
 }
