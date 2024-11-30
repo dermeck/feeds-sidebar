@@ -27,13 +27,6 @@
     grid-template-columns: 18px 1fr calc(var(--scrollbar-background-width) + 22px);
 }
 
-.feed-item__remove-button-container {
-    height: 100%;
-    width: 100%;
-    background-color: var(--sidebar-background-color);
-    display: none;
-}
-
 .feed-item__remove-button {
     grid-column: 3;
     position: absolute;
