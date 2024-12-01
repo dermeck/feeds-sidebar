@@ -11,10 +11,10 @@ Load the Extension
 - select the `manifest.json` file from the `build` folder
 - open the Firefox sidebar and select `Feeds`
 
-Debugging
-- `Inspect` will bring up the [Toolbox](https://extensionworkshop.com/documentation/develop/debugging/#developer-tools-toolbox) for the extension (DevTools)
-- to inspect the markup of the sidebar select the `sidebar.html` frame (iframe selector button next to the  `…` Button on the top right of the toolbox)
-- logs from the background script including Redux Actions will be logged to the console
+## Debugging
+- `about:debugging#/runtime/this-firefox` > `Inspect` will bring up the [Toolbox](https://extensionworkshop.com/documentation/develop/debugging/#developer-tools-toolbox) for the extension (DevTools)
+  - to inspect the markup of the sidebar select the `sidebar.html` frame (iframe selector button next to the  `…` Button on the top right of the toolbox)
+  - logs from the background script including Redux Actions will be logged to the console
 - logs from the content-script can be viewed in:
   - **Browser Toolbox** / Debug the Browser `Ctrl+Shift+Alt+I` (needs to be enabled https://firefox-source-docs.mozilla.org/devtools-user/browser_toolbox/index.html)
   - **MultiProcess Browser Console** `Ctrl+Shif+J`
