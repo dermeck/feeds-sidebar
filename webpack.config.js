@@ -1,6 +1,7 @@
 const path = require('path');
 var webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = (env) => ({
     entry: {
@@ -23,21 +24,11 @@ module.exports = (env) => ({
                 test: /\.tsx?$/,
                 use: 'ts-loader',
             },
-            {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader'],
-            },
         ],
     },
 
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
-        // node polyfills
-        fallback: {
-            stream: require.resolve('stream-browserify'),
-            buffer: require.resolve('buffer-browserify'),
-            'process/browser': require.resolve('process/browser'),
-        },
     },
 
     plugins: [
@@ -47,16 +38,15 @@ module.exports = (env) => ({
                     from: '**/*',
                     context: 'src',
                     globOptions: {
-                        ignore: ['**/*.ts', '**/*.tsx'],
+                        ignore: ['**/*.ts', '**/*.tsx', '**/*/stand-alone/*'],
                     },
                 },
             ],
         }),
 
         // node polyfills
-        new webpack.ProvidePlugin({
-            process: 'process/browser',
-            Buffer: ['buffer', 'Buffer'],
+        new NodePolyfillPlugin({
+            onlyAliases: ['process', 'stream'],
         }),
 
         new webpack.DefinePlugin({

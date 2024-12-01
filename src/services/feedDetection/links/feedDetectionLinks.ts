@@ -1,4 +1,4 @@
-import { DetectedFeeds } from '../feedDetection';
+import { DetectedFeed } from '../feedDetection';
 
 const LINK_TYPES = [
     'application/rss+xml',
@@ -20,7 +20,7 @@ const mapLink = (link: HTMLLinkElement) => {
     return { type, href, title };
 };
 
-export const detectFeedsInLinks = (): DetectedFeeds => {
+export const detectFeedsInLinks = (): DetectedFeed[] => {
     const QUERY = 'link[type]';
     const LINKS: HTMLLinkElement[] = Array.from(document.querySelectorAll(QUERY));
     const feedLinks = LINKS.filter((x) => LINK_TYPES.includes(x.type)).map(mapLink);

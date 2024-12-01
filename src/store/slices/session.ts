@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import feedsSlice from './feeds';
-import { DetectedFeeds } from '../../services/feedDetection/feedDetection';
+import { DetectedFeed } from '../../services/feedDetection/feedDetection';
 
 type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
@@ -28,7 +28,7 @@ type SessionSliceState = {
     menuContext?: MenuContext;
     menuVisible: boolean;
     newFolderEditActive: boolean;
-    detectedFeeds: DetectedFeeds;
+    detectedFeeds: DetectedFeed[];
 };
 
 export const initialState: SessionSliceState = {
@@ -94,7 +94,7 @@ const sessionSlice = createSlice({
 
             state.feedStatus = [...updated, ...newEntries];
         },
-        feedsDetected(state, action: PayloadAction<DetectedFeeds>) {
+        feedsDetected(state, action: PayloadAction<DetectedFeed[]>) {
             state.detectedFeeds = action.payload;
         },
     },
