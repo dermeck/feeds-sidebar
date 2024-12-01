@@ -11,7 +11,6 @@
 | @typescript-eslint/eslint-plugin      |                                                                                   |
 | @typescript-eslint/parser             | **check if all the eslint deps are needed**                                       |
 | @welldone-software/why-did-you-render | not compatible with React 19 yet                                                  |
-| buffer-browserify                     | **check if polyfill is needed**                                                   |
 | clsx                                  | utility for className                                                             |
 | copy-webpack-plugin                   | copy files (manifest, icon, css to build folder), 3rd party plugin                |
 | cross-var                             | for env variables in npm scrips (sign command), **check if this is still needed** |
@@ -33,7 +32,6 @@
 | react-redux                           |                                                                                   |
 | redux-saga                            |                                                                                   |
 | rimraf                                | clear build folder before build                                                   |
-| stream-browserify                     | polyfill, **check if needed**                                                     |
 | ts-jest                               |                                                                                   |
 | ts-loader                             |                                                                                   |
 | ts-node                               |                                                                                   |
@@ -46,7 +44,7 @@
 | webpack-dev-server                    |                                                                                   |
 
 ## Polyfills / Resolve
-- *process/browser* needed for process.env.MODE
-- 'util' from Polyfill plugin needed for feedParser 
-
-also replace stream? https://github.com/Richienb/node-polyfill-webpack-plugin                                 
+- `process` needed for process.env.MODE
+- `stream` needed for `sax` (feedParser)
+- `util` needed for feedParser 
+                            
