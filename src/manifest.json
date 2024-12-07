@@ -40,8 +40,7 @@
     "sidebar_action": {
         "default_title": "Feeds",
         "default_panel": "/sidebar/sidebar.html",
-        "default_icon": "rss.svg",
-        "browser_style": true
+        "default_icon": "rss.svg"
     },
 
     "page_action": {
@@ -49,7 +48,6 @@
     },
 
     "browser_action": {
-        "browser_style": true,
         "default_icon": "rss.svg",
         "default_title": "Feeds"
     }
