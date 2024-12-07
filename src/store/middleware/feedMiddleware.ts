@@ -6,6 +6,10 @@ import { RootState } from '../store';
 const updateBadge = (feedSliceState: RootState['feeds']) => {
     const totalUnreadReadItems = selectTotalUnreadItems(feedSliceState);
 
+    if (process.env.STAND_ALONE) {
+        return;
+    }
+
     browser.action.setBadgeText({ text: totalUnreadReadItems !== 0 ? totalUnreadReadItems.toString() : '' });
 };
 

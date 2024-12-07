@@ -1,0 +1,74 @@
+.feed-item {
+    padding-left: 20px;
+    list-style: none;
+}
+
+.feed-item--indented {
+    padding-left: calc(var(--item-nested-level) * 15px + 25px);
+}
+
+.feed-item--selected {
+    color: var(--selected-item-no-focus-text-color);
+    background-color: var(--selected-item-no-focus-background-color);
+}
+
+.feed-item--ui-active {
+    color: var(--selected-item-text-color);
+    background-color: var(--selected-item-background-color);
+}
+
+.feed-item__grid {
+    position: relative;
+    display: grid;
+    width: 100%;
+    align-items: center;
+    padding-right: 6px;
+    grid-column-gap: 4px;
+    grid-template-columns: 18px 1fr calc(var(--scrollbar-background-width) + 22px);
+}
+
+.feed-item__remove-button {
+    grid-column: 3;
+    position: absolute;
+    top: 1px;
+    right: 4px; /* no scrollbar */
+    display: none;
+    width: 22px;
+    height: 22px;
+    padding: 1px;
+    opacity: 0.9;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.main-view--scroll .feed-item__remove-button {
+    right: calc(var(--scrollbar-background-width) + 4px);
+}
+
+.feed-item__link {
+    grid-column: 2 / span 2;
+    overflow: hidden;
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    color: inherit;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.feed-item__grid:hover {
+    .feed-item__link {
+        grid-column: 2;
+    }
+
+    .feed-item__remove-button {
+        display: block;
+    }
+}

@@ -1,0 +1,59 @@
+@import './animations.css';
+
+:root {
+    /* this has to be set to switch between light or dark */
+    color-scheme: light dark;
+
+    /*color: light-dark(var(--light-color), var(--dark-color));*/
+    /*
+    --sidebar-background-light-color: Field;
+    --sidebar-text-light-color: FieldText;
+    --sidebar-background-dark-color: Canvas;
+    --sidebar-text-dark-color: CanvasText;
+
+    /* background-color: color-mix(in srgb, var(--item-hover-background-color), white 30%); */
+    /* background-color: color-mix(in srgb, var(--item-hover-background-color), white 5%); */
+
+    --sidebar-background-color: Canvas;
+    --sidebar-text-color: CanvasText;
+
+    --control-border-color: ButtonBorder;
+
+    --button-background-color: ButtonFace;
+    --button-text-color: ButtonText;
+    --button-hover-background-color: -moz-ButtonHoverFace;
+    --button-hover-text-color: -moz-ButtonHoverText;
+    --button-active-background-color: -moz-ButtonHoverFace;
+    --button-active-text-color: -moz-ButtonHoverText;
+
+    --toolbar-background-color: -moz-Dialog;
+    --toolbar-text-color: -moz-DialogText;
+
+    --item-hover-background-color: -moz-CellHighlight;
+    --item-hover-text-color: -moz-CellHighlightText;
+    --selected-item-background-color: SelectedItem;
+    --selected-item-text-color: SelectedItemText;
+    --selected-item-no-focus-background-color: -moz-CellHighlight;
+    --selected-item-no-focus-text-color: -moz-CellHighlightText;
+
+    --menu-hover-background-color: -moz-MenuHover;
+    --menu-hover-text-color: -moz-MenuHoverText;
+    --menu-border-color: ButtonFace;
+
+    --message-background-color: -moz-Dialog;
+    --message-text-color: -moz-DialogText;
+
+    --header-height: 48px;
+    --control-height: 32px;
+    --menu-width: 200px;
+    --scrollbar-background-width: 12px;
+}
+
+/* styles that were previously set in manifest version 2 ""browser_style": true" */
+html,
+body {
+    color: #222426; /* defaults to #00000 (black) (CanvasText) */
+    font: caption; /* affects font; but not fixed in practice */
+    margin: 0; /* overrides body { margin: 8px; } */
+    user-select: none; /* user unfriendly; defaults to user-select: auto */
+}

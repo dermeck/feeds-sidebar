@@ -1,0 +1,19 @@
+.subscribe-view__new-feeds-list {
+    flex: 1;
+    padding-left: 12px;
+    border: 1px solid var(--menu-border-color);
+    border-radius: 4px;
+    margin-top: 6px;
+    overflow-y: scroll;
+}
+
+.subscribe-view__new-feeds-list-item {
+    padding: 4px;
+
+    list-style: none;
+
+    & > svg {
+        margin-right: 6px;
+        vertical-align: middle;
+    }
+}
