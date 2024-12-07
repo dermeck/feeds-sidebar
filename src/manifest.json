@@ -1,6 +1,6 @@
 {
-    "manifest_version": 2,
-    "version": "0.50.0",
+    "manifest_version": 3,
+    "version": "0.50.1",
     "name": "Feeds",
     "description": "Manage your Web Feeds in the Sidebar.",
     "developer": {
@@ -23,11 +23,11 @@
         "128": "rss.svg"
     },
 
-    "permissions": ["alarms", "<all_urls>", "storage"],
+    "permissions": ["alarms", "storage"],
+    "host_permissions": ["<all_urls>"],
 
     "background": {
-        "scripts": ["background.js"],
-        "persistent": false
+        "scripts": ["background.js"]
     },
 
     "content_scripts": [
@@ -40,16 +40,14 @@
     "sidebar_action": {
         "default_title": "Feeds",
         "default_panel": "/sidebar/sidebar.html",
-        "default_icon": "rss.svg",
-        "browser_style": true
+        "default_icon": "rss.svg"
     },
 
     "page_action": {
         "default_icon": "rss.svg"
     },
 
-    "browser_action": {
-        "browser_style": true,
+    "action": {
         "default_icon": "rss.svg",
         "default_title": "Feeds"
     }
