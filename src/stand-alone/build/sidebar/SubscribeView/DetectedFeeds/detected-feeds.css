@@ -1,0 +1,33 @@
+.detected-feeds-list {
+    list-style: none;
+    padding: 0;
+}
+
+.detected-feed {
+    display: grid;
+    width: 100%;
+    grid-column-gap: 4px;
+    grid-template-columns: 28px 1fr 32px;
+    height: 32px;
+    border: 1px solid var(--menu-border-color);
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
+.detected-feed-icon {
+    padding: 6px 4px;
+}
+
+.detected-feed-label {
+    height: 32px;
+    line-height: 32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.detected-feed-action {
+    height: 32px;
+    width: 32px;
+    padding: 6px;
+}

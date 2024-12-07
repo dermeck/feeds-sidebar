@@ -1,0 +1,5 @@
+@import '/build/sidebar/sidebar-styles.css';
+
+body {
+    max-width: 400px;
+}
