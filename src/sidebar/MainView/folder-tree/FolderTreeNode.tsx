@@ -12,7 +12,7 @@ type FolderTreeNode = {
 };
 
 const FolderTreeNode = ({ nodeId, nestedLevel, filterString }: FolderTreeNode) => {
-    const selectTreeNode = useMemo(makeSelectTreeNode, []);
+    const selectTreeNode = useMemo(() => makeSelectTreeNode(), []);
     const node = useAppSelector((state) => selectTreeNode(state.feeds, nodeId));
 
     if (!node) {

@@ -53,7 +53,7 @@ const useDragDropNode = (nodeMeta: NodeMeta) => {
 
     const [relativeDropPosition, setRelativDropPosition] = useState<RelativeDragDropPosition | undefined>(undefined);
 
-    const selectDescendentNodeIds = useMemo(makeselectDescendentNodeIds, [draggedNode]);
+    const selectDescendentNodeIds = useMemo(() => makeselectDescendentNodeIds(), []);
     const draggedNodeDescendents = useAppSelector((state) => selectDescendentNodeIds(state.feeds, draggedNode?.nodeId));
 
     const isDropNotAllowed =

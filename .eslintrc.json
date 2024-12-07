@@ -12,8 +12,10 @@
         "ecmaVersion": 12,
         "sourceType": "module"
     },
-    "plugins": ["react", "@typescript-eslint"],
-    "rules": {},
+    "plugins": ["react", "@typescript-eslint", "eslint-plugin-react-compiler"],
+    "rules": {
+        "react-compiler/react-compiler": "error"
+    },
     "settings": { "react": { "version": "detect" } },
     "ignorePatterns": ["webpack.config.js", "webpack.stand-alone.js"]
 }
