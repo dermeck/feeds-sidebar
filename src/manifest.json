@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "version": "0.50.0",
     "name": "Feeds",
     "description": "Manage your Web Feeds in the Sidebar.",
@@ -23,11 +23,11 @@
         "128": "rss.svg"
     },
 
-    "permissions": ["alarms", "<all_urls>", "storage"],
+    "permissions": ["alarms", "storage"],
+    "host_permissions": ["<all_urls>"],
 
     "background": {
-        "scripts": ["background.js"],
-        "persistent": false
+        "scripts": ["background.js"]
     },
 
     "content_scripts": [
@@ -47,7 +47,7 @@
         "default_icon": "rss.svg"
     },
 
-    "browser_action": {
+    "action": {
         "default_icon": "rss.svg",
         "default_title": "Feeds"
     }

@@ -36,7 +36,7 @@ browser.runtime.onSuspend.addListener(() => {
     initResultPromise.then((result) => result()).catch((reason) => console.error(reason));
 });
 
-browser.browserAction.onClicked.addListener(() => {
+browser.action.onClicked.addListener(() => {
     browser.sidebarAction.open();
 });
 

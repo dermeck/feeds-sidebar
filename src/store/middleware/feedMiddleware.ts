@@ -6,7 +6,7 @@ import { RootState } from '../store';
 const updateBadge = (feedSliceState: RootState['feeds']) => {
     const totalUnreadReadItems = selectTotalUnreadItems(feedSliceState);
 
-    browser.browserAction.setBadgeText({ text: totalUnreadReadItems !== 0 ? totalUnreadReadItems.toString() : '' });
+    browser.action.setBadgeText({ text: totalUnreadReadItems !== 0 ? totalUnreadReadItems.toString() : '' });
 };
 
 export const feedMiddleware: Middleware<object, RootState, Dispatch> = (middlewareApi) => (next) => async (action) => {
