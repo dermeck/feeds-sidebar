@@ -36,13 +36,13 @@ const MainView = ({ displayMode, filterString }: MainViewProps) => {
         <div className={clsx('main-view', scrollbarVisible && 'main-view--scroll')} ref={scrollContainerRef}>
             {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
 
-            <DragDropContext.Provider value={contextValue}>
+            <DragDropContext value={contextValue}>
                 <MainViewFolderTree
                     className={clsx(displayMode === 'folder-tree' ? 'view-visble' : 'view-hidden')}
                     nodes={topLevelNodes}
                     filterString={filterString}
                 />
-            </DragDropContext.Provider>
+            </DragDropContext>
             <MainViewPlainList
                 className={clsx(displayMode === 'plain-list' ? 'view-visible' : 'view-hidden')}
                 filterString={filterString}

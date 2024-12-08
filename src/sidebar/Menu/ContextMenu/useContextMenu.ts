@@ -9,7 +9,7 @@ import useWindowDimensions from '../../../utils/hooks/useWindowDimensions';
 const contextMenuHeight = 64; // 2 menu items, each 32px
 const menuWidthInPx = 200; // TODO use custom property?
 
-export const useContextMenu = (containerRef: React.RefObject<HTMLDivElement>) => {
+export const useContextMenu = (containerRef: React.RefObject<HTMLDivElement | null>) => {
     const { height, width } = useWindowDimensions();
     const dispatch = useDispatch();
 

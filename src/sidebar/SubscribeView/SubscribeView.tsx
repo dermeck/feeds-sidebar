@@ -18,7 +18,7 @@ const isValidURL = (str: string) => {
 };
 
 interface SubscribeViewProps {
-    urlInputRef: RefObject<HTMLInputElement>;
+    urlInputRef: RefObject<HTMLInputElement | null>;
     onClose: () => void;
 }
 
