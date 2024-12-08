@@ -9,7 +9,8 @@ import { DetectedFeeds } from './DetectedFeeds/DetectedFeeds';
 import { Button } from '../../base-components/Button/Button';
 import { Header } from '../../base-components/Header/Header';
 import { clsx } from 'clsx';
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import M from 'moz-button';
 const isValidURL = (str: string) => {
     const res = str.match(
         /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
@@ -62,6 +63,8 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                 <Button variant="toolbar" title="Back to Feed List" onClick={props.onClose}>
                     <ArrowLeft size={22} />
                 </Button>
+                <M>moep</M>
+
                 <h1 className="subscribe-view__title">Add New Feed</h1>
             </Header>
             <div className="subscribe-view__content">
