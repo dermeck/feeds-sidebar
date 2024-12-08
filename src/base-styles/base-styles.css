@@ -52,8 +52,15 @@
 /* styles that were previously set in manifest version 2 ""browser_style": true" */
 html,
 body {
-    color: #222426; /* defaults to #00000 (black) (CanvasText) */
-    font: caption; /* affects font; but not fixed in practice */
-    margin: 0; /* overrides body { margin: 8px; } */
-    user-select: none; /* user unfriendly; defaults to user-select: auto */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    color: #222426;
+    font: caption;
+    margin: 0;
+    user-select: none;
+}
+
+body * {
+    box-sizing: border-box;
 }
