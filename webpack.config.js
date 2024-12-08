@@ -29,6 +29,15 @@ module.exports = (env) => ({
 
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
+        /*alias: {
+            'moz-button': path.resolve('chrome://global/content/elements/moz-button.mjs'),
+        },
+        */
+    },
+
+    // externalsType: 'import',
+    externals: {
+        'moz-button': 'chrome://global/content/elements/moz-button.mjs',
     },
 
     plugins: [
