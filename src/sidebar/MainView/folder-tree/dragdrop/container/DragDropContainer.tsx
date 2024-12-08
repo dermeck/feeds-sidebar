@@ -9,7 +9,7 @@ type DragDropContainerProps = {
     nodeMeta: { nodeId: string; nodeType: NodeType };
     selected: boolean;
     className: string;
-    refObj: RefObject<HTMLDivElement>;
+    refObj: RefObject<HTMLDivElement | null>;
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 export const DragDropContainer = ({ nodeMeta, children, className, refObj, ...rest }: DragDropContainerProps) => {

@@ -11,7 +11,7 @@ type FolderSubTreeNodeProps = {
     filterString: string;
 };
 
-export const FolderSubTreeNode = (props: FolderSubTreeNodeProps): JSX.Element => {
+export const FolderSubTreeNode = (props: FolderSubTreeNodeProps) => {
     const { node, filterString, nestedLevel } = props;
 
     switch (node.nodeType) {
