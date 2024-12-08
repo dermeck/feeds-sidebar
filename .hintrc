@@ -10,5 +10,8 @@
         "list": "off"
       }
     ]
-  }
+  },
+  "browserslist": [
+    "Firefox > 132"
+  ]
 }
