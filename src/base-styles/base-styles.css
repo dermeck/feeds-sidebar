@@ -55,7 +55,7 @@ body {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    color: #222426;
+    color: light-dark(#222426, CanvasText);
     font: caption;
     margin: 0;
     user-select: none;
