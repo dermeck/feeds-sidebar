@@ -39,6 +39,10 @@
             }
         }
 
+        .folder__toglle-indicator--hidden {
+            visibility: hidden;
+        }
+
         .folder__icon {
             flex-shrink: 0;
             margin-top: -2px; /* align with label */
