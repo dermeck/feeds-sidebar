@@ -61,8 +61,12 @@ export const Folder = ({ node, nestedLevel, children }: FolderProps) => {
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}>
                 <div className="folder__title-row">
-                    <div className="folder__toggle-indicator">
-                        {showToggleIndicator && (expanded ? <CaretDown weight="bold" /> : <CaretRight weight="bold" />)}
+                    <div
+                        className={clsx(
+                            'folder__toggle-indicator',
+                            !showToggleIndicator && 'folder__toglle-indicator--hidden',
+                        )}>
+                        {expanded ? <CaretDown weight="bold" /> : <CaretRight weight="bold" />}
                     </div>
                     <FolderSimple className="folder__icon" size={20} weight="light" />
                     <label className="folder__label">{folderTreeNodeLabel(node)}</label>
