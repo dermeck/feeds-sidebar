@@ -47,8 +47,6 @@ export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
                 return store.dispatch(message.action);
 
             case MessageType.FeedsDetected: {
-                const data = { [message.payload.url]: message.payload.feeds };
-                browser.storage.session.set(data);
                 store.dispatch(sessionSlice.actions.feedsDetected(message.payload.feeds));
                 break;
             }

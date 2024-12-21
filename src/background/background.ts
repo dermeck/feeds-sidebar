@@ -56,40 +56,34 @@ async function detectFeeds(tabId: number) {
         return;
     }
 
-    const alreadyDetectedFeeds = await browser.storage.session.get(tab.url);
-    if (alreadyDetectedFeeds[tab.url] !== undefined) {
-        // detection was already triggered once during this session
-        store.dispatch(sessionSlice.actions.feedsDetected(alreadyDetectedFeeds[tab.url]));
-    } else {
-        browser.tabs
-            .sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tab.url } })
-            .then(() => {
+    browser.tabs
+        .sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tab.url } })
+        .then(() => {
+            return;
+        })
+        .catch((error: { message: string }) => {
+            store.dispatch(sessionSlice.actions.feedsDetected([]));
+            if (error.message !== 'Could not establish connection. Receiving end does not exist.') {
+                console.error(error);
                 return;
-            })
-            .catch((error: { message: string }) => {
-                store.dispatch(sessionSlice.actions.feedsDetected([]));
-                if (error.message !== 'Could not establish connection. Receiving end does not exist.') {
-                    console.error(error);
-                    return;
-                }
+            }
 
-                // active tab does not have content script (e.g. no page found on localhost)
-                // OR pageAction is not loaded yet => retry once
-                setTimeout(() => {
-                    browser.tabs
-                        .sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tab.url } })
-                        .then(() => {
+            // active tab does not have content script (e.g. no page found on localhost)
+            // OR pageAction is not loaded yet => retry once
+            setTimeout(() => {
+                browser.tabs
+                    .sendMessage(tabId, { type: MessageType.StartFeedDetection, payload: { url: tab.url } })
+                    .then(() => {
+                        return;
+                    })
+                    .catch((error: { message: string }) => {
+                        if (error.message === 'Could not establish connection. Receiving end does not exist.') {
                             return;
-                        })
-                        .catch((error: { message: string }) => {
-                            if (error.message === 'Could not establish connection. Receiving end does not exist.') {
-                                return;
-                            }
-                        });
-                }, 2500);
-                return;
-            });
-    }
+                        }
+                    });
+            }, 2500);
+            return;
+        });
 }
 
 function handleTabUpdated(tabId: number, changes: browser.tabs._OnUpdatedChangeInfo) {
