@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "version": "0.50.4",
+    "version": "0.51.0",
     "name": "Feeds",
     "description": "Manage your Web Feeds in the Sidebar.",
     "developer": {
