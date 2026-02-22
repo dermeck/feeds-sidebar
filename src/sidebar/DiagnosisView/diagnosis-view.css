@@ -26,6 +26,10 @@
     color: var(--danger-color, #b00020);
 }
 
+.diagnosis__section--inactive .diagnosis__section-title {
+    color: var(--warning-color, #b58900);
+}
+
 .diagnosis__section-title {
     margin: 8px 0;
     font-size: 0.9rem;
@@ -42,6 +46,10 @@
 
 .diagnosis__row--error {
     background: rgba(176, 0, 32, 0.04);
+}
+
+.diagnosis__row--inactive {
+    background: rgba(181, 137, 0, 0.06);
 }
 
 .diagnosis__name {

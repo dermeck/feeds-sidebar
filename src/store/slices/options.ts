@@ -10,6 +10,7 @@ type OptionsSliceState = {
     fetchThreadsCount: number;
     mainViewDisplayMode: MainViewDisplayMode;
     feedDetectionEnabled: boolean;
+    diagnosisInactiveDays?: number;
 };
 
 export const initialState: OptionsSliceState = {
@@ -17,6 +18,7 @@ export const initialState: OptionsSliceState = {
     fetchThreadsCount: 4,
     mainViewDisplayMode: 'folder-tree',
     feedDetectionEnabled: true,
+    diagnosisInactiveDays: 60,
 };
 
 export const selectOptions = (state: RootState) => state.options;
@@ -30,6 +32,9 @@ const optionsSlice = createSlice({
         },
         mainViewDisplayModeChanged(state, action: PayloadAction<MainViewDisplayMode>) {
             state.mainViewDisplayMode = action.payload;
+        },
+        changeDiagnosisInactiveDays(state, action: PayloadAction<number>) {
+            state.diagnosisInactiveDays = action.payload;
         },
     },
 
