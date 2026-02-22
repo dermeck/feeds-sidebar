@@ -43,6 +43,7 @@ export const MoreMenu = (props: Props) => {
                 </MenuListItem>
 
                 <MenuListItem
+                    icon="stethoscope"
                     onMouseDown={() => {
                         props.changeView(View.diagnosis);
                         dispatch(sessionSlice.actions.hideMenu());

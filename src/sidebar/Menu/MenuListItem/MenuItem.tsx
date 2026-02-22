@@ -1,11 +1,11 @@
-import { DownloadSimple, UploadSimple, CheckSquare, Plus, FolderSimplePlus } from '@phosphor-icons/react';
+import { DownloadSimple, UploadSimple, CheckSquare, Plus, FolderSimplePlus, Stethoscope } from '@phosphor-icons/react';
 
 import React, { MouseEventHandler } from 'react';
 
 import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
 import { clsx } from 'clsx';
 
-type IconKeys = 'plus' | 'import' | 'export' | 'check-square' | 'folder-plus';
+type IconKeys = 'plus' | 'import' | 'export' | 'check-square' | 'folder-plus' | 'stethoscope';
 
 interface Props {
     icon?: IconKeys;
@@ -31,6 +31,9 @@ const renderIcon = (key: IconKeys) => {
 
         case 'folder-plus':
             return <FolderSimplePlus size={size} />;
+
+        case 'stethoscope':
+            return <Stethoscope size={size} />;
 
         default:
             throw new UnreachableCaseError(key);
