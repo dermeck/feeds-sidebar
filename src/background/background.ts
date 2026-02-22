@@ -5,7 +5,7 @@ import store from '../store/store';
 import { loadState, saveState } from '../services/persistence';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
 import sessionSlice from '../store/slices/session';
-import { ContenScriptMessage, MessageType, addMessageListener } from '../store/reduxBridge/messaging';
+import { ContentScriptMessage, MessageType, addMessageListener } from '../store/reduxBridge/messaging';
 
 const feedsAutoUpdateKey = 'feedsAutoUpdate';
 const SECOND = 1000;
@@ -13,11 +13,11 @@ const MINUTE = 60 * SECOND;
 
 let lastLoaded = 0;
 let initialized = false;
-const messageBuffer: ContenScriptMessage[] = [];
+const messageBuffer: ContentScriptMessage[] = [];
 
 // immediatly provide receiving end for content-script messages
 // waiting for store would take too long when background script re-initializes
-addMessageListener((message: ContenScriptMessage) => {
+addMessageListener((message: ContentScriptMessage) => {
     if (initialized) {
         return;
     }
