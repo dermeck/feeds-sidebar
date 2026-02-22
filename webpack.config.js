@@ -13,6 +13,7 @@ module.exports = (env) => ({
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: '[name].js', // [name] is the key specified in "entry"
+        globalObject: 'self',
     },
 
     devtool: 'source-map',
