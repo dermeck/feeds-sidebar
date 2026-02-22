@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../../store/slices/feeds';
 import { selectOptions } from '../../store/slices/options';
 import feedsSlice from '../../store/slices/feeds';
-import { Feed } from '../../model/feeds';
+import { Feed, FeedItem } from '../../model/feeds';
 
 type Props = {
     onClose: () => void;
@@ -57,17 +57,21 @@ export const DiagnosisView = ({ onClose }: Props) => {
         return `${days} days ago`;
     };
 
-    const getLatestItemIso = (feed?: Feed | undefined) => {
+    const getLatestItem = (feed?: Feed | undefined): FeedItem | undefined => {
         if (!feed || !feed.items || feed.items.length === 0) return undefined;
         let latest = 0;
+        let latestItem: FeedItem | undefined;
         for (const item of feed.items) {
             const dateStr = item.published ?? item.lastModified;
             if (!dateStr) continue;
             const t = Date.parse(dateStr);
             if (isNaN(t)) continue;
-            if (t > latest) latest = t;
+            if (t > latest) {
+                latest = t;
+                latestItem = item;
+            }
         }
-        return latest === 0 ? undefined : new Date(latest).toISOString();
+        return latestItem;
     };
 
     return (
@@ -89,7 +93,8 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                 const title = feed?.title ?? entry.url;
                                 const lastFetched = feed?.lastFetched;
                                 const lastFetchedStr = formatDaysAgo(lastFetched);
-                                const latestIso = getLatestItemIso(feed);
+                                const latestItem = getLatestItem(feed);
+                                const latestIso = latestItem ? (latestItem.published ?? latestItem.lastModified) : undefined;
                                 const latestStr = formatDaysAgo(latestIso);
 
                                 return (
@@ -97,7 +102,17 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                         <div className="diagnosis__name">
                                             <div className="diagnosis__title">{title}</div>
                                             <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
-                                            <div className="diagnosis__latestitem">Latest item: {latestStr}</div>
+                                            <div className="diagnosis__latestitem">Latest item: {latestStr}{' '}
+                                                {latestItem && (
+                                                    <a
+                                                        className="diagnosis__latestlink"
+                                                        href={latestItem.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer">
+                                                        {latestItem.title ?? latestItem.url}
+                                                    </a>
+                                                )}
+                                            </div>
                                         </div>
                                         <div className="diagnosis__status">{entry.status}</div>
                                         <div className="diagnosis__actions">
@@ -132,7 +147,8 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                 const title = feed?.title ?? entry.url;
                                 const lastFetched = feed?.lastFetched;
                                 const lastFetchedStr = formatDaysAgo(lastFetched);
-                                const latestIso = getLatestItemIso(feed);
+                                const latestItem = getLatestItem(feed);
+                                const latestIso = latestItem ? (latestItem.published ?? latestItem.lastModified) : undefined;
                                 const latestStr = formatDaysAgo(latestIso);
 
                                 return (
@@ -140,7 +156,17 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                         <div className="diagnosis__name">
                                             <div className="diagnosis__title">{title}</div>
                                             <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
-                                            <div className="diagnosis__latestitem">Latest item: {latestStr}</div>
+                                            <div className="diagnosis__latestitem">Latest item: {latestStr}{' '}
+                                                {latestItem && (
+                                                    <a
+                                                        className="diagnosis__latestlink"
+                                                        href={latestItem.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer">
+                                                        {latestItem.title ?? latestItem.url}
+                                                    </a>
+                                                )}
+                                            </div>
                                         </div>
                                         <div className="diagnosis__status">inactive</div>
                                         <div className="diagnosis__actions">
@@ -171,7 +197,8 @@ export const DiagnosisView = ({ onClose }: Props) => {
                             const title = feed?.title ?? entry.url;
                             const lastFetched = feed?.lastFetched;
                             const lastFetchedStr = lastFetched ? new Date(lastFetched).toLocaleString() : '—';
-                            const latestIso = getLatestItemIso(feed);
+                            const latestItem = getLatestItem(feed);
+                            const latestIso = latestItem ? (latestItem.published ?? latestItem.lastModified) : undefined;
                             const latestStr = formatDaysAgo(latestIso);
 
                             return (
@@ -179,7 +206,17 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                     <div className="diagnosis__name">
                                         <div className="diagnosis__title">{title}</div>
                                         <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
-                                        <div className="diagnosis__latestitem">Latest item: {latestStr}</div>
+                                        <div className="diagnosis__latestitem">Latest item: {latestStr}{' '}
+                                            {latestItem && (
+                                                <a
+                                                    className="diagnosis__latestlink"
+                                                    href={latestItem.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer">
+                                                    {latestItem.title ?? latestItem.url}
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
                                     <div className="diagnosis__status">{entry.status}</div>
                                 </li>
