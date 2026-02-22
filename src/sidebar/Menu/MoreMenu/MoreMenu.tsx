@@ -42,6 +42,14 @@ export const MoreMenu = (props: Props) => {
                     Mark All Read
                 </MenuListItem>
 
+                <MenuListItem
+                    onMouseDown={() => {
+                        props.changeView(View.diagnosis);
+                        dispatch(sessionSlice.actions.hideMenu());
+                    }}>
+                    Diagnosis
+                </MenuListItem>
+
                 <hr className="menu__divider" />
 
                 <MenuListItem icon="export" onMouseDown={() => opmlExport(folders, feeds)}>
