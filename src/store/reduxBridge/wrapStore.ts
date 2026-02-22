@@ -1,11 +1,11 @@
 import { Store } from 'redux';
 import { shallowDiff } from './utils/changeUtils';
-import { ContenScriptMessage, MessageType, addMessageListener, sendMessageToContentScripts } from './messaging';
+import { ContentScriptMessage, MessageType, addMessageListener, sendMessageToContentScripts } from './messaging';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import sessionSlice from '../slices/session';
 
 // Wraps a Redux store and provides messaging interface for proxy store
-export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
+export const wrapStore = (store: Store, messages: ContentScriptMessage[]) => {
     let currentState = store.getState();
 
     const onStoreChanged = () => {
@@ -30,7 +30,7 @@ export const wrapStore = (store: Store, messages: ContenScriptMessage[]) => {
 
     const unsubscribe = store.subscribe(onStoreChanged);
 
-    const processmessage = (message: ContenScriptMessage) => {
+    const processmessage = (message: ContentScriptMessage) => {
         const type = message.type;
 
         switch (type) {
