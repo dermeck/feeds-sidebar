@@ -70,3 +70,15 @@
 .diagnosis__retry {
     flex: 0 0 auto;
 }
+
+.diagnosis__actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.diagnosis__remove {
+    background: transparent;
+    color: var(--danger-color, #b00020);
+    border: 1px solid rgba(176, 0, 32, 0.12);
+}

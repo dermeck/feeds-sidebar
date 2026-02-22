@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../../store/slices/feeds';
+import feedsSlice from '../../store/slices/feeds';
 
 type Props = {
     onClose: () => void;
@@ -43,11 +44,22 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                             <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
                                         </div>
                                         <div className="diagnosis__status">{entry.status}</div>
-                                        <button
-                                            className="button diagnosis__retry"
-                                            onClick={() => dispatch(fetchFeedsCommand([entry.url]))}>
-                                            Retry
-                                        </button>
+                                        <div className="diagnosis__actions">
+                                            <button
+                                                className="button diagnosis__retry"
+                                                onClick={() => dispatch(fetchFeedsCommand([entry.url]))}>
+                                                Retry
+                                            </button>
+                                            <button
+                                                className="button diagnosis__remove"
+                                                onClick={() => {
+                                                    if (window.confirm('Remove this feed from subscriptions?')) {
+                                                        dispatch(feedsSlice.actions.deleteFeed({ url: entry.url }));
+                                                    }
+                                                }}>
+                                                Remove
+                                            </button>
+                                        </div>
                                     </li>
                                 );
                             })}
