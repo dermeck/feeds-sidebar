@@ -94,7 +94,9 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                 const lastFetched = feed?.lastFetched;
                                 const lastFetchedStr = formatDaysAgo(lastFetched);
                                 const latestItem = getLatestItem(feed);
-                                const latestIso = latestItem ? (latestItem.published ?? latestItem.lastModified) : undefined;
+                                const latestIso = latestItem
+                                    ? (latestItem.published ?? latestItem.lastModified)
+                                    : undefined;
                                 const latestStr = formatDaysAgo(latestIso);
 
                                 return (
@@ -102,7 +104,8 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                         <div className="diagnosis__name">
                                             <div className="diagnosis__title">{title}</div>
                                             <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
-                                            <div className="diagnosis__latestitem">Latest item: {latestStr}{' '}
+                                            <div className="diagnosis__latestitem">
+                                                Latest item: {latestStr}{' '}
                                                 {latestItem && (
                                                     <a
                                                         className="diagnosis__latestlink"
@@ -148,7 +151,9 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                 const lastFetched = feed?.lastFetched;
                                 const lastFetchedStr = formatDaysAgo(lastFetched);
                                 const latestItem = getLatestItem(feed);
-                                const latestIso = latestItem ? (latestItem.published ?? latestItem.lastModified) : undefined;
+                                const latestIso = latestItem
+                                    ? (latestItem.published ?? latestItem.lastModified)
+                                    : undefined;
                                 const latestStr = formatDaysAgo(latestIso);
 
                                 return (
@@ -156,7 +161,8 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                         <div className="diagnosis__name">
                                             <div className="diagnosis__title">{title}</div>
                                             <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
-                                            <div className="diagnosis__latestitem">Latest item: {latestStr}{' '}
+                                            <div className="diagnosis__latestitem">
+                                                Latest item: {latestStr}{' '}
                                                 {latestItem && (
                                                     <a
                                                         className="diagnosis__latestlink"
@@ -198,7 +204,9 @@ export const DiagnosisView = ({ onClose }: Props) => {
                             const lastFetched = feed?.lastFetched;
                             const lastFetchedStr = lastFetched ? new Date(lastFetched).toLocaleString() : '—';
                             const latestItem = getLatestItem(feed);
-                            const latestIso = latestItem ? (latestItem.published ?? latestItem.lastModified) : undefined;
+                            const latestIso = latestItem
+                                ? (latestItem.published ?? latestItem.lastModified)
+                                : undefined;
                             const latestStr = formatDaysAgo(latestIso);
 
                             return (
@@ -206,7 +214,8 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                     <div className="diagnosis__name">
                                         <div className="diagnosis__title">{title}</div>
                                         <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
-                                        <div className="diagnosis__latestitem">Latest item: {latestStr}{' '}
+                                        <div className="diagnosis__latestitem">
+                                            Latest item: {latestStr}{' '}
                                             {latestItem && (
                                                 <a
                                                     className="diagnosis__latestlink"
@@ -228,5 +237,3 @@ export const DiagnosisView = ({ onClose }: Props) => {
         </div>
     );
 };
-
-export default DiagnosisView;
