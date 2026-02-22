@@ -1,0 +1,92 @@
+.diagnosis__container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.diagnosis__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.diagnosis__list {
+    padding: 12px 0;
+    overflow: auto;
+    flex: 1 1 auto;
+}
+
+.diagnosis__section {
+    padding: 8px 16px;
+}
+
+.diagnosis__section--errors .diagnosis__section-title {
+    color: var(--danger-color, #b00020);
+}
+
+.diagnosis__section--inactive .diagnosis__section-title {
+    color: var(--warning-color, #b58900);
+}
+
+.diagnosis__section-title {
+    margin: 8px 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.diagnosis__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.04);
+}
+
+.diagnosis__row--error {
+    background: rgba(176, 0, 32, 0.04);
+}
+
+.diagnosis__row--inactive {
+    background: rgba(181, 137, 0, 0.06);
+}
+
+.diagnosis__name {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.diagnosis__title {
+    font-weight: 500;
+}
+
+.diagnosis__lastfetched {
+    font-size: 0.8rem;
+    color: var(--muted-text-color, #666);
+}
+
+.diagnosis__status {
+    flex: 0 0 auto;
+    width: 80px;
+    text-transform: capitalize;
+    font-weight: 600;
+}
+
+.diagnosis__retry {
+    flex: 0 0 auto;
+}
+
+.diagnosis__actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.diagnosis__remove {
+    background: transparent;
+    color: var(--danger-color, #b00020);
+    border: 1px solid rgba(176, 0, 32, 0.12);
+}

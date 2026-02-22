@@ -30,7 +30,8 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
     const resultSet: WorkerResponseAction[][] = yield join(tasks);
     const results = resultSet.flat();
 
-    const updatePayload = results.flatMap((r) => (r.type === 'success' ? [r.parsedFeed] : []));
+    const now = new Date().toISOString();
+    const updatePayload = results.flatMap((r) => (r.type === 'success' ? [{ ...r.parsedFeed, lastFetched: now }] : []));
     yield put(feedsSlice.actions.updateFeeds(updatePayload));
     yield put(
         sessionSlice.actions.changeFeedsStatus({

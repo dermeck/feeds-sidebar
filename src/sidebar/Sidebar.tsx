@@ -6,6 +6,7 @@ import optionsSlice, { selectOptions } from '../store/slices/options';
 import sessionSlice, { MenuType, selectIsLoadingFeeds } from '../store/slices/session';
 import { MainView } from './MainView/MainView';
 import { SubscribeView } from './SubscribeView/SubscribeView';
+import { DiagnosisView } from './DiagnosisView/DiagnosisView';
 import { View } from './App';
 import { Button } from '../base-components/Button/Button';
 import { Header } from '../base-components/Header/Header';
@@ -115,6 +116,8 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                 {activeView === View.subscribe && (
                     <SubscribeView urlInputRef={urlInputRef} onClose={() => changeView(View.feedList)} />
                 )}
+
+                {activeView === View.diagnosis && <DiagnosisView onClose={() => changeView(View.feedList)} />}
             </Drawer>
         </div>
     );

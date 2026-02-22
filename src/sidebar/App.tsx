@@ -7,6 +7,7 @@ import Sidebar from './Sidebar';
 export const enum View {
     feedList = 'feedList',
     subscribe = 'subscribe',
+    diagnosis = 'diagnosis',
 }
 
 const App: FunctionComponent = () => {
