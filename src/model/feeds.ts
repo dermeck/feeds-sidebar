@@ -12,6 +12,7 @@ export interface Feed {
     items: ReadonlyArray<FeedItem>;
     link?: string; // website url
     title?: string;
+    lastFetched?: string;
 }
 
 export const enum NodeType {

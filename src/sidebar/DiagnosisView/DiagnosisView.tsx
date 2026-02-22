@@ -33,10 +33,15 @@ export const DiagnosisView = ({ onClose }: Props) => {
                             {errored.map((entry) => {
                                 const feed = feeds.find((f) => f.id === entry.url);
                                 const title = feed?.title ?? entry.url;
+                                const lastFetched = feed?.lastFetched;
+                                const lastFetchedStr = lastFetched ? new Date(lastFetched).toLocaleString() : '—';
 
                                 return (
                                     <li key={entry.url} className="diagnosis__row diagnosis__row--error">
-                                        <div className="diagnosis__name">{title}</div>
+                                        <div className="diagnosis__name">
+                                            <div className="diagnosis__title">{title}</div>
+                                            <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
+                                        </div>
                                         <div className="diagnosis__status">{entry.status}</div>
                                         <button
                                             className="button diagnosis__retry"
@@ -56,10 +61,15 @@ export const DiagnosisView = ({ onClose }: Props) => {
                         {others.map((entry) => {
                             const feed = feeds.find((f) => f.id === entry.url);
                             const title = feed?.title ?? entry.url;
+                            const lastFetched = feed?.lastFetched;
+                            const lastFetchedStr = lastFetched ? new Date(lastFetched).toLocaleString() : '—';
 
                             return (
                                 <li key={entry.url} className="diagnosis__row">
-                                    <div className="diagnosis__name">{title}</div>
+                                    <div className="diagnosis__name">
+                                        <div className="diagnosis__title">{title}</div>
+                                        <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
+                                    </div>
                                     <div className="diagnosis__status">{entry.status}</div>
                                 </li>
                             );

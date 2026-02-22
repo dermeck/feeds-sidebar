@@ -51,6 +51,15 @@
     white-space: nowrap;
 }
 
+.diagnosis__title {
+    font-weight: 500;
+}
+
+.diagnosis__lastfetched {
+    font-size: 0.8rem;
+    color: var(--muted-text-color, #666);
+}
+
 .diagnosis__status {
     flex: 0 0 auto;
     width: 80px;
