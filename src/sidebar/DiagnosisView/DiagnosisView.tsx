@@ -1,10 +1,14 @@
+import { ArrowLeft } from '@phosphor-icons/react';
+
 import React, { useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchFeedsCommand, selectFeeds } from '../../store/slices/feeds';
-import { selectOptions } from '../../store/slices/options';
-import feedsSlice from '../../store/slices/feeds';
-import { FeedFetchStatus } from '../../store/slices/session';
+
+import { Button } from '../../base-components/Button/Button';
+import { Header } from '../../base-components/Header/Header';
 import { Feed, FeedItem } from '../../model/feeds';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import feedsSlice, { fetchFeedsCommand, selectFeeds } from '../../store/slices/feeds';
+import { selectOptions } from '../../store/slices/options';
+import { FeedFetchStatus } from '../../store/slices/session';
 
 type Props = {
     onClose: () => void;
@@ -16,11 +20,69 @@ type DiagnosisEntry = {
     status?: FeedFetchStatus;
 };
 
+const formatDaysAgo = (iso?: string) => {
+    if (!iso) return '—';
+    const t = Date.parse(iso);
+    if (isNaN(t)) return '—';
+    const days = Math.floor((Date.now() - t) / (24 * 60 * 60 * 1000));
+    if (days <= 0) return 'today';
+    if (days === 1) return '1 day ago';
+    return `${days} days ago`;
+};
+
+const getLatestItem = (feed?: Feed): FeedItem | undefined => {
+    let latest = 0;
+    let latestItem: FeedItem | undefined;
+
+    for (const item of feed?.items ?? []) {
+        const dateStr = item.published ?? item.lastModified;
+        if (!dateStr) continue;
+        const t = Date.parse(dateStr);
+        if (isNaN(t)) continue;
+        if (t > latest) {
+            latest = t;
+            latestItem = item;
+        }
+    }
+
+    return latestItem;
+};
+
+const DiagnosisRow = (props: { entry: DiagnosisEntry; status: string; children?: React.ReactNode }) => {
+    const { entry, status, children } = props;
+    const latestItem = getLatestItem(entry.feed);
+
+    return (
+        <li className="diagnosis-view__row">
+            <div className="diagnosis-view__row-header">
+                <span className="diagnosis-view__feed-title">{entry.feed?.title ?? entry.url}</span>
+                <span className="diagnosis-view__status">{status}</span>
+            </div>
+            <div className="diagnosis-view__detail">Last fetch: {formatDaysAgo(entry.feed?.lastFetched)}</div>
+            <div className="diagnosis-view__detail">
+                Latest item: {formatDaysAgo(latestItem?.published ?? latestItem?.lastModified)}{' '}
+                {latestItem && (
+                    <a
+                        className="diagnosis-view__latest-link"
+                        href={latestItem.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {latestItem.title ?? latestItem.url}
+                    </a>
+                )}
+            </div>
+            {children && <div className="diagnosis-view__actions">{children}</div>}
+        </li>
+    );
+};
+
 export const DiagnosisView = ({ onClose }: Props) => {
     const dispatch = useAppDispatch();
 
-    const feedStatus = useAppSelector((s) => s.session.feedStatus);
+    const feedStatus = useAppSelector((state) => state.session.feedStatus);
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));
+    const options = useAppSelector(selectOptions);
 
     // all subscribed feeds are listed, feedStatus only holds entries of the current session
     // (it can also contain urls without a corresponding feed, e.g. recently added and never fetched successfully)
@@ -40,20 +102,18 @@ export const DiagnosisView = ({ onClose }: Props) => {
 
     const errored = entries.filter((entry) => entry.status === 'error');
 
-    const options = useAppSelector(selectOptions);
-    const INACTIVE_DAYS = options.diagnosisInactiveDays ?? 60;
+    const thresholdMs = (options.diagnosisInactiveDays ?? 60) * 24 * 60 * 60 * 1000;
     const nowMs = Date.now();
-    const thresholdMs = INACTIVE_DAYS * 24 * 60 * 60 * 1000;
 
     const inactive = entries.filter((entry) => {
         if (entry.status === 'error') return false; // already in errored
         const feed = entry.feed;
         if (!feed) return true; // treat unknown feed as inactive
 
-        // if feed has no items it's inactive
-        if (!feed.items || feed.items.length === 0) return true;
+        // a feed without items is only inactive if it was fetched in this session,
+        // otherwise it is not fetched yet
+        if (feed.items.length === 0) return entry.status !== undefined;
 
-        // check if any item is newer than threshold
         const hasRecentItem = feed.items.some((item) => {
             const dateStr = item.published ?? item.lastModified;
             if (!dateStr) return false;
@@ -66,194 +126,68 @@ export const DiagnosisView = ({ onClose }: Props) => {
     });
 
     const others = entries.filter(
-        (f) => !errored.some((e) => e.url === f.url) && !inactive.some((i) => i.url === f.url),
+        (entry) => !errored.some((e) => e.url === entry.url) && !inactive.some((i) => i.url === entry.url),
     );
 
-    const formatDaysAgo = (iso?: string) => {
-        if (!iso) return '—';
-        const t = Date.parse(iso);
-        if (isNaN(t)) return '—';
-        const diff = Date.now() - t;
-        const days = Math.floor(diff / (24 * 60 * 60 * 1000));
-        if (days <= 0) return 'today';
-        if (days === 1) return '1 day ago';
-        return `${days} days ago`;
-    };
-
-    const getLatestItem = (feed?: Feed | undefined): FeedItem | undefined => {
-        if (!feed || !feed.items || feed.items.length === 0) return undefined;
-        let latest = 0;
-        let latestItem: FeedItem | undefined;
-        for (const item of feed.items) {
-            const dateStr = item.published ?? item.lastModified;
-            if (!dateStr) continue;
-            const t = Date.parse(dateStr);
-            if (isNaN(t)) continue;
-            if (t > latest) {
-                latest = t;
-                latestItem = item;
-            }
+    const removeFeed = (url: string, message: string) => {
+        if (window.confirm(message)) {
+            dispatch(feedsSlice.actions.deleteFeed({ url }));
         }
-        return latestItem;
     };
 
     return (
-        <div className="diagnosis__container">
-            <div className="diagnosis__header">
-                <h2>Diagnosis</h2>
-                <button className="button" onClick={onClose} aria-label="Close Diagnosis">
-                    Close
-                </button>
-            </div>
+        <div className="diagnosis-view">
+            <Header>
+                <Button variant="toolbar" title="Back to Feed List" onClick={onClose}>
+                    <ArrowLeft size={22} />
+                </Button>
+                <h1 className="diagnosis-view__title">Diagnosis</h1>
+            </Header>
 
-            <div className="diagnosis__list">
+            <div className="diagnosis-view__content">
                 {errored.length > 0 && (
-                    <section className="diagnosis__section diagnosis__section--errors">
-                        <h3 className="diagnosis__section-title">Feeds with errors</h3>
-                        <ul>
-                            {errored.map((entry) => {
-                                const feed = entry.feed;
-                                const title = feed?.title ?? entry.url;
-                                const lastFetched = feed?.lastFetched;
-                                const lastFetchedStr = formatDaysAgo(lastFetched);
-                                const latestItem = getLatestItem(feed);
-                                const latestIso = latestItem
-                                    ? (latestItem.published ?? latestItem.lastModified)
-                                    : undefined;
-                                const latestStr = formatDaysAgo(latestIso);
-
-                                return (
-                                    <li key={entry.url} className="diagnosis__row diagnosis__row--error">
-                                        <div className="diagnosis__name">
-                                            <div className="diagnosis__title">{title}</div>
-                                            <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
-                                            <div className="diagnosis__latestitem">
-                                                Latest item: {latestStr}{' '}
-                                                {latestItem && (
-                                                    <a
-                                                        className="diagnosis__latestlink"
-                                                        href={latestItem.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer">
-                                                        {latestItem.title ?? latestItem.url}
-                                                    </a>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div className="diagnosis__status">{entry.status}</div>
-                                        <div className="diagnosis__actions">
-                                            <button
-                                                className="button diagnosis__retry"
-                                                onClick={() => dispatch(fetchFeedsCommand([entry.url]))}>
-                                                Retry
-                                            </button>
-                                            <button
-                                                className="button diagnosis__remove"
-                                                onClick={() => {
-                                                    if (window.confirm('Remove this feed from subscriptions?')) {
-                                                        dispatch(feedsSlice.actions.deleteFeed({ url: entry.url }));
-                                                    }
-                                                }}>
-                                                Remove
-                                            </button>
-                                        </div>
-                                    </li>
-                                );
-                            })}
+                    <section className="diagnosis-view__section diagnosis-view__section--error">
+                        <h2 className="diagnosis-view__section-heading">Feeds with errors</h2>
+                        <ul className="diagnosis-view__list">
+                            {errored.map((entry) => (
+                                <DiagnosisRow key={entry.url} entry={entry} status={entry.status ?? ''}>
+                                    <Button onClick={() => dispatch(fetchFeedsCommand([entry.url]))}>Retry</Button>
+                                    <Button
+                                        onClick={() => removeFeed(entry.url, 'Remove this feed from subscriptions?')}
+                                    >
+                                        Remove
+                                    </Button>
+                                </DiagnosisRow>
+                            ))}
                         </ul>
                     </section>
                 )}
 
                 {inactive.length > 0 && (
-                    <section className="diagnosis__section diagnosis__section--inactive">
-                        <h3 className="diagnosis__section-title">Inactive feeds</h3>
-                        <ul>
-                            {inactive.map((entry) => {
-                                const feed = entry.feed;
-                                const title = feed?.title ?? entry.url;
-                                const lastFetched = feed?.lastFetched;
-                                const lastFetchedStr = formatDaysAgo(lastFetched);
-                                const latestItem = getLatestItem(feed);
-                                const latestIso = latestItem
-                                    ? (latestItem.published ?? latestItem.lastModified)
-                                    : undefined;
-                                const latestStr = formatDaysAgo(latestIso);
-
-                                return (
-                                    <li key={entry.url} className="diagnosis__row diagnosis__row--inactive">
-                                        <div className="diagnosis__name">
-                                            <div className="diagnosis__title">{title}</div>
-                                            <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
-                                            <div className="diagnosis__latestitem">
-                                                Latest item: {latestStr}{' '}
-                                                {latestItem && (
-                                                    <a
-                                                        className="diagnosis__latestlink"
-                                                        href={latestItem.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer">
-                                                        {latestItem.title ?? latestItem.url}
-                                                    </a>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div className="diagnosis__status">inactive</div>
-                                        <div className="diagnosis__actions">
-                                            <button
-                                                className="button diagnosis__remove"
-                                                onClick={() => {
-                                                    if (
-                                                        window.confirm('Remove this inactive feed from subscriptions?')
-                                                    ) {
-                                                        dispatch(feedsSlice.actions.deleteFeed({ url: entry.url }));
-                                                    }
-                                                }}>
-                                                Remove
-                                            </button>
-                                        </div>
-                                    </li>
-                                );
-                            })}
+                    <section className="diagnosis-view__section diagnosis-view__section--inactive">
+                        <h2 className="diagnosis-view__section-heading">Inactive feeds</h2>
+                        <ul className="diagnosis-view__list">
+                            {inactive.map((entry) => (
+                                <DiagnosisRow key={entry.url} entry={entry} status="inactive">
+                                    <Button
+                                        onClick={() =>
+                                            removeFeed(entry.url, 'Remove this inactive feed from subscriptions?')
+                                        }
+                                    >
+                                        Remove
+                                    </Button>
+                                </DiagnosisRow>
+                            ))}
                         </ul>
                     </section>
                 )}
 
-                <section className="diagnosis__section">
-                    <h3 className="diagnosis__section-title">Other feeds</h3>
-                    <ul>
-                        {others.map((entry) => {
-                            const feed = entry.feed;
-                            const title = feed?.title ?? entry.url;
-                            const lastFetched = feed?.lastFetched;
-                            const lastFetchedStr = formatDaysAgo(lastFetched);
-                            const latestItem = getLatestItem(feed);
-                            const latestIso = latestItem
-                                ? (latestItem.published ?? latestItem.lastModified)
-                                : undefined;
-                            const latestStr = formatDaysAgo(latestIso);
-
-                            return (
-                                <li key={entry.url} className="diagnosis__row">
-                                    <div className="diagnosis__name">
-                                        <div className="diagnosis__title">{title}</div>
-                                        <div className="diagnosis__lastfetched">Last fetch: {lastFetchedStr}</div>
-                                        <div className="diagnosis__latestitem">
-                                            Latest item: {latestStr}{' '}
-                                            {latestItem && (
-                                                <a
-                                                    className="diagnosis__latestlink"
-                                                    href={latestItem.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer">
-                                                    {latestItem.title ?? latestItem.url}
-                                                </a>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="diagnosis__status">{entry.status ?? 'not fetched yet'}</div>
-                                </li>
-                            );
-                        })}
+                <section className="diagnosis-view__section">
+                    <h2 className="diagnosis-view__section-heading">Other feeds</h2>
+                    <ul className="diagnosis-view__list">
+                        {others.map((entry) => (
+                            <DiagnosisRow key={entry.url} entry={entry} status={entry.status ?? 'not fetched yet'} />
+                        ))}
                     </ul>
                 </section>
             </div>
