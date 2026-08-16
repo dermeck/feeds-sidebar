@@ -1,3 +1,4 @@
+import feedsSlice from '../feeds';
 import { RootState } from '../../store';
 import sessionSlice, { initialState } from '../session';
 
@@ -37,5 +38,21 @@ describe('changeFeedsStatus action', () => {
             { url: 'first.url', status: 'loading' },
             { url: 'second.url', status: 'loading' },
         ]);
+    });
+});
+
+describe('deleteFeed action', () => {
+    it('removes the status entry of the deleted feed', () => {
+        const prevState: RootState['session'] = {
+            ...initialState,
+            feedStatus: [
+                { url: 'first.url', status: 'error' },
+                { url: 'second.url', status: 'loaded' },
+            ],
+        };
+
+        const action = feedsSlice.actions.deleteFeed({ url: 'first.url' });
+
+        expect(sessionSlice.reducer(prevState, action).feedStatus).toEqual([{ url: 'second.url', status: 'loaded' }]);
     });
 });

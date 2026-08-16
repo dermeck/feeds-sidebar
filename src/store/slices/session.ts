@@ -105,6 +105,9 @@ const sessionSlice = createSlice({
                 newFolderEditActive: false,
             };
         });
+        builder.addCase(feedsSlice.actions.deleteFeed, (state, action) => {
+            state.feedStatus = state.feedStatus.filter((entry) => entry.url !== action.payload.url);
+        });
     },
 });
 
