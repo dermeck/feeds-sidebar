@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../../store/slices/feeds';
 import { selectOptions } from '../../store/slices/options';
 import feedsSlice from '../../store/slices/feeds';
+import { FeedFetchStatus } from '../../store/slices/session';
 import { Feed, FeedItem } from '../../model/feeds';
 
 type Props = {
     onClose: () => void;
+};
+
+type DiagnosisEntry = {
+    url: string;
+    feed?: Feed;
+    status?: FeedFetchStatus;
 };
 
 export const DiagnosisView = ({ onClose }: Props) => {
@@ -15,16 +22,32 @@ export const DiagnosisView = ({ onClose }: Props) => {
     const feedStatus = useAppSelector((s) => s.session.feedStatus);
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));
 
-    const errored = feedStatus.filter((f) => f.status === 'error');
+    // all subscribed feeds are listed, feedStatus only holds entries of the current session
+    // (it can also contain urls without a corresponding feed, e.g. recently added and never fetched successfully)
+    const entries: ReadonlyArray<DiagnosisEntry> = useMemo(() => {
+        const subscribed = feeds.map((feed) => ({
+            url: feed.id,
+            feed,
+            status: feedStatus.find((entry) => entry.url === feed.id)?.status,
+        }));
+
+        const withoutFeed = feedStatus
+            .filter((entry) => !feeds.some((feed) => feed.id === entry.url))
+            .map((entry) => ({ url: entry.url, status: entry.status }));
+
+        return [...subscribed, ...withoutFeed];
+    }, [feeds, feedStatus]);
+
+    const errored = entries.filter((entry) => entry.status === 'error');
 
     const options = useAppSelector(selectOptions);
     const INACTIVE_DAYS = options.diagnosisInactiveDays ?? 60;
     const nowMs = Date.now();
     const thresholdMs = INACTIVE_DAYS * 24 * 60 * 60 * 1000;
 
-    const inactive = feedStatus.filter((entry) => {
+    const inactive = entries.filter((entry) => {
         if (entry.status === 'error') return false; // already in errored
-        const feed = feeds.find((f) => f.id === entry.url);
+        const feed = entry.feed;
         if (!feed) return true; // treat unknown feed as inactive
 
         // if feed has no items it's inactive
@@ -42,7 +65,7 @@ export const DiagnosisView = ({ onClose }: Props) => {
         return !hasRecentItem;
     });
 
-    const others = feedStatus.filter(
+    const others = entries.filter(
         (f) => !errored.some((e) => e.url === f.url) && !inactive.some((i) => i.url === f.url),
     );
 
@@ -89,7 +112,7 @@ export const DiagnosisView = ({ onClose }: Props) => {
                         <h3 className="diagnosis__section-title">Feeds with errors</h3>
                         <ul>
                             {errored.map((entry) => {
-                                const feed = feeds.find((f) => f.id === entry.url);
+                                const feed = entry.feed;
                                 const title = feed?.title ?? entry.url;
                                 const lastFetched = feed?.lastFetched;
                                 const lastFetchedStr = formatDaysAgo(lastFetched);
@@ -146,7 +169,7 @@ export const DiagnosisView = ({ onClose }: Props) => {
                         <h3 className="diagnosis__section-title">Inactive feeds</h3>
                         <ul>
                             {inactive.map((entry) => {
-                                const feed = feeds.find((f) => f.id === entry.url);
+                                const feed = entry.feed;
                                 const title = feed?.title ?? entry.url;
                                 const lastFetched = feed?.lastFetched;
                                 const lastFetchedStr = formatDaysAgo(lastFetched);
@@ -199,10 +222,10 @@ export const DiagnosisView = ({ onClose }: Props) => {
                     <h3 className="diagnosis__section-title">Other feeds</h3>
                     <ul>
                         {others.map((entry) => {
-                            const feed = feeds.find((f) => f.id === entry.url);
+                            const feed = entry.feed;
                             const title = feed?.title ?? entry.url;
                             const lastFetched = feed?.lastFetched;
-                            const lastFetchedStr = lastFetched ? new Date(lastFetched).toLocaleString() : '—';
+                            const lastFetchedStr = formatDaysAgo(lastFetched);
                             const latestItem = getLatestItem(feed);
                             const latestIso = latestItem
                                 ? (latestItem.published ?? latestItem.lastModified)
@@ -227,7 +250,7 @@ export const DiagnosisView = ({ onClose }: Props) => {
                                             )}
                                         </div>
                                     </div>
-                                    <div className="diagnosis__status">{entry.status}</div>
+                                    <div className="diagnosis__status">{entry.status ?? 'not fetched yet'}</div>
                                 </li>
                             );
                         })}

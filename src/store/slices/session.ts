@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import feedsSlice from './feeds';
 import { DetectedFeed } from '../../services/feedDetection/feedDetection';
 
-type FeedFetchStatus = 'loading' | 'loaded' | 'error';
+export type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
 export const enum MenuType {
     contextMenu,
