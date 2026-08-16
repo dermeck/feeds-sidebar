@@ -7,6 +7,7 @@ const LINK_TYPES = [
     'application/rss',
     'application/atom',
     'application/rdf',
+    'application/feed+json',
     'text/rss+xml',
     'text/atom+xml',
     'text/rdf+xml',
@@ -15,14 +16,28 @@ const LINK_TYPES = [
     'text/rdf',
 ];
 
-const mapLink = (link: HTMLLinkElement) => {
-    const { type, href, title = link.href } = link;
-    return { type, href, title };
+// json feeds are often announced as plain json, therefore an additional indicator is required
+const JSON_LINK_TYPE = 'application/json';
+
+const isFeedLink = (link: HTMLLinkElement) => {
+    const type = link.type.toLowerCase().trim();
+
+    if (LINK_TYPES.includes(type)) {
+        return true;
+    }
+
+    return type === JSON_LINK_TYPE && link.relList.contains('alternate');
 };
+
+const mapLink = (link: HTMLLinkElement): DetectedFeed => ({
+    type: link.type,
+    href: link.href,
+    title: link.title !== '' ? link.title : link.href,
+});
 
 export const detectFeedsInLinks = (): DetectedFeed[] => {
     const QUERY = 'link[type]';
     const LINKS: HTMLLinkElement[] = Array.from(document.querySelectorAll(QUERY));
-    const feedLinks = LINKS.filter((x) => LINK_TYPES.includes(x.type)).map(mapLink);
-    return feedLinks.length > 0 ? feedLinks : [];
+
+    return LINKS.filter(isFeedLink).map(mapLink);
 };
