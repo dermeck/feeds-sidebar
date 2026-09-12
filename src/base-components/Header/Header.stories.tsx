@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowsClockwise, DotsThreeOutline } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowsClockwise, DotsThreeOutline } from '@phosphor-icons/react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import { Button } from '../Button/Button';
@@ -22,7 +22,7 @@ export const WithTitle: Story = {
         children: (
             <>
                 <Button variant="toolbar" title="Back to Feed List">
-                    <ArrowsClockwise size={22} />
+                    <ArrowLeft size={22} />
                 </Button>
                 <h1 className="subscribe-view__title">Add New Feed</h1>
             </>

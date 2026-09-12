@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import Menu from './Menu/Menu';
 import { View } from './App';
 import { MenuType } from '../store/slices/session';
-import { emptyStateFixture, sessionFixture, stateFixture } from '../storybook/fixtures';
+import { emptyStateFixture, mozillaFeedUrl, sessionFixture, stateFixture } from '../storybook/fixtures';
 import { withSidebarFrame, withStore } from '../storybook/decorators';
 
 // the menu is a sibling of the sidebar (rendered by App) and needs the same view state
@@ -70,10 +70,7 @@ export const LoadingFeeds: Story = {
             ...stateFixture,
             session: {
                 ...sessionFixture,
-                feedStatus: [
-                    ...sessionFixture.feedStatus.slice(1),
-                    { url: 'https://example.com/feed', status: 'loading' },
-                ],
+                feedStatus: [...sessionFixture.feedStatus, { url: mozillaFeedUrl, status: 'loading' }],
             },
         }),
     ],
