@@ -1,7 +1,0 @@
-.more-menu__import-input {
-    /* do not take up any space */
-    display: block;
-    height: 0;
-
-    visibility: hidden;
-}

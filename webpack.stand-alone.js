@@ -40,8 +40,14 @@ module.exports = (env) => ({
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
             'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
         },
-        static: {
-            directory: path.join(__dirname, 'src/stand-alone'),
-        },
+        static: [
+            {
+                directory: path.join(__dirname, 'src/stand-alone'),
+            },
+            {
+                // serve the stylesheets of the extension from their source location
+                directory: path.join(__dirname, 'src'),
+            },
+        ],
     },
 });

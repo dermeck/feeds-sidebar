@@ -1,8 +1,0 @@
-.header {
-    display: flex;
-    align-items: center;
-    height: var(--header-height);
-    padding: 0px 4px;
-    color: var(--toolbar-text-color);
-    background-color: var(--toolbar-background-color);
-}

@@ -4,7 +4,6 @@
 @import './Menu/menu.css';
 @import './SubscribeView/subscribe-view.css';
 @import './DiagnosisView/diagnosis-view.css';
-@import './FeedList/feed-list.css';
 
 .sidebar__container {
     background-color: var(--sidebar-background-color);

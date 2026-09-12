@@ -20,8 +20,10 @@ Load the Extension
   - **MultiProcess Browser Console** `Ctrl+Shif+J`
 
 ## Stand-Alone Mode
-**this needs adjustments, styles are broken**
-
 `start:stand-alone` will mount the sidebar component into stand alone web page reachable at `localhost:8080`. It is not fully functional since it lacks extension features.
+
+The stylesheets are served directly from `src` by the dev server, so they always match the current sources.
+
+Since it runs on a regular web page, feeds can only be fetched from servers that send permissive CORS headers. Feeds without those headers will be displayed with an error.
 
 It is intended for debugging with the React and Redux DevTools. 
