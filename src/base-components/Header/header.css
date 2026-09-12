@@ -3,6 +3,7 @@
     align-items: center;
     height: var(--header-height);
     padding: 0px 4px;
+    border-bottom: 1px solid var(--control-border-color);
     color: var(--toolbar-text-color);
     background-color: var(--toolbar-background-color);
 }
