@@ -23,7 +23,7 @@
     border: 1px solid var(--menu-border-color);
     border-radius: 2px;
     background-color: var(--sidebar-background-color);
-    color: var(--sidebar-tex-color);
+    color: var(--sidebar-text-color);
 }
 
 .menu__list {

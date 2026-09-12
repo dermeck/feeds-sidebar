@@ -5,15 +5,11 @@
     list-style: none;
 
     padding: 6.5px;
-    padding-left: 24px;
+    padding-left: 4px;
 
     &:hover {
         background-color: var(--menu-hover-background-color);
         color: var(--menu-hover-text-color);
-    }
-
-    &:has(.menu__list-item-icon) {
-        padding-left: 4px;
     }
 }
 
