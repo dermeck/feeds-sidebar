@@ -49,6 +49,13 @@
     --error-text-color: light-dark(#b3261e, #f2b8b5);
     --warning-text-color: light-dark(#8a6100, #e6c260);
 
+    /* aligned with Acorn focus outline tokens (tokens-shared.css):
+     * 2px solid AccentColor in the chrome, 2px outward offset */
+    --focus-outline-color: AccentColor;
+    --focus-outline-width: 2px;
+    --focus-outline-offset: 2px;
+    --focus-outline: var(--focus-outline-width) solid var(--focus-outline-color);
+
     --header-height: 48px;
     --control-height: 32px;
     --menu-width: 200px;
@@ -69,4 +76,9 @@ body {
 
 body * {
     box-sizing: border-box;
+}
+
+:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
 }
