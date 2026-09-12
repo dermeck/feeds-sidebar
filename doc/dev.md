@@ -19,6 +19,11 @@ Load the Extension
   - **Browser Toolbox** / Debug the Browser `Ctrl+Shift+Alt+I` (needs to be enabled https://firefox-source-docs.mozilla.org/devtools-user/browser_toolbox/index.html)
   - **MultiProcess Browser Console** `Ctrl+Shif+J`
 
+## Storybook
+`yarn storybook` starts Storybook at `localhost:6006`, `yarn build:storybook` creates a static build in `storybook-static`.
+
+Stories render the components without the extension APIs (like the stand-alone mode). Components that read from the store are wrapped in the `withStore` decorator which provides a store without sagas and extension middleware, preloaded with the state fixtures from `src/storybook`. Firefox specific system colors are not available in other browsers, `.storybook/storybook.css` provides fallback values for them.
+
 ## Stand-Alone Mode
 `start:stand-alone` will mount the sidebar component into stand alone web page reachable at `localhost:8080`. It is not fully functional since it lacks extension features.
 

@@ -1,0 +1,49 @@
+/*
+ * Storybook only styles.
+ *
+ * The sidebar styles rely on Firefox system colors (e.g. -moz-Dialog). Those are
+ * unknown in other browsers, so fallbacks are defined here to keep stories readable
+ * everywhere. They are close to, but not exactly, the Firefox appearance.
+ */
+:root {
+    --sidebar-background-color: light-dark(#ffffff, #23222b);
+    --sidebar-text-color: light-dark(#15141a, #fbfbfe);
+
+    --control-border-color: light-dark(#8f8f9d, #8f8f9d);
+
+    --button-background-color: light-dark(#f0f0f4, #2b2a33);
+    --button-text-color: light-dark(#15141a, #fbfbfe);
+    --button-hover-background-color: light-dark(#e0e0e6, #52525e);
+    --button-hover-text-color: light-dark(#15141a, #fbfbfe);
+    --button-active-background-color: light-dark(#cfcfd8, #5b5b66);
+    --button-active-text-color: light-dark(#15141a, #fbfbfe);
+
+    --toolbar-background-color: light-dark(#f9f9fb, #2b2a33);
+    --toolbar-text-color: light-dark(#15141a, #fbfbfe);
+
+    --item-hover-background-color: light-dark(#e0e0e6, #42414d);
+    --item-hover-text-color: light-dark(#15141a, #fbfbfe);
+    --selected-item-background-color: light-dark(#0060df, #0df);
+    --selected-item-text-color: light-dark(#ffffff, #15141a);
+    --selected-item-no-focus-background-color: light-dark(#e0e0e6, #42414d);
+    --selected-item-no-focus-text-color: light-dark(#15141a, #fbfbfe);
+
+    --menu-hover-background-color: light-dark(#e0e0e6, #42414d);
+    --menu-hover-text-color: light-dark(#15141a, #fbfbfe);
+    --menu-border-color: light-dark(#cfcfd8, #3a3944);
+
+    --message-background-color: light-dark(#f9f9fb, #2b2a33);
+    --message-text-color: light-dark(#15141a, #fbfbfe);
+}
+
+.storybook-sidebar-frame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    min-height: 480px;
+    overflow: hidden;
+    border: 1px solid var(--control-border-color);
+    font: caption;
+    user-select: none;
+}
