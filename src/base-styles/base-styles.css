@@ -82,3 +82,41 @@ body * {
     outline: var(--focus-outline);
     outline-offset: var(--focus-outline-offset);
 }
+
+/* High Contrast Mode
+ * mirrors the HCM layers of Acorn's tokens-shared.css (prefers-contrast and
+ * forced-colors) mapped onto this project's variables. The currentColor tints
+ * and hard-coded light-dark() colors are replaced by system colors so that
+ * interactive controls stay distinguishable. */
+
+@media (prefers-contrast) {
+    :root {
+        /* tinted chrome buttons become plain ghost buttons */
+        --button-background-color: transparent;
+        --button-hover-background-color: var(--item-hover-background-color);
+        --button-hover-text-color: var(--item-hover-text-color);
+        --button-active-background-color: var(--selected-item-background-color);
+        --button-active-text-color: var(--selected-item-text-color);
+        /* hard-coded status colors fall back to the text color */
+        --error-text-color: var(--sidebar-text-color);
+        --warning-text-color: var(--sidebar-text-color);
+    }
+}
+
+@media (forced-colors) {
+    :root {
+        --button-background-color: ButtonFace;
+        --button-text-color: ButtonText;
+        --button-hover-background-color: SelectedItemText;
+        --button-hover-text-color: SelectedItem;
+        --button-active-background-color: SelectedItemText;
+        --button-active-text-color: SelectedItem;
+        --focus-outline-color: ButtonText;
+    }
+
+    /* ghost/toolbar buttons keep their transparent look, all other buttons
+     * get a visible outline so they stay recognizable */
+    .button:not(.toolbar-button) {
+        border: 1px solid ButtonText;
+    }
+}
