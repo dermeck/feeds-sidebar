@@ -18,6 +18,7 @@ export const DetectedFeeds = ({
             <ul className="detected-feeds-list">
                 {detectedFeeds.map((feed) => {
                     const labelText = feed.title === '' ? feed.href : feed.title;
+                    const isAdded = feeds.find((x) => x.id === feed.href) !== undefined;
 
                     return (
                         <li className="detected-feed" key={feed.href}>
@@ -27,11 +28,14 @@ export const DetectedFeeds = ({
                             <label title={labelText} className="detected-feed-label">
                                 {labelText}
                             </label>
-                            <button className="button detected-feed-action">
-                                {feeds.find((x) => x.id === feed.href) !== undefined ? (
-                                    <MinusCircle size={20} weight="bold" onClick={() => removeFeed(feed.href)} />
+                            <button
+                                className="button detected-feed-action"
+                                aria-label={isAdded ? `remove ${labelText}` : `add ${labelText}`}
+                                onClick={() => (isAdded ? removeFeed(feed.href) : addNewFeed(feed.href))}>
+                                {isAdded ? (
+                                    <MinusCircle size={20} weight="bold" />
                                 ) : (
-                                    <PlusCircle size={20} weight="bold" onClick={() => addNewFeed(feed.href)} />
+                                    <PlusCircle size={20} weight="bold" />
                                 )}
                             </button>
                         </li>
