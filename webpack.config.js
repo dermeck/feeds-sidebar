@@ -51,7 +51,7 @@ module.exports = (env) => ({
         }),
 
         new webpack.DefinePlugin({
-            STAND_ALONE: JSON.stringify(false),
+            'process.env.STAND_ALONE': JSON.stringify(false),
             'process.env.ENABLE_LOGGER_MIDDLEWARE': JSON.stringify(env.enableLoggerMiddleware),
         }),
     ],
