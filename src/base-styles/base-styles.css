@@ -19,12 +19,15 @@
 
     --control-border-color: ButtonBorder;
 
-    --button-background-color: ButtonFace;
-    --button-text-color: ButtonText;
-    --button-hover-background-color: -moz-ButtonHoverFace;
-    --button-hover-text-color: -moz-ButtonHoverText;
-    --button-active-background-color: -moz-ButtonHoverFace;
-    --button-active-text-color: -moz-ButtonHoverText;
+    /* aligned with Acorn platform tokens:
+     * buttons in the chrome are subtle currentColor tints, not ButtonFace
+     * (tokens-platform.css: --button-background-color/-hover/-active) */
+    --button-background-color: color-mix(in srgb, currentColor 13%, transparent);
+    --button-text-color: currentColor;
+    --button-hover-background-color: color-mix(in srgb, currentColor 17%, transparent);
+    --button-hover-text-color: currentColor;
+    --button-active-background-color: color-mix(in srgb, currentColor 30%, transparent);
+    --button-active-text-color: currentColor;
 
     --toolbar-background-color: -moz-Dialog;
     --toolbar-text-color: -moz-DialogText;
