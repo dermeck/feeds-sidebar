@@ -38,7 +38,7 @@ export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>) => {
     const today = new Date(Date.now());
     const yesterday = new Date(Date.now());
     yesterday.setDate(today.getDate() - 1);
-    const lastWeek = new Date();
+    const lastWeek = new Date(Date.now());
     lastWeek.setDate(today.getDate() - 7);
 
     const result: DateSortedFeedItems = {
