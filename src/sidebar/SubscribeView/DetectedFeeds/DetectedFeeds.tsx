@@ -31,7 +31,8 @@ export const DetectedFeeds = ({
                             <button
                                 className="button detected-feed-action"
                                 aria-label={isAdded ? `remove ${labelText}` : `add ${labelText}`}
-                                onClick={() => (isAdded ? removeFeed(feed.href) : addNewFeed(feed.href))}>
+                                onClick={() => (isAdded ? removeFeed(feed.href) : addNewFeed(feed.href))}
+                            >
                                 {isAdded ? (
                                     <MinusCircle size={20} weight="bold" />
                                 ) : (
