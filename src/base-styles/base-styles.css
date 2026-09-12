@@ -43,6 +43,9 @@
     --message-background-color: -moz-Dialog;
     --message-text-color: -moz-DialogText;
 
+    --error-text-color: light-dark(#b3261e, #f2b8b5);
+    --warning-text-color: light-dark(#8a6100, #e6c260);
+
     --header-height: 48px;
     --control-height: 32px;
     --menu-width: 200px;
