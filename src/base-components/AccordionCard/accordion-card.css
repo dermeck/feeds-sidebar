@@ -1,0 +1,48 @@
+.accordion-card {
+    margin-block-end: var(--space-small);
+    border: 1px solid var(--border-color-deemphasized);
+    border-radius: var(--border-radius-medium);
+    background-color: var(--background-color-canvas);
+}
+
+.accordion-card__header {
+    display: grid;
+    grid-template-columns: 16px 1fr auto;
+    align-items: center;
+    gap: var(--space-xsmall);
+    width: 100%;
+    padding: var(--space-xsmall) var(--space-small);
+    border: none;
+    border-radius: inherit;
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--button-background-color-hover);
+    }
+
+    &:focus-visible {
+        outline: var(--focus-outline);
+    }
+}
+
+.accordion-card__header-title {
+    font-weight: var(--font-weight-bold);
+}
+
+.accordion-card__header-count {
+    min-width: var(--size-item-medium);
+    padding-inline: var(--space-xsmall);
+    text-align: center;
+    line-height: var(--size-item-medium);
+    border-radius: var(--border-radius-circle);
+    background-color: var(--button-background-color-hover);
+    color: var(--text-color);
+}
+
+.accordion-card__content {
+    padding: 0 0 var(--space-xsmall);
+}
