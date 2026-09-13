@@ -4,6 +4,7 @@
 /dist
 /draft
 /web-ext-artifacts
+/storybook-static
 /yarn-error.log
 /.yarn/cache
 /.yarn/install-state.gz
