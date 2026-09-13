@@ -1,22 +1,20 @@
 .button {
     border: 1px solid var(--button-border-color);
-    border-radius: 4px;
+    border-radius: var(--button-border-radius);
     background-color: var(--button-background-color);
     color: var(--button-text-color);
-    font-size: 13px;
     font-weight: var(--button-font-weight);
-    line-height: 20px;
     min-height: var(--button-min-height);
     padding: var(--button-padding);
 
     &:hover {
-        background-color: var(--button-hover-background-color);
-        color: var(--button-hover-text-color);
+        background-color: var(--button-background-color-hover);
+        color: var(--button-text-color-hover);
     }
 
     &:active {
-        background-color: var(--button-active-background-color);
-        color: var(--button-active-text-color);
+        background-color: var(--button-background-color-active);
+        color: var(--button-text-color-active);
     }
 
     &:focus-visible {
@@ -33,16 +31,15 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--toolbar-text-color);
+    color: inherit;
     background-color: transparent;
 
-    /* icon size 22px */
     height: 32px;
     width: 32px;
     padding: var(--button-padding-icon);
 }
 
 .button--ui-active {
-    color: var(--button-active-text-color);
-    background-color: var(--button-active-background-color);
+    color: var(--button-text-color-active);
+    background-color: var(--button-background-color-active);
 }

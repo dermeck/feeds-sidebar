@@ -17,13 +17,14 @@
     top: var(--menu-anchor-top);
     left: var(--menu-anchor-left);
 
-    width: var(--menu-width);
+    width: max-content;
+    min-width: var(--menu-width);
     padding: 1px;
 
     border: 1px solid var(--menu-border-color);
-    border-radius: 2px;
-    background-color: var(--sidebar-background-color);
-    color: var(--sidebar-tex-color);
+    border-radius: var(--border-radius-medium);
+    background-color: var(--background-color-canvas);
+    color: var(--text-color);
 }
 
 .menu__list {

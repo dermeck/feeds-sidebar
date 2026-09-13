@@ -4,7 +4,7 @@
     align-items: center;
     list-style: none;
 
-    padding: 6.5px;
+    padding: var(--space-small);
     padding-left: 24px;
 
     &:hover {

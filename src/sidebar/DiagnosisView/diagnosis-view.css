@@ -23,7 +23,7 @@
 }
 
 .diagnosis-view__section--error .diagnosis-view__section-heading {
-    color: var(--error-text-color);
+    color: var(--text-color-error);
 }
 
 .diagnosis-view__section--inactive .diagnosis-view__section-heading {
@@ -62,19 +62,22 @@
 }
 
 .diagnosis-view__status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex: 0 0 auto;
     align-self: center;
     font-size: 0.85em;
     font-weight: 600;
-    line-height: 1.5;
-    padding: 0 8px;
-    border: 1px solid currentColor;
-    border-radius: 999px;
+    padding: 0 var(--space-xsmall);
+    /* outline (not border) so the stroke doesn't grow the badge or shift layout */
+    outline: 1px solid currentColor;
+    border-radius: var(--border-radius-small);
     text-transform: capitalize;
 }
 
 .diagnosis-view__section--error .diagnosis-view__status {
-    color: var(--error-text-color);
+    color: var(--text-color-error);
 }
 
 .diagnosis-view__section--inactive .diagnosis-view__status {
@@ -105,7 +108,7 @@
 }
 
 .diagnosis-view__actions .diagnosis-view__remove-button {
-    color: var(--error-text-color);
+    color: var(--text-color-error);
     background-color: transparent;
     border: 1px solid currentColor;
 }

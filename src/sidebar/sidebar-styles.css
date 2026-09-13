@@ -1,13 +1,16 @@
 @import '../base-styles/base-styles.css';
 @import '../base-components/base-components.css';
 @import './MainView/main-view.css';
+@import './MainView/date-sorted-list/date-sorted-list.css';
 @import './Menu/menu.css';
 @import './SubscribeView/subscribe-view.css';
 @import './DiagnosisView/diagnosis-view.css';
 
 .sidebar__container {
-    background-color: var(--sidebar-background-color);
-    color: var(--sidebar-text-color);
+    position: relative;
+    height: 100vh;
+    background-color: var(--background-color-canvas);
+    color: var(--text-color);
 }
 
 .sidebar__main-header {
@@ -40,15 +43,15 @@
     }
 
     .toolbar-button {
-        color: var(--toolbar-text-color);
+        color: inherit;
         background-color: transparent;
 
         &:hover {
-            background-color: var(--button-hover-background-color);
+            background-color: var(--button-background-color-hover);
         }
 
         &:active {
-            background-color: var(--button-active-background-color);
+            background-color: var(--button-background-color-active);
         }
 
         &:focus {
@@ -56,15 +59,57 @@
         }
 
         &.button--ui-active {
-            background-color: var(--button-active-background-color);
+            background-color: var(--button-background-color-active);
         }
     }
 }
 
 .text-input {
     height: 32px;
-    border: 1px solid var(--control-border-color);
-    border-radius: 2px;
+    border: 1px solid var(--border-color-interactive);
+    border-radius: var(--border-radius-small);
     padding-inline: 8px;
     min-width: 75px; /* prevent cutting off more menu button */
+
+    &:focus-visible {
+        outline: var(--focus-outline);
+        outline-offset: var(--focus-outline-offset);
+    }
+}
+
+.sidebar__filter {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .text-input {
+        width: 100%;
+        padding-inline-start: 28px;
+        padding-inline-end: 28px;
+    }
+}
+
+.sidebar__filter-icon {
+    position: absolute;
+    inset-inline-start: 8px;
+    color: var(--text-color-deemphasized);
+    pointer-events: none;
+}
+
+.filter-clear-button {
+    position: absolute;
+    inset-inline-end: 4px;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: var(--button-border-radius);
+    background-color: transparent;
+    color: var(--text-color-deemphasized);
+
+    &:hover {
+        background-color: var(--button-background-color-hover);
+        color: var(--button-text-color);
+    }
 }

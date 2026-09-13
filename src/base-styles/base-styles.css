@@ -1,67 +1,31 @@
 @import './animations.css';
+@import './acorn/tokens.css';
 
 :root {
     /* this has to be set to switch between light or dark */
     color-scheme: light dark;
 
-    /*color: light-dark(var(--light-color), var(--dark-color));*/
-    /*
-    --sidebar-background-light-color: Field;
-    --sidebar-text-light-color: FieldText;
-    --sidebar-background-dark-color: Canvas;
-    --sidebar-text-dark-color: CanvasText;
+    /* design tokens (Acorn platform set + HCM layers) come from ./acorn/tokens.css */
+    /* project-local tokens, no Acorn equivalent: */
 
-    /* background-color: color-mix(in srgb, var(--item-hover-background-color), white 30%); */
-    /* background-color: color-mix(in srgb, var(--item-hover-background-color), white 5%); */
+    --item-hover-background-color: var(--button-background-color-hover);
+    --item-hover-text-color: currentColor;
+    --selected-item-background-color: var(--color-accent-primary);
+    --selected-item-text-color: var(--button-text-color-primary);
+    --selected-item-no-focus-background-color: var(--color-accent-primary);
+    --selected-item-no-focus-text-color: var(--button-text-color-primary);
 
-    --sidebar-background-color: Canvas;
-    --sidebar-text-color: CanvasText;
-
-    --control-border-color: ButtonBorder;
-
-    --color-accent-primary: AccentColor;
-    --focus-outline-width: 2px;
-    --focus-outline-offset: 2px;
-    --focus-outline-color: var(--color-accent-primary);
-
-    --button-background-color: color-mix(in srgb, currentColor 13%, transparent);
-    --button-text-color: currentColor;
-    --button-hover-background-color: color-mix(in srgb, currentColor 17%, transparent);
-    --button-hover-text-color: currentColor;
-    --button-active-background-color: color-mix(in srgb, currentColor 30%, transparent);
-    --button-active-text-color: currentColor;
-
-    --button-border-color: transparent;
-    --button-font-weight: 600;
-    --button-min-height: var(--control-height);
-    --button-opacity-disabled: 0.5;
-    --button-padding: 4px 16px;
-    --button-padding-icon: 0;
-
-    --toolbar-background-color: -moz-Dialog;
-    --toolbar-text-color: -moz-DialogText;
-
-    --item-hover-background-color: -moz-CellHighlight;
-    --item-hover-text-color: -moz-CellHighlightText;
-    --selected-item-background-color: SelectedItem;
-    --selected-item-text-color: SelectedItemText;
-    --selected-item-no-focus-background-color: -moz-CellHighlight;
-    --selected-item-no-focus-text-color: -moz-CellHighlightText;
-
-    --menu-hover-background-color: -moz-MenuHover;
-    --menu-hover-text-color: -moz-MenuHoverText;
-    --menu-border-color: ButtonFace;
+    --menu-hover-background-color: var(--button-background-color-hover);
+    --menu-hover-text-color: currentColor;
+    --menu-border-color: var(--border-color-deemphasized);
 
     --message-background-color: -moz-Dialog;
     --message-text-color: -moz-DialogText;
 
-    --error-text-color: light-dark(#b3261e, #f2b8b5);
     --warning-text-color: light-dark(#8a6100, #e6c260);
 
     --header-height: 48px;
-    --control-height: 32px;
     --menu-width: 200px;
-    --scrollbar-background-width: 12px;
 }
 
 /* styles that were previously set in manifest version 2 ""browser_style": true" */
@@ -71,7 +35,7 @@ body {
     display: flex;
     flex-direction: column;
     color: light-dark(#222426, CanvasText);
-    font: caption;
+    font: menu;
     margin: 0;
     user-select: none;
 }

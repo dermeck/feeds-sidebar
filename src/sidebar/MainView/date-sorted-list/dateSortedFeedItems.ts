@@ -1,11 +1,13 @@
 import { Feed } from '../../../model/feeds';
 import { FeedListItemModel } from '../FeedList/item/FeedListItem';
 
+export type DateGroup = { date: string; items: FeedListItemModel[] };
+
 export type DateSortedFeedItems = {
     today: FeedListItemModel[];
     yesterday: FeedListItemModel[];
-    lastWeek: FeedListItemModel[];
-    older: FeedListItemModel[];
+    days: DateGroup[]; // days of the current month, newest first
+    months: DateGroup[]; // previous months, newest first
     unknown: FeedListItemModel[];
 };
 
@@ -13,7 +15,7 @@ type DateComparisonResult = 'equal' | 'before' | 'after';
 
 const compareDateDayMonthYear = (date1: Date, date2: Date): DateComparisonResult => {
     if (
-        date1.getDay() === date2.getDay() &&
+        date1.getDate() === date2.getDate() &&
         date1.getMonth() === date2.getMonth() &&
         date1.getFullYear() === date2.getFullYear()
     ) {
@@ -34,20 +36,38 @@ const compareDateDayMonthYear = (date1: Date, date2: Date): DateComparisonResult
     return 'after';
 };
 
+const toDayKey = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+const toMonthKey = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+};
+
+const toDateGroups = (groups: Map<string, FeedListItemModel[]>) =>
+    Array.from(groups.entries())
+        .sort(([a], [b]) => b.localeCompare(a))
+        .map(([date, items]) => ({ date, items }));
+
 export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>) => {
     const today = new Date(Date.now());
     const yesterday = new Date(Date.now());
     yesterday.setDate(today.getDate() - 1);
-    const lastWeek = new Date(Date.now());
-    lastWeek.setDate(today.getDate() - 7);
 
     const result: DateSortedFeedItems = {
         today: [],
         yesterday: [],
-        lastWeek: [],
-        older: [],
+        days: [],
+        months: [],
         unknown: [],
     };
+    const daysGroups = new Map<string, FeedListItemModel[]>();
+    const monthsGroups = new Map<string, FeedListItemModel[]>();
     for (const feed of feeds) {
         for (const feedItem of feed.items) {
             if (!feedItem.isRead) {
@@ -68,13 +88,18 @@ export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>) => {
                     continue;
                 }
 
-                if (compareDateDayMonthYear(lastWeek, itemDate) === 'before') {
-                    result.lastWeek.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
+                const item = { ...feedItem, parentId: feed.id, parentTitle: feed.title };
+                if (itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear()) {
+                    const key = toDayKey(itemDate);
+                    daysGroups.set(key, [...(daysGroups.get(key) ?? []), item]);
                 } else {
-                    result.older.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
+                    const key = toMonthKey(itemDate);
+                    monthsGroups.set(key, [...(monthsGroups.get(key) ?? []), item]);
                 }
             }
         }
     }
+    result.days = toDateGroups(daysGroups);
+    result.months = toDateGroups(monthsGroups);
     return result;
 };

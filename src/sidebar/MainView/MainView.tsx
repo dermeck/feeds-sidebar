@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 
 import { NodeMeta } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -9,7 +9,6 @@ import { MainViewFolderTree } from './folder-tree/MainViewFolderTree';
 import { MainViewPlainList } from './plain-list/MainViewPlainList';
 import { MainViewDateSortedList } from './date-sorted-list/MainViewDateSortedList';
 import { clsx } from 'clsx';
-import { useHasScrollbar } from '../../utils/hooks/useHasScrollbar';
 
 export type MainViewDisplayMode = 'folder-tree' | 'plain-list' | 'date-sorted-list';
 
@@ -19,8 +18,6 @@ type MainViewProps = {
 };
 
 const MainView = ({ displayMode, filterString }: MainViewProps) => {
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const scrollbarVisible = useHasScrollbar({ ref: scrollContainerRef });
     const dispatch = useAppDispatch();
     const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive); // TODO mr move to local state
     const topLevelNodes = useAppSelector((state) => selectTopLevelNodes(state.feeds));
@@ -33,12 +30,12 @@ const MainView = ({ displayMode, filterString }: MainViewProps) => {
     const contextValue = useMemo(() => ({ draggedNode, setDraggedNode }), [draggedNode]);
 
     return (
-        <div className={clsx('main-view', scrollbarVisible && 'main-view--scroll')} ref={scrollContainerRef}>
+        <div className="main-view">
             {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
 
             <DragDropContext value={contextValue}>
                 <MainViewFolderTree
-                    className={clsx(displayMode === 'folder-tree' ? 'view-visble' : 'view-hidden')}
+                    className={clsx(displayMode === 'folder-tree' ? 'view-visible' : 'view-hidden')}
                     nodes={topLevelNodes}
                     filterString={filterString}
                 />
@@ -51,7 +48,6 @@ const MainView = ({ displayMode, filterString }: MainViewProps) => {
                 className={clsx(displayMode === 'date-sorted-list' ? 'view-visible' : 'view-hidden')}
                 filterString={filterString}
             />
-            {scrollbarVisible && <div className="main-view__scrollbar-background" />}
         </div>
     );
 };

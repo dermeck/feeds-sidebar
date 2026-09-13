@@ -1,5 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { ArrowsClockwise, DotsThreeOutline, List, TreeView, CalendarBlank } from '@phosphor-icons/react';
+import {
+    ArrowsClockwise,
+    CalendarBlank,
+    DotsThreeOutline,
+    List,
+    MagnifyingGlass,
+    TreeView,
+    X,
+} from '@phosphor-icons/react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
@@ -50,52 +58,71 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
 
     return (
         <div
-            className="siderbar__container"
+            className="sidebar__container"
             onContextMenu={(e) => {
                 if (urlInputRef.current !== e.target) {
                     // allow paste into url input but prevent all other context menus
                     e.preventDefault();
                 }
             }}
-            onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
+            onBlur={() => dispatch(sessionSlice.actions.hideMenu())}
+        >
             <Header className="sidebar__main-header">
                 <Button
                     variant="toolbar"
                     title="Fetch all Feeds"
-                    onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.id)))}>
-                    <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={22} weight="regular" />
+                    onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.id)))}
+                >
+                    <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={18} weight="regular" />
                 </Button>
 
-                <input
-                    aria-label="filter text"
-                    className="text-input"
-                    value={filterString}
-                    onChange={(e) => setFilterString(e.target.value)}
-                />
+                <div className="sidebar__filter">
+                    <MagnifyingGlass size={16} className="sidebar__filter-icon" />
+                    <input
+                        aria-label="filter text"
+                        className="text-input"
+                        value={filterString}
+                        onChange={(e) => setFilterString(e.target.value)}
+                    />
+                    {filterString && (
+                        <button
+                            type="button"
+                            className="filter-clear-button"
+                            aria-label="clear filter"
+                            title="Clear filter"
+                            onClick={() => setFilterString('')}
+                        >
+                            <X size={14} weight="bold" />
+                        </button>
+                    )}
+                </div>
 
                 <div className="sidebar__display-mode-switch">
                     <Button
                         variant="toolbar"
                         title="Show Plain List"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('plain-list'))}
-                        active={mainViewDisplayMode === 'plain-list'}>
-                        <List size={20} />
+                        active={mainViewDisplayMode === 'plain-list'}
+                    >
+                        <List size={18} />
                     </Button>
 
                     <Button
                         variant="toolbar"
                         title="Show Folders"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('folder-tree'))}
-                        active={mainViewDisplayMode === 'folder-tree'}>
-                        <TreeView size={20} />
+                        active={mainViewDisplayMode === 'folder-tree'}
+                    >
+                        <TreeView size={18} />
                     </Button>
 
                     <Button
                         variant="toolbar"
                         title="Show Date Sorted List"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('date-sorted-list'))}
-                        active={mainViewDisplayMode === 'date-sorted-list'}>
-                        <CalendarBlank size={20} />
+                        active={mainViewDisplayMode === 'date-sorted-list'}
+                    >
+                        <CalendarBlank size={18} />
                     </Button>
                 </div>
 
@@ -105,8 +132,9 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     active={moreMenuVisible}
                     onClick={(e) => {
                         dispatch(sessionSlice.actions.showMoreMenu(getMoreMenuCoordinates(e.currentTarget)));
-                    }}>
-                    <DotsThreeOutline size={18} weight='fill'/>
+                    }}
+                >
+                    <DotsThreeOutline size={18} weight="fill" />
                 </Button>
             </Header>
 
