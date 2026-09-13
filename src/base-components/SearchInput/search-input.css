@@ -8,10 +8,13 @@
     width: 100%;
     min-width: 75px; /* prevent cutting off more menu button */
     height: var(--button-min-height);
-    border: 1px solid var(--border-color-interactive);
-    border-radius: var(--button-border-radius);
-    padding-inline: 28px; /* leave room for the icon and the clear button */
-    color: var(--text-color);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    box-sizing: border-box;
+    padding-inline-start: calc(2 * var(--space-medium) + var(--icon-size-xsmall));
+    padding-inline-end: calc(var(--size-item-medium) + var(--space-xsmall));
+    background-color: Field;
+    color: FieldText;
 
     &:focus-visible {
         outline: var(--focus-outline);
@@ -21,8 +24,8 @@
 
 .search-input__icon {
     position: absolute;
-    inset-inline-start: var(--space-small);
-    color: var(--text-color-deemphasized);
+    inset-inline-start: var(--space-medium);
+    color: var(--icon-color);
     pointer-events: none;
 }
 
@@ -34,7 +37,7 @@
     width: var(--size-item-medium);
     height: var(--size-item-medium);
     border: none;
-    border-radius: var(--button-border-radius);
+    border-radius: var(--border-radius-medium);
     background-color: transparent;
     color: var(--text-color-deemphasized);
     cursor: pointer;
