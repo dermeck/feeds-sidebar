@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import clsx from 'clsx';
 import { useAppSelector } from '../../../store/hooks';
-import { FeedItemList } from '../FeedList/FeedItemList';
-import { FeedListItemModel } from '../FeedList/item/FeedListItem';
 import { AccordionCard } from '../../../base-components/AccordionCard/AccordionCard';
 import { DateSortedFeedItems, getDateSortedFeedItems } from './dateSortedFeedItems';
-
-type Section = keyof DateSortedFeedItems;
+import { FeedItemList } from '../FeedList/FeedItemList';
+import { FeedListItemModel } from '../FeedList/item/FeedListItem';
 
 interface MainViewPlainListProps {
     className: string;
@@ -14,97 +13,81 @@ interface MainViewPlainListProps {
 
 const getItemLabel = (item: FeedListItemModel) => `${item.parentTitle ? `${item.parentTitle} | ` : ''}${item.title}`;
 
+const dayLabel = (key: string) =>
+    new Date(`${key}T00:00:00`).toLocaleDateString(undefined, {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+    });
+
+const monthLabel = (key: string) =>
+    new Date(`${key}-01T00:00:00`).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
 export const MainViewDateSortedList = ({ className, filterString }: MainViewPlainListProps) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
-    const [expandedSections, setExpandedSections] = useState<Section[]>(['today', 'yesterday']);
+    const [expandedSections, setExpandedSections] = useState<string[]>(['today', 'yesterday']);
     const sortedFeeds: DateSortedFeedItems = useMemo(() => {
         return getDateSortedFeedItems(feeds);
     }, [feeds]);
 
-    const isExpanded = useCallback((section: Section) => expandedSections.includes(section), [expandedSections]);
+    const isExpanded = useCallback((key: string) => expandedSections.includes(key), [expandedSections]);
 
     const toggleExpand = useCallback(
-        (section: Section) => {
-            if (expandedSections.includes(section)) {
-                setExpandedSections(expandedSections.filter((x) => x !== section));
+        (key: string) => {
+            if (expandedSections.includes(key)) {
+                setExpandedSections(expandedSections.filter((x) => x !== key));
             } else {
-                setExpandedSections([...expandedSections, section]);
+                setExpandedSections([...expandedSections, key]);
             }
         },
         [expandedSections],
     );
 
+    const renderFeedItems = (items: FeedListItemModel[]) => (
+        <FeedItemList items={items} filterString={filterString} getItemLabel={(item) => getItemLabel(item)} />
+    );
+
     return (
-        <div className={className}>
+        <div className={clsx(className, 'date-sorted-list')}>
             {sortedFeeds.today.length > 0 && (
-                <AccordionCard
-                    title="Today"
-                    count={sortedFeeds.today.length}
-                    expanded={isExpanded('today')}
-                    onClick={() => toggleExpand('today')}
-                >
-                    <FeedItemList
-                        items={sortedFeeds.today}
-                        filterString={filterString}
-                        getItemLabel={(item) => getItemLabel(item)}
-                    />
+                <AccordionCard title="Today" expanded={isExpanded('today')} onClick={() => toggleExpand('today')}>
+                    {renderFeedItems(sortedFeeds.today)}
                 </AccordionCard>
             )}
             {sortedFeeds.yesterday.length > 0 && (
                 <AccordionCard
                     title="Yesterday"
-                    count={sortedFeeds.yesterday.length}
                     expanded={isExpanded('yesterday')}
                     onClick={() => toggleExpand('yesterday')}
                 >
-                    <FeedItemList
-                        items={sortedFeeds.yesterday}
-                        filterString={filterString}
-                        getItemLabel={(item) => getItemLabel(item)}
-                    />
+                    {renderFeedItems(sortedFeeds.yesterday)}
                 </AccordionCard>
             )}
-            {sortedFeeds.lastWeek.length > 0 && (
+            {sortedFeeds.days.map((group) => (
                 <AccordionCard
-                    title="Last Week"
-                    count={sortedFeeds.lastWeek.length}
-                    expanded={isExpanded('lastWeek')}
-                    onClick={() => toggleExpand('lastWeek')}
+                    key={group.date}
+                    title={dayLabel(group.date)}
+                    expanded={isExpanded(group.date)}
+                    onClick={() => toggleExpand(group.date)}
                 >
-                    <FeedItemList
-                        items={sortedFeeds.lastWeek}
-                        filterString={filterString}
-                        getItemLabel={(item) => getItemLabel(item)}
-                    />
+                    {renderFeedItems(group.items)}
                 </AccordionCard>
-            )}
-            {sortedFeeds.older.length > 0 && (
+            ))}
+            {sortedFeeds.months.map((group) => (
                 <AccordionCard
-                    title="Older"
-                    count={sortedFeeds.older.length}
-                    expanded={isExpanded('older')}
-                    onClick={() => toggleExpand('older')}
+                    key={group.date}
+                    title={monthLabel(group.date)}
+                    expanded={isExpanded(group.date)}
+                    onClick={() => toggleExpand(group.date)}
                 >
-                    <FeedItemList
-                        items={sortedFeeds.older}
-                        filterString={filterString}
-                        getItemLabel={(item) => getItemLabel(item)}
-                    />
+                    {renderFeedItems(group.items)}
                 </AccordionCard>
-            )}
+            ))}
 
             {sortedFeeds.unknown.length > 0 && (
-                <AccordionCard
-                    title="Unknown"
-                    count={sortedFeeds.unknown.length}
-                    expanded={isExpanded('unknown')}
-                    onClick={() => toggleExpand('unknown')}
-                >
-                    <FeedItemList
-                        items={sortedFeeds.unknown}
-                        filterString={filterString}
-                        getItemLabel={(item) => getItemLabel(item)}
-                    />
+                <AccordionCard title="Unknown" expanded={isExpanded('unknown')} onClick={() => toggleExpand('unknown')}>
+                    {renderFeedItems(sortedFeeds.unknown)}
                 </AccordionCard>
             )}
         </div>

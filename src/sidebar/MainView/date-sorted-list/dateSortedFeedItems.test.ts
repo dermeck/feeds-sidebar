@@ -45,30 +45,91 @@ describe('#getDateSortedFeedItems', () => {
         expect(result.yesterday[0].id).toBe('yesterdayFeedId');
     });
 
-    it('assigns items  that are older than 2 days and newer than 7 days to "lastWeek"', () => {
+    it('assigns items of the current month that are neither today nor yesterday to "days"', () => {
         jest.spyOn(global.Date, 'now').mockImplementation(() => Date.parse('2024-11-15'));
 
         const result = getDateSortedFeedItems([
             {
                 id: 'feedId',
-                items: [itemFixture({ id: 'lastWeekFeedId', published: 'Wed Nov 13 2024' })],
+                items: [itemFixture({ id: 'dayFeedId', published: 'Wed Nov 13 2024' })],
             },
         ]);
 
-        expect(result.lastWeek[0].id).toBe('lastWeekFeedId');
+        expect(result.days[0].date).toBe('2024-11-13');
+        expect(result.days[0].items[0].id).toBe('dayFeedId');
     });
 
-    it('assigns items that are older than 1 week to "older"', () => {
+    it('groups "days" by day within the current month, newest first', () => {
         jest.spyOn(global.Date, 'now').mockImplementation(() => Date.parse('2024-11-15'));
 
         const result = getDateSortedFeedItems([
             {
                 id: 'feedId',
-                items: [itemFixture({ id: 'olderFeedId', published: 'Wed Nov 6 2024' })],
+                items: [
+                    itemFixture({ id: 'thirteenthFeedId', published: 'Wed Nov 13 2024' }),
+                    itemFixture({ id: 'ninthFeedId', published: 'Sat Nov 9 2024' }),
+                ],
+            },
+            {
+                id: 'feedId2',
+                items: [itemFixture({ id: 'thirteenthFeedId2', published: 'Wed Nov 13 2024' })],
             },
         ]);
 
-        expect(result.older[0].id).toBe('olderFeedId');
+        expect(result.days).toHaveLength(2);
+        expect(result.days[0].date).toBe('2024-11-13');
+        expect(result.days[0].items.map((x) => x.id)).toEqual(['thirteenthFeedId', 'thirteenthFeedId2']);
+        expect(result.days[1].date).toBe('2024-11-09');
+        expect(result.days[1].items[0].id).toBe('ninthFeedId');
+    });
+
+    it('does not treat the same weekday earlier in the month as today', () => {
+        jest.spyOn(global.Date, 'now').mockImplementation(() => Date.parse('2024-11-15'));
+
+        const result = getDateSortedFeedItems([
+            {
+                id: 'feedId',
+                items: [itemFixture({ id: 'fridayFeedId', published: 'Fri Nov 1 2024' })],
+            },
+        ]);
+
+        expect(result.today).toHaveLength(0);
+        expect(result.days[0].date).toBe('2024-11-01');
+    });
+
+    it('assigns items from previous months to "months", grouped by month', () => {
+        jest.spyOn(global.Date, 'now').mockImplementation(() => Date.parse('2024-11-15'));
+
+        const result = getDateSortedFeedItems([
+            {
+                id: 'feedId',
+                items: [itemFixture({ id: 'octoberFeedId', published: 'Wed Oct 9 2024' })],
+            },
+        ]);
+
+        expect(result.months[0].date).toBe('2024-10');
+        expect(result.months[0].items[0].id).toBe('octoberFeedId');
+    });
+
+    it('groups "months" newest first', () => {
+        jest.spyOn(global.Date, 'now').mockImplementation(() => Date.parse('2024-11-15'));
+
+        const result = getDateSortedFeedItems([
+            {
+                id: 'feedId',
+                items: [
+                    itemFixture({ id: 'octoberFeedId', published: 'Wed Oct 9 2024' }),
+                    itemFixture({ id: 'septemberFeedId', published: 'Mon Sep 9 2024' }),
+                    itemFixture({ id: 'octoberFeedId2', published: 'Tue Oct 1 2024' }),
+                ],
+            },
+        ]);
+
+        expect(result.months).toHaveLength(2);
+        expect(result.months[0].date).toBe('2024-10');
+        expect(result.months[0].items.map((x) => x.id)).toEqual(['octoberFeedId', 'octoberFeedId2']);
+        expect(result.months[1].date).toBe('2024-09');
+        expect(result.months[1].items[0].id).toBe('septemberFeedId');
     });
 
     it('assigns items with unknown date to "unknown"', () => {
@@ -108,7 +169,7 @@ describe('#getDateSortedFeedItems', () => {
         expect(result.today[0].id).toBe('publishedLastWeekModifiedTodayId');
     });
 
-    it('Sorts multiple items', () => {
+    it('sorts multiple items into the correct buckets', () => {
         jest.spyOn(global.Date, 'now').mockImplementation(() => Date.parse('2024-11-15'));
 
         const result = getDateSortedFeedItems([
@@ -123,7 +184,7 @@ describe('#getDateSortedFeedItems', () => {
             },
             {
                 id: 'feedId',
-                items: [itemFixture({ id: 'olderFeedId', published: 'Wed Nov 6 2024' })],
+                items: [itemFixture({ id: 'octoberFeedId', published: 'Wed Oct 9 2024' })],
             },
             {
                 id: 'feedId',
@@ -139,12 +200,19 @@ describe('#getDateSortedFeedItems', () => {
                 id: 'feedId',
                 items: [itemFixture({ id: 'yesterdayFeedId', published: 'Thu Nov 14 2024' })],
             },
+            {
+                id: 'feedId',
+                items: [itemFixture({ id: 'novemberDayFeedId', published: 'Wed Nov 13 2024' })],
+            },
         ]);
 
         expect(result.today[0].id).toBe('todayFeedId');
         expect(result.today[1].id).toBe('publishedLastWeekModifiedTodayId');
         expect(result.yesterday[0].id).toBe('yesterdayFeedId');
-        expect(result.older[0].id).toBe('olderFeedId');
+        expect(result.days[0].date).toBe('2024-11-13');
+        expect(result.days[0].items[0].id).toBe('novemberDayFeedId');
+        expect(result.months[0].date).toBe('2024-10');
+        expect(result.months[0].items[0].id).toBe('octoberFeedId');
         expect(result.unknown[0].id).toBe('unknownFeedId');
     });
 });

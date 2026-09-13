@@ -11,13 +11,11 @@ import React from 'react';
  */
 export const AccordionCard = ({
     title,
-    count,
     children,
     expanded,
     onClick,
 }: {
     title: string;
-    count?: number;
     children: React.ReactNode;
     expanded: boolean;
     onClick: () => void;
@@ -27,7 +25,6 @@ export const AccordionCard = ({
             <button type="button" className="accordion-card__header" onClick={onClick} aria-expanded={expanded}>
                 <span>{expanded ? <CaretDown weight="bold" /> : <CaretRight weight="bold" />}</span>
                 <span className="accordion-card__header-title">{title}</span>
-                {count !== undefined && <span className="accordion-card__header-count">{count}</span>}
             </button>
             {expanded && <div className="accordion-card__content">{children}</div>}
         </div>
