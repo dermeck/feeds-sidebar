@@ -31,6 +31,18 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
         return getDateSortedFeedItems(feeds);
     }, [feeds]);
 
+    const filteredFeeds = useMemo(() => {
+        const matchesFilter = (items: FeedListItemModel[]) =>
+            items.filter((item) => !item.isRead && item.title?.toLowerCase().includes(filterString.toLowerCase()));
+        return {
+            today: matchesFilter(sortedFeeds.today),
+            yesterday: matchesFilter(sortedFeeds.yesterday),
+            days: sortedFeeds.days.map((group) => ({ ...group, items: matchesFilter(group.items) })),
+            months: sortedFeeds.months.map((group) => ({ ...group, items: matchesFilter(group.items) })),
+            unknown: matchesFilter(sortedFeeds.unknown),
+        };
+    }, [sortedFeeds, filterString]);
+
     const isExpanded = useCallback((key: string) => expandedSections.includes(key), [expandedSections]);
 
     const toggleExpand = useCallback(
@@ -50,44 +62,48 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
 
     return (
         <div className={clsx(className, 'date-sorted-list')}>
-            {sortedFeeds.today.length > 0 && (
+            {filteredFeeds.today.length > 0 && (
                 <AccordionCard title="Today" expanded={isExpanded('today')} onClick={() => toggleExpand('today')}>
-                    {renderFeedItems(sortedFeeds.today)}
+                    {renderFeedItems(filteredFeeds.today)}
                 </AccordionCard>
             )}
-            {sortedFeeds.yesterday.length > 0 && (
+            {filteredFeeds.yesterday.length > 0 && (
                 <AccordionCard
                     title="Yesterday"
                     expanded={isExpanded('yesterday')}
                     onClick={() => toggleExpand('yesterday')}
                 >
-                    {renderFeedItems(sortedFeeds.yesterday)}
+                    {renderFeedItems(filteredFeeds.yesterday)}
                 </AccordionCard>
             )}
-            {sortedFeeds.days.map((group) => (
-                <AccordionCard
-                    key={group.date}
-                    title={dayLabel(group.date)}
-                    expanded={isExpanded(group.date)}
-                    onClick={() => toggleExpand(group.date)}
-                >
-                    {renderFeedItems(group.items)}
-                </AccordionCard>
-            ))}
-            {sortedFeeds.months.map((group) => (
-                <AccordionCard
-                    key={group.date}
-                    title={monthLabel(group.date)}
-                    expanded={isExpanded(group.date)}
-                    onClick={() => toggleExpand(group.date)}
-                >
-                    {renderFeedItems(group.items)}
-                </AccordionCard>
-            ))}
+            {filteredFeeds.days.map((group) =>
+                group.items.length > 0 ? (
+                    <AccordionCard
+                        key={group.date}
+                        title={dayLabel(group.date)}
+                        expanded={isExpanded(group.date)}
+                        onClick={() => toggleExpand(group.date)}
+                    >
+                        {renderFeedItems(group.items)}
+                    </AccordionCard>
+                ) : null,
+            )}
+            {filteredFeeds.months.map((group) =>
+                group.items.length > 0 ? (
+                    <AccordionCard
+                        key={group.date}
+                        title={monthLabel(group.date)}
+                        expanded={isExpanded(group.date)}
+                        onClick={() => toggleExpand(group.date)}
+                    >
+                        {renderFeedItems(group.items)}
+                    </AccordionCard>
+                ) : null,
+            )}
 
-            {sortedFeeds.unknown.length > 0 && (
+            {filteredFeeds.unknown.length > 0 && (
                 <AccordionCard title="Unknown" expanded={isExpanded('unknown')} onClick={() => toggleExpand('unknown')}>
-                    {renderFeedItems(sortedFeeds.unknown)}
+                    {renderFeedItems(filteredFeeds.unknown)}
                 </AccordionCard>
             )}
         </div>
