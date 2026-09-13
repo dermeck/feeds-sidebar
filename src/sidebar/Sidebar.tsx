@@ -50,7 +50,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
 
     return (
         <div
-            className="siderbar__container"
+            className="sidebar__container"
             onContextMenu={(e) => {
                 if (urlInputRef.current !== e.target) {
                     // allow paste into url input but prevent all other context menus
