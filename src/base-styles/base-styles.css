@@ -15,9 +15,9 @@
     --selected-item-no-focus-background-color: var(--color-accent-primary);
     --selected-item-no-focus-text-color: var(--button-text-color-primary);
 
-    --menu-hover-background-color: -moz-MenuHover;
-    --menu-hover-text-color: -moz-MenuHoverText;
-    --menu-border-color: ButtonFace;
+    --menu-hover-background-color: var(--button-background-color-hover);
+    --menu-hover-text-color: currentColor;
+    --menu-border-color: var(--border-color-deemphasized);
 
     --message-background-color: -moz-Dialog;
     --message-text-color: -moz-DialogText;
