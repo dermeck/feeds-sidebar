@@ -75,7 +75,8 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel }: Pr
             onBlur={() => {
                 // TODO mr blur triggers immediatly after selection => fix or remove it? (bookmarks are also not focused after click)
                 setUiActive(false);
-            }}>
+            }}
+        >
             <div className="feed-item__grid">
                 <GlobeSimple size={20} weight="light" />
                 <a
@@ -90,14 +91,16 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel }: Pr
                     }}
                     onContextMenu={(e) => e.preventDefault()}
                     onClick={() => handleFeedItemClick(feedId, id)}
-                    onDragStart={(e) => e.preventDefault()}>
+                    onDragStart={(e) => e.preventDefault()}
+                >
                     {label}
                 </a>
                 <Button
                     className="feed-item__remove-button"
                     title="Mark as Read"
-                    onClick={() => handleXButtonClick(feedId, id)}>
-                    <X size={20} weight="bold" />
+                    onClick={() => handleXButtonClick(feedId, id)}
+                >
+                    <X size={16} weight="bold" />
                 </Button>
             </div>
         </li>
