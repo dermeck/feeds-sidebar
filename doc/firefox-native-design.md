@@ -98,6 +98,7 @@ https://github.com/mozilla-firefox/firefox):
 How to tell them apart when in doubt: legacy = flat tree rows + old header band;
 updated = launcher rail, accordion cards, pill counts.
 
-Local mirror: `src/base-components/AccordionCard/` implements the accordion-card
-treatment; keep it synced with the `moz-card` accordion behavior above.
+Local mirror: `src/base-components/Card/` implements the accordion-card
+treatment via `Card type="accordion"`; keep it synced with the `moz-card`
+accordion behavior above.
 

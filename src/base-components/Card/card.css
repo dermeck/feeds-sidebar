@@ -1,15 +1,14 @@
-.accordion-card {
-    margin-block-start: var(--space-medium);
+.card {
     border: 0.5px solid light-dark(color-mix(in srgb, currentColor 10%, transparent), var(--border-color-deemphasized));
     border-radius: var(--border-radius-large);
     background-color: var(--background-color-box);
-
-    &:first-of-type {
-        margin-block-start: 0;
-    }
 }
 
-.accordion-card__header {
+.card--accordion + .card--accordion {
+    margin-block-start: var(--space-medium);
+}
+
+.card__header {
     display: grid;
     grid-template-columns: 16px 1fr;
     align-items: center;
@@ -33,15 +32,15 @@
     }
 }
 
-.accordion-card__header-title {
+.card__header-title {
     font-weight: var(--font-weight-bold);
 }
 
-.accordion-card--expanded .accordion-card__header {
+.card--expanded .card__header {
     border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
 }
 
-.accordion-card__content {
+.card__content {
     padding-inline: var(--space-small);
     padding-block-end: var(--space-small);
     overflow: hidden;

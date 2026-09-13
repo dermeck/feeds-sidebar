@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { useAppSelector } from '../../../store/hooks';
-import { AccordionCard } from '../../../base-components/AccordionCard/AccordionCard';
+import { Card } from '../../../base-components/Card/Card';
 import { DateSortedFeedItems, getDateSortedFeedItems } from './dateSortedFeedItems';
 import { FeedItemList } from '../FeedList/FeedItemList';
 import { FeedListItemModel } from '../FeedList/item/FeedListItem';
@@ -74,48 +74,61 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
     return (
         <div className={clsx(className, 'date-sorted-list')}>
             {filteredFeeds.today.length > 0 && (
-                <AccordionCard title="Today" expanded={isExpanded('today')} onClick={() => toggleExpand('today')}>
+                <Card
+                    type="accordion"
+                    title="Today"
+                    expanded={isExpanded('today')}
+                    onClick={() => toggleExpand('today')}
+                >
                     {renderFeedItems(filteredFeeds.today)}
-                </AccordionCard>
+                </Card>
             )}
             {filteredFeeds.yesterday.length > 0 && (
-                <AccordionCard
+                <Card
+                    type="accordion"
                     title="Yesterday"
                     expanded={isExpanded('yesterday')}
                     onClick={() => toggleExpand('yesterday')}
                 >
                     {renderFeedItems(filteredFeeds.yesterday)}
-                </AccordionCard>
+                </Card>
             )}
             {filteredFeeds.days.map((group) =>
                 group.items.length > 0 ? (
-                    <AccordionCard
+                    <Card
+                        type="accordion"
                         key={group.date}
                         title={dayLabel(group.date)}
                         expanded={isExpanded(group.date)}
                         onClick={() => toggleExpand(group.date)}
                     >
                         {renderFeedItems(group.items)}
-                    </AccordionCard>
+                    </Card>
                 ) : null,
             )}
             {filteredFeeds.months.map((group) =>
                 group.items.length > 0 ? (
-                    <AccordionCard
+                    <Card
+                        type="accordion"
                         key={group.date}
                         title={monthLabel(group.date)}
                         expanded={isExpanded(group.date)}
                         onClick={() => toggleExpand(group.date)}
                     >
                         {renderFeedItems(group.items)}
-                    </AccordionCard>
+                    </Card>
                 ) : null,
             )}
 
             {filteredFeeds.unknown.length > 0 && (
-                <AccordionCard title="Unknown" expanded={isExpanded('unknown')} onClick={() => toggleExpand('unknown')}>
+                <Card
+                    type="accordion"
+                    title="Unknown"
+                    expanded={isExpanded('unknown')}
+                    onClick={() => toggleExpand('unknown')}
+                >
                     {renderFeedItems(filteredFeeds.unknown)}
-                </AccordionCard>
+                </Card>
             )}
             {!hasMatchingItems && <EmptyListMessage filterString={filterString} />}
         </div>
