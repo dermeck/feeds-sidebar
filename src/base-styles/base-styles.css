@@ -38,7 +38,7 @@ body {
     display: flex;
     flex-direction: column;
     color: light-dark(#222426, CanvasText);
-    font: caption;
+    font: menu;
     margin: 0;
     user-select: none;
 }

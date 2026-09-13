@@ -3,9 +3,7 @@
     border-radius: 4px;
     background-color: var(--button-background-color);
     color: var(--button-text-color);
-    font-size: 13px;
     font-weight: var(--button-font-weight);
-    line-height: 20px;
     min-height: var(--button-min-height);
     padding: var(--button-padding);
 
