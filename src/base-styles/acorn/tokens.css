@@ -1,0 +1,202 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/*
+ * Trimmed copy of Mozilla's Acorn design tokens (platform/chrome set).
+ *
+ * Source of truth: mozilla/gecko-dev, `master`,
+ *   toolkit/themes/shared/design-system/tokens-shared.css
+ *   toolkit/themes/shared/design-system/tokens-platform.css
+ *   (built from design-tokens.json via `npm run build`)
+ *
+ * Trimmed to the tokens the Feeds sidebar uses + their dependencies.
+ * The `@layer tokens-*` structure is preserved so the browser's
+ * `prefers-contrast` / `forced-colors` (HCM) handling comes along for free.
+ * Unlike upstream, only `:root` is matched (this is a normal document, not a
+ * shadow-hosted component), and the `chrome://global/...` shared import is
+ * inlined because web-extension pages cannot load `chrome://` resources.
+ */
+
+@layer tokens-foundation, tokens-prefers-contrast, tokens-forced-colors;
+
+@layer tokens-foundation {
+  :root {
+    /** Background Color **/
+    --background-color-canvas: Canvas; /* platform */
+
+    /** Border **/
+    --border-color: light-dark(#cfcfd8, #3a3944);
+    --border-color-deemphasized: color-mix(in srgb, currentColor 24%, transparent); /* platform */
+    --border-color-interactive: color-mix(in srgb, currentColor 15%, var(--color-gray-60)); /* platform */
+    --border-color-interactive-hover: var(--border-color-interactive);
+    --border-color-interactive-active: var(--border-color-interactive);
+    --border-color-interactive-disabled: var(--border-color-interactive);
+    --border-color-transparent: transparent;
+    --border-radius-circle: 9999px;
+    --border-radius-small: 4px;
+    --border-radius-medium: 8px;
+    --border-radius-large: 12px;
+    --border-width: 1px;
+
+    /** Button **/
+    --button-background-color: color-mix(in srgb, currentColor 13%, transparent); /* platform */
+    --button-background-color-hover: color-mix(in srgb, currentColor 17%, transparent); /* platform */
+    --button-background-color-active: color-mix(in srgb, currentColor 30%, transparent); /* platform */
+    --button-background-color-disabled: var(--button-background-color);
+    --button-background-color-ghost: transparent;
+    --button-background-color-ghost-hover: var(--button-background-color-hover);
+    --button-background-color-ghost-active: var(--button-background-color-active);
+    --button-background-color-ghost-disabled: var(--button-background-color-ghost);
+    --button-border: var(--border-width) solid var(--button-border-color);
+    --button-border-color: transparent;
+    --button-border-color-hover: var(--button-border-color);
+    --button-border-color-active: var(--button-border-color);
+    --button-border-color-disabled: var(--button-border-color);
+    --button-border-radius: var(--border-radius-small);
+    --button-font-size: var(--font-size-root);
+    --button-font-size-small: var(--font-size-small);
+    --button-font-weight: var(--font-weight-bold);
+    --button-icon-fill: currentColor;
+    --button-icon-stroke: var(--button-icon-fill);
+    --button-min-height: var(--size-item-large);
+    --button-min-height-small: var(--size-item-medium);
+    --button-opacity-disabled: 0.5;
+    --button-padding: var(--space-xsmall) var(--space-large);
+    --button-padding-icon: 0;
+    --button-size-icon: var(--button-min-height);
+    --button-size-icon-small: var(--button-min-height-small);
+    --button-text-color: currentColor; /* platform */
+    --button-text-color-primary: AccentColorText; /* platform */
+    --button-text-color-hover: var(--button-text-color);
+    --button-text-color-active: var(--button-text-color);
+    --button-text-color-disabled: var(--button-text-color);
+    --button-text-color-ghost: inherit;
+    --button-text-color-ghost-hover: inherit;
+    --button-text-color-ghost-active: inherit;
+    --button-text-color-ghost-disabled: inherit;
+
+    /** Color **/
+    --color-accent-primary: AccentColor; /* platform */
+    --color-accent-primary-hover: color-mix(in srgb, black 10%, var(--color-accent-primary)); /* platform */
+    --color-accent-primary-active: color-mix(in srgb, black 20%, var(--color-accent-primary)); /* platform */
+    --color-gray-60: #8f8f9d; /* dependency of --border-color-interactive */
+    --color-red-20: oklch(83% 0.14 15); /* dependency of text/outline error */
+    --color-red-70: oklch(48% 0.2 15); /* dependency of text/outline error */
+
+    /** Focus Outline **/
+    --focus-outline: var(--focus-outline-width) solid var(--focus-outline-color);
+    --focus-outline-color: var(--color-accent-primary);
+    --focus-outline-inset: calc(-1 * var(--focus-outline-width));
+    --focus-outline-offset: 2px;
+    --focus-outline-width: 2px;
+
+    /** Font Size **/
+    --font-size-root: unset; /* platform */
+    --font-size-xsmall: unset; /* platform */
+    --font-size-small: unset; /* platform */
+    --font-size-large: unset; /* platform */
+    --font-size-xlarge: unset; /* platform */
+    --font-size-xxlarge: unset; /* platform */
+
+    /** Font Weight **/
+    --font-weight: normal;
+    --font-weight-bold: 600;
+
+    /** Icon **/
+    --icon-size-xsmall: 12px;
+    --icon-size-small: var(--size-item-small);
+    --icon-size-medium: 20px;
+    --icon-size-large: 24px;
+    --icon-size-xlarge: var(--size-item-large);
+
+    /** Link **/
+    --link-color: LinkText; /* platform */
+    --link-color-hover: color-mix(in srgb, black 10%, var(--link-color)); /* platform */
+    --link-color-active: color-mix(in srgb, black 20%, var(--link-color)); /* platform */
+    --link-color-visited: var(--link-color); /* platform */
+
+    /** Outline Color **/
+    --outline-color-error: light-dark(var(--color-red-70), var(--color-red-20));
+
+    /** Size **/
+    --size-item-small: 16px;
+    --size-item-medium: 24px;
+    --size-item-large: 32px;
+
+    /** Space **/
+    --space-xxsmall: calc(0.5 * var(--space-xsmall)); /* 2px */
+    --space-xsmall: 0.267rem; /* 4px */
+    --space-small: calc(2 * var(--space-xsmall)); /* 8px */
+    --space-medium: calc(3 * var(--space-xsmall)); /* 12px */
+    --space-large: calc(4 * var(--space-xsmall)); /* 16px */
+    --space-xlarge: calc(6 * var(--space-xsmall)); /* 24px */
+    --space-xxlarge: calc(8 * var(--space-xsmall)); /* 32px */
+
+    /** Text **/
+    --text-color: currentColor; /* platform */
+    --text-color-deemphasized: color-mix(in srgb, currentColor 69%, transparent);
+    --text-color-disabled: color-mix(in srgb, currentColor 40%, transparent);
+    --text-color-error: light-dark(var(--color-red-70), var(--color-red-20));
+  }
+}
+
+/* Bug 1879900: Can't nest media queries inside of :host, :root selector
+   until Bug 1879349 lands */
+@layer tokens-prefers-contrast {
+  @media (prefers-contrast) {
+    :root {
+      --background-color-canvas: Canvas;
+      --border-color: CanvasText;
+      --border-color-deemphasized: currentColor;
+      --border-color-interactive: var(--text-color);
+      --border-color-transparent: CanvasText;
+      --button-border-color: var(--button-text-color);
+      --outline-color-error: var(--border-color);
+      --text-color: CanvasText;
+      --text-color-deemphasized: inherit;
+      --text-color-error: inherit;
+    }
+  }
+}
+
+/* Bug 1879900: Can't nest media queries inside of :host, :root selector
+   until Bug 1879349 lands */
+@layer tokens-forced-colors {
+  @media (forced-colors) {
+    :root {
+      --border-color-deemphasized: ButtonText;
+      --border-color-interactive: ButtonText;
+      --border-color-interactive-hover: SelectedItem;
+      --border-color-interactive-active: ButtonText;
+      --border-color-interactive-disabled: GrayText;
+
+      --button-background-color: ButtonFace;
+      --button-background-color-hover: SelectedItemText;
+      --button-background-color-active: SelectedItemText;
+      --button-background-color-disabled: ButtonFace;
+      --button-border-color: var(--border-color-interactive);
+      --button-border-color-hover: var(--border-color-interactive-hover);
+      --button-border-color-active: var(--border-color-interactive-active);
+      --button-border-color-disabled: var(--border-color-interactive-disabled);
+      --button-opacity-disabled: 1;
+      --button-text-color: ButtonText;
+      --button-text-color-hover: SelectedItem;
+      --button-text-color-active: SelectedItem;
+      --button-text-color-disabled: GrayText;
+
+      --color-accent-primary: ButtonText;
+      --color-accent-primary-hover: SelectedItem;
+      --color-accent-primary-active: var(--color-accent-primary-hover);
+
+      --focus-outline-color: var(--text-color);
+
+      --link-color: LinkText;
+      --link-color-hover: LinkText;
+      --link-color-active: ActiveText;
+      --link-color-visited: var(--link-color);
+
+      --text-color-disabled: GrayText;
+    }
+  }
+}

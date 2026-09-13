@@ -22,8 +22,8 @@
 
     border: 1px solid var(--menu-border-color);
     border-radius: 2px;
-    background-color: var(--sidebar-background-color);
-    color: var(--sidebar-tex-color);
+    background-color: var(--background-color-canvas);
+    color: var(--text-color);
 }
 
 .menu__list {

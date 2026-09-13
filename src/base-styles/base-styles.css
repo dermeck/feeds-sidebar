@@ -1,42 +1,12 @@
 @import './animations.css';
+@import './acorn/tokens.css';
 
 :root {
     /* this has to be set to switch between light or dark */
     color-scheme: light dark;
 
-    /*color: light-dark(var(--light-color), var(--dark-color));*/
-    /*
-    --sidebar-background-light-color: Field;
-    --sidebar-text-light-color: FieldText;
-    --sidebar-background-dark-color: Canvas;
-    --sidebar-text-dark-color: CanvasText;
-
-    /* background-color: color-mix(in srgb, var(--item-hover-background-color), white 30%); */
-    /* background-color: color-mix(in srgb, var(--item-hover-background-color), white 5%); */
-
-    --sidebar-background-color: Canvas;
-    --sidebar-text-color: CanvasText;
-
-    --control-border-color: ButtonBorder;
-
-    --color-accent-primary: AccentColor;
-    --focus-outline-width: 2px;
-    --focus-outline-offset: 2px;
-    --focus-outline-color: var(--color-accent-primary);
-
-    --button-background-color: color-mix(in srgb, currentColor 13%, transparent);
-    --button-text-color: currentColor;
-    --button-hover-background-color: color-mix(in srgb, currentColor 17%, transparent);
-    --button-hover-text-color: currentColor;
-    --button-active-background-color: color-mix(in srgb, currentColor 30%, transparent);
-    --button-active-text-color: currentColor;
-
-    --button-border-color: transparent;
-    --button-font-weight: 600;
-    --button-min-height: var(--control-height);
-    --button-opacity-disabled: 0.5;
-    --button-padding: 4px 16px;
-    --button-padding-icon: 0;
+    /* design tokens (Acorn platform set + HCM layers) come from ./acorn/tokens.css */
+    /* project-local tokens, no Acorn equivalent: */
 
     --toolbar-background-color: -moz-Dialog;
     --toolbar-text-color: -moz-DialogText;
@@ -55,11 +25,9 @@
     --message-background-color: -moz-Dialog;
     --message-text-color: -moz-DialogText;
 
-    --error-text-color: light-dark(#b3261e, #f2b8b5);
     --warning-text-color: light-dark(#8a6100, #e6c260);
 
     --header-height: 48px;
-    --control-height: 32px;
     --menu-width: 200px;
     --scrollbar-background-width: 12px;
 }

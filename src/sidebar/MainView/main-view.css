@@ -15,7 +15,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    background-color: var(--sidebar-background-color);
+    background-color: var(--background-color-canvas);
 }
 
 .view-visible {
