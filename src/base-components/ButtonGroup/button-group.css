@@ -1,0 +1,42 @@
+/* TODO create Toolbar element (1 focus and navigate with arrow keys) */
+.button-group {
+    display: flex;
+    gap: 1px;
+    padding: 0 1px;
+    border-radius: var(--button-border-radius);
+
+    .toolbar-button:nth-child(1) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .toolbar-button:nth-child(2) {
+        border-radius: 0;
+    }
+
+    .toolbar-button:nth-child(3) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .toolbar-button {
+        color: inherit;
+        background-color: transparent;
+
+        &:hover {
+            background-color: var(--button-background-color-hover);
+        }
+
+        &:active {
+            background-color: var(--button-background-color-active);
+        }
+
+        &:focus {
+            z-index: 1;
+        }
+
+        &.button--ui-active {
+            background-color: var(--button-background-color-active);
+        }
+    }
+}

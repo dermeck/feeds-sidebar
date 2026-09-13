@@ -20,50 +20,6 @@
     grid-template-columns: 32px 1fr 100px 32px;
 }
 
-/* TODO create Toolbar element (1 focus and navigate with arrow keys) */
-.sidebar__display-mode-switch {
-    /* width 100px = 3*32px (icon) + 2 (2*gap) + 2 (padding) */
-    display: flex;
-    gap: 1px;
-    padding: 0 1px;
-    border-radius: 4px;
-
-    .toolbar-button:nth-child(1) {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    .toolbar-button:nth-child(2) {
-        border-radius: 0;
-    }
-
-    .toolbar-button:nth-child(3) {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-
-    .toolbar-button {
-        color: inherit;
-        background-color: transparent;
-
-        &:hover {
-            background-color: var(--button-background-color-hover);
-        }
-
-        &:active {
-            background-color: var(--button-background-color-active);
-        }
-
-        &:focus {
-            z-index: 1;
-        }
-
-        &.button--ui-active {
-            background-color: var(--button-background-color-active);
-        }
-    }
-}
-
 .text-input {
     height: 32px;
     border: 1px solid var(--border-color-interactive);

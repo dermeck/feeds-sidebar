@@ -9,6 +9,7 @@ import { SubscribeView } from './SubscribeView/SubscribeView';
 import { DiagnosisView } from './DiagnosisView/DiagnosisView';
 import { View } from './App';
 import { Button } from '../base-components/Button/Button';
+import { ButtonGroup } from '../base-components/ButtonGroup/ButtonGroup';
 import { Drawer } from '../base-components/Drawer/Drawer';
 import { Header } from '../base-components/Header/Header';
 import { SearchInput } from '../base-components/SearchInput/SearchInput';
@@ -71,7 +72,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
 
                 <SearchInput label="filter text" value={filterString} onChange={setFilterString} />
 
-                <div className="sidebar__display-mode-switch">
+                <ButtonGroup>
                     <Button
                         variant="toolbar"
                         title="Show Plain List"
@@ -98,7 +99,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     >
                         <CalendarBlank size={18} />
                     </Button>
-                </div>
+                </ButtonGroup>
 
                 <Button
                     variant="toolbar"
