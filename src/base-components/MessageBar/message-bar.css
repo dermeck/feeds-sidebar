@@ -1,44 +1,47 @@
 .message-bar {
+    --message-bar-background-color: var(--background-color-information);
+    --message-bar-border-color: oklch(from var(--message-bar-icon-color) l c h / 20%);
+    --message-bar-icon-color: var(--icon-color-information);
+
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--space-small);
-    padding: var(--space-small) var(--space-medium);
-    border: 1px solid var(--border-color-deemphasized);
+    min-height: var(--size-item-large);
+    padding: var(--space-small) var(--space-small) var(--space-small) var(--space-medium);
+    border: var(--border-width) solid var(--message-bar-border-color);
     border-radius: var(--border-radius-medium);
-    background-color: var(--background-color-box);
+    background-color: var(--message-bar-background-color);
     color: var(--text-color);
-    font-size: 0.9em;
+    text-align: start;
 }
 
 .message-bar__icon {
     flex: 0 0 auto;
-    margin-block-start: 1px;
-}
-
-.message-bar--info .message-bar__icon {
-    color: var(--color-accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    color: var(--message-bar-icon-color);
 }
 
 .message-bar--warning {
-    background-color: color-mix(in srgb, var(--warning-text-color) 10%, transparent);
-
-    .message-bar__icon {
-        color: var(--warning-text-color);
-    }
+    --message-bar-background-color: var(--background-color-warning);
+    --message-bar-icon-color: var(--icon-color-warning);
 }
 
 .message-bar--error {
-    background-color: color-mix(in srgb, var(--text-color-error) 10%, transparent);
-
-    .message-bar__icon {
-        color: var(--text-color-error);
-    }
+    --message-bar-background-color: var(--background-color-critical);
+    --message-bar-icon-color: var(--icon-color-critical);
 }
 
 .message-bar--success {
-    background-color: color-mix(in srgb, var(--color-accent-primary) 10%, transparent);
+    --message-bar-background-color: var(--background-color-success);
+    --message-bar-icon-color: var(--icon-color-success);
+}
 
-    .message-bar__icon {
-        color: var(--color-accent-primary);
+@media (prefers-contrast) {
+    .message-bar {
+        --message-bar-border-color: var(--border-color);
     }
 }

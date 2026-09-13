@@ -11,10 +11,10 @@ type MessageBarProps = {
 };
 
 const variantIcons: Record<MessageBarVariant, React.ReactNode> = {
-    info: <Info size={18} weight="fill" />,
-    warning: <Warning size={18} weight="fill" />,
-    error: <WarningCircle size={18} weight="fill" />,
-    success: <CheckCircle size={18} weight="fill" />,
+    info: <Info size={16} weight="fill" />,
+    warning: <Warning size={16} weight="fill" />,
+    error: <WarningCircle size={16} weight="fill" />,
+    success: <CheckCircle size={16} weight="fill" />,
 };
 
 export const MessageBar = ({ variant = 'info', children, className }: MessageBarProps) => (
