@@ -24,3 +24,15 @@
 .view-hidden div {
     height: 0; /* hidden children should not claim space*/
 }
+
+.empty-list-message {
+    display: grid;
+    place-items: center;
+    padding: 32px 16px;
+    text-align: center;
+    color: var(--text-color-deemphasized);
+}
+
+.empty-list-message__text {
+    margin: 0;
+}

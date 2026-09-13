@@ -5,6 +5,7 @@ import { AccordionCard } from '../../../base-components/AccordionCard/AccordionC
 import { DateSortedFeedItems, getDateSortedFeedItems } from './dateSortedFeedItems';
 import { FeedItemList } from '../FeedList/FeedItemList';
 import { FeedListItemModel } from '../FeedList/item/FeedListItem';
+import { EmptyListMessage } from '../EmptyListMessage';
 
 interface MainViewPlainListProps {
     className: string;
@@ -42,6 +43,16 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
             unknown: matchesFilter(sortedFeeds.unknown),
         };
     }, [sortedFeeds, filterString]);
+
+    const hasMatchingItems = useMemo(() => {
+        return (
+            filteredFeeds.today.length > 0 ||
+            filteredFeeds.yesterday.length > 0 ||
+            filteredFeeds.unknown.length > 0 ||
+            filteredFeeds.days.some((group) => group.items.length > 0) ||
+            filteredFeeds.months.some((group) => group.items.length > 0)
+        );
+    }, [filteredFeeds]);
 
     const isExpanded = useCallback((key: string) => expandedSections.includes(key), [expandedSections]);
 
@@ -106,6 +117,7 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
                     {renderFeedItems(filteredFeeds.unknown)}
                 </AccordionCard>
             )}
+            {!hasMatchingItems && <EmptyListMessage filterString={filterString} />}
         </div>
     );
 };
