@@ -9,7 +9,7 @@ import { NewFeedsList } from './NewFeedsList/NewFeedsList';
 import { DetectedFeeds } from './DetectedFeeds/DetectedFeeds';
 import { Button } from '../../base-components/Button/Button';
 import { MessageBar } from '../../base-components/MessageBar/MessageBar';
-import { PageHeader } from '../../base-components/PageHeader/PageHeader';
+import { Header } from '../../base-components/Header/Header';
 import { TextInput } from '../../base-components/TextInput/TextInput';
 import { Toggle } from '../../base-components/Toggle/Toggle';
 
@@ -61,12 +61,12 @@ export const SubscribeView = (props: SubscribeViewProps) => {
 
     return (
         <div className="subscribe-view">
-            <PageHeader>
+            <Header>
                 <Button variant="toolbar" title="Back to Feed List" onClick={props.onClose}>
                     <CaretLeft size={20} />
                 </Button>
                 <h1 className="subscribe-view__title">Add New Feed</h1>
-            </PageHeader>
+            </Header>
             <div className="subscribe-view__content">
                 <form
                     className="subscribe-view__add-form"

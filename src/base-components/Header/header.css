@@ -1,4 +1,4 @@
-.page-header {
+.header {
     display: flex;
     align-items: center;
     height: var(--header-height);
