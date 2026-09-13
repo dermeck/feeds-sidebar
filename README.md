@@ -20,5 +20,16 @@ If you want to try it you can download it here: https://addons.mozilla.org/en-US
 
 *It should also respect the users' color settings by using the colors of the theme or operating system and supporting dark mode. However, right now, this is not heavily tested across different environments.*
 
-### UI (v0.22.0)
-<img src="./doc/screenshots/screenshot-v0.22.0.png" width="250">
+
+### UI (v0.60.0)
+<img src="./doc/screenshots/v0-60.0/add-feed-flow.gif" width="250">
+
+<details>
+<summary>Show screenshots</summary>
+
+<img src="./doc/screenshots/v0-60.0/list-view.png" width="250">
+<img src="./doc/screenshots/v0-60.0/folder-view.png" width="250">
+<img src="./doc/screenshots/v0-60.0/chronic-view.png" width="250">
+<img src="./doc/screenshots/v0-60.0/diagnosis-view.png" width="250">
+<img src="./doc/screenshots/v0-60.0/add-feeds.png" width="250">
+</details>
