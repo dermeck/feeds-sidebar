@@ -1,14 +1,12 @@
 .badge {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: var(--space-xxsmall);
-    min-height: var(--size-item-medium);
-    padding-inline: var(--space-small);
-    border-radius: var(--border-radius-circle);
-    background-color: var(--button-background-color-hover);
-    color: var(--text-color);
-    font-size: 0.85em;
-    font-weight: var(--font-weight-bold);
-    white-space: nowrap;
+    gap: var(--space-xsmall);
+    width: fit-content;
+    padding: 0 var(--space-xsmall);
+    outline: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius-small);
+    color: var(--text-color-deemphasized);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
 }
