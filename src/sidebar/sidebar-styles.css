@@ -40,7 +40,7 @@
     }
 
     .toolbar-button {
-        color: var(--toolbar-text-color);
+        color: inherit;
         background-color: transparent;
 
         &:hover {

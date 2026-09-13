@@ -8,9 +8,6 @@
     /* design tokens (Acorn platform set + HCM layers) come from ./acorn/tokens.css */
     /* project-local tokens, no Acorn equivalent: */
 
-    --toolbar-background-color: -moz-Dialog;
-    --toolbar-text-color: -moz-DialogText;
-
     --item-hover-background-color: var(--button-background-color-hover);
     --item-hover-text-color: currentColor;
     --selected-item-background-color: var(--color-accent-primary);
