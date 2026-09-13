@@ -63,7 +63,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     variant="toolbar"
                     title="Fetch all Feeds"
                     onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.id)))}>
-                    <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={22} weight="regular" />
+                    <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={18} weight="regular" />
                 </Button>
 
                 <input
@@ -79,7 +79,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                         title="Show Plain List"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('plain-list'))}
                         active={mainViewDisplayMode === 'plain-list'}>
-                        <List size={20} />
+                        <List size={18} />
                     </Button>
 
                     <Button
@@ -87,7 +87,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                         title="Show Folders"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('folder-tree'))}
                         active={mainViewDisplayMode === 'folder-tree'}>
-                        <TreeView size={20} />
+                        <TreeView size={18} />
                     </Button>
 
                     <Button
@@ -95,7 +95,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                         title="Show Date Sorted List"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('date-sorted-list'))}
                         active={mainViewDisplayMode === 'date-sorted-list'}>
-                        <CalendarBlank size={20} />
+                        <CalendarBlank size={18} />
                     </Button>
                 </div>
 
