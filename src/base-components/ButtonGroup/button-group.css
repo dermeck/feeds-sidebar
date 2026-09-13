@@ -1,27 +1,14 @@
 /* TODO create Toolbar element (1 focus and navigate with arrow keys) */
 .button-group {
     display: flex;
-    gap: 1px;
-    padding: 0 1px;
-    border-radius: var(--button-border-radius);
-
-    .toolbar-button:nth-child(1) {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    .toolbar-button:nth-child(2) {
-        border-radius: 0;
-    }
-
-    .toolbar-button:nth-child(3) {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-    }
+    outline: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    overflow: hidden;
 
     .toolbar-button {
         color: inherit;
         background-color: transparent;
+        border-radius: 0;
 
         &:hover {
             background-color: var(--button-background-color-hover);
@@ -39,4 +26,14 @@
             background-color: var(--button-background-color-active);
         }
     }
+}
+
+.button-group .toolbar-button:first-child {
+    border-start-start-radius: calc(var(--border-radius-medium) - var(--border-width));
+    border-end-start-radius: calc(var(--border-radius-medium) - var(--border-width));
+}
+
+.button-group .toolbar-button:last-child {
+    border-start-end-radius: calc(var(--border-radius-medium) - var(--border-width));
+    border-end-end-radius: calc(var(--border-radius-medium) - var(--border-width));
 }
