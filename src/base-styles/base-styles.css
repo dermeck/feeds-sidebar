@@ -11,12 +11,12 @@
     --toolbar-background-color: -moz-Dialog;
     --toolbar-text-color: -moz-DialogText;
 
-    --item-hover-background-color: -moz-CellHighlight;
-    --item-hover-text-color: -moz-CellHighlightText;
-    --selected-item-background-color: SelectedItem;
-    --selected-item-text-color: SelectedItemText;
-    --selected-item-no-focus-background-color: -moz-CellHighlight;
-    --selected-item-no-focus-text-color: -moz-CellHighlightText;
+    --item-hover-background-color: var(--button-background-color-hover);
+    --item-hover-text-color: currentColor;
+    --selected-item-background-color: var(--color-accent-primary);
+    --selected-item-text-color: var(--button-text-color-primary);
+    --selected-item-no-focus-background-color: var(--color-accent-primary);
+    --selected-item-no-focus-text-color: var(--button-text-color-primary);
 
     --menu-hover-background-color: -moz-MenuHover;
     --menu-hover-text-color: -moz-MenuHoverText;
@@ -29,7 +29,6 @@
 
     --header-height: 48px;
     --menu-width: 200px;
-    --scrollbar-background-width: 12px;
 }
 
 /* styles that were previously set in manifest version 2 ""browser_style": true" */
