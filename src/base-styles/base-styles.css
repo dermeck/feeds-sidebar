@@ -31,6 +31,13 @@
     --button-active-background-color: color-mix(in srgb, currentColor 30%, transparent);
     --button-active-text-color: currentColor;
 
+    --button-border-color: transparent;
+    --button-font-weight: 600;
+    --button-min-height: var(--control-height);
+    --button-opacity-disabled: 0.5;
+    --button-padding: 4px 16px;
+    --button-padding-icon: 0;
+
     --toolbar-background-color: -moz-Dialog;
     --toolbar-text-color: -moz-DialogText;
 

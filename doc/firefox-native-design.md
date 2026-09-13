@@ -71,7 +71,7 @@ Key takeaway: **Acorn chrome buttons are not `ButtonFace` — they're a subtle `
 |---|---|---|
 | `--control-height: 32px` | `--size-item-large` | match |
 | Radius `4px` (button, inputs) | `--border-radius-small` | match |
-| 22px icons in 32px buttons | `--icon-size-large` (24px) | close |
+| 22px icons in 32px toolbar buttons | `--icon-size-large` (24px) | close |
 | `font: caption`, header 48px | platform `unset` (system font) | match (chrome surface) |
 | `.toolbar-button` transparent bg, `.button` uses `currentColor` tint | `--button-background-color` (13% / 17% hover / 30% active) | match |
 | `focus-visible`: 2px accent outline, offset 2px | `--focus-outline` | match |
