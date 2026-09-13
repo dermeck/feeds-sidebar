@@ -1,0 +1,67 @@
+.toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-medium);
+    cursor: pointer;
+}
+
+.toggle__input {
+    position: absolute;
+    margin: 0;
+    opacity: 0;
+}
+
+.toggle__control {
+    position: relative;
+    flex: 0 0 auto;
+    width: 36px;
+    height: 20px;
+    border: 1px solid var(--border-color-interactive);
+    border-radius: var(--border-radius-circle);
+    background-color: var(--background-color-box);
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        inset-inline-start: 2px;
+        width: 14px;
+        height: 14px;
+        border-radius: var(--border-radius-circle);
+        background-color: currentColor;
+        opacity: 0.6;
+        transition: inset-inline-start 0.15s ease;
+    }
+}
+
+.toggle:has(.toggle__input:checked) .toggle__control {
+    border-color: var(--color-accent-primary);
+    background-color: var(--color-accent-primary);
+
+    &::after {
+        inset-inline-start: 20px;
+        background-color: var(--button-text-color-primary);
+        opacity: 1;
+    }
+}
+
+.toggle:has(.toggle__input:focus-visible) .toggle__control {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+}
+
+.toggle--disabled {
+    opacity: var(--button-opacity-disabled);
+    cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toggle__control,
+    .toggle__control::after {
+        transition: none;
+    }
+}

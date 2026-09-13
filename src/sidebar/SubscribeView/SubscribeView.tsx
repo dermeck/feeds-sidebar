@@ -4,10 +4,12 @@ import React, { RefObject, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
+import optionsSlice from '../../store/slices/options';
 import { NewFeedsList } from './NewFeedsList/NewFeedsList';
 import { DetectedFeeds } from './DetectedFeeds/DetectedFeeds';
 import { Button } from '../../base-components/Button/Button';
 import { PageHeader } from '../../base-components/PageHeader/PageHeader';
+import { Toggle } from '../../base-components/Toggle/Toggle';
 import { clsx } from 'clsx';
 
 const isValidURL = (str: string) => {
@@ -93,6 +95,12 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                 </div>
                 {feedDetectionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
+                <Toggle
+                    className="subscribe-view__detection-toggle"
+                    label="Detect feeds on the current page"
+                    checked={feedDetectionEnabled}
+                    onChange={(checked) => dispatch(optionsSlice.actions.feedDetectionEnabledChanged(checked))}
+                />
             </div>
         </div>
     );

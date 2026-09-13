@@ -36,6 +36,9 @@ const optionsSlice = createSlice({
         changeDiagnosisInactiveDays(state, action: PayloadAction<number>) {
             state.diagnosisInactiveDays = action.payload;
         },
+        feedDetectionEnabledChanged(state, action: PayloadAction<boolean>) {
+            state.feedDetectionEnabled = action.payload;
+        },
     },
 
     extraReducers: (builder) => {

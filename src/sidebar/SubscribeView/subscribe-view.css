@@ -45,3 +45,7 @@
 .subscribe-view__message-box--visible {
     background-color: var(--message-background-color);
 }
+
+.subscribe-view__detection-toggle {
+    margin-block-start: var(--space-small);
+}
