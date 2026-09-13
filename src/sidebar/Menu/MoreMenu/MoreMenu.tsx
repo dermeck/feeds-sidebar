@@ -1,11 +1,22 @@
+import {
+    CheckSquare,
+    DownloadSimple,
+    FolderSimplePlus,
+    Plus,
+    Stethoscope,
+    UploadSimple,
+} from '@phosphor-icons/react';
 import React, { useRef } from 'react';
 
+import { Menu } from '../../../base-components/Menu/Menu';
+import { MenuDivider } from '../../../base-components/Menu/MenuDivider';
+import { MenuItem } from '../../../base-components/Menu/MenuItem';
+import { MenuList } from '../../../base-components/Menu/MenuList';
 import opmlExport from '../../../services/export';
 import { readOpmlFile } from '../../../services/import';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import feedsSlice, { fetchFeedsCommand, selectFeeds, selectFolders } from '../../../store/slices/feeds';
 import sessionSlice, { Point } from '../../../store/slices/session';
-import { MenuListItem } from '../MenuListItem/MenuItem';
 import { View } from '../../App';
 
 interface Props {
@@ -21,51 +32,48 @@ export const MoreMenu = (props: Props) => {
     const folders = useAppSelector((state) => selectFolders(state.feeds));
 
     return (
-        <div
-            className="menu__container"
-            style={
-                {
-                    '--menu-anchor-left': `${props.anchorPoint.x}px`,
-                    '--menu-anchor-top': `${props.anchorPoint.y}px`,
-                } as React.CSSProperties
-            }>
-            <ul className="menu__list">
-                <MenuListItem icon="plus" onMouseDown={() => props.changeView(View.subscribe)}>
+        <Menu anchorPoint={props.anchorPoint}>
+            <MenuList>
+                <MenuItem icon={<Plus size={18} />} onMouseDown={() => props.changeView(View.subscribe)}>
                     Add New Feeds
-                </MenuListItem>
+                </MenuItem>
 
-                <MenuListItem icon="folder-plus" onMouseDown={() => dispatch(sessionSlice.actions.newFolder())}>
+                <MenuItem
+                    icon={<FolderSimplePlus size={18} />}
+                    onMouseDown={() => dispatch(sessionSlice.actions.newFolder())}>
                     New Folder
-                </MenuListItem>
+                </MenuItem>
 
-                <MenuListItem icon="check-square" onMouseDown={() => dispatch(feedsSlice.actions.markAllAsRead())}>
+                <MenuItem
+                    icon={<CheckSquare size={18} weight="bold" />}
+                    onMouseDown={() => dispatch(feedsSlice.actions.markAllAsRead())}>
                     Mark All Read
-                </MenuListItem>
+                </MenuItem>
 
-                <MenuListItem
-                    icon="stethoscope"
+                <MenuItem
+                    icon={<Stethoscope size={18} />}
                     onMouseDown={() => {
                         props.changeView(View.diagnosis);
                         dispatch(sessionSlice.actions.hideMenu());
                     }}>
                     Diagnosis
-                </MenuListItem>
+                </MenuItem>
 
-                <hr className="menu__divider" />
+                <MenuDivider />
 
-                <MenuListItem icon="export" onMouseDown={() => opmlExport(folders, feeds)}>
+                <MenuItem icon={<UploadSimple size={18} weight="bold" />} onMouseDown={() => opmlExport(folders, feeds)}>
                     Export
-                </MenuListItem>
+                </MenuItem>
 
-                <MenuListItem
-                    icon="import"
+                <MenuItem
+                    icon={<DownloadSimple size={18} weight="bold" />}
                     onMouseDown={(e) => {
                         e.stopPropagation();
                         inputFileRef.current?.click();
                     }}>
                     Import
-                </MenuListItem>
-            </ul>
+                </MenuItem>
+            </MenuList>
             <input
                 className="more-menu__import-input"
                 aria-label="import-input"
@@ -93,6 +101,6 @@ export const MoreMenu = (props: Props) => {
                     dispatch(sessionSlice.actions.hideMenu());
                 }}
             />
-        </div>
+        </Menu>
     );
 };
