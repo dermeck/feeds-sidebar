@@ -64,7 +64,49 @@
 .text-input {
     height: 32px;
     border: 1px solid var(--border-color-interactive);
-    border-radius: 2px;
+    border-radius: var(--border-radius-small);
     padding-inline: 8px;
     min-width: 75px; /* prevent cutting off more menu button */
+
+    &:focus-visible {
+        outline: var(--focus-outline);
+        outline-offset: var(--focus-outline-offset);
+    }
+}
+
+.sidebar__filter {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .text-input {
+        width: 100%;
+        padding-inline-start: 28px;
+        padding-inline-end: 28px;
+    }
+}
+
+.sidebar__filter-icon {
+    position: absolute;
+    inset-inline-start: 8px;
+    color: var(--text-color-deemphasized);
+    pointer-events: none;
+}
+
+.filter-clear-button {
+    position: absolute;
+    inset-inline-end: 4px;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: var(--button-border-radius);
+    background-color: transparent;
+    color: var(--text-color-deemphasized);
+
+    &:hover {
+        background-color: var(--button-background-color-hover);
+        color: var(--button-text-color);
+    }
 }

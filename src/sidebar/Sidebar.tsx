@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { ArrowsClockwise, DotsThreeOutline, List, TreeView, CalendarBlank } from '@phosphor-icons/react';
+import { ArrowsClockwise, CalendarBlank, DotsThreeOutline, List, MagnifyingGlass, TreeView, X } from '@phosphor-icons/react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
@@ -66,12 +66,24 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={18} weight="regular" />
                 </Button>
 
-                <input
-                    aria-label="filter text"
-                    className="text-input"
-                    value={filterString}
-                    onChange={(e) => setFilterString(e.target.value)}
-                />
+                <div className="sidebar__filter">
+                    <MagnifyingGlass size={16} className="sidebar__filter-icon" />
+                    <input
+                        aria-label="filter text"
+                        className="text-input"
+                        value={filterString}
+                        onChange={(e) => setFilterString(e.target.value)}
+                    />
+                    {filterString && (
+                        <button
+                            className="filter-clear-button"
+                            aria-label="clear filter"
+                            title="Clear filter"
+                            onClick={() => setFilterString('')}>
+                            <X size={14} weight="bold" />
+                        </button>
+                    )}
+                </div>
 
                 <div className="sidebar__display-mode-switch">
                     <Button
