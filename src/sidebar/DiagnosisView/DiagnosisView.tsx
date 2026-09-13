@@ -3,6 +3,7 @@ import { CaretLeft } from '@phosphor-icons/react';
 import React, { useMemo } from 'react';
 
 import { Button } from '../../base-components/Button/Button';
+import { Badge } from '../../base-components/Badge/Badge';
 import { PageHeader } from '../../base-components/PageHeader/PageHeader';
 import { Feed, FeedItem } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -56,7 +57,7 @@ const DiagnosisRow = (props: { entry: DiagnosisEntry; status: string; children?:
         <li className="diagnosis-view__row">
             <div className="diagnosis-view__row-header">
                 <span className="diagnosis-view__feed-title">{entry.feed?.title ?? entry.url}</span>
-                <span className="diagnosis-view__status">{status}</span>
+                <Badge className="diagnosis-view__status">{status}</Badge>
             </div>
             <div className="diagnosis-view__detail">Last fetch: {formatDaysAgo(entry.feed?.lastFetched)}</div>
             <div className="diagnosis-view__detail">
