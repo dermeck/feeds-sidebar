@@ -35,7 +35,7 @@ const MainView = ({ displayMode, filterString }: MainViewProps) => {
 
             <DragDropContext value={contextValue}>
                 <MainViewFolderTree
-                    className={clsx(displayMode === 'folder-tree' ? 'view-visble' : 'view-hidden')}
+                    className={clsx(displayMode === 'folder-tree' ? 'view-visible' : 'view-hidden')}
                     nodes={topLevelNodes}
                     filterString={filterString}
                 />
