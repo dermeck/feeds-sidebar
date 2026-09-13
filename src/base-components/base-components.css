@@ -7,4 +7,5 @@
 @import './MessageBar/message-bar.css';
 @import './PageHeader/page-header.css';
 @import './SearchInput/search-input.css';
+@import './TextInput/text-input.css';
 @import './Toggle/toggle.css';

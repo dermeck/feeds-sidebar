@@ -10,6 +10,7 @@ import { DetectedFeeds } from './DetectedFeeds/DetectedFeeds';
 import { Button } from '../../base-components/Button/Button';
 import { MessageBar } from '../../base-components/MessageBar/MessageBar';
 import { PageHeader } from '../../base-components/PageHeader/PageHeader';
+import { TextInput } from '../../base-components/TextInput/TextInput';
 import { Toggle } from '../../base-components/Toggle/Toggle';
 
 const isValidURL = (str: string) => {
@@ -74,8 +75,9 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                         addFeed();
                     }}>
                     <label className="subscribe-view__section-heading">Feed URL</label>
-                    <input
-                        className="text-input"
+                    <TextInput
+                        label="Feed URL"
+                        className="subscribe-view__url-input"
                         ref={props.urlInputRef}
                         placeholder="https://blog.mozilla.org/en/feed/"
                         value={newFeedUrl}

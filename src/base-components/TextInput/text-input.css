@@ -1,0 +1,12 @@
+.text-input {
+    height: var(--button-min-height);
+    border: 1px solid var(--border-color-interactive);
+    border-radius: var(--button-border-radius);
+    padding-inline: var(--space-small);
+    color: var(--text-color);
+
+    &:focus-visible {
+        outline: var(--focus-outline);
+        outline-offset: var(--focus-outline-offset);
+    }
+}

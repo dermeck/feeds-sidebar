@@ -19,16 +19,3 @@
     grid-column-gap: 4px;
     grid-template-columns: 32px 1fr 100px 32px;
 }
-
-.text-input {
-    height: 32px;
-    border: 1px solid var(--border-color-interactive);
-    border-radius: var(--border-radius-small);
-    padding-inline: 8px;
-    min-width: 75px; /* prevent cutting off more menu button */
-
-    &:focus-visible {
-        outline: var(--focus-outline);
-        outline-offset: var(--focus-outline-offset);
-    }
-}
