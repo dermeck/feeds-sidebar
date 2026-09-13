@@ -11,7 +11,7 @@ import { View } from './App';
 import { Button } from '../base-components/Button/Button';
 import { ButtonGroup } from '../base-components/ButtonGroup/ButtonGroup';
 import { Drawer } from '../base-components/Drawer/Drawer';
-import { Header } from '../base-components/Header/Header';
+import { PageHeader } from '../base-components/PageHeader/PageHeader';
 import { SearchInput } from '../base-components/SearchInput/SearchInput';
 import clsx from 'clsx';
 import { getCssCustomPropertyNumberValue } from '../utils/getCssCustomProperty';
@@ -61,7 +61,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
             }}
             onBlur={() => dispatch(sessionSlice.actions.hideMenu())}
         >
-            <Header className="sidebar__main-header">
+            <PageHeader className="sidebar__main-header">
                 <Button
                     variant="toolbar"
                     title="Fetch all Feeds"
@@ -111,7 +111,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                 >
                     <DotsThreeOutline size={18} weight="fill" />
                 </Button>
-            </Header>
+            </PageHeader>
 
             <MainView displayMode={mainViewDisplayMode} filterString={filterString.trim()} />
 

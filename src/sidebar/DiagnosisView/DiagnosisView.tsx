@@ -3,7 +3,7 @@ import { CaretLeft } from '@phosphor-icons/react';
 import React, { useMemo } from 'react';
 
 import { Button } from '../../base-components/Button/Button';
-import { Header } from '../../base-components/Header/Header';
+import { PageHeader } from '../../base-components/PageHeader/PageHeader';
 import { Feed, FeedItem } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand, selectFeeds } from '../../store/slices/feeds';
@@ -137,12 +137,12 @@ export const DiagnosisView = ({ onClose }: Props) => {
 
     return (
         <div className="diagnosis-view">
-            <Header>
+            <PageHeader>
                 <Button variant="toolbar" title="Back to Feed List" onClick={onClose}>
                     <CaretLeft size={20} />
                 </Button>
                 <h1 className="diagnosis-view__title">Diagnosis</h1>
-            </Header>
+            </PageHeader>
 
             <div className="diagnosis-view__content">
                 {errored.length > 0 && (

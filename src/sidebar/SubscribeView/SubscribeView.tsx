@@ -7,7 +7,7 @@ import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import { NewFeedsList } from './NewFeedsList/NewFeedsList';
 import { DetectedFeeds } from './DetectedFeeds/DetectedFeeds';
 import { Button } from '../../base-components/Button/Button';
-import { Header } from '../../base-components/Header/Header';
+import { PageHeader } from '../../base-components/PageHeader/PageHeader';
 import { clsx } from 'clsx';
 
 const isValidURL = (str: string) => {
@@ -58,12 +58,12 @@ export const SubscribeView = (props: SubscribeViewProps) => {
 
     return (
         <div className="subscribe-view">
-            <Header>
+            <PageHeader>
                 <Button variant="toolbar" title="Back to Feed List" onClick={props.onClose}>
                     <CaretLeft size={20} />
                 </Button>
                 <h1 className="subscribe-view__title">Add New Feed</h1>
-            </Header>
+            </PageHeader>
             <div className="subscribe-view__content">
                 <form
                     className="subscribe-view__add-form"
