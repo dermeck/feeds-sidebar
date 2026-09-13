@@ -65,3 +65,39 @@ Key takeaway: **Acorn chrome buttons are not `ButtonFace` — they're a subtle `
 | `--button-padding` | `var(--space-xsmall) var(--space-large)` = `4px 16px` |
 | `--focus-outline-width` / `--focus-outline-offset` | `2px` / `2px` |
 
+## Which sidebar design is the reference
+
+Firefox has TWO sidebar designs. This project mirrors the **updated sidebar**
+(`sidebar.revamp`), NOT the legacy one.
+
+- **Legacy sidebar** — the classic flat `places` tree: plain folder rows, no
+  rounded cards, no pill counts. Being retired (off by default in Nightly 148+,
+  removed entirely in 153+). Do not use this as a reference.
+- **Updated sidebar** — shipping since Firefox 136, default in 2026. Launcher
+  rail + per-tool panels.
+
+Sources (all in mozilla-central — https://hg.mozilla.org/mozilla-central,
+browse at https://searchfox.org/firefox-main — mirrored read-only on GitHub at
+https://github.com/mozilla-firefox/firefox):
+- Sidebar views:
+  https://searchfox.org/firefox-main/source/browser/components/sidebar
+  (`sidebar-history.mjs`, `sidebar-bookmarks.mjs`, …)
+- Date-grouped history view uses `<moz-card type="accordion">`:
+  - component:
+    https://searchfox.org/firefox-main/source/toolkit/content/widgets/moz-card
+  - CSS:
+    https://searchfox.org/firefox-main/source/toolkit/content/widgets/moz-card/moz-card.css
+  Rounded, bordered cards ("pills") whose header (label + disclosure + count)
+  expands into a big card holding the rows. Only the first two cards start
+  expanded (`DAYS_EXPANDED_INITIALLY = 2` in
+  https://searchfox.org/firefox-main/source/browser/components/sidebar/sidebar-history.mjs);
+  nested groups use borderless `nested-card` mini-cards.
+- Card styling comes from the Acorn `--card-*` tokens (token sources:
+  https://searchfox.org/firefox-main/source/toolkit/themes/shared/design-system)
+
+How to tell them apart when in doubt: legacy = flat tree rows + old header band;
+updated = launcher rail, accordion cards, pill counts.
+
+Local mirror: `src/base-components/AccordionCard/` implements the accordion-card
+treatment; keep it synced with the `moz-card` accordion behavior above.
+
