@@ -1,5 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { ArrowsClockwise, CalendarBlank, DotsThreeOutline, List, MagnifyingGlass, TreeView, X } from '@phosphor-icons/react';
+import {
+    ArrowsClockwise,
+    CalendarBlank,
+    DotsThreeOutline,
+    List,
+    MagnifyingGlass,
+    TreeView,
+    X,
+} from '@phosphor-icons/react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
@@ -57,12 +65,14 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     e.preventDefault();
                 }
             }}
-            onBlur={() => dispatch(sessionSlice.actions.hideMenu())}>
+            onBlur={() => dispatch(sessionSlice.actions.hideMenu())}
+        >
             <Header className="sidebar__main-header">
                 <Button
                     variant="toolbar"
                     title="Fetch all Feeds"
-                    onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.id)))}>
+                    onClick={() => dispatch(fetchFeedsCommand(feeds.map((x) => x.id)))}
+                >
                     <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={18} weight="regular" />
                 </Button>
 
@@ -76,10 +86,12 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     />
                     {filterString && (
                         <button
+                            type="button"
                             className="filter-clear-button"
                             aria-label="clear filter"
                             title="Clear filter"
-                            onClick={() => setFilterString('')}>
+                            onClick={() => setFilterString('')}
+                        >
                             <X size={14} weight="bold" />
                         </button>
                     )}
@@ -90,7 +102,8 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                         variant="toolbar"
                         title="Show Plain List"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('plain-list'))}
-                        active={mainViewDisplayMode === 'plain-list'}>
+                        active={mainViewDisplayMode === 'plain-list'}
+                    >
                         <List size={18} />
                     </Button>
 
@@ -98,7 +111,8 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                         variant="toolbar"
                         title="Show Folders"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('folder-tree'))}
-                        active={mainViewDisplayMode === 'folder-tree'}>
+                        active={mainViewDisplayMode === 'folder-tree'}
+                    >
                         <TreeView size={18} />
                     </Button>
 
@@ -106,7 +120,8 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                         variant="toolbar"
                         title="Show Date Sorted List"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('date-sorted-list'))}
-                        active={mainViewDisplayMode === 'date-sorted-list'}>
+                        active={mainViewDisplayMode === 'date-sorted-list'}
+                    >
                         <CalendarBlank size={18} />
                     </Button>
                 </div>
@@ -117,8 +132,9 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     active={moreMenuVisible}
                     onClick={(e) => {
                         dispatch(sessionSlice.actions.showMoreMenu(getMoreMenuCoordinates(e.currentTarget)));
-                    }}>
-                    <DotsThreeOutline size={18} weight='fill'/>
+                    }}
+                >
+                    <DotsThreeOutline size={18} weight="fill" />
                 </Button>
             </Header>
 
