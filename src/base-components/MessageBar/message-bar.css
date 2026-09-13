@@ -1,0 +1,44 @@
+.message-bar {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-small);
+    padding: var(--space-small) var(--space-medium);
+    border: 1px solid var(--border-color-deemphasized);
+    border-radius: var(--border-radius-medium);
+    background-color: var(--background-color-box);
+    color: var(--text-color);
+    font-size: 0.9em;
+}
+
+.message-bar__icon {
+    flex: 0 0 auto;
+    margin-block-start: 1px;
+}
+
+.message-bar--info .message-bar__icon {
+    color: var(--color-accent-primary);
+}
+
+.message-bar--warning {
+    background-color: color-mix(in srgb, var(--warning-text-color) 10%, transparent);
+
+    .message-bar__icon {
+        color: var(--warning-text-color);
+    }
+}
+
+.message-bar--error {
+    background-color: color-mix(in srgb, var(--text-color-error) 10%, transparent);
+
+    .message-bar__icon {
+        color: var(--text-color-error);
+    }
+}
+
+.message-bar--success {
+    background-color: color-mix(in srgb, var(--color-accent-primary) 10%, transparent);
+
+    .message-bar__icon {
+        color: var(--color-accent-primary);
+    }
+}

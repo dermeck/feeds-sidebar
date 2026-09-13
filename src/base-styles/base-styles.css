@@ -19,9 +19,6 @@
     --menu-hover-text-color: currentColor;
     --menu-border-color: var(--border-color-deemphasized);
 
-    --message-background-color: -moz-Dialog;
-    --message-text-color: -moz-DialogText;
-
     --warning-text-color: light-dark(#8a6100, #e6c260);
 
     --header-height: 48px;
