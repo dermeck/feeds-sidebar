@@ -54,10 +54,10 @@
         --button-border-color-hover: var(--button-border-color);
         --button-border-color-active: var(--button-border-color);
         --button-border-color-disabled: var(--button-border-color);
-        --button-border-radius: var(--border-radius-small);
+        --button-border-radius: var(--border-radius-medium);
         --button-font-size: var(--font-size-root);
         --button-font-size-small: var(--font-size-small);
-        --button-font-weight: var(--font-weight-bold);
+        --button-font-weight: var(--font-weight-semibold);
         --button-icon-fill: currentColor;
         --button-icon-stroke: var(--button-icon-fill);
         --button-min-height: var(--size-item-large);
@@ -81,9 +81,30 @@
         --color-accent-primary: AccentColor; /* platform */
         --color-accent-primary-hover: color-mix(in srgb, black 10%, var(--color-accent-primary)); /* platform */
         --color-accent-primary-active: color-mix(in srgb, black 20%, var(--color-accent-primary)); /* platform */
+        --color-gray-05: #fbfbfe;
         --color-gray-60: #8f8f9d; /* dependency of --border-color-interactive */
+        --color-gray-70: #5b5b66;
+        --color-blue-0: oklch(97% 0.05 260);
+        --color-blue-20: oklch(83% 0.17 260);
+        --color-blue-60: oklch(55% 0.24 260);
+        --color-blue-90: oklch(34% 0.14 260);
+        --color-green-0: oklch(97% 0.05 145);
+        --color-green-20: oklch(83% 0.14 145);
+        --color-green-60: oklch(55% 0.21 145);
+        --color-green-90: oklch(34% 0.14 145);
+        --color-red-0: oklch(97% 0.05 15);
         --color-red-20: oklch(83% 0.14 15); /* dependency of text/outline error */
+        --color-red-60: oklch(55% 0.21 15);
         --color-red-70: oklch(48% 0.2 15); /* dependency of text/outline error */
+        --color-red-90: oklch(34% 0.14 15);
+        --color-yellow-0: oklch(97% 0.05 90);
+        --color-yellow-20: oklch(86% 0.14 90);
+        --color-yellow-60: oklch(58% 0.24 90);
+        --color-yellow-90: oklch(34% 0.17 90);
+        --background-color-critical: light-dark(var(--color-red-0), var(--color-red-90));
+        --background-color-information: light-dark(var(--color-blue-0), var(--color-blue-90));
+        --background-color-success: light-dark(var(--color-green-0), var(--color-green-90));
+        --background-color-warning: light-dark(var(--color-yellow-0), var(--color-yellow-90));
 
         /** Focus Outline **/
         --focus-outline: var(--focus-outline-width) solid var(--focus-outline-color);
@@ -102,14 +123,40 @@
 
         /** Font Weight **/
         --font-weight: normal;
-        --font-weight-bold: 600;
+        --font-weight-bold: 700;
+        --font-weight-heading: var(--font-weight-semibold);
+        --font-weight-semibold: 600;
 
         /** Icon **/
+        --icon-color: light-dark(var(--color-gray-70), var(--color-gray-05));
+        --icon-color-critical: light-dark(var(--color-red-60), var(--color-red-20));
+        --icon-color-information: light-dark(var(--color-blue-60), var(--color-blue-20));
+        --icon-color-success: light-dark(var(--color-green-60), var(--color-green-20));
+        --icon-color-warning: light-dark(var(--color-yellow-60), var(--color-yellow-20));
+        --icon-size: var(--icon-size-small);
         --icon-size-xsmall: 12px;
         --icon-size-small: var(--size-item-small);
         --icon-size-medium: 20px;
         --icon-size-large: 24px;
         --icon-size-xlarge: var(--size-item-large);
+
+        /** Box Shadow **/
+        --box-shadow-color-darker-layer-1: light-dark(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.2));
+        --box-shadow-color-darker-layer-2: light-dark(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+        --box-shadow-color-lighter-layer-1: light-dark(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.15));
+        --box-shadow-color-lighter-layer-2: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.2));
+        --box-shadow-level-1: 0 0 1px var(--box-shadow-color-darker-layer-1), 0 1px 2px var(--box-shadow-color-darker-layer-2);
+        --box-shadow-level-2: 0 0.25px 0.75px var(--box-shadow-color-lighter-layer-1), 0 2px 6px var(--box-shadow-color-lighter-layer-2);
+        --box-shadow-level-3: 0 0.375px 1.5px var(--box-shadow-color-lighter-layer-1), 0 3px 12px var(--box-shadow-color-lighter-layer-2);
+        --box-shadow-level-4: 0 0.5px 2px var(--box-shadow-color-lighter-layer-1), 0 4px 16px var(--box-shadow-color-lighter-layer-2);
+
+        /** Card **/
+        --card-border-color: light-dark(color-mix(in srgb, currentColor 10%, transparent), color-mix(in srgb, currentColor 6%, transparent));
+        --card-border-radius: var(--border-radius-large);
+        --card-box-shadow: var(--box-shadow-level-2);
+        --card-box-shadow-hover: var(--box-shadow-level-4);
+        --card-padding: var(--space-large);
+        --card-gap: var(--card-padding);
 
         /** Link **/
         --link-color: LinkText; /* platform */
@@ -147,17 +194,37 @@
 @layer tokens-prefers-contrast {
     @media (prefers-contrast) {
         :root {
-            --background-color-box: Canvas;
-            --background-color-canvas: Canvas;
-            --border-color: CanvasText;
-            --border-color-deemphasized: currentColor;
-            --border-color-interactive: var(--text-color);
-            --border-color-transparent: CanvasText;
-            --button-border-color: var(--button-text-color);
-            --outline-color-error: var(--border-color);
-            --text-color: CanvasText;
-            --text-color-deemphasized: inherit;
-            --text-color-error: inherit;
+/** background-color **/
+        --background-color-box: var(--background-color-canvas);
+        --background-color-canvas: Canvas;
+        --background-color-critical: var(--background-color-canvas);
+        --background-color-information: var(--background-color-canvas);
+        --background-color-success: var(--background-color-canvas);
+        --background-color-warning: var(--background-color-canvas);
+
+        /** border **/
+        --border-color: CanvasText;
+        --border-color-deemphasized: currentColor;
+        --border-color-interactive: var(--text-color);
+        --border-color-transparent: CanvasText;
+
+        /** button **/
+        --button-border-color: var(--button-text-color);
+
+        /** card **/
+        --card-border-color: color-mix(in srgb, currentColor 41%, transparent);
+
+        /** icon **/
+        --icon-color: var(--text-color);
+        --icon-color-critical: var(--icon-color);
+        --icon-color-information: var(--icon-color);
+        --icon-color-success: var(--icon-color);
+        --icon-color-warning: var(--icon-color);
+
+        --outline-color-error: var(--border-color);
+        --text-color: CanvasText;
+        --text-color-deemphasized: inherit;
+        --text-color-error: inherit;
         }
     }
 }
@@ -167,6 +234,13 @@
 @layer tokens-forced-colors {
     @media (forced-colors) {
         :root {
+            --background-color-box: var(--background-color-canvas);
+            --background-color-canvas: Canvas;
+            --background-color-critical: var(--background-color-canvas);
+            --background-color-information: var(--background-color-canvas);
+            --background-color-success: var(--background-color-canvas);
+            --background-color-warning: var(--background-color-canvas);
+
             --border-color-deemphasized: ButtonText;
             --border-color-interactive: ButtonText;
             --border-color-interactive-hover: SelectedItem;
@@ -187,11 +261,19 @@
             --button-text-color-active: SelectedItem;
             --button-text-color-disabled: GrayText;
 
+            --card-border-color: CanvasText;
+
             --color-accent-primary: ButtonText;
             --color-accent-primary-hover: SelectedItem;
             --color-accent-primary-active: var(--color-accent-primary-hover);
 
             --focus-outline-color: var(--text-color);
+
+            --icon-color: var(--text-color);
+            --icon-color-critical: var(--icon-color);
+            --icon-color-information: var(--icon-color);
+            --icon-color-success: var(--icon-color);
+            --icon-color-warning: var(--icon-color);
 
             --link-color: LinkText;
             --link-color-hover: LinkText;
