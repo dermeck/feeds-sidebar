@@ -1,4 +1,4 @@
-import { ArrowLeft } from '@phosphor-icons/react';
+import { CaretLeft } from '@phosphor-icons/react';
 
 import React, { useMemo } from 'react';
 
@@ -139,7 +139,7 @@ export const DiagnosisView = ({ onClose }: Props) => {
         <div className="diagnosis-view">
             <Header>
                 <Button variant="toolbar" title="Back to Feed List" onClick={onClose}>
-                    <ArrowLeft size={22} />
+                    <CaretLeft size={20} />
                 </Button>
                 <h1 className="diagnosis-view__title">Diagnosis</h1>
             </Header>
