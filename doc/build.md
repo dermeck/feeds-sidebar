@@ -8,7 +8,7 @@
 To create an installable `.xpi` file the extension must be [signed](https://extensionworkshop.com/documentation/develop/web-ext-command-reference/#web-ext_sign).
 
 ```
-yarn run web-ext sign --use-submission-api --channel=unlisted  --source-dir=build --api-key=user:xxxxxxx:xxx --api-secret=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+yarn run web-ext sign --channel=unlisted  --source-dir=build --api-key=user:xxxxxxx:xxx --api-secret=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 The credentials can be configured in the `.env` file. 
