@@ -1,13 +1,5 @@
 import React, { useRef, useState } from 'react';
-import {
-    ArrowsClockwise,
-    CalendarBlank,
-    DotsThreeOutline,
-    List,
-    MagnifyingGlass,
-    TreeView,
-    X,
-} from '@phosphor-icons/react';
+import { ArrowsClockwise, CalendarBlank, DotsThreeOutline, List, TreeView } from '@phosphor-icons/react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
@@ -17,10 +9,11 @@ import { SubscribeView } from './SubscribeView/SubscribeView';
 import { DiagnosisView } from './DiagnosisView/DiagnosisView';
 import { View } from './App';
 import { Button } from '../base-components/Button/Button';
+import { Drawer } from '../base-components/Drawer/Drawer';
 import { Header } from '../base-components/Header/Header';
+import { SearchInput } from '../base-components/SearchInput/SearchInput';
 import clsx from 'clsx';
 import { getCssCustomPropertyNumberValue } from '../utils/getCssCustomProperty';
-import { Drawer } from '../base-components/Drawer/Drawer';
 
 const getMoreMenuCoordinates = (target: HTMLButtonElement): { x: number; y: number } => {
     // target offset is the top left corner of the button
@@ -76,26 +69,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     <ArrowsClockwise className={clsx(isLoading && 'animation-spin')} size={18} weight="regular" />
                 </Button>
 
-                <div className="sidebar__filter">
-                    <MagnifyingGlass size={16} className="sidebar__filter-icon" />
-                    <input
-                        aria-label="filter text"
-                        className="text-input"
-                        value={filterString}
-                        onChange={(e) => setFilterString(e.target.value)}
-                    />
-                    {filterString && (
-                        <button
-                            type="button"
-                            className="filter-clear-button"
-                            aria-label="clear filter"
-                            title="Clear filter"
-                            onClick={() => setFilterString('')}
-                        >
-                            <X size={14} weight="bold" />
-                        </button>
-                    )}
-                </div>
+                <SearchInput label="filter text" value={filterString} onChange={setFilterString} />
 
                 <div className="sidebar__display-mode-switch">
                     <Button
