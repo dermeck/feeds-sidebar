@@ -7,7 +7,7 @@
     padding-right: 6px;
     list-style: none;
 
-    &:hover {
+    &:not(.feed-item--selected):not(.feed-item--ui-active):hover {
         background-color: var(--item-hover-background-color);
     }
 }

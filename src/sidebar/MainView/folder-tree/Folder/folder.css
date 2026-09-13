@@ -9,7 +9,7 @@
         padding-left: calc(var(--folder-nested-level) * 15px + 8px);
         padding-right: 4px;
 
-        &:hover {
+        &:not(.folder__title-container--selected):hover {
             background-color: var(--item-hover-background-color);
             color: var(--item-hover-text-color);
         }
