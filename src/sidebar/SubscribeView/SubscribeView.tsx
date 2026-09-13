@@ -1,4 +1,4 @@
-import { ArrowLeft } from '@phosphor-icons/react';
+import { CaretLeft } from '@phosphor-icons/react';
 
 import React, { RefObject, useState } from 'react';
 
@@ -60,7 +60,7 @@ export const SubscribeView = (props: SubscribeViewProps) => {
         <div className="subscribe-view">
             <Header>
                 <Button variant="toolbar" title="Back to Feed List" onClick={props.onClose}>
-                    <ArrowLeft size={22} />
+                    <CaretLeft size={20} />
                 </Button>
                 <h1 className="subscribe-view__title">Add New Feed</h1>
             </Header>

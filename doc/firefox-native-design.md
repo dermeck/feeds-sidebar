@@ -71,11 +71,10 @@ Key takeaway: **Acorn chrome buttons are not `ButtonFace` — they're a subtle `
 |---|---|---|
 | `--control-height: 32px` | `--size-item-large` | match |
 | Radius `4px` (button, inputs) | `--border-radius-small` | match |
-| 22px icons in 32px buttons | `--icon-size-large` (24px) | close |
+| 22px icons in 32px toolbar buttons | `--icon-size-large` (24px) | close |
 | `font: caption`, header 48px | platform `unset` (system font) | match (chrome surface) |
-| `.toolbar-button` transparent bg | `--button-background-color-ghost` | match |
-| default `.button` uses `ButtonFace` | platform tint `currentColor 13%` | **differs — use the tint** |
-| no focus outline | `--focus-outline: 2px solid accent, offset 2px` | **missing** |
+| `.toolbar-button` transparent bg, `.button` uses `currentColor` tint | `--button-background-color` (13% / 17% hover / 30% active) | match |
+| `focus-visible`: 2px accent outline, offset 2px | `--focus-outline` | match |
 | no `prefers-contrast` / `forced-colors` | HCM layers | **missing** |
 
 The HCM links in `tokens-shared.css` (accents → `ButtonText`/`SelectedItem`, borders → `CanvasText`/`ButtonText`, disabled → `GrayText`) are the missing piece for full parity.

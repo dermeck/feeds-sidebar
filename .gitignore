@@ -10,3 +10,4 @@
 /.VSCodeCounter
 log.md
 .env
+.scratch/*

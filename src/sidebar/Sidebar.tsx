@@ -79,7 +79,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                         title="Show Plain List"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('plain-list'))}
                         active={mainViewDisplayMode === 'plain-list'}>
-                        <List size={22} />
+                        <List size={20} />
                     </Button>
 
                     <Button
@@ -87,7 +87,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                         title="Show Folders"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('folder-tree'))}
                         active={mainViewDisplayMode === 'folder-tree'}>
-                        <TreeView size={22} />
+                        <TreeView size={20} />
                     </Button>
 
                     <Button
@@ -95,7 +95,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                         title="Show Date Sorted List"
                         onClick={() => dispatch(optionsSlice.actions.mainViewDisplayModeChanged('date-sorted-list'))}
                         active={mainViewDisplayMode === 'date-sorted-list'}>
-                        <CalendarBlank size={22} />
+                        <CalendarBlank size={20} />
                     </Button>
                 </div>
 
@@ -106,7 +106,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     onClick={(e) => {
                         dispatch(sessionSlice.actions.showMoreMenu(getMoreMenuCoordinates(e.currentTarget)));
                     }}>
-                    <DotsThreeOutline size={22} weight="fill" />
+                    <DotsThreeOutline size={18} weight='fill'/>
                 </Button>
             </Header>
 

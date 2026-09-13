@@ -35,6 +35,8 @@
     display: none;
     width: 22px;
     height: 22px;
+    min-height: 0;
+    border: none;
     padding: 1px;
     opacity: 0.9;
 
