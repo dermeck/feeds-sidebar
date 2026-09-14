@@ -6,6 +6,7 @@
     overflow: hidden;
 
     .toolbar-button {
+        flex: 1 1 0;
         color: inherit;
         background-color: transparent;
         border-radius: 0;
