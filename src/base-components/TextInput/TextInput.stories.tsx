@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import { TextInput } from './TextInput';
+import { withNarrowContainer } from '../../storybook/decorators';
 
 const TextInputDemo = (props: React.ComponentProps<typeof TextInput>) => {
     const [value, setValue] = useState('');
@@ -12,6 +13,7 @@ const TextInputDemo = (props: React.ComponentProps<typeof TextInput>) => {
 const meta = {
     title: 'base-components/TextInput',
     component: TextInput,
+    decorators: [withNarrowContainer],
     args: {
         label: 'Folder name',
         value: '',
@@ -23,7 +25,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/** A single line text input as used e.g. to create a folder. */
 export const Default: Story = {
     args: { placeholder: 'New Folder' },
 };

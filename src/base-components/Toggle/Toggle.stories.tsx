@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import { Toggle } from './Toggle';
+import { withNarrowContainer } from '../../storybook/decorators';
 
 const ToggleDemo = ({
     label,
@@ -20,6 +21,7 @@ const ToggleDemo = ({
 const meta = {
     title: 'base-components/Toggle',
     component: Toggle,
+    decorators: [withNarrowContainer],
     args: {
         label: 'Detect feeds on visited pages',
         checked: true,
@@ -31,20 +33,17 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/** A switch as used e.g. in the options. */
 export const On: Story = { args: { checked: true } };
 
 export const Off: Story = { args: { checked: false } };
 
 export const Disabled: Story = { args: { checked: false, disabled: true } };
 
-/** The checked state is controlled by the parent, here by local state. */
 export const Interactive: Story = {
     args: { checked: true },
     render: (args) => <ToggleDemo {...args} />,
 };
 
-/** Several options stacked vertically. */
 export const OptionsStack: Story = {
     render: () => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

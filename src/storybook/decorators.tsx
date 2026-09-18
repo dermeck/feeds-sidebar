@@ -65,3 +65,10 @@ export const withSidebarFrame: Decorator = (Story) => {
 
     return <SidebarFrame />;
 };
+
+/** Restricts the story to the sidebar's content width so full-width components render at real proportions. */
+export const withNarrowContainer: Decorator = (Story) => (
+    <div className="storybook-narrow-container">
+        <Story />
+    </div>
+);

@@ -51,7 +51,6 @@
 
         .folder__icon {
             flex-shrink: 0;
-            margin-top: -2px; /* align with label */
         }
 
         .folder__label {

@@ -4,10 +4,12 @@ import React from 'react';
 
 import { Button } from '../Button/Button';
 import { ButtonGroup } from './ButtonGroup';
+import { withNarrowContainer } from '../../storybook/decorators';
 
 const meta = {
     title: 'base-components/ButtonGroup',
     component: ButtonGroup,
+    decorators: [withNarrowContainer],
     args: {
         children: (
             <>
@@ -29,5 +31,4 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/** A group of toolbar buttons, e.g. to switch between views. */
 export const Default: Story = {};

@@ -16,3 +16,12 @@
     font: menu;
     user-select: none;
 }
+
+/*
+ * Restricts the story width so full-width components (inputs, message bars,
+ * button groups) render at their real sidebar proportions instead of
+ * stretching across the whole storybook canvas.
+ */
+.storybook-narrow-container {
+    max-width: 320px;
+}

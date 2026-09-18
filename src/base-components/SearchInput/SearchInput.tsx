@@ -17,7 +17,7 @@ export const SearchInput = ({ label, value, onChange, placeholder, className }: 
             <input
                 aria-label={label}
                 className="search-input__field"
-                type="search"
+                type="text"
                 value={value}
                 placeholder={placeholder}
                 onChange={(e) => onChange(e.target.value)}

@@ -3,7 +3,6 @@
     display: flex;
     outline: var(--border-width) solid var(--border-color);
     border-radius: var(--border-radius-medium);
-    overflow: hidden;
 
     .toolbar-button {
         flex: 1 1 0;

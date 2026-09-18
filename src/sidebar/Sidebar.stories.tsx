@@ -23,7 +23,7 @@ const SidebarWithMenu = ({ activeView }: { activeView: View }) => {
 const meta = {
     title: 'sidebar/Sidebar',
     component: Sidebar,
-    decorators: [withSidebarFrame, withStore()],
+    decorators: [withSidebarFrame],
     args: {
         activeView: View.feedList,
         changeView: () => undefined,
@@ -35,8 +35,9 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/** The complete sidebar, the more menu can be opened and the views can be switched. */
-export const Default: Story = {};
+export const Default: Story = {
+    decorators: [withStore()],
+};
 
 export const NoFeeds: Story = {
     decorators: [withStore(emptyStateFixture)],
@@ -55,7 +56,6 @@ export const MoreMenuOpen: Story = {
     ],
 };
 
-/** The spinner of the fetch button is animated while feeds are fetched. */
 export const LoadingFeeds: Story = {
     decorators: [
         withStore({

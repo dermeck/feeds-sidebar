@@ -41,9 +41,11 @@
 
 .menu-item__icon {
     /* center the icon */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 24px;
     height: 18px;
-    padding-left: 4px;
     margin-right: 2px;
 }
 

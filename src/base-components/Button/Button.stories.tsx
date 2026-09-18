@@ -28,7 +28,6 @@ export const Disabled: Story = {
     args: { disabled: true },
 };
 
-/** Icon only button as used in the header / toolbar. */
 export const Toolbar: Story = {
     args: {
         variant: 'toolbar',
@@ -37,7 +36,6 @@ export const Toolbar: Story = {
     },
 };
 
-/** A toolbar button that represents the currently active option. */
 export const ToolbarActive: Story = {
     args: {
         ...Toolbar.args,

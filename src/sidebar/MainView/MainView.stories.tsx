@@ -7,12 +7,10 @@ import { initialState as initialOptionsState } from '../../store/slices/options'
 import { sessionFixture, stateFixture } from '../../storybook/fixtures';
 import { withSidebarFrame, withStore } from '../../storybook/decorators';
 
-// the main view is always shown beneath the sidebar header (fetch/search/switch buttons),
-// so these stories render the complete sidebar and only vary the main view content
 const meta = {
     title: 'sidebar/MainView',
     component: Sidebar,
-    decorators: [withSidebarFrame, withStore()],
+    decorators: [withSidebarFrame],
     args: {
         activeView: View.feedList,
         changeView: () => undefined,
@@ -24,7 +22,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/** All feed items of all feeds are listed, prefixed with the feed title. */
 export const PlainList: Story = {
     decorators: [
         withStore({
@@ -34,7 +31,6 @@ export const PlainList: Story = {
     ],
 };
 
-/** All feed items grouped by their publish date. */
 export const DateSortedList: Story = {
     decorators: [
         withStore({
@@ -44,7 +40,6 @@ export const DateSortedList: Story = {
     ],
 };
 
-/** The new folder input is shown above the tree while a folder is created. */
 export const NewFolderEditActive: Story = {
     decorators: [
         withStore({

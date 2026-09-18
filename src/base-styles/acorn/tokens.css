@@ -79,8 +79,8 @@
 
         /** Color **/
         --color-accent-primary: AccentColor; /* platform */
-        --color-accent-primary-hover: color-mix(in srgb, black 10%, var(--color-accent-primary)); /* platform */
-        --color-accent-primary-active: color-mix(in srgb, black 20%, var(--color-accent-primary)); /* platform */
+        --color-accent-primary-hover: color-mix(in srgb, black 10%, var(--color-accent-primary));
+        --color-accent-primary-active: color-mix(in srgb, black 20%, var(--color-accent-primary));
         --color-gray-05: #fbfbfe;
         --color-gray-60: #8f8f9d; /* dependency of --border-color-interactive */
         --color-gray-70: #5b5b66;

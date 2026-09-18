@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import { Drawer } from './Drawer';
@@ -18,10 +18,26 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/** Slides in over the feed list. */
-export const Visible: Story = {};
+const DrawerInteractiveDemo = ({ children }: { children: React.ReactNode }) => {
+    const [visible, setVisible] = useState(false);
 
-/** Rendered but moved out of the visible area. */
-export const Hidden: Story = {
-    args: { visible: false },
+    return (
+        <>
+            <div style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', position: 'relative', zIndex: 1 }}>
+                <button type="button" onClick={() => setVisible(true)}>
+                    Show drawer
+                </button>
+                <button type="button" onClick={() => setVisible(false)} disabled={!visible}>
+                    Hide drawer
+                </button>
+            </div>
+            <div style={{ padding: '0.5rem' }}>Feed list content behind the drawer.</div>
+            <Drawer visible={visible}>{children}</Drawer>
+        </>
+    );
+};
+
+
+export const Interactive: Story = {
+    render: (args) => <DrawerInteractiveDemo>{args.children}</DrawerInteractiveDemo>,
 };

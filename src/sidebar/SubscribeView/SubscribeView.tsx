@@ -4,14 +4,12 @@ import React, { RefObject, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
-import optionsSlice from '../../store/slices/options';
 import { NewFeedsList } from './NewFeedsList/NewFeedsList';
 import { DetectedFeeds } from './DetectedFeeds/DetectedFeeds';
 import { Button } from '../../base-components/Button/Button';
 import { MessageBar } from '../../base-components/MessageBar/MessageBar';
 import { Header } from '../../base-components/Header/Header';
 import { TextInput } from '../../base-components/TextInput/TextInput';
-import { Toggle } from '../../base-components/Toggle/Toggle';
 
 const isValidURL = (str: string) => {
     const res = str.match(
@@ -28,7 +26,6 @@ interface SubscribeViewProps {
 export const SubscribeView = (props: SubscribeViewProps) => {
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
-    const feedDetectionEnabled = useAppSelector((state) => state.options.feedDetectionEnabled);
 
     const [newFeedUrl, setNewFeedUrl] = useState('');
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
@@ -91,14 +88,8 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                 {newFeedUrlMessage !== '' && (
                     <MessageBar variant="error">{newFeedUrlMessage}</MessageBar>
                 )}
-                {feedDetectionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
+                <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
-                <Toggle
-                    className="subscribe-view__detection-toggle"
-                    label="Detect feeds on the current page"
-                    checked={feedDetectionEnabled}
-                    onChange={(checked) => dispatch(optionsSlice.actions.feedDetectionEnabledChanged(checked))}
-                />
             </div>
         </div>
     );

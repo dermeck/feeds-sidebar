@@ -2,12 +2,14 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import { MessageBar, MessageBarVariant } from './MessageBar';
+import { withNarrowContainer } from '../../storybook/decorators';
 
 const message = 'Something worth knowing about the current state of the sidebar.';
 
 const meta = {
     title: 'base-components/MessageBar',
     component: MessageBar,
+    decorators: [withNarrowContainer],
     args: {
         variant: 'info',
         children: message,
@@ -20,7 +22,6 @@ type Story = StoryObj<typeof meta>;
 
 const variants: MessageBarVariant[] = ['info', 'warning', 'error', 'success'];
 
-/** All variants side by side. */
 export const AllVariants: Story = {
     render: (args) => (
         <>

@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import React, { useRef } from 'react';
 
 import { SubscribeView } from './SubscribeView';
-import { initialState as initialOptionsState } from '../../store/slices/options';
 import { sessionFixture, stateFixture } from '../../storybook/fixtures';
 import { View } from '../App';
 import Sidebar from '../Sidebar';
@@ -24,7 +23,7 @@ const SubscribeViewWithRef = (props: Omit<React.ComponentProps<typeof SubscribeV
 const meta = {
     title: 'sidebar/SubscribeView',
     component: SubscribeViewWithRef,
-    decorators: [withSidebarFrame, withStore()],
+    decorators: [withSidebarFrame],
     args: {
         onClose: () => undefined,
     },
@@ -34,10 +33,10 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/** No feeds were detected on the active tab. */
-export const Default: Story = {};
+export const Default: Story = {
+    decorators: [withStore()],
+};
 
-/** Feeds that were detected on the active tab can be added (or removed if already subscribed). */
 export const WithDetectedFeeds: Story = {
     decorators: [
         withStore({
@@ -62,17 +61,7 @@ export const WithDetectedFeeds: Story = {
     ],
 };
 
-/** Feed detection can be turned off in the options. */
-export const FeedDetectionDisabled: Story = {
-    decorators: [
-        withStore({
-            ...stateFixture,
-            options: { ...initialOptionsState, feedDetectionEnabled: false },
-        }),
-    ],
-};
-
-/** The view as opened from the sidebar, embedded in the drawer. */
 export const InSidebar: Story = {
+    decorators: [withStore()],
     render: () => <Sidebar activeView={View.subscribe} changeView={() => undefined} />,
 };

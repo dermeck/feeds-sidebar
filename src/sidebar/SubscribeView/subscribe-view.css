@@ -34,7 +34,3 @@
     padding-right: 20px;
     align-self: flex-end;
 }
-
-.subscribe-view__detection-toggle {
-    margin-block-start: var(--space-small);
-}

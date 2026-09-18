@@ -3,7 +3,7 @@ import { CaretLeft } from '@phosphor-icons/react';
 import React, { useMemo } from 'react';
 
 import { Button } from '../../base-components/Button/Button';
-import { Badge } from '../../base-components/Badge/Badge';
+import { Badge, BadgeVariant } from '../../base-components/Badge/Badge';
 import { Header } from '../../base-components/Header/Header';
 import { Feed, FeedItem } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -49,15 +49,15 @@ const getLatestItem = (feed?: Feed): FeedItem | undefined => {
     return latestItem;
 };
 
-const DiagnosisRow = (props: { entry: DiagnosisEntry; status: string; children?: React.ReactNode }) => {
-    const { entry, status, children } = props;
+const DiagnosisRow = (props: { entry: DiagnosisEntry; status: string; variant?: BadgeVariant; children?: React.ReactNode }) => {
+    const { entry, status, variant, children } = props;
     const latestItem = getLatestItem(entry.feed);
 
     return (
         <li className="diagnosis-view__row">
             <div className="diagnosis-view__row-header">
                 <span className="diagnosis-view__feed-title">{entry.feed?.title ?? entry.url}</span>
-                <Badge className="diagnosis-view__status">{status}</Badge>
+                <Badge variant={variant} className="diagnosis-view__status">{status}</Badge>
             </div>
             <div className="diagnosis-view__detail">Last fetch: {formatDaysAgo(entry.feed?.lastFetched)}</div>
             <div className="diagnosis-view__detail">
@@ -151,7 +151,7 @@ export const DiagnosisView = ({ onClose }: Props) => {
                         <h2 className="diagnosis-view__section-heading">Feeds with errors</h2>
                         <ul className="diagnosis-view__list">
                             {errored.map((entry) => (
-                                <DiagnosisRow key={entry.url} entry={entry} status={entry.status ?? ''}>
+                                <DiagnosisRow key={entry.url} entry={entry} status={entry.status ?? ''} variant="error">
                                     <Button onClick={() => dispatch(fetchFeedsCommand([entry.url]))}>Retry</Button>
                                     <Button
                                         className="diagnosis-view__remove-button"
@@ -170,7 +170,7 @@ export const DiagnosisView = ({ onClose }: Props) => {
                         <h2 className="diagnosis-view__section-heading">Inactive feeds</h2>
                         <ul className="diagnosis-view__list">
                             {inactive.map((entry) => (
-                                <DiagnosisRow key={entry.url} entry={entry} status="inactive">
+                                <DiagnosisRow key={entry.url} entry={entry} status="inactive" variant="warning">
                                     <Button
                                         className="diagnosis-view__remove-button"
                                         onClick={() =>

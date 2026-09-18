@@ -31,7 +31,7 @@ const staleFeed: Feed = {
 const meta = {
     title: 'sidebar/DiagnosisView',
     component: DiagnosisView,
-    decorators: [withSidebarFrame, withStore()],
+    decorators: [withSidebarFrame],
     args: {
         onClose: () => undefined,
     },
@@ -41,7 +41,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/** Feeds with fetch errors, warning-colored inactive feeds and other feeds are listed separately. */
 export const Default: Story = {
     decorators: [
         withStore({
@@ -63,7 +62,7 @@ export const NoFeeds: Story = {
     decorators: [withStore(emptyStateFixture)],
 };
 
-/** The view as opened from the sidebar, embedded in the drawer. */
 export const InSidebar: Story = {
+    decorators: [withStore()],
     render: () => <Sidebar activeView={View.diagnosis} changeView={() => undefined} />,
 };

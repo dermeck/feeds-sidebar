@@ -25,20 +25,9 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/** A plain bordered container, e.g. for a group of feed items. */
 export const Default: Story = {};
 
-/** An accordion section as used by the date sorted list. */
-export const Accordion: Story = {
-    args: {
-        type: 'accordion',
-        title: 'Today',
-        expanded: true,
-        onClick: () => undefined,
-    },
-};
 
-/** Expanding and collapsing is controlled by the parent, here by local state. */
 export const AccordionInteractive: Story = {
     args: {
         type: 'accordion',
@@ -53,7 +42,6 @@ export const AccordionInteractive: Story = {
     ),
 };
 
-/** Several accordion cards are stacked with a gap between them by default. */
 export const AccordionStack: Story = {
     render: (args) => (
         <>

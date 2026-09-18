@@ -29,10 +29,8 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/** A context menu opened at an anchor point. */
 export const Default: Story = {};
 
-/** Menu items with icons as used e.g. by the more menu of the sidebar header. */
 export const WithIcons: Story = {
     args: {
         children: (

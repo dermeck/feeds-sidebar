@@ -30,7 +30,9 @@
     position: relative;
     display: grid;
     width: 100%;
+    height: 100%;
     align-items: center;
+    align-content: center;
     grid-column-gap: 4px;
     grid-template-columns: 18px 1fr;
 }
@@ -40,6 +42,8 @@
     top: 4px; /* (32 - 24) / 2 */
     right: 4px; /* no scrollbar */
     display: none;
+    align-items: center;
+    justify-content: center;
     width: 24px;
     height: 24px;
     min-height: 0;
@@ -81,6 +85,6 @@
     }
 
     .feed-item__remove-button {
-        display: block;
+        display: inline-flex;
     }
 }
