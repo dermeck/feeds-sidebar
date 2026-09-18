@@ -30,7 +30,9 @@ export const Card = (props: CardProps) => {
         return (
             <div className={clsx('card', 'card--accordion', props.expanded && 'card--expanded', props.className)}>
                 <button type="button" className="card__header" onClick={props.onClick} aria-expanded={props.expanded}>
-                    <span>{props.expanded ? <CaretDown weight="bold" /> : <CaretUp weight="bold" />}</span>
+                    <span className="card__header-icon">
+                        {props.expanded ? <CaretDown size={20} weight="bold"  /> : <CaretUp size={20} weight="bold" />}
+                    </span>
                     <span className="card__header-title">{props.title}</span>
                 </button>
                 {props.expanded && <div className="card__content">{props.children}</div>}
