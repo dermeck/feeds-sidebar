@@ -26,6 +26,7 @@ interface SubscribeViewProps {
 export const SubscribeView = (props: SubscribeViewProps) => {
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => state.feeds.feeds);
+    const feedDetectionEnabled = useAppSelector((state) => state.options.feedDetectionEnabled);
 
     const [newFeedUrl, setNewFeedUrl] = useState('');
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
@@ -70,7 +71,8 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                     onSubmit={(e) => {
                         e.preventDefault();
                         addFeed();
-                    }}>
+                    }}
+                >
                     <label className="subscribe-view__section-heading">Feed URL</label>
                     <TextInput
                         label="Feed URL"
@@ -85,10 +87,8 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                         Add New Feed
                     </Button>
                 </form>
-                {newFeedUrlMessage !== '' && (
-                    <MessageBar variant="error">{newFeedUrlMessage}</MessageBar>
-                )}
-                <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />
+                {newFeedUrlMessage !== '' && <MessageBar variant="error">{newFeedUrlMessage}</MessageBar>}
+                {feedDetectionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
             </div>
         </div>
