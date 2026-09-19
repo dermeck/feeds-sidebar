@@ -8,6 +8,7 @@ module.exports = (env) => ({
         'sidebar/sidebar': './src/sidebar/index.tsx',
         background: './src/background/background.ts',
         page: './src/page-action/pageAction.ts',
+        'options/options': './src/options/index.tsx',
     },
 
     output: {

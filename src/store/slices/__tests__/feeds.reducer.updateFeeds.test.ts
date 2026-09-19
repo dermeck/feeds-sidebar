@@ -226,3 +226,32 @@ describe('updateFeeds action', () => {
         });
     });
 });
+
+describe('trimOverflowingFeedItems action', () => {
+    it('keeps the newest items when a feed exceeds the limit', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [
+                {
+                    ...feed1Fixture,
+                    items: [itemFixture('id1'), itemFixture('id2'), itemFixture('id3'), itemFixture('id4')],
+                },
+            ],
+        };
+
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(2));
+
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id3', 'id4']);
+    });
+
+    it('does not change feeds that are within the limit', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [{ ...feed1Fixture, items: [itemFixture('id1'), itemFixture('id2')] }],
+        };
+
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(5));
+
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id1', 'id2']);
+    });
+});

@@ -2,6 +2,7 @@ import {
     CheckSquare,
     DownloadSimple,
     FolderSimplePlus,
+    GearSix,
     Plus,
     Stethoscope,
     UploadSimple,
@@ -57,6 +58,15 @@ export const MoreMenu = (props: Props) => {
                         dispatch(sessionSlice.actions.hideMenu());
                     }}>
                     Diagnosis
+                </MenuItem>
+
+                <MenuItem
+                    icon={<GearSix size={18} />}
+                    onMouseDown={() => {
+                        browser.runtime.openOptionsPage();
+                        dispatch(sessionSlice.actions.hideMenu());
+                    }}>
+                    Settings
                 </MenuItem>
 
                 <MenuDivider />

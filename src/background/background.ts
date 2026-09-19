@@ -6,8 +6,8 @@ import { loadState, saveState } from '../services/persistence';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
 import sessionSlice from '../store/slices/session';
 import { ContentScriptMessage, MessageType, addMessageListener } from '../store/reduxBridge/messaging';
+import { feedsAutoUpdateKey } from '../store/sagas/optionsSaga';
 
-const feedsAutoUpdateKey = 'feedsAutoUpdate';
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;
 
@@ -41,13 +41,10 @@ browser.action.onClicked.addListener(() => {
 });
 
 async function detectFeeds(tabId: number) {
-    /* TODO consider options, also trigger this after pageAction reports 'ready' state instead of relying in setTimeout
-    const options = await browser.storage.sync.get(['detectionEnabled']);
-
-    if (!options?.detectionEnabled) {
+    if (!store.getState().options.feedDetectionEnabled) {
+        store.dispatch(sessionSlice.actions.feedsDetected([]));
         return;
     }
-    */
 
     const tab = await browser.tabs.get(tabId);
     if (tab.url === undefined) {
@@ -116,9 +113,6 @@ async function init() {
     const unsubscribe = wrapStore(store, messageBuffer);
 
     const updateIntervall = store.getState().options.feedUpdatePeriodInMinutes;
-    const detectionEnabled = store.getState().options.feedDetectionEnabled;
-
-    browser.storage.sync.set({ detectionEnabled: detectionEnabled });
 
     // setup cyclic update of all feeds
     browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes: updateIntervall });

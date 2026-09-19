@@ -420,6 +420,13 @@ const feedsSlice = createSlice({
                 feeds: [...updateFeeds(state.feeds, action.payload), ...newFeeds],
             };
         },
+        trimOverflowingFeedItems(state, action: PayloadAction<number>) {
+            const maxItems = action.payload;
+
+            state.feeds = state.feeds.map((feed) =>
+                feed.items.length > maxItems ? { ...feed, items: feed.items.slice(feed.items.length - maxItems) } : feed,
+            );
+        },
 
         deleteSelectedNode(state) {
             if (state.selectedNode === undefined) {

@@ -7,11 +7,15 @@ type TextInputProps = {
     onChange: React.ChangeEventHandler<HTMLInputElement>;
     onFocus?: React.FocusEventHandler<HTMLInputElement>;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
+    onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
     placeholder?: string;
     type?: string;
     disabled?: boolean;
     ref?: React.Ref<HTMLInputElement>;
     className?: string;
+    min?: number;
+    max?: number;
+    step?: number;
 };
 
 export const TextInput = (props: TextInputProps) => {
