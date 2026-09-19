@@ -58,7 +58,7 @@ Key takeaway: **Acorn chrome buttons are not `ButtonFace` — they're a subtle `
 |---|---|
 | `--size-item-small` / `--size-item-medium` / `--size-item-large` | `16px` / `24px` / `32px` |
 | `--space-small` / `--space-medium` / `--space-large` | `8px` / `12px` / `16px` |
-| `--border-radius-small` / `--border-radius-medium` / `--border-radius-large` | `4px` / `8px` / `16px` |
+| `--border-radius-small` / `--border-radius-medium` / `--border-radius-large` | `4px` / `8px` / `16px` (Acorn base; this repo overrides `--border-radius-medium` to `12px` for the Nova look) |
 | `--button-min-height` | `--size-item-large` = `32px` |
 | `--button-min-height-small` | `--size-item-medium` = `24px` |
 | `--button-size-icon` / `--button-size-icon-small` | `32px` / `24px` |
@@ -140,6 +140,12 @@ accordions) Nova means:
     gap in the list
   - folder/bookmark rows get the same circle radius in Nova (they were
     `--border-radius-small`/`medium` before, outside of the nova pref)
+- Buttons and inputs get the Nova radius scale (`button.nova.tokens.json`,
+  `border.nova.tokens.json`): buttons use `--border-radius-xlarge` (`24px`, so
+  icon buttons become circles) and `--border-radius-medium` is bumped to
+  `12px`. In this repo those are the Nova overrides in the local Acorn tokens:
+  `src/base-styles/acorn/tokens.css` (`--border-radius-medium` = `12px`,
+  `--button-border-radius` = `--border-radius-xlarge`).
 - Selected/current rows swap the flat accent fill for a **ring**:
   `outline: 1px solid var(--tab-border-color-selected); outline-offset: -1px`,
   a `1px` transparent border, and a subtle tinted background instead of a

@@ -36,8 +36,9 @@
         --border-color-transparent: transparent;
         --border-radius-circle: 9999px;
         --border-radius-small: 4px;
-        --border-radius-medium: 8px;
+        --border-radius-medium: 12px; /* Nova value (was 8px) */
         --border-radius-large: 16px;
+        --border-radius-xlarge: 24px; /* Nova value */
         --border-width: 1px;
 
         /** Button **/
@@ -54,7 +55,7 @@
         --button-border-color-hover: var(--button-border-color);
         --button-border-color-active: var(--button-border-color);
         --button-border-color-disabled: var(--button-border-color);
-        --button-border-radius: var(--border-radius-medium);
+        --button-border-radius: var(--border-radius-xlarge); /* Nova: 24px */
         --button-font-size: var(--font-size-root);
         --button-font-size-small: var(--font-size-small);
         --button-font-weight: var(--font-weight-semibold);
@@ -145,13 +146,20 @@
         --box-shadow-color-darker-layer-2: light-dark(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
         --box-shadow-color-lighter-layer-1: light-dark(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.15));
         --box-shadow-color-lighter-layer-2: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.2));
-        --box-shadow-level-1: 0 0 1px var(--box-shadow-color-darker-layer-1), 0 1px 2px var(--box-shadow-color-darker-layer-2);
-        --box-shadow-level-2: 0 0.25px 0.75px var(--box-shadow-color-lighter-layer-1), 0 2px 6px var(--box-shadow-color-lighter-layer-2);
-        --box-shadow-level-3: 0 0.375px 1.5px var(--box-shadow-color-lighter-layer-1), 0 3px 12px var(--box-shadow-color-lighter-layer-2);
-        --box-shadow-level-4: 0 0.5px 2px var(--box-shadow-color-lighter-layer-1), 0 4px 16px var(--box-shadow-color-lighter-layer-2);
+        --box-shadow-level-1: 0 0 1px var(--box-shadow-color-darker-layer-1),
+            0 1px 2px var(--box-shadow-color-darker-layer-2);
+        --box-shadow-level-2: 0 0.25px 0.75px var(--box-shadow-color-lighter-layer-1),
+            0 2px 6px var(--box-shadow-color-lighter-layer-2);
+        --box-shadow-level-3: 0 0.375px 1.5px var(--box-shadow-color-lighter-layer-1),
+            0 3px 12px var(--box-shadow-color-lighter-layer-2);
+        --box-shadow-level-4: 0 0.5px 2px var(--box-shadow-color-lighter-layer-1),
+            0 4px 16px var(--box-shadow-color-lighter-layer-2);
 
         /** Card **/
-        --card-border-color: light-dark(color-mix(in srgb, currentColor 10%, transparent), color-mix(in srgb, currentColor 6%, transparent));
+        --card-border-color: light-dark(
+            color-mix(in srgb, currentColor 10%, transparent),
+            color-mix(in srgb, currentColor 6%, transparent)
+        );
         --card-border-radius: var(--border-radius-large);
         --card-box-shadow: var(--box-shadow-level-2);
         --card-box-shadow-hover: var(--box-shadow-level-4);
@@ -194,37 +202,37 @@
 @layer tokens-prefers-contrast {
     @media (prefers-contrast) {
         :root {
-/** background-color **/
-        --background-color-box: var(--background-color-canvas);
-        --background-color-canvas: Canvas;
-        --background-color-critical: var(--background-color-canvas);
-        --background-color-information: var(--background-color-canvas);
-        --background-color-success: var(--background-color-canvas);
-        --background-color-warning: var(--background-color-canvas);
+            /** background-color **/
+            --background-color-box: var(--background-color-canvas);
+            --background-color-canvas: Canvas;
+            --background-color-critical: var(--background-color-canvas);
+            --background-color-information: var(--background-color-canvas);
+            --background-color-success: var(--background-color-canvas);
+            --background-color-warning: var(--background-color-canvas);
 
-        /** border **/
-        --border-color: CanvasText;
-        --border-color-deemphasized: currentColor;
-        --border-color-interactive: var(--text-color);
-        --border-color-transparent: CanvasText;
+            /** border **/
+            --border-color: CanvasText;
+            --border-color-deemphasized: currentColor;
+            --border-color-interactive: var(--text-color);
+            --border-color-transparent: CanvasText;
 
-        /** button **/
-        --button-border-color: var(--button-text-color);
+            /** button **/
+            --button-border-color: var(--button-text-color);
 
-        /** card **/
-        --card-border-color: color-mix(in srgb, currentColor 41%, transparent);
+            /** card **/
+            --card-border-color: color-mix(in srgb, currentColor 41%, transparent);
 
-        /** icon **/
-        --icon-color: var(--text-color);
-        --icon-color-critical: var(--icon-color);
-        --icon-color-information: var(--icon-color);
-        --icon-color-success: var(--icon-color);
-        --icon-color-warning: var(--icon-color);
+            /** icon **/
+            --icon-color: var(--text-color);
+            --icon-color-critical: var(--icon-color);
+            --icon-color-information: var(--icon-color);
+            --icon-color-success: var(--icon-color);
+            --icon-color-warning: var(--icon-color);
 
-        --outline-color-error: var(--border-color);
-        --text-color: CanvasText;
-        --text-color-deemphasized: inherit;
-        --text-color-error: inherit;
+            --outline-color-error: var(--border-color);
+            --text-color: CanvasText;
+            --text-color-deemphasized: inherit;
+            --text-color-error: inherit;
         }
     }
 }
