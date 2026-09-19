@@ -1,3 +1,27 @@
 .date-sorted-list {
-    padding: var(--space-large);
+    /* --space-xsmall compensates main-view's 8px right padding for symmetry */
+    padding: var(--space-medium);
+    padding-inline-end: var(--space-xsmall);
+}
+
+/* match the new Firefox history view (Nova): borderless cards whose rows
+   become edge-to-edge pills with a large radius */
+.date-sorted-list .card {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.date-sorted-list .card__header {
+    padding-inline: var(--space-small);
+}
+
+.date-sorted-list .card__content {
+    padding-inline: 0;
+}
+
+.date-sorted-list .feed-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xsmall);
 }

@@ -2,6 +2,7 @@
 @import '../base-components/base-components.css';
 @import './MainView/main-view.css';
 @import './MainView/date-sorted-list/date-sorted-list.css';
+@import './MainView/plain-list/main-view-plain-list.css';
 @import './Menu/menu.css';
 @import './SubscribeView/subscribe-view.css';
 @import './DiagnosisView/diagnosis-view.css';

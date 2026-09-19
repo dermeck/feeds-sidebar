@@ -5,7 +5,7 @@
         justify-content: center;
         margin-inline: 4px;
         height: var(--size-item-large);
-        border-radius: var(--border-radius-medium);
+        border-radius: var(--border-radius-circle);
         padding-left: calc(var(--folder-nested-level) * 15px + 8px);
         padding-right: 4px;
 
@@ -20,13 +20,18 @@
         }
     }
 
+    /* Nova selected pill: accent ring instead of a flat fill */
     .folder__title-container--selected {
-        color: var(--selected-item-no-focus-text-color);
-        background-color: var(--selected-item-no-focus-background-color);
+        color: var(--text-color);
+        outline: 1px solid var(--color-accent-primary);
+        outline-offset: -1px;
 
-        &:focus {
-            color: var(--selected-item-text-color);
-            background-color: var(--selected-item-background-color);
+        @media not (prefers-contrast) {
+            background-color: color-mix(in srgb, var(--color-accent-primary) 12%, transparent);
+
+            &:focus {
+                background-color: color-mix(in srgb, var(--color-accent-primary) 24%, transparent);
+            }
         }
     }
 
