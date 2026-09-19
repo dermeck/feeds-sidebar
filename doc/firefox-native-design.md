@@ -145,7 +145,8 @@ accordions) Nova means:
   icon buttons become circles) and `--border-radius-medium` is bumped to
   `12px`. In this repo those are the Nova overrides in the local Acorn tokens:
   `src/base-styles/acorn/tokens.css` (`--border-radius-medium` = `12px`,
-  `--button-border-radius` = `--border-radius-xlarge`).
+  `--button-border-radius` = `--border-radius-xlarge`). Menus are left at the
+  Acorn defaults for now.
 - Selected/current rows swap the flat accent fill for a **ring**:
   `outline: 1px solid var(--tab-border-color-selected); outline-offset: -1px`,
   a `1px` transparent border, and a subtle tinted background instead of a

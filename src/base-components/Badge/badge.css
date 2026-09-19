@@ -9,10 +9,10 @@
     width: fit-content;
     padding: 0 var(--space-xsmall);
     outline: var(--border-width) solid var(--badge-outline-color);
-    border-radius: var(--border-radius-small);
+    border-radius: var(--border-radius-circle);
     color: var(--badge-color);
     background-color: var(--badge-background-color);
-    font-size: var(--font-size-small);
+    font-size: 0.85em; /* --font-size-* are unset/platform, so scale with context */
     font-weight: var(--font-weight-semibold);
 }
 

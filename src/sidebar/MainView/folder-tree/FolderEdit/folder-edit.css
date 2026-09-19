@@ -6,7 +6,7 @@
     height: var(--size-item-large);
     padding-left: 8px;
     padding-right: 4px;
-    border-radius: var(--border-radius-medium);
+    border-radius: var(--border-radius-circle);
 
     &:hover {
         background-color: var(--item-hover-background-color);

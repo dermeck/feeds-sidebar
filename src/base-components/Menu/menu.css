@@ -28,6 +28,7 @@
 
     padding: var(--space-small);
     padding-left: 24px;
+    border-radius: var(--border-radius-medium);
 
     &:hover {
         background-color: var(--menu-hover-background-color);
