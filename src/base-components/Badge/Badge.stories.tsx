@@ -5,7 +5,6 @@ import { Badge } from './Badge';
 const meta = {
     title: 'base-components/Badge',
     component: Badge,
-    decorators: [],
     args: {
         children: '3 unread',
     },

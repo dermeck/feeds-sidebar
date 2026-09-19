@@ -1,7 +1,10 @@
 import type { StorybookConfig } from '@storybook/react-webpack5';
+import { createRequire } from 'module';
 
 import webpack from 'webpack';
 import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
+
+const require = createRequire(import.meta.url);
 
 const config: StorybookConfig = {
     stories: ['../src/**/*.stories.@(ts|tsx)'],
