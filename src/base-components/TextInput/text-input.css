@@ -1,0 +1,21 @@
+.text-input {
+    width: 100%;
+    min-height: var(--button-min-height);
+    padding-inline: var(--space-medium);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    box-sizing: border-box;
+    background-color: Field;
+    color: FieldText;
+
+    &:focus-visible {
+        outline: var(--focus-outline);
+        outline-offset: var(--focus-outline-offset);
+    }
+
+    &:disabled {
+        border-color: var(--border-color-interactive-disabled);
+        background-color: var(--button-background-color-disabled);
+        opacity: var(--button-opacity-disabled);
+    }
+}

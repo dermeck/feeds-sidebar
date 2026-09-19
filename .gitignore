@@ -2,6 +2,7 @@
 /coverage
 /node_modules
 /dist
+/storybook-static
 /draft
 /web-ext-artifacts
 /yarn-error.log

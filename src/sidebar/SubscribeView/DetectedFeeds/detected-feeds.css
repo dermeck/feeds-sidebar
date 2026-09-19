@@ -27,7 +27,10 @@
 }
 
 .detected-feed-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     height: 32px;
     width: 32px;
-    padding: 6px;
+    padding: 5px;
 }

@@ -1,0 +1,27 @@
+/*
+ * Storybook only styles.
+ *
+ * The sidebar relies on the Acorn design tokens (src/base-styles/acorn/tokens.css),
+ * which only use standard CSS system colors and `light-dark()`, so they render
+ * correctly in any modern browser without Firefox-specific fallbacks.
+ */
+.storybook-sidebar-frame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    min-height: 480px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    font: menu;
+    user-select: none;
+}
+
+/*
+ * Restricts the story width so full-width components (inputs, message bars,
+ * button groups) render at their real sidebar proportions instead of
+ * stretching across the whole storybook canvas.
+ */
+.storybook-narrow-container {
+    max-width: 320px;
+}

@@ -1,19 +1,37 @@
 .folder-edit {
     display: flex;
-    flex-direction: row;
+    align-items: center;
     gap: 4px;
-    padding: 1px 0;
-    height: 20px;
+    margin-inline: 4px;
+    height: var(--size-item-large);
+    padding-left: 8px;
+    padding-right: 4px;
+    border-radius: var(--border-radius-circle);
 
-    padding-left: 12px;
-    padding-right: 12px;
+    &:hover {
+        background-color: var(--item-hover-background-color);
+    }
+}
+
+.folder-edit__toggle-spacer {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    visibility: hidden;
 }
 
 .folder-edit__icon {
     flex-shrink: 0;
-    margin-top: -2px; /* align with label */
 }
 
 .folder-edit__input {
     flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    border-bottom: 1px solid var(--border-color-interactive);
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    outline: none;
 }

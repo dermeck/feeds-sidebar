@@ -1,0 +1,88 @@
+.toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-medium);
+    cursor: pointer;
+}
+
+.toggle__input {
+    position: absolute;
+    margin: 0;
+    opacity: 0;
+}
+
+.toggle__control {
+    position: relative;
+    flex: 0 0 auto;
+    width: var(--size-item-large);
+    height: var(--size-item-small);
+    border: var(--border-width) solid var(--border-color-interactive);
+    border-radius: var(--border-radius-circle);
+    background-color: var(--button-background-color);
+    box-sizing: border-box;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+
+    &::after {
+        display: block;
+        content: '';
+        width: calc(var(--size-item-small) - 2 * var(--border-width) - 2px);
+        height: calc(var(--size-item-small) - 2 * var(--border-width) - 2px);
+        margin: 1px;
+        border-radius: var(--border-radius-circle);
+        background-color: var(--border-color-interactive);
+        translate: 0;
+        transition: translate 100ms ease;
+    }
+
+    &:hover {
+        background-color: var(--button-background-color-hover);
+        border-color: var(--border-color-interactive);
+    }
+
+    &:active {
+        background-color: var(--button-background-color-active);
+        border-color: var(--border-color-interactive);
+    }
+}
+
+.toggle:has(.toggle__input:checked) .toggle__control {
+    background-color: var(--color-accent-primary);
+    border-color: transparent;
+
+    &::after {
+        translate: calc(var(--size-item-large) - 2 * var(--border-width) - 2px - (var(--size-item-small) - 2 * var(--border-width) - 2px));
+        background-color: var(--background-color-canvas);
+    }
+
+    &:hover {
+        background-color: var(--color-accent-primary-hover);
+    }
+
+    &:active {
+        background-color: var(--color-accent-primary-active);
+    }
+}
+
+.toggle:has(.toggle__input:checked) .toggle__control:dir(rtl)::after {
+    translate: calc(-1 * (var(--size-item-large) - 2 * var(--border-width) - 2px - (var(--size-item-small) - 2 * var(--border-width) - 2px)));
+}
+
+.toggle:has(.toggle__input:focus-visible) .toggle__control {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+}
+
+.toggle--disabled {
+    opacity: var(--button-opacity-disabled);
+    cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toggle__control,
+    .toggle__control::after {
+        transition: none;
+    }
+}

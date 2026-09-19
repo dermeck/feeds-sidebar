@@ -1,0 +1,39 @@
+/* TODO create Toolbar element (1 focus and navigate with arrow keys) */
+.button-group {
+    display: flex;
+    outline: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+
+    .toolbar-button {
+        flex: 1 1 0;
+        color: inherit;
+        background-color: transparent;
+        border-radius: 0;
+
+        &:hover {
+            background-color: var(--button-background-color-hover);
+        }
+
+        &:active {
+            background-color: var(--button-background-color-active);
+        }
+
+        &:focus {
+            z-index: 1;
+        }
+
+        &.button--ui-active {
+            background-color: var(--button-background-color-active);
+        }
+    }
+}
+
+.button-group .toolbar-button:first-child {
+    border-start-start-radius: calc(var(--border-radius-medium) - var(--border-width));
+    border-end-start-radius: calc(var(--border-radius-medium) - var(--border-width));
+}
+
+.button-group .toolbar-button:last-child {
+    border-start-end-radius: calc(var(--border-radius-medium) - var(--border-width));
+    border-end-end-radius: calc(var(--border-radius-medium) - var(--border-width));
+}

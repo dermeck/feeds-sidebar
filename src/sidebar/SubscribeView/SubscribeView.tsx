@@ -7,8 +7,9 @@ import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import { NewFeedsList } from './NewFeedsList/NewFeedsList';
 import { DetectedFeeds } from './DetectedFeeds/DetectedFeeds';
 import { Button } from '../../base-components/Button/Button';
+import { MessageBar } from '../../base-components/MessageBar/MessageBar';
 import { Header } from '../../base-components/Header/Header';
-import { clsx } from 'clsx';
+import { TextInput } from '../../base-components/TextInput/TextInput';
 
 const isValidURL = (str: string) => {
     const res = str.match(
@@ -70,10 +71,12 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                     onSubmit={(e) => {
                         e.preventDefault();
                         addFeed();
-                    }}>
+                    }}
+                >
                     <label className="subscribe-view__section-heading">Feed URL</label>
-                    <input
-                        className="text-input"
+                    <TextInput
+                        label="Feed URL"
+                        className="subscribe-view__url-input"
                         ref={props.urlInputRef}
                         placeholder="https://blog.mozilla.org/en/feed/"
                         value={newFeedUrl}
@@ -84,13 +87,7 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                         Add New Feed
                     </Button>
                 </form>
-                <div
-                    className={clsx(
-                        'subscribe-view__message-box',
-                        newFeedUrlMessage !== '' && 'subscribe-view__message-box--visible',
-                    )}>
-                    {newFeedUrlMessage}
-                </div>
+                {newFeedUrlMessage !== '' && <MessageBar variant="error">{newFeedUrlMessage}</MessageBar>}
                 {feedDetectionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
             </div>

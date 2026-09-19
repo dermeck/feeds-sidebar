@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import { useAppSelector } from '../../../store/hooks';
 import { FeedItemList } from '../FeedList/FeedItemList';
 import { Feed, FeedItem } from '../../../model/feeds';
@@ -15,13 +16,11 @@ export const MainViewPlainList = ({ className, filterString }: Props) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
 
     const hasMatchingItems = feeds.some((feed) =>
-        feed.items.some(
-            (item) => !item.isRead && item.title?.toLowerCase().includes(filterString.toLowerCase()),
-        ),
+        feed.items.some((item) => !item.isRead && item.title?.toLowerCase().includes(filterString.toLowerCase())),
     );
 
     return (
-        <div className={className}>
+        <div className={clsx('main-view__plain-list', className)}>
             {hasMatchingItems &&
                 feeds.map((feed) => {
                     return (

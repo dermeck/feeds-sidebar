@@ -21,6 +21,7 @@ export const FolderEdit = (props: Props) => {
 
     return (
         <div className="folder-edit">
+            <span className="folder-edit__toggle-spacer" aria-hidden="true" />
             <FolderSimple className="folder-edit__icon" size={20} weight="light" />
             <input
                 aria-label="folder edit name"

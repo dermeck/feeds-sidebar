@@ -4,7 +4,7 @@ import createSagaMiddleware from 'redux-saga';
 
 import { feedMiddleware } from './middleware/feedMiddleware';
 import { loggerMiddleware } from './middleware/loggerMiddleware';
-import { rootSaga } from './sagas';
+import { rootSaga } from './sagas/index';
 import feedsSlice from './slices/feeds';
 import optionsSlice from './slices/options';
 import sessionSlice from './slices/session';

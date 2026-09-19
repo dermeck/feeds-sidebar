@@ -1,9 +1,9 @@
 .feed-item {
     position: relative;
-    margin-inline: 4px;
+    margin-inline: 0;
     height: var(--size-item-large);
-    border-radius: var(--border-radius-medium);
-    padding-left: 20px;
+    border-radius: var(--border-radius-circle);
+    padding-left: var(--space-small);
     padding-right: 6px;
     list-style: none;
 
@@ -13,24 +13,39 @@
 }
 
 .feed-item--indented {
-    padding-left: calc(var(--item-nested-level) * 15px + 25px);
+    /* align the feed icon with the parent folder icon */
+    margin-inline: 4px;
+    padding-left: calc(var(--item-nested-level) * 15px + 10px);
 }
 
+/* Nova selected pill: accent ring instead of a flat fill */
 .feed-item--selected {
-    color: var(--selected-item-no-focus-text-color);
-    background-color: var(--selected-item-no-focus-background-color);
+    color: var(--text-color);
+    outline: 1px solid var(--color-accent-primary);
+    outline-offset: -1px;
+
+    @media not (prefers-contrast) {
+        background-color: color-mix(in srgb, var(--color-accent-primary) 12%, transparent);
+    }
 }
 
 .feed-item--ui-active {
-    color: var(--selected-item-text-color);
-    background-color: var(--selected-item-background-color);
+    color: var(--text-color);
+    outline: 1px solid var(--color-accent-primary);
+    outline-offset: -1px;
+
+    @media not (prefers-contrast) {
+        background-color: color-mix(in srgb, var(--color-accent-primary) 24%, transparent);
+    }
 }
 
 .feed-item__grid {
     position: relative;
     display: grid;
     width: 100%;
+    height: 100%;
     align-items: center;
+    align-content: center;
     grid-column-gap: 4px;
     grid-template-columns: 18px 1fr;
 }
@@ -40,6 +55,8 @@
     top: 4px; /* (32 - 24) / 2 */
     right: 4px; /* no scrollbar */
     display: none;
+    align-items: center;
+    justify-content: center;
     width: 24px;
     height: 24px;
     min-height: 0;
@@ -70,9 +87,14 @@
     }
 
     &:focus-visible {
-        outline: var(--focus-outline);
-        outline-offset: var(--focus-outline-inset);
+        outline: none; /* the pill below draws the focus indicator */
     }
+}
+
+/* outline follows the pill, not the inner text link */
+.feed-item:has(.feed-item__link:focus-visible) {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-inset);
 }
 
 .feed-item:hover {
@@ -81,6 +103,6 @@
     }
 
     .feed-item__remove-button {
-        display: block;
+        display: inline-flex;
     }
 }

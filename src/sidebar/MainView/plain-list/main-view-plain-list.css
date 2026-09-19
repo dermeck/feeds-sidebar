@@ -1,0 +1,11 @@
+/* keep rows off the container edge (rows inset 8px in feed-item) */
+.main-view__plain-list {
+    padding-inline: var(--space-small);
+}
+
+/* 4px row gap so the pill rows breathe, as in the Firefox sidebar lists */
+.main-view__plain-list .feed-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xsmall);
+}

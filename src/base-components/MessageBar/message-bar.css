@@ -1,0 +1,47 @@
+.message-bar {
+    --message-bar-background-color: var(--background-color-information);
+    --message-bar-border-color: oklch(from var(--message-bar-icon-color) l c h / 20%);
+    --message-bar-icon-color: var(--icon-color-information);
+
+    display: flex;
+    align-items: center;
+    gap: var(--space-small);
+    min-height: var(--size-item-large);
+    padding: var(--space-small) var(--space-small) var(--space-small) var(--space-medium);
+    border: var(--border-width) solid var(--message-bar-border-color);
+    border-radius: var(--border-radius-medium);
+    background-color: var(--message-bar-background-color);
+    color: var(--text-color);
+    text-align: start;
+}
+
+.message-bar__icon {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    color: var(--message-bar-icon-color);
+}
+
+.message-bar--warning {
+    --message-bar-background-color: var(--background-color-warning);
+    --message-bar-icon-color: var(--icon-color-warning);
+}
+
+.message-bar--error {
+    --message-bar-background-color: var(--background-color-critical);
+    --message-bar-icon-color: var(--icon-color-critical);
+}
+
+.message-bar--success {
+    --message-bar-background-color: var(--background-color-success);
+    --message-bar-icon-color: var(--icon-color-success);
+}
+
+@media (prefers-contrast) {
+    .message-bar {
+        --message-bar-border-color: var(--border-color);
+    }
+}

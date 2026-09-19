@@ -8,12 +8,10 @@
 }
 
 .subscribe-view__new-feeds-list-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     padding: 4px;
 
     list-style: none;
-
-    & > svg {
-        margin-right: 6px;
-        vertical-align: middle;
-    }
 }

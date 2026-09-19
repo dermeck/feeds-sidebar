@@ -1,0 +1,49 @@
+.search-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input__field {
+    width: 100%;
+    min-width: 75px; /* prevent cutting off more menu button */
+    height: var(--button-min-height);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    box-sizing: border-box;
+    padding-inline-start: calc(2 * var(--space-medium) + var(--icon-size-xsmall));
+    padding-inline-end: calc(var(--size-item-medium) + var(--space-xsmall));
+    background-color: Field;
+    color: FieldText;
+
+    &:focus-visible {
+        outline: var(--focus-outline);
+        outline-offset: var(--focus-outline-offset);
+    }
+}
+
+.search-input__icon {
+    position: absolute;
+    inset-inline-start: var(--space-medium);
+    color: var(--icon-color);
+    pointer-events: none;
+}
+
+.search-input__clear {
+    position: absolute;
+    inset-inline-end: var(--space-xxsmall);
+    display: grid;
+    place-items: center;
+    width: var(--size-item-medium);
+    height: var(--size-item-medium);
+    border: none;
+    border-radius: var(--border-radius-medium);
+    background-color: transparent;
+    color: var(--text-color-deemphasized);
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--button-background-color-hover);
+        color: var(--button-text-color);
+    }
+}

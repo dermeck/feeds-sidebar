@@ -1,0 +1,64 @@
+.card {
+    border: var(--border-width) solid var(--card-border-color);
+    border-radius: var(--border-radius-large);
+    background-color: var(--background-color-box);
+    box-shadow: var(--card-box-shadow);
+}
+
+.card--accordion + .card--accordion {
+    margin-block-start: var(--space-medium);
+}
+
+/* Header metrics mirror the sidebar's moz-card overrides in
+   browser/components/sidebar/sidebar.css (summary padding-block --space-medium,
+   --card-heading-padding-inline, --card-gap: --space-small). */
+.card__header {
+    display: grid;
+    grid-template-columns: var(--icon-size) 1fr;
+    align-items: center;
+    gap: var(--space-small);
+    width: 100%;
+    padding-block: var(--space-medium);
+    padding-inline: var(--space-medium);
+    border: none;
+    border-radius: inherit;
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--button-background-color-hover);
+    }
+
+    &:focus-visible {
+        outline: var(--focus-outline);
+    }
+}
+
+.card__header-title {
+    font-weight: var(--font-weight-heading);
+}
+
+.card__header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card__header-icon svg {
+    display: block;
+}
+
+.card--expanded .card__header {
+    border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
+}
+
+.card__content {
+    padding-inline: var(--card-padding);
+    padding-block-end: var(--space-small);
+    overflow: hidden;
+    border-end-start-radius: var(--border-radius-large);
+    border-end-end-radius: var(--border-radius-large);
+}
