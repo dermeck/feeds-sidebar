@@ -228,7 +228,48 @@ describe('updateFeeds action', () => {
 });
 
 describe('trimOverflowingFeedItems action', () => {
-    it('keeps the newest items when a feed exceeds the limit', () => {
+    it('keeps the newest items by date when a feed exceeds the limit', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [
+                {
+                    ...feed1Fixture,
+                    items: [
+                        { ...itemFixture('old'), published: '2022-01-01' },
+                        { ...itemFixture('newer'), published: '2022-06-06' },
+                        { ...itemFixture('newest'), published: '2022-12-12' },
+                    ],
+                },
+            ],
+        };
+
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(2));
+
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['newest', 'newer']);
+    });
+
+    it('keeps the newest items even if they appear at the end of the array', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [
+                {
+                    ...feed1Fixture,
+                    // newest-first feed order (as feedparser emits typical feeds)
+                    items: [
+                        { ...itemFixture('newest'), published: '2022-12-12' },
+                        { ...itemFixture('newer'), published: '2022-06-06' },
+                        { ...itemFixture('old'), published: '2022-01-01' },
+                    ],
+                },
+            ],
+        };
+
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(2));
+
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['newest', 'newer']);
+    });
+
+    it('keeps the items at the beginning when no dates are available', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             feeds: [
@@ -241,7 +282,7 @@ describe('trimOverflowingFeedItems action', () => {
 
         const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(2));
 
-        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id3', 'id4']);
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id1', 'id2']);
     });
 
     it('does not change feeds that are within the limit', () => {

@@ -2,6 +2,7 @@ import { createAction, createSelector, createSlice, PayloadAction } from '@redux
 
 import {
     Feed,
+    FeedItem,
     FeedNode,
     Folder,
     FolderNode,
@@ -172,6 +173,12 @@ const feedById = (feeds: FeedSliceState['feeds'], id: string) => {
     }
 
     return feed;
+};
+
+const itemTimestamp = (item: FeedItem): number => {
+    const timestamp = Date.parse(item.published ?? item.lastModified ?? '');
+
+    return Number.isNaN(timestamp) ? 0 : timestamp;
 };
 
 const selectChildNodes = (
@@ -423,9 +430,18 @@ const feedsSlice = createSlice({
         trimOverflowingFeedItems(state, action: PayloadAction<number>) {
             const maxItems = action.payload;
 
-            state.feeds = state.feeds.map((feed) =>
-                feed.items.length > maxItems ? { ...feed, items: feed.items.slice(feed.items.length - maxItems) } : feed,
-            );
+            state.feeds = state.feeds.map((feed) => {
+                if (feed.items.length <= maxItems) {
+                    return feed;
+                }
+
+                // items are not guaranteed to be ordered by age (new feeds keep the document order of the
+                // feed, subsequent fetches append/preserve their position), so sort by date to keep the
+                // newest items; items without a parseable date keep their existing relative order
+                const items = [...feed.items].sort((a, b) => itemTimestamp(b) - itemTimestamp(a));
+
+                return { ...feed, items: items.slice(0, maxItems) };
+            });
         },
 
         deleteSelectedNode(state) {
