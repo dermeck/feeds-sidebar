@@ -7,9 +7,11 @@ import { Toggle } from '../base-components/Toggle/Toggle';
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-const numericValue = (value: string, fallback: number) => {
+// Number() would accept strings like '0x10' and coerce a blank value to 0
+const parseNumber = (value: string): number | undefined => {
     const parsed = Number(value);
-    return Number.isNaN(parsed) ? fallback : parsed;
+
+    return value.trim() === '' || !Number.isFinite(parsed) ? undefined : parsed;
 };
 
 type NumberFieldProps = {
@@ -32,7 +34,14 @@ const NumberField = ({ label, description, value, min, max, disabled, onCommit }
     }
 
     const commit = () => {
-        const parsed = numericValue(localValue, value);
+        const parsed = parseNumber(localValue);
+
+        if (parsed === undefined) {
+            // nothing usable was entered, so keep showing what is stored
+            setLocalValue(value.toString());
+            return;
+        }
+
         onCommit(clamp(parsed, min, max));
     };
 
