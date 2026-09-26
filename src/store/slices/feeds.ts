@@ -176,11 +176,17 @@ const feedById = (feeds: FeedSliceState['feeds'], id: string) => {
     return feed;
 };
 
-const itemTimestamp = (item: FeedItem): number => {
-    const timestamp = Date.parse(item.published ?? item.lastModified ?? '');
+const parseDate = (value: string | undefined): number | undefined => {
+    if (value === undefined) {
+        return undefined;
+    }
 
-    return Number.isNaN(timestamp) ? 0 : timestamp;
+    const timestamp = Date.parse(value);
+
+    return Number.isNaN(timestamp) ? undefined : timestamp;
 };
+
+const itemTimestamp = (item: FeedItem): number => parseDate(item.published) ?? parseDate(item.lastModified) ?? 0;
 
 // items are not ordered by age on their own: a new feed keeps the document order of the feed and
 // later fetches append, so ordering is imposed here. items without a parseable date sort last.

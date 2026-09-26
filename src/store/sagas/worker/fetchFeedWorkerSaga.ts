@@ -45,12 +45,21 @@ function* fetchFeedWorkerSaga(action: FetchFeedAction) {
     }
 }
 
+// an unparseable date must not be persisted as the string "Invalid Date"
+const toDateString = (date: Date | null | undefined): string | undefined => {
+    if (date === null || date === undefined || Number.isNaN(date.getTime())) {
+        return undefined;
+    }
+
+    return date.toDateString();
+};
+
 const mapFeedItem = (item: Item): FeedItem => ({
     id: item.guid ?? item.link,
     url: item.link,
     title: item.title ?? stripHtmlTags(item.description),
-    published: item.pubdate?.toDateString() || undefined,
-    lastModified: item.date?.toDateString() || undefined,
+    published: toDateString(item.pubdate),
+    lastModified: toDateString(item.date),
 });
 
 const callFeedParser = async (input: FeedParserInput): Promise<Feed> => {
