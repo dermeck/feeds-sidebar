@@ -1,7 +1,7 @@
 import { FeedItem } from '../../../model/feeds';
 import { RootState } from '../../store';
 import feedsSlice from '../feeds';
-import optionsSlice from '../options';
+import optionsSlice, { MAX_ITEMS_PER_FEED_DEFAULT } from '../options';
 import { feed1Fixture, feed2Fixture, itemFixture } from './feeds.fixtures';
 
 type FeedSliceState = RootState['feeds'];
@@ -470,5 +470,23 @@ describe('changeMaxItemsPerFeed action', () => {
         // same reference, so subscribers do not re-render feeds that did not change
         expect(newState.feeds[0]).toBe(prevState.feeds[0]);
         expect(newState).toBe(prevState);
+    });
+});
+
+describe('resetOptions action', () => {
+    const overflowingItems: ReadonlyArray<FeedItem> = Array.from({ length: 300 }, (_, i) => ({
+        ...itemFixture(`item-${i}`),
+        published: `2022-01-${String((i % 28) + 1).padStart(2, '0')}`,
+    }));
+
+    it('applies the default limit', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [{ ...feed1Fixture, items: overflowingItems }],
+        };
+
+        const newState = feedsSlice.reducer(prevState, optionsSlice.actions.resetOptions());
+
+        expect(newState.feeds[0].items).toHaveLength(MAX_ITEMS_PER_FEED_DEFAULT);
     });
 });

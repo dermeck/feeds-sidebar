@@ -17,7 +17,7 @@ import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { moveOrInsertElementBefore, moveOrInsertElementAfter } from '../../utils/arrayUtils';
 import { randomUUID } from '../../utils/uuid';
 import { extensionStateLoaded } from '../actions';
-import optionsSlice from './options';
+import optionsSlice, { initialState as initialOptions } from './options';
 
 type FeedSliceState = {
     folders: ReadonlyArray<Folder>;
@@ -533,6 +533,10 @@ const feedsSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(optionsSlice.actions.changeMaxItemsPerFeed, (state, action) => {
             trimOverflowingItems(state, action.payload);
+        });
+
+        builder.addCase(optionsSlice.actions.resetOptions, (state) => {
+            trimOverflowingItems(state, initialOptions.maxItemsPerFeed);
         });
 
         builder.addCase(extensionStateLoaded, (_, action) => {
