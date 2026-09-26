@@ -360,7 +360,7 @@ describe('trimOverflowingFeedItems action', () => {
         expect(newState).toBe(prevState);
     });
 
-    it('still trims a feed that mixes dated and undated items (known limitation)', () => {
+    it('keeps a feed that mixes dated and undated items', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             feeds: [
@@ -378,8 +378,31 @@ describe('trimOverflowingFeedItems action', () => {
 
         const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(2));
 
-        // the dated item survives, but a newly appended undated item would be dropped
-        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['dated', 'undated1']);
+        // the cap applies to the dated items only, the undated ones are kept whatever their age
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['dated', 'undated1', 'undated2', 'undated3']);
+    });
+
+    it('keeps a new undated item when the feed is already at the limit', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [
+                {
+                    ...feed1Fixture,
+                    items: [
+                        { ...itemFixture('a'), published: '2022-12-12' },
+                        { ...itemFixture('b'), published: '2022-06-06' },
+                    ],
+                },
+            ],
+        };
+
+        const merged = feedsSlice.reducer(
+            prevState,
+            feedsSlice.actions.updateFeeds([{ ...feed1Fixture, items: [itemFixture('new-undated')] }]),
+        );
+        const newState = feedsSlice.reducer(merged, feedsSlice.actions.trimOverflowingFeedItems(2));
+
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['a', 'b', 'new-undated']);
     });
 
     it('does not change feeds that are within the limit', () => {

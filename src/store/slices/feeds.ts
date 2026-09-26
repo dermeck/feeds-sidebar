@@ -179,6 +179,8 @@ const feedById = (feeds: FeedSliceState['feeds'], id: string) => {
 
 const itemTimestamp = (item: FeedItem): number => itemDate(item)?.valueOf() ?? 0;
 
+const hasItemDate = (item: FeedItem) => itemTimestamp(item) !== 0;
+
 // items are not ordered by age on their own: a new feed keeps the document order of the feed and
 // later fetches append, so ordering is imposed here. items without a parseable date sort last.
 const sortItemsByAgeDesc = <T extends Feed>(feed: T): T => ({
@@ -197,11 +199,16 @@ const trimOverflowingItems = (state: FeedSliceState, maxItems: number) => {
     state.feeds.forEach((feed) => {
         // without a date there is no way to tell which item is the newest, so the feed is left alone
         // instead of being frozen at the limit
-        if (feed.items.length <= limit || feed.items.every((item) => itemTimestamp(item) === 0)) {
+        if (feed.items.length <= limit || feed.items.every((item) => !hasItemDate(item))) {
             return;
         }
 
-        feed.items = sortItemsByAgeDesc(feed).items.slice(0, limit);
+        const sorted = sortItemsByAgeDesc(feed).items;
+        // the cap applies to the dated items only: an undated one cannot be ranked, and dropping an
+        // item is worse than exceeding the limit
+        const undated = sorted.filter((item) => !hasItemDate(item));
+
+        feed.items = [...sorted.filter(hasItemDate).slice(0, limit), ...undated];
     });
 };
 
