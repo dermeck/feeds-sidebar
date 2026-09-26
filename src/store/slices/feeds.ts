@@ -2,10 +2,12 @@ import { createAction, createSelector, createSlice, PayloadAction } from '@redux
 
 import {
     Feed,
+    FeedItem,
     FeedNode,
     Folder,
     FolderNode,
     InsertMode,
+    itemDate,
     NodeMeta,
     NodeType,
     rootFolderId,
@@ -15,6 +17,7 @@ import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { moveOrInsertElementBefore, moveOrInsertElementAfter } from '../../utils/arrayUtils';
 import { randomUUID } from '../../utils/uuid';
 import { extensionStateLoaded } from '../actions';
+import optionsSlice, { initialState as initialOptions } from './options';
 
 type FeedSliceState = {
     folders: ReadonlyArray<Folder>;
@@ -172,6 +175,41 @@ const feedById = (feeds: FeedSliceState['feeds'], id: string) => {
     }
 
     return feed;
+};
+
+const itemTimestamp = (item: FeedItem): number => itemDate(item)?.valueOf() ?? 0;
+
+const hasItemDate = (item: FeedItem) => itemTimestamp(item) !== 0;
+
+// items are not ordered by age on their own: a new feed keeps the document order of the feed and
+// later fetches append, so ordering is imposed here. items without a parseable date sort last.
+const sortItemsByAgeDesc = <T extends Feed>(feed: T): T => ({
+    ...feed,
+    items: [...feed.items].sort((a, b) => itemTimestamp(b) - itemTimestamp(a)),
+});
+
+// only overflowing feeds are touched, so that trimming without any effect leaves the state untouched
+const trimOverflowingItems = (state: FeedSliceState, maxItems: number) => {
+    const limit = Number.isFinite(maxItems) ? Math.round(maxItems) : 0;
+
+    if (limit <= 0) {
+        return;
+    }
+
+    state.feeds.forEach((feed) => {
+        // without a date there is no way to tell which item is the newest, so the feed is left alone
+        // instead of being frozen at the limit
+        if (feed.items.length <= limit || feed.items.every((item) => !hasItemDate(item))) {
+            return;
+        }
+
+        const sorted = sortItemsByAgeDesc(feed).items;
+        // the cap applies to the dated items only: an undated one cannot be ranked, and dropping an
+        // item is worse than exceeding the limit
+        const undated = sorted.filter((item) => !hasItemDate(item));
+
+        feed.items = [...sorted.filter(hasItemDate).slice(0, limit), ...undated];
+    });
 };
 
 const selectChildNodes = (
@@ -417,8 +455,14 @@ const feedsSlice = createSlice({
             return {
                 ...state,
                 folders: folders,
-                feeds: [...updateFeeds(state.feeds, action.payload), ...newFeeds],
+                feeds: [
+                    ...updateFeeds(state.feeds, action.payload),
+                    ...newFeeds.map((feed) => sortItemsByAgeDesc(feed)),
+                ],
             };
+        },
+        trimOverflowingFeedItems(state, action: PayloadAction<number>) {
+            trimOverflowingItems(state, action.payload);
         },
 
         deleteSelectedNode(state) {
@@ -494,6 +538,14 @@ const feedsSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
+        builder.addCase(optionsSlice.actions.changeMaxItemsPerFeed, (state, action) => {
+            trimOverflowingItems(state, action.payload);
+        });
+
+        builder.addCase(optionsSlice.actions.resetOptions, (state) => {
+            trimOverflowingItems(state, initialOptions.maxItemsPerFeed);
+        });
+
         builder.addCase(extensionStateLoaded, (_, action) => {
             return {
                 ...action.payload.feeds,
@@ -684,9 +736,7 @@ const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Fee
             return feed;
         }
 
-        return {
-            ...mergeFeed(feed, updatedFeed),
-        };
+        return sortItemsByAgeDesc(mergeFeed(feed, updatedFeed));
     });
 
     return updatedFeeds;
@@ -726,7 +776,7 @@ const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
         id: previous.id,
         title: previous.title !== undefined ? previous.title : updatedFeed.title,
         link: updatedFeed.link,
-        items: [...previous.items, ...newItems],
+        items: [...newItems, ...previous.items],
         lastFetched: updatedFeed.lastFetched ?? previous.lastFetched,
     };
 };

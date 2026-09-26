@@ -1,4 +1,4 @@
-import { Feed } from '../../../model/feeds';
+import { Feed, itemDate } from '../../../model/feeds';
 import { FeedListItemModel } from '../FeedList/item/FeedListItem';
 
 export type DateGroup = { date: string; items: FeedListItemModel[] };
@@ -71,29 +71,31 @@ export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>) => {
     for (const feed of feeds) {
         for (const feedItem of feed.items) {
             if (!feedItem.isRead) {
-                const itemDateString = feedItem.lastModified ?? feedItem.published;
-                const itemDate = itemDateString ? new Date(itemDateString) : undefined;
+                const itemDateValue = itemDate(feedItem);
 
-                if (itemDate === undefined || itemDate.toString() === 'Invalid Date') {
+                if (itemDateValue === undefined) {
                     result.unknown.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
                     continue;
                 }
-                if (compareDateDayMonthYear(today, itemDate) === 'equal') {
+                if (compareDateDayMonthYear(today, itemDateValue) === 'equal') {
                     result.today.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
                     continue;
                 }
 
-                if (compareDateDayMonthYear(yesterday, itemDate) === 'equal') {
+                if (compareDateDayMonthYear(yesterday, itemDateValue) === 'equal') {
                     result.yesterday.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
                     continue;
                 }
 
                 const item = { ...feedItem, parentId: feed.id, parentTitle: feed.title };
-                if (itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear()) {
-                    const key = toDayKey(itemDate);
+                if (
+                    itemDateValue.getMonth() === today.getMonth() &&
+                    itemDateValue.getFullYear() === today.getFullYear()
+                ) {
+                    const key = toDayKey(itemDateValue);
                     daysGroups.set(key, [...(daysGroups.get(key) ?? []), item]);
                 } else {
-                    const key = toMonthKey(itemDate);
+                    const key = toMonthKey(itemDateValue);
                     monthsGroups.set(key, [...(monthsGroups.get(key) ?? []), item]);
                 }
             }

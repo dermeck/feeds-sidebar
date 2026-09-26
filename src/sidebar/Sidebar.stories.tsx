@@ -67,3 +67,29 @@ export const LoadingFeeds: Story = {
         }),
     ],
 };
+
+const persistenceErrorMessage = 'Changes cannot be saved right now and will be lost when the sidebar is reloaded.';
+
+export const PersistenceError: Story = {
+    decorators: [
+        withStore({
+            ...stateFixture,
+            session: {
+                ...sessionFixture,
+                persistenceError: persistenceErrorMessage,
+            },
+        }),
+    ],
+};
+
+export const PersistenceErrorWithoutFeeds: Story = {
+    decorators: [
+        withStore({
+            ...emptyStateFixture,
+            session: {
+                ...sessionFixture,
+                persistenceError: persistenceErrorMessage,
+            },
+        }),
+    ],
+};

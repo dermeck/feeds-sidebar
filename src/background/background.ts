@@ -1,19 +1,59 @@
 import { wrapStore } from '../store/reduxBridge';
 
+import { isFetchDue } from '../model/feeds';
 import { extensionStateLoaded } from '../store/actions';
+import { updateBadge } from '../store/middleware/feedMiddleware';
 import store from '../store/store';
 import { loadState, saveState } from '../services/persistence';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
 import sessionSlice from '../store/slices/session';
 import { ContentScriptMessage, MessageType, addMessageListener } from '../store/reduxBridge/messaging';
+import { feedsAutoUpdateKey } from '../store/sagas/optionsSaga';
 
-const feedsAutoUpdateKey = 'feedsAutoUpdate';
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;
 
-let lastLoaded = 0;
 let initialized = false;
 const messageBuffer: ContentScriptMessage[] = [];
+
+// saves are chained so that a slow write cannot finish after a newer one and persist stale state
+let pendingSave: Promise<void> = Promise.resolve();
+let saveErrorReported = false;
+let lastSavedState: ReturnType<typeof store.getState> | undefined;
+
+const scheduleSave = () => {
+    // the store notifies on every dispatch, but keeps the same state object when nothing changed
+    const state = store.getState();
+
+    if (state === lastSavedState) {
+        return;
+    }
+
+    lastSavedState = state;
+
+    pendingSave = pendingSave
+        .then(async () => {
+            await saveState(state);
+
+            if (saveErrorReported) {
+                saveErrorReported = false;
+                store.dispatch(sessionSlice.actions.changePersistenceError(undefined));
+            }
+        })
+        .catch((error: unknown) => {
+            console.error('Could not persist state', error);
+
+            // reporting the error changes the state, which triggers another save that would fail again
+            if (!saveErrorReported) {
+                saveErrorReported = true;
+                store.dispatch(
+                    sessionSlice.actions.changePersistenceError(
+                        'Changes cannot be saved right now and will be lost when the sidebar is reloaded.',
+                    ),
+                );
+            }
+        });
+};
 
 // immediatly provide receiving end for content-script messages
 // waiting for store would take too long when background script re-initializes
@@ -41,13 +81,15 @@ browser.action.onClicked.addListener(() => {
 });
 
 async function detectFeeds(tabId: number) {
-    /* TODO consider options, also trigger this after pageAction reports 'ready' state instead of relying in setTimeout
-    const options = await browser.storage.sync.get(['detectionEnabled']);
-
-    if (!options?.detectionEnabled) {
+    // the options are not loaded yet, so the setting would be read as its default
+    if (!initialized) {
         return;
     }
-    */
+
+    if (!store.getState().options.feedDetectionEnabled) {
+        store.dispatch(sessionSlice.actions.feedsDetected([]));
+        return;
+    }
 
     const tab = await browser.tabs.get(tabId);
     if (tab.url === undefined) {
@@ -105,22 +147,19 @@ async function init() {
     const loadedState = await loadState();
     if (loadedState !== undefined) {
         store.dispatch(extensionStateLoaded(loadedState));
-        lastLoaded = loadedState.timestamp;
     }
 
+    // the badge outlives the background script, so it has to be reconciled with the loaded state
+    updateBadge(store.getState());
+
     // setup persistence
-    store.subscribe(async () => {
-        await saveState(store.getState());
-    });
+    store.subscribe(scheduleSave);
 
     const unsubscribe = wrapStore(store, messageBuffer);
 
     const updateIntervall = store.getState().options.feedUpdatePeriodInMinutes;
-    const detectionEnabled = store.getState().options.feedDetectionEnabled;
 
-    browser.storage.sync.set({ detectionEnabled: detectionEnabled });
-
-    // setup cyclic update of all feeds
+    // the countdown is reset on every start, the startup fetch below compensates
     browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes: updateIntervall });
 
     initialized = true;
@@ -131,9 +170,11 @@ async function init() {
 const initResultPromise = init();
 
 initResultPromise.then(() => {
-    // don't fetch if extension was running and non-persistent background-script just re-started
-    const updateIntervall = store.getState().options.feedUpdatePeriodInMinutes;
-    if (Date.now() - lastLoaded > updateIntervall * MINUTE - 15 * SECOND) {
+    const state = store.getState();
+    const { feeds } = state.feeds;
+    const updateIntervall = state.options.feedUpdatePeriodInMinutes;
+
+    if (isFetchDue(feeds, updateIntervall * MINUTE - 15 * SECOND, Date.now())) {
         store.dispatch(fetchAllFeedsCommand());
     }
 });

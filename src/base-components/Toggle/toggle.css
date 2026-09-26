@@ -12,6 +12,16 @@
     opacity: 0;
 }
 
+/* keeps the label as accessible name of the input, but out of sight */
+.toggle--label-hidden .toggle__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
 .toggle__control {
     position: relative;
     flex: 0 0 auto;
@@ -53,7 +63,10 @@
     border-color: transparent;
 
     &::after {
-        translate: calc(var(--size-item-large) - 2 * var(--border-width) - 2px - (var(--size-item-small) - 2 * var(--border-width) - 2px));
+        translate: calc(
+            var(--size-item-large) - 2 * var(--border-width) - 2px -
+                (var(--size-item-small) - 2 * var(--border-width) - 2px)
+        );
         background-color: var(--background-color-canvas);
     }
 
@@ -67,7 +80,13 @@
 }
 
 .toggle:has(.toggle__input:checked) .toggle__control:dir(rtl)::after {
-    translate: calc(-1 * (var(--size-item-large) - 2 * var(--border-width) - 2px - (var(--size-item-small) - 2 * var(--border-width) - 2px)));
+    translate: calc(
+        -1 *
+            (
+                var(--size-item-large) - 2 * var(--border-width) - 2px -
+                    (var(--size-item-small) - 2 * var(--border-width) - 2px)
+            )
+    );
 }
 
 .toggle:has(.toggle__input:focus-visible) .toggle__control {

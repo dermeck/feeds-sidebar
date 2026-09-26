@@ -22,13 +22,25 @@ export const loadState = async (): Promise<(RootState & { timestamp: number }) |
     const options = await browser.storage.local.get(storageKeys.options);
     const timestamp = await browser.storage.local.get(storageKeys.timestamp);
 
-    if (Object.keys(feeds).length === 0 || Object.keys(options).length === 0) {
+    const loadedFeeds = feeds[storageKeys.feeds];
+    const loadedOptions = options[storageKeys.options];
+
+    if (
+        typeof loadedFeeds !== 'object' ||
+        loadedFeeds === null ||
+        !Array.isArray(loadedFeeds.feeds) ||
+        !Array.isArray(loadedFeeds.folders)
+    ) {
+        return undefined;
+    }
+
+    if (typeof loadedOptions !== 'object' || loadedOptions === null) {
         return undefined;
     }
 
     return {
-        feeds: feeds.feedsKey as RootState['feeds'],
-        options: options.optionsKey as RootState['options'],
+        feeds: loadedFeeds as RootState['feeds'],
+        options: loadedOptions as RootState['options'],
         session: initialSessionSliceState,
         timestamp: Number(timestamp.timestampKey),
     };

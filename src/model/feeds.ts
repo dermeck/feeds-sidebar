@@ -52,3 +52,27 @@ export interface FeedItem {
     lastModified?: string;
     isRead?: boolean;
 }
+
+export const itemDate = (item: FeedItem): Date | undefined => {
+    const value = item.lastModified ?? item.published;
+
+    if (value === undefined) {
+        return undefined;
+    }
+
+    const date = new Date(value);
+
+    return Number.isNaN(date.getTime()) ? undefined : date;
+};
+
+export const isFetchDue = (feeds: ReadonlyArray<Feed>, updateIntervalMs: number, now: number) => {
+    const lastFetched = feeds
+        .map((feed) => (feed.lastFetched === undefined ? Number.NaN : Date.parse(feed.lastFetched)))
+        .filter((value) => !Number.isNaN(value));
+
+    if (lastFetched.length === 0) {
+        return true;
+    }
+
+    return now - Math.max(...lastFetched) > updateIntervalMs;
+};

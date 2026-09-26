@@ -12,6 +12,7 @@ import { Button } from '../base-components/Button/Button';
 import { ButtonGroup } from '../base-components/ButtonGroup/ButtonGroup';
 import { Drawer } from '../base-components/Drawer/Drawer';
 import { Header } from '../base-components/Header/Header';
+import { MessageBar } from '../base-components/MessageBar/MessageBar';
 import { SearchInput } from '../base-components/SearchInput/SearchInput';
 import clsx from 'clsx';
 import { getCssCustomPropertyNumberValue } from '../utils/getCssCustomProperty';
@@ -47,6 +48,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const mainViewDisplayMode = useAppSelector(selectOptions).mainViewDisplayMode;
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));
     const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
+    const persistenceError = useAppSelector((state) => state.session.persistenceError);
 
     const [filterString, setFilterString] = useState<string>('');
 
@@ -112,6 +114,12 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
                     <DotsThreeOutline size={18} weight="fill" />
                 </Button>
             </Header>
+
+            {persistenceError !== undefined && (
+                <MessageBar variant="error" className="sidebar__persistence-error">
+                    {persistenceError}
+                </MessageBar>
+            )}
 
             <MainView displayMode={mainViewDisplayMode} filterString={filterString.trim()} />
 
