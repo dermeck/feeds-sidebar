@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import feedsSlice from './feeds';
-import { DetectedFeed } from '../../services/feedDetection/feedDetection';
+import { DetectedFeed, isSameDetectedFeeds } from '../../services/feedDetection/feedDetection';
 
 export type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
@@ -100,6 +100,12 @@ const sessionSlice = createSlice({
             state.feedStatus = [...updated, ...newEntries];
         },
         feedsDetected(state, action: PayloadAction<DetectedFeed[]>) {
+            // the same list arrives on every page load, so keeping the reference avoids a re-render,
+            // a state write and a broadcast for data that did not change
+            if (isSameDetectedFeeds(state.detectedFeeds, action.payload)) {
+                return;
+            }
+
             state.detectedFeeds = action.payload;
         },
         changePersistenceError(state, action: PayloadAction<string | undefined>) {
