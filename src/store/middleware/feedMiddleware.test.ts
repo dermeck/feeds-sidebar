@@ -74,4 +74,16 @@ describe('unread badge', () => {
         // only the two newest of the three unread items are kept
         expect(setBadgeText).toHaveBeenCalledWith({ text: '2' });
     });
+
+    it('updates the badge when a feed with unread items is deleted', async () => {
+        const store = setupStore();
+        loadUnreadItems(store);
+        await flush();
+        setBadgeText.mockClear();
+
+        store.dispatch(feedsSlice.actions.deleteFeed({ url: 'https://example.com/feed' }));
+        await flush();
+
+        expect(setBadgeText).toHaveBeenCalledWith({ text: '' });
+    });
 });
