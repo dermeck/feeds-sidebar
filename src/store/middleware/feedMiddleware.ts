@@ -20,6 +20,7 @@ const badgeRelevantActions = [
     feedsSlice.actions.markSelectedNodeAsRead.type,
     feedsSlice.actions.markAllAsRead.type,
     feedsSlice.actions.deleteSelectedNode.type,
+    optionsSlice.actions.changeMaxItemsPerFeed.type,
     optionsSlice.actions.changeShowUnreadBadge.type,
     optionsSlice.actions.resetOptions.type,
 ];
