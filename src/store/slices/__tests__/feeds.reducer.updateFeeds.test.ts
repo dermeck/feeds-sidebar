@@ -341,6 +341,8 @@ describe('trimOverflowingFeedItems action', () => {
         const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(5));
 
         expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id1', 'id2']);
+        // same state, so subscribers are not notified and nothing is persisted
+        expect(newState).toBe(prevState);
     });
 
     it.each([0, -1])('keeps all items when the limit is %s', (limit) => {
@@ -352,6 +354,7 @@ describe('trimOverflowingFeedItems action', () => {
         const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(limit));
 
         expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id1', 'id2']);
+        expect(newState).toBe(prevState);
     });
 });
 
@@ -398,5 +401,6 @@ describe('changeMaxItemsPerFeed action', () => {
 
         // same reference, so subscribers do not re-render feeds that did not change
         expect(newState.feeds[0]).toBe(prevState.feeds[0]);
+        expect(newState).toBe(prevState);
     });
 });
