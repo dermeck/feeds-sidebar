@@ -765,7 +765,7 @@ const mergeFeed = (previous: Feed, updatedFeed: Feed): Feed => {
         id: previous.id,
         title: previous.title !== undefined ? previous.title : updatedFeed.title,
         link: updatedFeed.link,
-        items: [...previous.items, ...newItems],
+        items: [...newItems, ...previous.items],
         lastFetched: updatedFeed.lastFetched ?? previous.lastFetched,
     };
 };

@@ -196,8 +196,7 @@ describe('updateFeeds action', () => {
             );
 
             expect(newState.feeds[0].items).toHaveLength(3);
-            expect(newState.feeds[0].items[0].id).toBe('id1');
-            expect(newState.feeds[0].items[1].id).toBe('id2');
+            expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id3', 'id1', 'id2']);
         });
 
         it('updates multiple feeds', () => {
@@ -314,6 +313,33 @@ describe('trimOverflowingFeedItems action', () => {
         const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(2));
 
         expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['newest', 'newer']);
+    });
+
+    it('keeps a newly fetched item that shares its day with the items already stored', () => {
+        // items stored before the dates carried a time are indistinguishable within a day
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [
+                {
+                    ...feed1Fixture,
+                    items: [
+                        { ...itemFixture('a'), published: 'Mon Jan 01 2024' },
+                        { ...itemFixture('b'), published: 'Mon Jan 01 2024' },
+                    ],
+                },
+            ],
+        };
+
+        const merged = feedsSlice.reducer(
+            prevState,
+            feedsSlice.actions.updateFeeds([
+                { ...feed1Fixture, items: [{ ...itemFixture('new'), published: 'Mon Jan 01 2024' }] },
+            ]),
+        );
+        const newState = feedsSlice.reducer(merged, feedsSlice.actions.trimOverflowingFeedItems(2));
+
+        expect(newState.feeds[0].items).toHaveLength(2);
+        expect(newState.feeds[0].items.map((item) => item.id)).toContain('new');
     });
 
     it('keeps newly fetched items when no dates are available', () => {
