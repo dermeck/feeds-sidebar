@@ -195,19 +195,20 @@ const sortItemsByAgeDesc = <T extends Feed>(feed: T): T => ({
     items: [...feed.items].sort((a, b) => itemTimestamp(b) - itemTimestamp(a)),
 });
 
-// a maxItemsPerFeed of 0 or less means no limit
 // only overflowing feeds are touched, so that trimming without any effect leaves the state untouched
 const trimOverflowingItems = (state: FeedSliceState, maxItems: number) => {
-    if (maxItems <= 0) {
+    const limit = Number.isFinite(maxItems) ? Math.round(maxItems) : 0;
+
+    if (limit <= 0) {
         return;
     }
 
     state.feeds.forEach((feed) => {
-        if (feed.items.length <= maxItems) {
+        if (feed.items.length <= limit) {
             return;
         }
 
-        feed.items = sortItemsByAgeDesc(feed).items.slice(0, maxItems);
+        feed.items = sortItemsByAgeDesc(feed).items.slice(0, limit);
     });
 };
 

@@ -141,6 +141,16 @@ describe('options slice', () => {
             const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeMaxItemsPerFeed(0));
             expect(state.maxItemsPerFeed).toBe(0);
         });
+
+        it('rounds a fractional value, which would otherwise trim every item', () => {
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeMaxItemsPerFeed(0.5));
+            expect(state.maxItemsPerFeed).toBe(1);
+        });
+
+        it('clamps a negative value to 0', () => {
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeMaxItemsPerFeed(-5));
+            expect(state.maxItemsPerFeed).toBe(0);
+        });
     });
 
     describe('changeDiagnosisInactiveDays', () => {

@@ -379,6 +379,24 @@ describe('changeMaxItemsPerFeed action', () => {
         expect(itemIds(newState)).toStrictEqual(['newest', 'newer']);
     });
 
+    it('rounds a fractional limit instead of keeping no item at all', () => {
+        const newState = feedsSlice.reducer(
+            stateWithItems(datedItems),
+            optionsSlice.actions.changeMaxItemsPerFeed(0.5),
+        );
+
+        expect(itemIds(newState)).toStrictEqual(['newest']);
+    });
+
+    it.each([NaN, '200px'])('keeps all items for the unusable limit %s', (limit) => {
+        const newState = feedsSlice.reducer(
+            stateWithItems(datedItems),
+            optionsSlice.actions.changeMaxItemsPerFeed(limit as number),
+        );
+
+        expect(itemIds(newState)).toStrictEqual(datedItems.map((item) => item.id));
+    });
+
     it('keeps all items when the limit is raised', () => {
         const newState = feedsSlice.reducer(
             stateWithItems(datedItems.slice(0, 2)),

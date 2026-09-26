@@ -60,7 +60,7 @@ const optionsSlice = createSlice({
             state.showUnreadBadge = action.payload;
         },
         changeMaxItemsPerFeed(state, action: PayloadAction<number>) {
-            state.maxItemsPerFeed = action.payload;
+            state.maxItemsPerFeed = Math.max(0, Math.round(action.payload));
         },
         resetOptions() {
             return { ...initialState };
