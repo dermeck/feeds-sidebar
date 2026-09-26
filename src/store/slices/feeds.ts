@@ -204,7 +204,9 @@ const trimOverflowingItems = (state: FeedSliceState, maxItems: number) => {
     }
 
     state.feeds.forEach((feed) => {
-        if (feed.items.length <= limit) {
+        // without a date there is no way to tell which item is the newest, so the feed is left alone
+        // instead of being frozen at the limit
+        if (feed.items.length <= limit || feed.items.every((item) => itemTimestamp(item) === 0)) {
             return;
         }
 

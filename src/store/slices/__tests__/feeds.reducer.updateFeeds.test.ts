@@ -316,7 +316,7 @@ describe('trimOverflowingFeedItems action', () => {
         expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['newest', 'newer']);
     });
 
-    it('keeps the items at the beginning when no dates are available', () => {
+    it('keeps newly fetched items when no dates are available', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             feeds: [
@@ -329,7 +329,31 @@ describe('trimOverflowingFeedItems action', () => {
 
         const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(2));
 
-        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id1', 'id2']);
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id1', 'id2', 'id3', 'id4']);
+        // same state, so subscribers are not notified and nothing is persisted
+        expect(newState).toBe(prevState);
+    });
+
+    it('still trims a feed that mixes dated and undated items (known limitation)', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [
+                {
+                    ...feed1Fixture,
+                    items: [
+                        { ...itemFixture('dated'), published: '2022-01-01' },
+                        itemFixture('undated1'),
+                        itemFixture('undated2'),
+                        itemFixture('undated3'),
+                    ],
+                },
+            ],
+        };
+
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(2));
+
+        // the dated item survives, but a newly appended undated item would be dropped
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['dated', 'undated1']);
     });
 
     it('does not change feeds that are within the limit', () => {
