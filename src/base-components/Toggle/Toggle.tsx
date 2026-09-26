@@ -7,11 +7,13 @@ type ToggleProps = {
     onChange: (checked: boolean) => void;
     disabled?: boolean;
     className?: string;
+    hideLabel?: boolean;
 };
 
-export const Toggle = ({ label, checked, onChange, disabled, className }: ToggleProps) => {
+export const Toggle = ({ label, checked, onChange, disabled, className, hideLabel }: ToggleProps) => {
     return (
-        <label className={clsx('toggle', disabled && 'toggle--disabled', className)}>
+        <label
+            className={clsx('toggle', disabled && 'toggle--disabled', hideLabel && 'toggle--label-hidden', className)}>
             <span className="toggle__label">{label}</span>
             <input
                 className="toggle__input"

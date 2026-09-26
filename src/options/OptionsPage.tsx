@@ -76,7 +76,7 @@ const ToggleField = ({ label, description, checked, disabled, onChange }: Toggle
             <span className="options__field-label">{label}</span>
             <p className="options__field-description">{description}</p>
         </div>
-        <Toggle label={label} checked={checked} disabled={disabled} onChange={onChange} />
+        <Toggle label={label} checked={checked} disabled={disabled} onChange={onChange} hideLabel />
     </div>
 );
 
