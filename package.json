@@ -18,7 +18,8 @@
         "start:hotreload": "web-ext run --source-dir dist",
         "storybook": "storybook dev -p 6006",
         "build:storybook": "storybook build",
-        "prettier": "prettier --write '**/*.{ts,js,css,html}'",
+        "prettier": "prettier --write '**/*.{ts,js,mjs,css,html}'",
+        "release": "node scripts/release.mjs",
         "check-env": "node -e 'console.log(process.env)' | grep npm",
         "find-deadcode": "ts-prune --ignore 'storybook|\\.stories\\.' | (! grep -v 'used in module')"
     },
