@@ -1,6 +1,15 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import optionsSlice, { MAX_ITEMS_PER_FEED_DEFAULT, selectOptions } from '../store/slices/options';
+import optionsSlice, {
+    DIAGNOSIS_DAYS_MAX,
+    DIAGNOSIS_DAYS_MIN,
+    FETCH_THREADS_MAX,
+    FETCH_THREADS_MIN,
+    FEED_UPDATE_MINUTES_MAX,
+    FEED_UPDATE_MINUTES_MIN,
+    MAX_ITEMS_PER_FEED_DEFAULT,
+    selectOptions,
+} from '../store/slices/options';
 import { Button } from '../base-components/Button/Button';
 import { TextInput } from '../base-components/TextInput/TextInput';
 import { Toggle } from '../base-components/Toggle/Toggle';
@@ -117,8 +126,8 @@ export const OptionsPage = () => {
                         label="Update interval"
                         description="How often the Feeds sidebar looks for new items. (minutes)"
                         value={options.feedUpdatePeriodInMinutes}
-                        min={5}
-                        max={1440}
+                        min={FEED_UPDATE_MINUTES_MIN}
+                        max={FEED_UPDATE_MINUTES_MAX}
                         onCommit={setUpdateInterval}
                     />
 
@@ -126,8 +135,8 @@ export const OptionsPage = () => {
                         label="Parallel fetches"
                         description="How many feeds are fetched at the same time. A higher number is faster but uses more resources."
                         value={options.fetchThreadsCount}
-                        min={1}
-                        max={8}
+                        min={FETCH_THREADS_MIN}
+                        max={FETCH_THREADS_MAX}
                         onCommit={setFetchThreads}
                     />
                 </section>
@@ -169,8 +178,8 @@ export const OptionsPage = () => {
                         label="Inactive threshold"
                         description="A feed is shown as inactive when it has no new item within this many days. (days)"
                         value={options.diagnosisInactiveDays}
-                        min={7}
-                        max={365}
+                        min={DIAGNOSIS_DAYS_MIN}
+                        max={DIAGNOSIS_DAYS_MAX}
                         onCommit={setInactiveDays}
                     />
                 </section>
