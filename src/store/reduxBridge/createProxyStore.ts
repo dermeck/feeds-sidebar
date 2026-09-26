@@ -1,6 +1,7 @@
 import { Store, UnknownAction } from 'redux';
 import {
     BackgroundScriptMessage,
+    ContentScriptMessage,
     MessageType,
     PageActionMessage,
     addMessageListener,
@@ -28,7 +29,7 @@ export function createProxyStore(): { storePromise: Promise<Store<RootState>> } 
     // get full state on init
     sendMessageToBackgroundScript({ type: MessageType.GetFullStateRequest });
 
-    function processMessage(message: BackgroundScriptMessage | PageActionMessage) {
+    function processMessage(message: BackgroundScriptMessage | PageActionMessage | ContentScriptMessage) {
         const type = message.type;
 
         switch (type) {
@@ -45,6 +46,8 @@ export function createProxyStore(): { storePromise: Promise<Store<RootState>> } 
             case MessageType.StartFeedDetection:
             case MessageType.FeedsDetected:
             case MessageType.LogMessage:
+            case MessageType.DispatchAction:
+            case MessageType.GetFullStateRequest:
                 // ignore
                 break;
 
