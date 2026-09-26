@@ -70,4 +70,16 @@ describe('update interval option', () => {
             periodInMinutes: initialState.feedUpdatePeriodInMinutes,
         });
     });
+
+    it('keeps recreating the alarm after a call has failed', async () => {
+        alarms.create.mockImplementationOnce(() => Promise.reject(new Error('context invalidated')));
+        const store = setupStore();
+        store.dispatch(optionsSlice.actions.changeFeedUpdatePeriodInMinutes(15));
+        await flush();
+
+        store.dispatch(optionsSlice.actions.changeFeedUpdatePeriodInMinutes(30));
+        await flush();
+
+        expect(alarms.create).toHaveBeenLastCalledWith(feedsAutoUpdateKey, { periodInMinutes: 30 });
+    });
 });

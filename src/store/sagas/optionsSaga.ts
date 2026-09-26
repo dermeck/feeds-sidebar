@@ -13,8 +13,12 @@ function* recreateAutoUpdateAlarm() {
     const options: ReturnType<typeof selectOptions> = yield select(selectOptions);
     const periodInMinutes = options.feedUpdatePeriodInMinutes;
 
-    yield browser.alarms.clear(feedsAutoUpdateKey);
-    yield browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes });
+    try {
+        yield browser.alarms.clear(feedsAutoUpdateKey);
+        yield browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes });
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 export function* watchOptionsSaga() {
