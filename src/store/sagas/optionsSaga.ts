@@ -1,20 +1,25 @@
-import { takeEvery } from 'redux-saga/effects';
+import { select, takeEvery } from 'redux-saga/effects';
 
-import optionsSlice from '../slices/options';
+import optionsSlice, { selectOptions } from '../slices/options';
 
 export const feedsAutoUpdateKey = 'feedsAutoUpdate';
 
-function* recreateAutoUpdateAlarm(action: { payload: number }) {
+function* recreateAutoUpdateAlarm() {
     if (process.env.STAND_ALONE) {
         return;
     }
 
-    const periodInMinutes = action.payload;
+    // the period is taken from the state, because the reducer clamps the payload and resetOptions has none
+    const options: ReturnType<typeof selectOptions> = yield select(selectOptions);
+    const periodInMinutes = options.feedUpdatePeriodInMinutes;
 
     yield browser.alarms.clear(feedsAutoUpdateKey);
     yield browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes });
 }
 
 export function* watchOptionsSaga() {
-    yield takeEvery(optionsSlice.actions.changeFeedUpdatePeriodInMinutes, recreateAutoUpdateAlarm);
+    yield takeEvery(
+        [optionsSlice.actions.changeFeedUpdatePeriodInMinutes.type, optionsSlice.actions.resetOptions.type],
+        recreateAutoUpdateAlarm,
+    );
 }

@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
-import optionsSlice from '../slices/options';
+import optionsSlice, { FEED_UPDATE_MINUTES_MIN, initialState } from '../slices/options';
 import { feedsAutoUpdateKey, watchOptionsSaga } from './optionsSaga';
 
 const alarms = {
@@ -47,6 +47,27 @@ describe('update interval option', () => {
         expect(alarms.create).not.toHaveBeenCalled();
     });
 
-    it.todo('recreates the alarm with the period from the state, not the raw action payload');
-    it.todo('recreates the alarm when the options are reset to defaults');
+    it('recreates the alarm with the period from the state, not the raw action payload', async () => {
+        const store = setupStore();
+        // the reducer clamps the value, the raw payload is below the allowed minimum
+        store.dispatch(optionsSlice.actions.changeFeedUpdatePeriodInMinutes(FEED_UPDATE_MINUTES_MIN - 1));
+        await flush();
+
+        expect(alarms.create).toHaveBeenCalledWith(feedsAutoUpdateKey, {
+            periodInMinutes: FEED_UPDATE_MINUTES_MIN,
+        });
+    });
+
+    it('recreates the alarm when the options are reset to defaults', async () => {
+        const store = setupStore();
+        store.dispatch(optionsSlice.actions.changeFeedUpdatePeriodInMinutes(120));
+        await flush();
+
+        store.dispatch(optionsSlice.actions.resetOptions());
+        await flush();
+
+        expect(alarms.create).toHaveBeenCalledWith(feedsAutoUpdateKey, {
+            periodInMinutes: initialState.feedUpdatePeriodInMinutes,
+        });
+    });
 });
