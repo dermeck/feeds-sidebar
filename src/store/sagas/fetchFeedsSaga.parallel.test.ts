@@ -98,16 +98,18 @@ describe('parallel fetches option', () => {
         store.dispatch(fetchFeedsCommand(['http://a', 'http://b', 'http://c']));
         await flush();
 
-        expect(store.getState().session.feedStatus.map((s) => `${s.url}:${s.status}`).sort()).toEqual([
-            'http://a:loaded',
-            'http://b:loaded',
-            'http://c:loaded',
-        ]);
-        expect(store.getState().feeds.feeds.map((f) => `${f.id}:${f.title}`).sort()).toEqual([
-            'http://a:title',
-            'http://b:title',
-            'http://c:title',
-        ]);
+        expect(
+            store
+                .getState()
+                .session.feedStatus.map((s) => `${s.url}:${s.status}`)
+                .sort(),
+        ).toEqual(['http://a:loaded', 'http://b:loaded', 'http://c:loaded']);
+        expect(
+            store
+                .getState()
+                .feeds.feeds.map((f) => `${f.id}:${f.title}`)
+                .sort(),
+        ).toEqual(['http://a:title', 'http://b:title', 'http://c:title']);
     });
 
     it('terminates every worker it created', async () => {

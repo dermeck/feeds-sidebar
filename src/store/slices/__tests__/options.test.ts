@@ -179,9 +179,7 @@ describe('options slice', () => {
                 maxItemsPerFeed: 10,
             };
 
-            expect(optionsSlice.reducer(customState, optionsSlice.actions.resetOptions())).toStrictEqual(
-                initialState,
-            );
+            expect(optionsSlice.reducer(customState, optionsSlice.actions.resetOptions())).toStrictEqual(initialState);
         });
     });
 });

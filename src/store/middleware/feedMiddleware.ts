@@ -23,8 +23,7 @@ const badgeRelevantActions = [
     optionsSlice.actions.changeShowUnreadBadge.type,
 ];
 
-export const feedMiddleware: Middleware<object, RootState, Dispatch> =
-    (middlewareApi) => (next) => async (action) => {
+export const feedMiddleware: Middleware<object, RootState, Dispatch> = (middlewareApi) => (next) => async (action) => {
     if (fetchAllFeedsCommand.match(action)) {
         const feedsTofetch = middlewareApi.getState().feeds.feeds.map((x) => x.id);
 

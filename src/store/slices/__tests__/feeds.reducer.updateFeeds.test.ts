@@ -223,56 +223,55 @@ describe('updateFeeds action', () => {
                 ]),
             );
 
-        expect(newState.feeds[0].items).toHaveLength(2);
-        expect(newState.feeds[1].items).toHaveLength(2);
+            expect(newState.feeds[0].items).toHaveLength(2);
+            expect(newState.feeds[1].items).toHaveLength(2);
+        });
+
+        it('orders merged items by age, newest first', () => {
+            // new items used to be appended, so they ended up below older ones
+            const prevState: FeedSliceState = {
+                ...feedsSlice.getInitialState(),
+                feeds: [
+                    {
+                        ...feed1Fixture,
+                        items: [
+                            { ...itemFixture('older'), published: '2022-01-01' },
+                            { ...itemFixture('newer'), published: '2022-12-12' },
+                        ],
+                    },
+                ],
+            };
+
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.updateFeeds([
+                    {
+                        ...feed1Fixture,
+                        items: [{ ...itemFixture('newest'), published: '2023-03-03' }],
+                    },
+                ]),
+            );
+
+            expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['newest', 'newer', 'older']);
+        });
+
+        it('orders items of a newly added feed by age', () => {
+            const newState = feedsSlice.reducer(
+                feedsSlice.getInitialState(),
+                feedsSlice.actions.updateFeeds([
+                    {
+                        ...feed2Fixture,
+                        items: [
+                            { ...itemFixture('older'), published: '2022-01-01' },
+                            { ...itemFixture('newer'), published: '2022-12-12' },
+                        ],
+                    },
+                ]),
+            );
+
+            expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['newer', 'older']);
+        });
     });
-
-    it('orders merged items by age, newest first', () => {
-        // new items used to be appended, so they ended up below older ones
-        const prevState: FeedSliceState = {
-            ...feedsSlice.getInitialState(),
-            feeds: [
-                {
-                    ...feed1Fixture,
-                    items: [
-                        { ...itemFixture('older'), published: '2022-01-01' },
-                        { ...itemFixture('newer'), published: '2022-12-12' },
-                    ],
-                },
-            ],
-        };
-
-        const newState = feedsSlice.reducer(
-            prevState,
-            feedsSlice.actions.updateFeeds([
-                {
-                    ...feed1Fixture,
-                    items: [{ ...itemFixture('newest'), published: '2023-03-03' }],
-                },
-            ]),
-        );
-
-        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['newest', 'newer', 'older']);
-    });
-
-    it('orders items of a newly added feed by age', () => {
-        const newState = feedsSlice.reducer(
-            feedsSlice.getInitialState(),
-            feedsSlice.actions.updateFeeds([
-                {
-                    ...feed2Fixture,
-                    items: [
-                        { ...itemFixture('older'), published: '2022-01-01' },
-                        { ...itemFixture('newer'), published: '2022-12-12' },
-                    ],
-                },
-            ]),
-        );
-
-        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['newer', 'older']);
-    });
-});
-
 });
 
 describe('trimOverflowingFeedItems action', () => {

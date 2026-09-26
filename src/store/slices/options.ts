@@ -42,11 +42,7 @@ const optionsSlice = createSlice({
     initialState,
     reducers: {
         changeFeedUpdatePeriodInMinutes(state, action: PayloadAction<number>) {
-            state.feedUpdatePeriodInMinutes = clamp(
-                action.payload,
-                FEED_UPDATE_MINUTES_MIN,
-                FEED_UPDATE_MINUTES_MAX,
-            );
+            state.feedUpdatePeriodInMinutes = clamp(action.payload, FEED_UPDATE_MINUTES_MIN, FEED_UPDATE_MINUTES_MAX);
         },
         changeFetchThreadsCount(state, action: PayloadAction<number>) {
             state.fetchThreadsCount = clamp(action.payload, FETCH_THREADS_MIN, FETCH_THREADS_MAX);

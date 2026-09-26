@@ -63,7 +63,10 @@
     border-color: transparent;
 
     &::after {
-        translate: calc(var(--size-item-large) - 2 * var(--border-width) - 2px - (var(--size-item-small) - 2 * var(--border-width) - 2px));
+        translate: calc(
+            var(--size-item-large) - 2 * var(--border-width) - 2px -
+                (var(--size-item-small) - 2 * var(--border-width) - 2px)
+        );
         background-color: var(--background-color-canvas);
     }
 
@@ -77,7 +80,13 @@
 }
 
 .toggle:has(.toggle__input:checked) .toggle__control:dir(rtl)::after {
-    translate: calc(-1 * (var(--size-item-large) - 2 * var(--border-width) - 2px - (var(--size-item-small) - 2 * var(--border-width) - 2px)));
+    translate: calc(
+        -1 *
+            (
+                var(--size-item-large) - 2 * var(--border-width) - 2px -
+                    (var(--size-item-small) - 2 * var(--border-width) - 2px)
+            )
+    );
 }
 
 .toggle:has(.toggle__input:focus-visible) .toggle__control {
