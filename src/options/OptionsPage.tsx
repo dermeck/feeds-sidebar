@@ -53,7 +53,9 @@ const NumberField = ({ label, description, value, min, max, disabled, onCommit }
             return;
         }
 
-        onCommit(max === undefined ? parsed : clamp(parsed, min, max));
+        const next = max === undefined ? parsed : clamp(parsed, min, max);
+        setLocalValue(next.toString());
+        onCommit(next);
     };
 
     return (
