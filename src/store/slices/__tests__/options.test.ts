@@ -7,6 +7,7 @@ import optionsSlice, {
     FETCH_THREADS_MIN,
     FEED_UPDATE_MINUTES_MAX,
     FEED_UPDATE_MINUTES_MIN,
+    MAX_ITEMS_PER_FEED_DEFAULT,
     initialState,
 } from '../options';
 
@@ -18,7 +19,7 @@ describe('options slice', () => {
         feedDetectionEnabled: true,
         diagnosisInactiveDays: 60,
         showUnreadBadge: true,
-        maxItemsPerFeed: undefined,
+        maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
     };
 
     describe('global extensionStateLoaded action', () => {
@@ -65,7 +66,7 @@ describe('options slice', () => {
                 feedDetectionEnabled: false,
                 diagnosisInactiveDays: 60,
                 showUnreadBadge: true,
-                maxItemsPerFeed: undefined,
+                maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
             });
         });
     });
@@ -136,9 +137,9 @@ describe('options slice', () => {
             expect(state.maxItemsPerFeed).toBe(250);
         });
 
-        it('sets undefined for unlimited', () => {
-            const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeMaxItemsPerFeed(undefined));
-            expect(state.maxItemsPerFeed).toBeUndefined();
+        it('keeps 0 for unlimited', () => {
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeMaxItemsPerFeed(0));
+            expect(state.maxItemsPerFeed).toBe(0);
         });
     });
 

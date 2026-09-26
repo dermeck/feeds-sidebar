@@ -16,6 +16,7 @@ import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { moveOrInsertElementBefore, moveOrInsertElementAfter } from '../../utils/arrayUtils';
 import { randomUUID } from '../../utils/uuid';
 import { extensionStateLoaded } from '../actions';
+import optionsSlice from './options';
 
 type FeedSliceState = {
     folders: ReadonlyArray<Folder>;
@@ -180,6 +181,22 @@ const itemTimestamp = (item: FeedItem): number => {
 
     return Number.isNaN(timestamp) ? 0 : timestamp;
 };
+
+// items are not ordered by age on their own: a new feed keeps the document order of the feed and
+// later fetches append, so ordering is imposed here. items without a parseable date sort last.
+const sortItemsByAgeDesc = <T extends Feed>(feed: T): T => ({
+    ...feed,
+    items: [...feed.items].sort((a, b) => itemTimestamp(b) - itemTimestamp(a)),
+});
+
+const trimOverflowingItems = <T extends Feed>(feeds: ReadonlyArray<T>, maxItems: number): T[] =>
+    feeds.map((feed) => {
+        if (feed.items.length <= maxItems) {
+            return feed;
+        }
+
+        return { ...feed, items: sortItemsByAgeDesc(feed).items.slice(0, maxItems) };
+    });
 
 const selectChildNodes = (
     feeds: FeedSliceState['feeds'],
@@ -424,24 +441,14 @@ const feedsSlice = createSlice({
             return {
                 ...state,
                 folders: folders,
-                feeds: [...updateFeeds(state.feeds, action.payload), ...newFeeds],
+                feeds: [
+                    ...updateFeeds(state.feeds, action.payload),
+                    ...newFeeds.map((feed) => sortItemsByAgeDesc(feed)),
+                ],
             };
         },
         trimOverflowingFeedItems(state, action: PayloadAction<number>) {
-            const maxItems = action.payload;
-
-            state.feeds = state.feeds.map((feed) => {
-                if (feed.items.length <= maxItems) {
-                    return feed;
-                }
-
-                // items are not guaranteed to be ordered by age (new feeds keep the document order of the
-                // feed, subsequent fetches append/preserve their position), so sort by date to keep the
-                // newest items; items without a parseable date keep their existing relative order
-                const items = [...feed.items].sort((a, b) => itemTimestamp(b) - itemTimestamp(a));
-
-                return { ...feed, items: items.slice(0, maxItems) };
-            });
+            state.feeds = trimOverflowingItems(state.feeds, action.payload);
         },
 
         deleteSelectedNode(state) {
@@ -517,6 +524,12 @@ const feedsSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
+        builder.addCase(optionsSlice.actions.changeMaxItemsPerFeed, (state, action) => {
+            if (action.payload !== undefined && action.payload > 0) {
+                state.feeds = trimOverflowingItems(state.feeds, action.payload);
+            }
+        });
+
         builder.addCase(extensionStateLoaded, (_, action) => {
             return {
                 ...action.payload.feeds,
@@ -707,9 +720,7 @@ const updateFeeds = (feeds: ReadonlyArray<Feed>, updatedFeeds: ReadonlyArray<Fee
             return feed;
         }
 
-        return {
-            ...mergeFeed(feed, updatedFeed),
-        };
+        return sortItemsByAgeDesc(mergeFeed(feed, updatedFeed));
     });
 
     return updatedFeeds;

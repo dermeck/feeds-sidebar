@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import optionsSlice, { selectOptions } from '../store/slices/options';
+import optionsSlice, { MAX_ITEMS_PER_FEED_DEFAULT, selectOptions } from '../store/slices/options';
 import { Button } from '../base-components/Button/Button';
 import { TextInput } from '../base-components/TextInput/TextInput';
 import { Toggle } from '../base-components/Toggle/Toggle';
@@ -91,7 +91,7 @@ export const OptionsPage = () => {
 
     const setInactiveDays = (value: number) => dispatch(optionsSlice.actions.changeDiagnosisInactiveDays(value));
 
-    const setMaxItemsPerFeed = (value: number | undefined) => dispatch(optionsSlice.actions.changeMaxItemsPerFeed(value));
+    const setMaxItemsPerFeed = (value: number) => dispatch(optionsSlice.actions.changeMaxItemsPerFeed(value));
 
     return (
         <div className="options-page">
@@ -145,11 +145,11 @@ export const OptionsPage = () => {
 
                     <NumberField
                         label="Max items per feed"
-                        description="Keep at most this many items per feed. Newer items are kept, older ones are removed. Set to 0 for unlimited."
-                        value={options.maxItemsPerFeed ?? 0}
+                        description={`Keep at most this many items per feed. Newer items are kept, older ones are removed. Defaults to ${MAX_ITEMS_PER_FEED_DEFAULT}. Set to 0 for unlimited.`}
+                        value={options.maxItemsPerFeed ?? MAX_ITEMS_PER_FEED_DEFAULT}
                         min={0}
                         max={1000}
-                        onCommit={(value) => setMaxItemsPerFeed(value === 0 ? undefined : value)}
+                        onCommit={setMaxItemsPerFeed}
                     />
                 </section>
 

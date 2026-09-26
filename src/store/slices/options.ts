@@ -11,6 +11,7 @@ export const FETCH_THREADS_MIN = 1;
 export const FETCH_THREADS_MAX = 8;
 export const DIAGNOSIS_DAYS_MIN = 7;
 export const DIAGNOSIS_DAYS_MAX = 365;
+export const MAX_ITEMS_PER_FEED_DEFAULT = 200;
 
 type OptionsSliceState = {
     feedUpdatePeriodInMinutes: number;
@@ -29,7 +30,7 @@ export const initialState: OptionsSliceState = {
     feedDetectionEnabled: true,
     diagnosisInactiveDays: 60,
     showUnreadBadge: true,
-    maxItemsPerFeed: undefined,
+    maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
 };
 
 export const selectOptions = (state: RootState) => state.options;
