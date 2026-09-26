@@ -97,15 +97,28 @@ type ToggleFieldProps = {
     onChange: (checked: boolean) => void;
 };
 
-const ToggleField = ({ label, description, checked, disabled, onChange }: ToggleFieldProps) => (
-    <div className="options__field">
-        <div className="options__field-text">
-            <span className="options__field-label">{label}</span>
-            <p className="options__field-description">{description}</p>
+const ToggleField = ({ label, description, checked, disabled, onChange }: ToggleFieldProps) => {
+    const descriptionId = React.useId();
+
+    return (
+        <div className="options__field">
+            <div className="options__field-text">
+                <span className="options__field-label">{label}</span>
+                <p className="options__field-description" id={descriptionId}>
+                    {description}
+                </p>
+            </div>
+            <Toggle
+                label={label}
+                checked={checked}
+                disabled={disabled}
+                onChange={onChange}
+                hideLabel
+                aria-describedby={descriptionId}
+            />
         </div>
-        <Toggle label={label} checked={checked} disabled={disabled} onChange={onChange} hideLabel />
-    </div>
-);
+    );
+};
 
 export const OptionsPage = () => {
     const dispatch = useAppDispatch();

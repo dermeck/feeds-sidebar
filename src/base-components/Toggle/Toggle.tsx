@@ -8,9 +8,12 @@ type ToggleProps = {
     disabled?: boolean;
     className?: string;
     hideLabel?: boolean;
+    'aria-describedby'?: string;
 };
 
-export const Toggle = ({ label, checked, onChange, disabled, className, hideLabel }: ToggleProps) => {
+export const Toggle = (props: ToggleProps) => {
+    const { label, checked, onChange, disabled, className, hideLabel, ...rest } = props;
+
     return (
         <label
             className={clsx('toggle', disabled && 'toggle--disabled', hideLabel && 'toggle--label-hidden', className)}>
@@ -22,6 +25,7 @@ export const Toggle = ({ label, checked, onChange, disabled, className, hideLabe
                 checked={checked}
                 disabled={disabled}
                 onChange={(e) => onChange(e.target.checked)}
+                {...rest}
             />
             <span className="toggle__control" aria-hidden="true" />
         </label>
