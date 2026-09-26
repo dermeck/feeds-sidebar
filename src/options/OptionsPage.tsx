@@ -16,7 +16,7 @@ import { Toggle } from '../base-components/Toggle/Toggle';
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-// Number() would accept strings like '0x10' and coerce a blank value to 0
+// Number() coerces a blank value to 0 and accepts other notations, like hex, that are no valid count
 const parseNumber = (value: string): number | undefined => {
     const parsed = Number(value);
 

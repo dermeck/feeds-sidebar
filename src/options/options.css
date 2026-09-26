@@ -5,6 +5,7 @@
     display: flex;
     flex: 1;
     flex-direction: column;
+    user-select: text;
     min-height: 100vh;
     background-color: var(--background-color-canvas);
     color: var(--text-color);
