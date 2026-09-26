@@ -5,7 +5,7 @@ import React, { useMemo } from 'react';
 import { Button } from '../../base-components/Button/Button';
 import { Badge, BadgeVariant } from '../../base-components/Badge/Badge';
 import { Header } from '../../base-components/Header/Header';
-import { Feed, FeedItem } from '../../model/feeds';
+import { Feed, FeedItem, itemDate } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand, selectFeeds } from '../../store/slices/feeds';
 import { selectOptions } from '../../store/slices/options';
@@ -21,10 +21,10 @@ type DiagnosisEntry = {
     status?: FeedFetchStatus;
 };
 
-const formatDaysAgo = (iso?: string) => {
-    if (!iso) return '—';
-    const t = Date.parse(iso);
-    if (isNaN(t)) return '—';
+const formatDaysAgo = (value?: Date | string) => {
+    if (value === undefined) return '—';
+    const t = value instanceof Date ? value.valueOf() : Date.parse(value);
+    if (Number.isNaN(t)) return '—';
     const days = Math.floor((Date.now() - t) / (24 * 60 * 60 * 1000));
     if (days <= 0) return 'today';
     if (days === 1) return '1 day ago';
@@ -36,12 +36,10 @@ const getLatestItem = (feed?: Feed): FeedItem | undefined => {
     let latestItem: FeedItem | undefined;
 
     for (const item of feed?.items ?? []) {
-        const dateStr = item.published ?? item.lastModified;
-        if (!dateStr) continue;
-        const t = Date.parse(dateStr);
-        if (isNaN(t)) continue;
-        if (t > latest) {
-            latest = t;
+        const date = itemDate(item);
+        if (date === undefined) continue;
+        if (date.valueOf() > latest) {
+            latest = date.valueOf();
             latestItem = item;
         }
     }
@@ -52,6 +50,7 @@ const getLatestItem = (feed?: Feed): FeedItem | undefined => {
 const DiagnosisRow = (props: { entry: DiagnosisEntry; status: string; variant?: BadgeVariant; children?: React.ReactNode }) => {
     const { entry, status, variant, children } = props;
     const latestItem = getLatestItem(entry.feed);
+    const latestItemDate = latestItem === undefined ? undefined : itemDate(latestItem);
 
     return (
         <li className="diagnosis-view__row">
@@ -61,7 +60,7 @@ const DiagnosisRow = (props: { entry: DiagnosisEntry; status: string; variant?: 
             </div>
             <div className="diagnosis-view__detail">Last fetch: {formatDaysAgo(entry.feed?.lastFetched)}</div>
             <div className="diagnosis-view__detail">
-                Latest item: {formatDaysAgo(latestItem?.published ?? latestItem?.lastModified)}{' '}
+                Latest item: {formatDaysAgo(latestItemDate)}{' '}
                 {latestItem && (
                     <a
                         className="diagnosis-view__latest-link"
@@ -116,11 +115,9 @@ export const DiagnosisView = ({ onClose }: Props) => {
         if (feed.items.length === 0) return entry.status !== undefined;
 
         const hasRecentItem = feed.items.some((item) => {
-            const dateStr = item.published ?? item.lastModified;
-            if (!dateStr) return false;
-            const t = Date.parse(dateStr);
-            if (isNaN(t)) return false;
-            return nowMs - t <= thresholdMs;
+            const date = itemDate(item);
+            if (date === undefined) return false;
+            return nowMs - date.valueOf() <= thresholdMs;
         });
 
         return !hasRecentItem;

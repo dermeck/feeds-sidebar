@@ -52,3 +52,15 @@ export interface FeedItem {
     lastModified?: string;
     isRead?: boolean;
 }
+
+export const itemDate = (item: FeedItem): Date | undefined => {
+    const value = item.lastModified ?? item.published;
+
+    if (value === undefined) {
+        return undefined;
+    }
+
+    const date = new Date(value);
+
+    return Number.isNaN(date.getTime()) ? undefined : date;
+};
