@@ -19,11 +19,21 @@ const messageBuffer: ContentScriptMessage[] = [];
 // saves are chained so that a slow write cannot finish after a newer one and persist stale state
 let pendingSave: Promise<void> = Promise.resolve();
 let saveErrorReported = false;
+let lastSavedState: ReturnType<typeof store.getState> | undefined;
 
 const scheduleSave = () => {
+    // the store notifies on every dispatch, but keeps the same state object when nothing changed
+    const state = store.getState();
+
+    if (state === lastSavedState) {
+        return;
+    }
+
+    lastSavedState = state;
+
     pendingSave = pendingSave
         .then(async () => {
-            await saveState(store.getState());
+            await saveState(state);
 
             if (saveErrorReported) {
                 saveErrorReported = false;
