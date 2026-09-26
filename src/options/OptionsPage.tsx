@@ -28,13 +28,14 @@ type NumberFieldProps = {
     description: string;
     value: number;
     min: number;
-    // left out where there is no upper bound
     max?: number;
     disabled?: boolean;
     onCommit: (value: number) => void;
 };
 
 const NumberField = ({ label, description, value, min, max, disabled, onCommit }: NumberFieldProps) => {
+    const inputId = React.useId();
+    const descriptionId = `${inputId}-description`;
     const [localValue, setLocalValue] = React.useState<string>(value.toString());
     const [previousValue, setPreviousValue] = React.useState(value);
 
@@ -58,12 +59,17 @@ const NumberField = ({ label, description, value, min, max, disabled, onCommit }
     return (
         <div className="options__field">
             <div className="options__field-text">
-                <label className="options__field-label">{label}</label>
-                <p className="options__field-description">{description}</p>
+                <label className="options__field-label" htmlFor={inputId}>
+                    {label}
+                </label>
+                <p className="options__field-description" id={descriptionId}>
+                    {description}
+                </p>
             </div>
             <TextInput
+                id={inputId}
+                aria-describedby={descriptionId}
                 className="options__number-input"
-                label={label}
                 type="number"
                 min={min}
                 max={max}
@@ -103,8 +109,7 @@ export const OptionsPage = () => {
     const dispatch = useAppDispatch();
     const options = useAppSelector(selectOptions);
 
-    const setUpdateInterval = (value: number) =>
-        dispatch(optionsSlice.actions.changeFeedUpdatePeriodInMinutes(value));
+    const setUpdateInterval = (value: number) => dispatch(optionsSlice.actions.changeFeedUpdatePeriodInMinutes(value));
 
     const setFetchThreads = (value: number) => dispatch(optionsSlice.actions.changeFetchThreadsCount(value));
 
@@ -196,7 +201,8 @@ export const OptionsPage = () => {
                         </div>
                         <Button
                             className="options-page__reset-button"
-                            onClick={() => dispatch(optionsSlice.actions.resetOptions())}>
+                            onClick={() => dispatch(optionsSlice.actions.resetOptions())}
+                        >
                             Reset to defaults
                         </Button>
                     </div>
