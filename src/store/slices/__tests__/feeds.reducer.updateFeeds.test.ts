@@ -1,5 +1,7 @@
+import { FeedItem } from '../../../model/feeds';
 import { RootState } from '../../store';
 import feedsSlice from '../feeds';
+import optionsSlice from '../options';
 import { feed1Fixture, feed2Fixture, itemFixture } from './feeds.fixtures';
 
 type FeedSliceState = RootState['feeds'];
@@ -221,10 +223,56 @@ describe('updateFeeds action', () => {
                 ]),
             );
 
-            expect(newState.feeds[0].items).toHaveLength(2);
-            expect(newState.feeds[1].items).toHaveLength(2);
-        });
+        expect(newState.feeds[0].items).toHaveLength(2);
+        expect(newState.feeds[1].items).toHaveLength(2);
     });
+
+    it('orders merged items by age, newest first', () => {
+        // new items used to be appended, so they ended up below older ones
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [
+                {
+                    ...feed1Fixture,
+                    items: [
+                        { ...itemFixture('older'), published: '2022-01-01' },
+                        { ...itemFixture('newer'), published: '2022-12-12' },
+                    ],
+                },
+            ],
+        };
+
+        const newState = feedsSlice.reducer(
+            prevState,
+            feedsSlice.actions.updateFeeds([
+                {
+                    ...feed1Fixture,
+                    items: [{ ...itemFixture('newest'), published: '2023-03-03' }],
+                },
+            ]),
+        );
+
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['newest', 'newer', 'older']);
+    });
+
+    it('orders items of a newly added feed by age', () => {
+        const newState = feedsSlice.reducer(
+            feedsSlice.getInitialState(),
+            feedsSlice.actions.updateFeeds([
+                {
+                    ...feed2Fixture,
+                    items: [
+                        { ...itemFixture('older'), published: '2022-01-01' },
+                        { ...itemFixture('newer'), published: '2022-12-12' },
+                    ],
+                },
+            ]),
+        );
+
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['newer', 'older']);
+    });
+});
+
 });
 
 describe('trimOverflowingFeedItems action', () => {
@@ -294,5 +342,60 @@ describe('trimOverflowingFeedItems action', () => {
         const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(5));
 
         expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id1', 'id2']);
+    });
+});
+
+describe('changeMaxItemsPerFeed action', () => {
+    const datedItems: ReadonlyArray<FeedItem> = [
+        { ...itemFixture('oldest'), published: '2022-01-01' },
+        { ...itemFixture('older'), published: '2022-03-03' },
+        { ...itemFixture('newer'), published: '2022-06-06' },
+        { ...itemFixture('newest'), published: '2022-12-12' },
+    ];
+
+    const stateWithItems = (items: ReadonlyArray<FeedItem>): FeedSliceState => ({
+        ...feedsSlice.getInitialState(),
+        feeds: [{ ...feed1Fixture, items }],
+    });
+
+    const itemIds = (state: FeedSliceState) => state.feeds[0].items.map((item) => item.id);
+
+    it('trims already loaded items when the limit is lowered', () => {
+        const newState = feedsSlice.reducer(stateWithItems(datedItems), optionsSlice.actions.changeMaxItemsPerFeed(2));
+
+        expect(itemIds(newState)).toStrictEqual(['newest', 'newer']);
+    });
+
+    it('keeps all items when the limit is raised', () => {
+        const newState = feedsSlice.reducer(
+            stateWithItems(datedItems.slice(0, 2)),
+            optionsSlice.actions.changeMaxItemsPerFeed(4),
+        );
+
+        expect(newState.feeds[0].items).toHaveLength(2);
+    });
+
+    it('keeps all items when the limit is set to 0', () => {
+        const newState = feedsSlice.reducer(stateWithItems(datedItems), optionsSlice.actions.changeMaxItemsPerFeed(0));
+
+        expect(newState.feeds[0].items).toHaveLength(4);
+    });
+
+    it('keeps all items when the limit is undefined', () => {
+        const newState = feedsSlice.reducer(
+            stateWithItems(datedItems),
+            optionsSlice.actions.changeMaxItemsPerFeed(undefined),
+        );
+
+        expect(newState.feeds[0].items).toHaveLength(4);
+    });
+
+    it('leaves feeds that are within the limit untouched', () => {
+        const prevState = stateWithItems(datedItems);
+
+        const newState = feedsSlice.reducer(prevState, optionsSlice.actions.changeMaxItemsPerFeed(10));
+
+        // same reference, so subscribers do not re-render feeds that did not change
+        expect(newState.feeds[0]).toBe(prevState.feeds[0]);
     });
 });
