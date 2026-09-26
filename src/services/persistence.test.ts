@@ -72,6 +72,7 @@ describe('loadState', () => {
         ['a string', 'not a state'],
     ])('returns undefined when the options entry is %s', async (_, value) => {
         storage.feedsKey = validFeeds;
+        delete storage.optionsKey;
         if (value !== undefined) {
             storage.optionsKey = value;
         }

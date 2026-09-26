@@ -1,5 +1,6 @@
 import { wrapStore } from '../store/reduxBridge';
 
+import { isFetchDue } from '../model/feeds';
 import { extensionStateLoaded } from '../store/actions';
 import { updateBadge } from '../store/middleware/feedMiddleware';
 import store from '../store/store';
@@ -12,7 +13,6 @@ import { feedsAutoUpdateKey } from '../store/sagas/optionsSaga';
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;
 
-let lastLoaded = 0;
 let initialized = false;
 const messageBuffer: ContentScriptMessage[] = [];
 
@@ -142,7 +142,6 @@ async function init() {
     const loadedState = await loadState();
     if (loadedState !== undefined) {
         store.dispatch(extensionStateLoaded(loadedState));
-        lastLoaded = loadedState.timestamp;
     }
 
     // the badge outlives the background script, so it has to be reconciled with the loaded state
@@ -155,7 +154,7 @@ async function init() {
 
     const updateIntervall = store.getState().options.feedUpdatePeriodInMinutes;
 
-    // setup cyclic update of all feeds
+    // the countdown is reset on every start, the startup fetch below compensates
     browser.alarms.create(feedsAutoUpdateKey, { periodInMinutes: updateIntervall });
 
     initialized = true;
@@ -166,9 +165,11 @@ async function init() {
 const initResultPromise = init();
 
 initResultPromise.then(() => {
-    // don't fetch if extension was running and non-persistent background-script just re-started
-    const updateIntervall = store.getState().options.feedUpdatePeriodInMinutes;
-    if (Date.now() - lastLoaded > updateIntervall * MINUTE - 15 * SECOND) {
+    const state = store.getState();
+    const { feeds } = state.feeds;
+    const updateIntervall = state.options.feedUpdatePeriodInMinutes;
+
+    if (isFetchDue(feeds, updateIntervall * MINUTE - 15 * SECOND, Date.now())) {
         store.dispatch(fetchAllFeedsCommand());
     }
 });

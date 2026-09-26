@@ -64,3 +64,15 @@ export const itemDate = (item: FeedItem): Date | undefined => {
 
     return Number.isNaN(date.getTime()) ? undefined : date;
 };
+
+export const isFetchDue = (feeds: ReadonlyArray<Feed>, updateIntervalMs: number, now: number) => {
+    const lastFetched = feeds
+        .map((feed) => (feed.lastFetched === undefined ? Number.NaN : Date.parse(feed.lastFetched)))
+        .filter((value) => !Number.isNaN(value));
+
+    if (lastFetched.length === 0) {
+        return true;
+    }
+
+    return now - Math.max(...lastFetched) > updateIntervalMs;
+};
