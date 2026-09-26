@@ -81,6 +81,11 @@ browser.action.onClicked.addListener(() => {
 });
 
 async function detectFeeds(tabId: number) {
+    // the options are not loaded yet, so the setting would be read as its default
+    if (!initialized) {
+        return;
+    }
+
     if (!store.getState().options.feedDetectionEnabled) {
         store.dispatch(sessionSlice.actions.feedsDetected([]));
         return;
