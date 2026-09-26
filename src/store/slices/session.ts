@@ -29,6 +29,9 @@ type SessionSliceState = {
     menuVisible: boolean;
     newFolderEditActive: boolean;
     detectedFeeds: DetectedFeed[];
+
+    // set while the state could not be persisted, e.g. because the storage quota was exceeded
+    persistenceError?: string;
 };
 
 export const initialState: SessionSliceState = {
@@ -38,6 +41,8 @@ export const initialState: SessionSliceState = {
     menuVisible: false,
     newFolderEditActive: false,
     detectedFeeds: [],
+
+    persistenceError: undefined,
 };
 
 export const selectIsLoadingFeeds = (state: SessionSliceState) => state.feedStatus.some((x) => x.status === 'loading');
@@ -96,6 +101,9 @@ const sessionSlice = createSlice({
         },
         feedsDetected(state, action: PayloadAction<DetectedFeed[]>) {
             state.detectedFeeds = action.payload;
+        },
+        changePersistenceError(state, action: PayloadAction<string | undefined>) {
+            state.persistenceError = action.payload;
         },
     },
     extraReducers: (builder) => {

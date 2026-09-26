@@ -15,6 +15,35 @@ let lastLoaded = 0;
 let initialized = false;
 const messageBuffer: ContentScriptMessage[] = [];
 
+// saves are chained so that a slow write cannot finish after a newer one and persist stale state
+let pendingSave: Promise<void> = Promise.resolve();
+let saveErrorReported = false;
+
+const scheduleSave = () => {
+    pendingSave = pendingSave
+        .then(async () => {
+            await saveState(store.getState());
+
+            if (saveErrorReported) {
+                saveErrorReported = false;
+                store.dispatch(sessionSlice.actions.changePersistenceError(undefined));
+            }
+        })
+        .catch((error: unknown) => {
+            console.error('Could not persist state', error);
+
+            // reporting the error changes the state, which triggers another save that would fail again
+            if (!saveErrorReported) {
+                saveErrorReported = true;
+                store.dispatch(
+                    sessionSlice.actions.changePersistenceError(
+                        'Changes cannot be saved right now and will be lost when the sidebar is reloaded.',
+                    ),
+                );
+            }
+        });
+};
+
 // immediatly provide receiving end for content-script messages
 // waiting for store would take too long when background script re-initializes
 addMessageListener((message: ContentScriptMessage) => {
@@ -106,9 +135,7 @@ async function init() {
     }
 
     // setup persistence
-    store.subscribe(async () => {
-        await saveState(store.getState());
-    });
+    store.subscribe(scheduleSave);
 
     const unsubscribe = wrapStore(store, messageBuffer);
 
