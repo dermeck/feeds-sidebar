@@ -63,7 +63,9 @@ export const MoreMenu = (props: Props) => {
                 <MenuItem
                     icon={<GearSix size={18} />}
                     onMouseDown={() => {
-                        browser.runtime.openOptionsPage();
+                        if (!process.env.STAND_ALONE) {
+                            browser.runtime.openOptionsPage();
+                        }
                         dispatch(sessionSlice.actions.hideMenu());
                     }}>
                     Settings
