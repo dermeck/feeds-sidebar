@@ -18,9 +18,9 @@ type OptionsSliceState = {
     fetchThreadsCount: number;
     mainViewDisplayMode: MainViewDisplayMode;
     feedDetectionEnabled: boolean;
-    diagnosisInactiveDays?: number;
+    diagnosisInactiveDays: number;
     showUnreadBadge: boolean;
-    maxItemsPerFeed?: number;
+    maxItemsPerFeed: number;
 };
 
 export const initialState: OptionsSliceState = {
@@ -59,7 +59,7 @@ const optionsSlice = createSlice({
         changeShowUnreadBadge(state, action: PayloadAction<boolean>) {
             state.showUnreadBadge = action.payload;
         },
-        changeMaxItemsPerFeed(state, action: PayloadAction<number | undefined>) {
+        changeMaxItemsPerFeed(state, action: PayloadAction<number>) {
             state.maxItemsPerFeed = action.payload;
         },
         resetOptions() {

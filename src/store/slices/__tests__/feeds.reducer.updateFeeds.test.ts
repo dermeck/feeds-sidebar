@@ -343,7 +343,7 @@ describe('trimOverflowingFeedItems action', () => {
         expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id1', 'id2']);
     });
 
-    it.each([0, -1, undefined])('keeps all items when the limit is %s', (limit) => {
+    it.each([0, -1])('keeps all items when the limit is %s', (limit) => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             feeds: [{ ...feed1Fixture, items: [itemFixture('id1'), itemFixture('id2')] }],
@@ -387,15 +387,6 @@ describe('changeMaxItemsPerFeed action', () => {
 
     it('keeps all items when the limit is set to 0', () => {
         const newState = feedsSlice.reducer(stateWithItems(datedItems), optionsSlice.actions.changeMaxItemsPerFeed(0));
-
-        expect(newState.feeds[0].items).toHaveLength(4);
-    });
-
-    it('keeps all items when the limit is undefined', () => {
-        const newState = feedsSlice.reducer(
-            stateWithItems(datedItems),
-            optionsSlice.actions.changeMaxItemsPerFeed(undefined),
-        );
 
         expect(newState.feeds[0].items).toHaveLength(4);
     });

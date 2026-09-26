@@ -190,8 +190,8 @@ const sortItemsByAgeDesc = <T extends Feed>(feed: T): T => ({
 });
 
 // a maxItemsPerFeed of 0 or less means no limit
-const trimOverflowingItems = <T extends Feed>(feeds: ReadonlyArray<T>, maxItems: number | undefined): T[] => {
-    if (!maxItems || maxItems <= 0) {
+const trimOverflowingItems = <T extends Feed>(feeds: ReadonlyArray<T>, maxItems: number): T[] => {
+    if (maxItems <= 0) {
         return [...feeds];
     }
 
@@ -453,7 +453,7 @@ const feedsSlice = createSlice({
                 ],
             };
         },
-        trimOverflowingFeedItems(state, action: PayloadAction<number | undefined>) {
+        trimOverflowingFeedItems(state, action: PayloadAction<number>) {
             state.feeds = trimOverflowingItems(state.feeds, action.payload);
         },
 

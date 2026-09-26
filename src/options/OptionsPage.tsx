@@ -19,7 +19,8 @@ type NumberFieldProps = {
     description: string;
     value: number;
     min: number;
-    max: number;
+    // left out where there is no upper bound
+    max?: number;
     disabled?: boolean;
     onCommit: (value: number) => void;
 };
@@ -42,7 +43,7 @@ const NumberField = ({ label, description, value, min, max, disabled, onCommit }
             return;
         }
 
-        onCommit(clamp(parsed, min, max));
+        onCommit(max === undefined ? parsed : clamp(parsed, min, max));
     };
 
     return (
@@ -155,9 +156,8 @@ export const OptionsPage = () => {
                     <NumberField
                         label="Max items per feed"
                         description={`Keep at most this many items per feed. Newer items are kept, older ones are removed. Defaults to ${MAX_ITEMS_PER_FEED_DEFAULT}. Set to 0 for unlimited.`}
-                        value={options.maxItemsPerFeed ?? MAX_ITEMS_PER_FEED_DEFAULT}
+                        value={options.maxItemsPerFeed}
                         min={0}
-                        max={1000}
                         onCommit={setMaxItemsPerFeed}
                     />
                 </section>
@@ -168,7 +168,7 @@ export const OptionsPage = () => {
                     <NumberField
                         label="Inactive threshold"
                         description="A feed is shown as inactive when it has no new item within this many days. (days)"
-                        value={options.diagnosisInactiveDays ?? 60}
+                        value={options.diagnosisInactiveDays}
                         min={7}
                         max={365}
                         onCommit={setInactiveDays}
