@@ -4,7 +4,7 @@ import feedsSlice, { selectTotalUnreadItems, fetchAllFeedsCommand, fetchFeedsCom
 import optionsSlice from '../slices/options';
 import { RootState } from '../store';
 
-const updateBadge = (state: RootState) => {
+export const updateBadge = (state: RootState) => {
     if (process.env.STAND_ALONE) {
         return;
     }

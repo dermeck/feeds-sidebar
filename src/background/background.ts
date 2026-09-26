@@ -1,6 +1,7 @@
 import { wrapStore } from '../store/reduxBridge';
 
 import { extensionStateLoaded } from '../store/actions';
+import { updateBadge } from '../store/middleware/feedMiddleware';
 import store from '../store/store';
 import { loadState, saveState } from '../services/persistence';
 import { fetchAllFeedsCommand } from '../store/slices/feeds';
@@ -133,6 +134,9 @@ async function init() {
         store.dispatch(extensionStateLoaded(loadedState));
         lastLoaded = loadedState.timestamp;
     }
+
+    // the badge outlives the background script, so it has to be reconciled with the loaded state
+    updateBadge(store.getState());
 
     // setup persistence
     store.subscribe(scheduleSave);
