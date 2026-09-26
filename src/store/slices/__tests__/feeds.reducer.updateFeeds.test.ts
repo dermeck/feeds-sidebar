@@ -342,6 +342,17 @@ describe('trimOverflowingFeedItems action', () => {
 
         expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id1', 'id2']);
     });
+
+    it.each([0, -1, undefined])('keeps all items when the limit is %s', (limit) => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [{ ...feed1Fixture, items: [itemFixture('id1'), itemFixture('id2')] }],
+        };
+
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(limit));
+
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['id1', 'id2']);
+    });
 });
 
 describe('changeMaxItemsPerFeed action', () => {

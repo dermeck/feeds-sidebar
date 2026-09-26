@@ -36,11 +36,9 @@ export const feedMiddleware: Middleware<object, RootState, Dispatch> = (middlewa
 
     // reducers must run before this code
     if (feedsSlice.actions.updateFeeds.match(action)) {
-        const maxItemsPerFeed = middlewareApi.getState().options.maxItemsPerFeed;
+        const { maxItemsPerFeed } = middlewareApi.getState().options;
 
-        if (maxItemsPerFeed !== undefined && maxItemsPerFeed > 0) {
-            middlewareApi.dispatch(feedsSlice.actions.trimOverflowingFeedItems(maxItemsPerFeed));
-        }
+        middlewareApi.dispatch(feedsSlice.actions.trimOverflowingFeedItems(maxItemsPerFeed));
     }
 
     if (badgeRelevantActions.includes((action as UnknownAction).type)) {

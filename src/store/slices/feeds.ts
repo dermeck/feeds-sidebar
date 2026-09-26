@@ -189,14 +189,20 @@ const sortItemsByAgeDesc = <T extends Feed>(feed: T): T => ({
     items: [...feed.items].sort((a, b) => itemTimestamp(b) - itemTimestamp(a)),
 });
 
-const trimOverflowingItems = <T extends Feed>(feeds: ReadonlyArray<T>, maxItems: number): T[] =>
-    feeds.map((feed) => {
+// a maxItemsPerFeed of 0 or less means no limit
+const trimOverflowingItems = <T extends Feed>(feeds: ReadonlyArray<T>, maxItems: number | undefined): T[] => {
+    if (!maxItems || maxItems <= 0) {
+        return [...feeds];
+    }
+
+    return feeds.map((feed) => {
         if (feed.items.length <= maxItems) {
             return feed;
         }
 
         return { ...feed, items: sortItemsByAgeDesc(feed).items.slice(0, maxItems) };
     });
+};
 
 const selectChildNodes = (
     feeds: FeedSliceState['feeds'],
@@ -447,7 +453,7 @@ const feedsSlice = createSlice({
                 ],
             };
         },
-        trimOverflowingFeedItems(state, action: PayloadAction<number>) {
+        trimOverflowingFeedItems(state, action: PayloadAction<number | undefined>) {
             state.feeds = trimOverflowingItems(state.feeds, action.payload);
         },
 
@@ -525,9 +531,7 @@ const feedsSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(optionsSlice.actions.changeMaxItemsPerFeed, (state, action) => {
-            if (action.payload !== undefined && action.payload > 0) {
-                state.feeds = trimOverflowingItems(state.feeds, action.payload);
-            }
+            state.feeds = trimOverflowingItems(state.feeds, action.payload);
         });
 
         builder.addCase(extensionStateLoaded, (_, action) => {
