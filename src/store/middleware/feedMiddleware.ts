@@ -21,6 +21,7 @@ const badgeRelevantActions = [
     feedsSlice.actions.markAllAsRead.type,
     feedsSlice.actions.deleteSelectedNode.type,
     optionsSlice.actions.changeShowUnreadBadge.type,
+    optionsSlice.actions.resetOptions.type,
 ];
 
 export const feedMiddleware: Middleware<object, RootState, Dispatch> = (middlewareApi) => (next) => async (action) => {
