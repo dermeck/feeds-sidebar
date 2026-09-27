@@ -4,7 +4,7 @@
     width: 100%;
     height: 100%;
 
-    background-color: var(--background-color-canvas);
+    background-color: var(--background-color-surface);
     opacity: 0;
     visibility: hidden;
 

@@ -8,6 +8,9 @@
     /* design tokens (Acorn platform set + HCM layers) come from ./acorn/tokens.css */
     /* project-local tokens, no Acorn equivalent: */
 
+    /* panels take their background from here rather than the canvas, so the sidebar can substitute its own */
+    --background-color-surface: var(--background-color-canvas);
+
     --item-hover-background-color: var(--button-background-color-hover);
     --item-hover-text-color: currentColor;
     --selected-item-background-color: var(--color-accent-primary);

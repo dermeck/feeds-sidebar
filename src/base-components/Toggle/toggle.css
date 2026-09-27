@@ -57,7 +57,7 @@
             var(--size-item-large) - 2 * var(--border-width) - 2px -
                 (var(--size-item-small) - 2 * var(--border-width) - 2px)
         );
-        background-color: var(--background-color-canvas);
+        background-color: var(--background-color-surface);
     }
 
     &:hover {

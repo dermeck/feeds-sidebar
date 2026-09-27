@@ -12,6 +12,7 @@
        platform's -moz-sidebar color. A web page cannot read that chrome token, so the values are
        copied per platform and picked with data-os, which Sidebar sets from getPlatformInfo(). */
     --background-color-sidebar: light-dark(white, #2b2a33);
+    --background-color-surface: var(--background-color-sidebar);
 
     position: relative;
     height: 100vh;
