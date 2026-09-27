@@ -15,6 +15,7 @@ import { Select } from '../base-components/Select/Select';
 import { Toggle } from '../base-components/Toggle/Toggle';
 import { NumberField } from './fields/NumberField';
 import { OptionField } from './fields/OptionField';
+import { OptionRow } from './fields/OptionRow';
 
 export const OptionsPage = () => {
     const dispatch = useAppDispatch();
@@ -136,7 +137,7 @@ export const OptionsPage = () => {
                 <section className="options-page__section">
                     <h2 className="options-page__section-heading">Data</h2>
 
-                    <OptionField
+                    <OptionRow
                         label="Reset settings"
                         description="Restore all settings to their default values. Your subscribed feeds are not affected."
                     >
@@ -146,7 +147,7 @@ export const OptionsPage = () => {
                         >
                             Reset to defaults
                         </Button>
-                    </OptionField>
+                    </OptionRow>
                 </section>
             </main>
         </div>

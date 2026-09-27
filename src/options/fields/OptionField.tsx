@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { FieldRow } from './FieldRow';
+
 type OptionFieldProps = {
     label: string;
     description?: string;
@@ -11,18 +13,21 @@ export const OptionField = ({ label, description, children }: OptionFieldProps) 
     const descriptionId = description ? `${controlId}-description` : undefined;
 
     return (
-        <div className="options__field">
-            <div className="options__field-text">
+        <FieldRow
+            labelNode={
                 <label className="options__field-label" htmlFor={controlId}>
                     {label}
                 </label>
-                {description && (
+            }
+            descriptionNode={
+                description && (
                     <p className="options__field-description" id={descriptionId}>
                         {description}
                     </p>
-                )}
-            </div>
+                )
+            }
+        >
             {React.cloneElement(children, { id: controlId, 'aria-describedby': descriptionId })}
-        </div>
+        </FieldRow>
     );
 };
