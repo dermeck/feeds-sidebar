@@ -7,25 +7,28 @@
 @import './SubscribeView/subscribe-view.css';
 @import './DiagnosisView/diagnosis-view.css';
 
-/* Firefox paints its sidebar panels with --sidebar-background-color: the built-in theme's white,
-   or the platform theme's sidebar color on Linux. A web page cannot read that chrome token. */
-:root {
-    --background-color-sidebar: light-dark(white, #1c1b22);
-}
-
-:root[data-sidebar-surface='builtin-theme'] {
-    --background-color-sidebar: light-dark(white, #1c1b22);
-}
-
-:root[data-sidebar-surface='system-theme'] {
-    --background-color-sidebar: light-dark(#ebebed, #2e2e32);
-}
-
 .sidebar__container {
+    /* Firefox paints its sidebar panels with --sidebar-background-color, which resolves to the
+       platform's -moz-sidebar color. A web page cannot read that chrome token, so the values are
+       copied per platform and picked with data-os, which Sidebar sets from getPlatformInfo(). */
+    --background-color-sidebar: light-dark(white, #2b2a33);
+
     position: relative;
     height: 100vh;
     background-color: var(--background-color-sidebar);
     color: var(--text-color);
+}
+
+.sidebar__container[data-sidebar-surface='system-theme'][data-os='linux'] {
+    --background-color-sidebar: light-dark(#ebebed, #2e2e32);
+}
+
+.sidebar__container[data-sidebar-surface='system-theme'][data-os='win'] {
+    --background-color-sidebar: light-dark(#f3f3f3, #2b2a33);
+}
+
+.sidebar__container[data-sidebar-surface='system-theme'][data-os='mac'] {
+    --background-color-sidebar: light-dark(white, #2d2d2d);
 }
 
 .sidebar__main-header {

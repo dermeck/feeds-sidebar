@@ -102,7 +102,7 @@ export const OptionsPage = () => {
                             value={options.sidebarSurface}
                             options={[
                                 { value: 'auto', label: 'Auto' },
-                                { value: 'builtin-theme', label: 'Built-in theme' },
+                                { value: 'builtin-theme', label: 'Firefox theme' },
                                 { value: 'system-theme', label: 'System theme' },
                             ]}
                             onChange={(value) => dispatch(optionsSlice.actions.sidebarSurfaceChanged(value))}

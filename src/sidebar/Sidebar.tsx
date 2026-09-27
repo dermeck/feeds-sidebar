@@ -16,7 +16,7 @@ import { MessageBar } from '../base-components/MessageBar/MessageBar';
 import { SearchInput } from '../base-components/SearchInput/SearchInput';
 import clsx from 'clsx';
 import { getCssCustomPropertyNumberValue } from '../utils/getCssCustomProperty';
-import { getPlatformOs } from '../utils/platform';
+import useSidebarSurface from './useSidebarSurface';
 
 const getMoreMenuCoordinates = (target: HTMLButtonElement): { x: number; y: number } => {
     // target offset is the top left corner of the button
@@ -52,32 +52,13 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const persistenceError = useAppSelector((state) => state.session.persistenceError);
 
     const [filterString, setFilterString] = useState<string>('');
-
-    React.useEffect(() => {
-        const root = document.documentElement;
-
-        if (sidebarSurface !== 'auto') {
-            root.setAttribute('data-sidebar-surface', sidebarSurface);
-            return;
-        }
-
-        let pending = true;
-
-        void getPlatformOs().then((os) => {
-            // only Linux resolves the panel surface color to the platform theme
-            if (pending) {
-                root.setAttribute('data-sidebar-surface', os === 'linux' ? 'system-theme' : 'builtin-theme');
-            }
-        });
-
-        return () => {
-            pending = false;
-        };
-    }, [sidebarSurface]);
+    const { os, surface } = useSidebarSurface(sidebarSurface);
 
     return (
         <div
             className="sidebar__container"
+            data-os={os}
+            data-sidebar-surface={surface}
             onContextMenu={(e) => {
                 if (urlInputRef.current !== e.target) {
                     // allow paste into url input but prevent all other context menus

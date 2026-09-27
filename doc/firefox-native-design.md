@@ -72,21 +72,34 @@ border. This is closer to the native look than a flat `ButtonFace` fill.
 
 The sidebar panel surface is not that token. Panel documents
 (`sidebar-history.html` etc.) are transparent, so what shows through is
-`#sidebar`'s `--sidebar-background-color` = the platform's `-moz-sidebar` — white
-with the built-in theme, otherwise:
+`#sidebar`'s `--sidebar-background-color` = the platform's `-moz-sidebar` — the
+built-in theme's own palette, otherwise:
 
 | Setup | Panel surface |
 |---|---|
-| Windows / macOS, built-in theme | `light-dark(white, rgb(28,27,34))` |
-| Windows, system theme | `GetSysColor(COLOR_WINDOW)` — `#f3f3f3` on Win11 |
+| Windows / macOS, built-in theme | `light-dark(white, rgb(43,42,51))` |
+| Windows, system theme | `GetSysColor(COLOR_WINDOW)` — `#f3f3f3` on Win11; dark is `#2b2a33` |
 | macOS, system theme | `white` / `#2d2d2d` |
 | Linux, system theme | Adwaita `#ebebed` / dark `#2e2e32`, else the field color |
 
 (`tokens-platform.css`, `widget/{gtk,cocoa,windows}/nsLookAndFeel.*`)
 
+The macOS and Linux values are the platform's own. Windows is the odd one out:
+only its light value comes from Windows. `nsLookAndFeelWin::GetColor` returns
+`GenericDarkColor(aID)` before the switch ever reaches the `MozSidebar →
+COLOR_WINDOW` case, so the dark value is `nsXPLookAndFeel::GenericDarkColor`
+= `rgb(43,42,51)` — Firefox's generic dark palette, the same `#2b2a33` as the
+built-in dark sidebar and not a Windows color at all.
+
+`--sidebar-background-color` is also an LWT property (`lwtProperty: "sidebar"` in
+`ThemeVariableMap.sys.mjs`), so with a third-party theme installed the real panel
+is the theme's own color, which the page cannot read.
+
 A web page can read none of that — `-moz-*` colors are chrome-only, and Stylo
 marks `@media (-moz-platform)` `CHROME_AND_UA_ONLY` — hence
-`browser.runtime.getPlatformInfo()` (`src/utils/platform.ts`) behind
+`browser.runtime.getPlatformInfo()` (`src/utils/platform.ts`) read by
+`useSidebarSurface` (`src/sidebar/useSidebarSurface.ts`) and published as
+`data-os` / `data-sidebar-surface` on `.sidebar__container`, which selects
 `--background-color-sidebar` (`src/sidebar/sidebar-styles.css`).
 
 ### Shared size/spacing tokens
