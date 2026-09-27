@@ -88,6 +88,11 @@
     min-width: 140px;
 }
 
+.options__field > .select {
+    flex: 0 0 auto;
+    min-width: 140px;
+}
+
 .options-page__reset-button {
     flex: 0 0 auto;
 }

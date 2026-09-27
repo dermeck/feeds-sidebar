@@ -7,10 +7,24 @@
 @import './SubscribeView/subscribe-view.css';
 @import './DiagnosisView/diagnosis-view.css';
 
+/* Firefox paints its sidebar panels with --sidebar-background-color: the built-in theme's white,
+   or the platform theme's sidebar color on Linux. A web page cannot read that chrome token. */
+:root {
+    --background-color-sidebar: light-dark(white, #1c1b22);
+}
+
+:root[data-sidebar-surface='builtin-theme'] {
+    --background-color-sidebar: light-dark(white, #1c1b22);
+}
+
+:root[data-sidebar-surface='system-theme'] {
+    --background-color-sidebar: light-dark(#ebebed, #2e2e32);
+}
+
 .sidebar__container {
     position: relative;
     height: 100vh;
-    background-color: var(--background-color-canvas);
+    background-color: var(--background-color-sidebar);
     color: var(--text-color);
 }
 

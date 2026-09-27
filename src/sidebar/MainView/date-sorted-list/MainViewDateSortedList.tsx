@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { useAppSelector } from '../../../store/hooks';
+import { selectOptions } from '../../../store/slices/options';
 import { Card } from '../../../base-components/Card/Card';
 import { DateSortedFeedItems, getDateSortedFeedItems } from './dateSortedFeedItems';
 import { FeedItemList } from '../FeedList/FeedItemList';
@@ -27,6 +28,7 @@ const monthLabel = (key: string) =>
 
 export const MainViewDateSortedList = ({ className, filterString }: MainViewPlainListProps) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
+    const cardStyle = useAppSelector((state) => selectOptions(state).dateGroupCardStyle);
     const [expandedSections, setExpandedSections] = useState<string[]>(['today', 'yesterday']);
     const sortedFeeds: DateSortedFeedItems = useMemo(() => {
         return getDateSortedFeedItems(feeds);
@@ -72,7 +74,7 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
     );
 
     return (
-        <div className={clsx(className, 'date-sorted-list')}>
+        <div className={clsx(className, 'date-sorted-list')} data-card-style={cardStyle}>
             {filteredFeeds.today.length > 0 && (
                 <Card
                     type="accordion"

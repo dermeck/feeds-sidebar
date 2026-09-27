@@ -11,6 +11,7 @@ import optionsSlice, {
     selectOptions,
 } from '../store/slices/options';
 import { Button } from '../base-components/Button/Button';
+import { Select } from '../base-components/Select/Select';
 import { TextInput } from '../base-components/TextInput/TextInput';
 import { Toggle } from '../base-components/Toggle/Toggle';
 
@@ -25,7 +26,7 @@ const parseNumber = (value: string): number | undefined => {
 
 type NumberFieldProps = {
     label: string;
-    description: string;
+    description?: string;
     value: number;
     min: number;
     max?: number;
@@ -64,13 +65,15 @@ const NumberField = ({ label, description, value, min, max, disabled, onCommit }
                 <label className="options__field-label" htmlFor={inputId}>
                     {label}
                 </label>
-                <p className="options__field-description" id={descriptionId}>
-                    {description}
-                </p>
+                {description && (
+                    <p className="options__field-description" id={descriptionId}>
+                        {description}
+                    </p>
+                )}
             </div>
             <TextInput
                 id={inputId}
-                aria-describedby={descriptionId}
+                aria-describedby={description ? descriptionId : undefined}
                 className="options__number-input"
                 type="number"
                 min={min}
@@ -91,7 +94,7 @@ const NumberField = ({ label, description, value, min, max, disabled, onCommit }
 
 type ToggleFieldProps = {
     label: string;
-    description: string;
+    description?: string;
     checked: boolean;
     disabled?: boolean;
     onChange: (checked: boolean) => void;
@@ -104,9 +107,11 @@ const ToggleField = ({ label, description, checked, disabled, onChange }: Toggle
         <div className="options__field">
             <div className="options__field-text">
                 <span className="options__field-label">{label}</span>
-                <p className="options__field-description" id={descriptionId}>
-                    {description}
-                </p>
+                {description && (
+                    <p className="options__field-description" id={descriptionId}>
+                        {description}
+                    </p>
+                )}
             </div>
             <Toggle
                 label={label}
@@ -114,7 +119,42 @@ const ToggleField = ({ label, description, checked, disabled, onChange }: Toggle
                 disabled={disabled}
                 onChange={onChange}
                 hideLabel
-                aria-describedby={descriptionId}
+                aria-describedby={description ? descriptionId : undefined}
+            />
+        </div>
+    );
+};
+
+type SelectFieldProps<T extends string> = {
+    label: string;
+    description?: string;
+    value: T;
+    choices: { value: T; label: string }[];
+    onChange: (value: T) => void;
+};
+
+const SelectField = <T extends string>({ label, description, value, choices, onChange }: SelectFieldProps<T>) => {
+    const selectId = React.useId();
+    const descriptionId = `${selectId}-description`;
+
+    return (
+        <div className="options__field">
+            <div className="options__field-text">
+                <label className="options__field-label" htmlFor={selectId}>
+                    {label}
+                </label>
+                {description && (
+                    <p className="options__field-description" id={descriptionId}>
+                        {description}
+                    </p>
+                )}
+            </div>
+            <Select
+                id={selectId}
+                value={value}
+                options={choices}
+                onChange={onChange}
+                aria-describedby={description ? descriptionId : undefined}
             />
         </div>
     );
@@ -188,6 +228,31 @@ export const OptionsPage = () => {
                         value={options.maxItemsPerFeed}
                         min={0}
                         onCommit={setMaxItemsPerFeed}
+                    />
+                </section>
+
+                <section className="options-page__section">
+                    <h2 className="options-page__section-heading">Appearance</h2>
+
+                    <SelectField
+                        label="Sidebar background"
+                        value={options.sidebarSurface}
+                        choices={[
+                            { value: 'auto', label: 'Auto' },
+                            { value: 'builtin-theme', label: 'Built-in theme' },
+                            { value: 'system-theme', label: 'System theme' },
+                        ]}
+                        onChange={(value) => dispatch(optionsSlice.actions.sidebarSurfaceChanged(value))}
+                    />
+
+                    <SelectField
+                        label="Date group cards"
+                        value={options.dateGroupCardStyle}
+                        choices={[
+                            { value: 'flat', label: 'Flat' },
+                            { value: 'raised', label: 'Raised' },
+                        ]}
+                        onChange={(value) => dispatch(optionsSlice.actions.dateGroupCardStyleChanged(value))}
                     />
                 </section>
 

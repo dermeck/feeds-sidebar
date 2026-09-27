@@ -4,19 +4,17 @@
     padding-inline-end: var(--space-xsmall);
 }
 
-/* match the new Firefox history view (Nova): borderless cards whose rows
-   become edge-to-edge pills with a large radius */
-.date-sorted-list .card {
+.date-sorted-list[data-card-style='flat'] .card {
     border: none;
     background-color: transparent;
     box-shadow: none;
 }
 
-.date-sorted-list .card__header {
+.date-sorted-list[data-card-style='flat'] .card__header {
     padding-inline: var(--space-small);
 }
 
-.date-sorted-list .card__content {
+.date-sorted-list[data-card-style='flat'] .card__content {
     padding-inline: 0;
 }
 

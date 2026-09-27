@@ -20,6 +20,8 @@ describe('options slice', () => {
         diagnosisInactiveDays: 60,
         showUnreadBadge: true,
         maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
+        sidebarSurface: 'auto',
+        dateGroupCardStyle: 'flat',
     };
 
     describe('global extensionStateLoaded action', () => {
@@ -34,6 +36,8 @@ describe('options slice', () => {
                     diagnosisInactiveDays: 90,
                     showUnreadBadge: false,
                     maxItemsPerFeed: 100,
+                    sidebarSurface: 'system-theme',
+                    dateGroupCardStyle: 'raised',
                 },
             });
 
@@ -45,6 +49,8 @@ describe('options slice', () => {
                 diagnosisInactiveDays: 90,
                 showUnreadBadge: false,
                 maxItemsPerFeed: 100,
+                sidebarSurface: 'system-theme',
+                dateGroupCardStyle: 'raised',
             });
         });
 
@@ -67,6 +73,8 @@ describe('options slice', () => {
                 diagnosisInactiveDays: 60,
                 showUnreadBadge: true,
                 maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
+                sidebarSurface: 'auto',
+                dateGroupCardStyle: 'flat',
             });
         });
     });
@@ -176,6 +184,20 @@ describe('options slice', () => {
         });
     });
 
+    describe('sidebarSurfaceChanged', () => {
+        it('sets the value', () => {
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.sidebarSurfaceChanged('system-theme'));
+            expect(state.sidebarSurface).toBe('system-theme');
+        });
+    });
+
+    describe('dateGroupCardStyleChanged', () => {
+        it('sets the value', () => {
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.dateGroupCardStyleChanged('raised'));
+            expect(state.dateGroupCardStyle).toBe('raised');
+        });
+    });
+
     describe('resetOptions', () => {
         it('restores default values', () => {
             const customState: RootState['options'] = {
@@ -187,6 +209,8 @@ describe('options slice', () => {
                 diagnosisInactiveDays: 365,
                 showUnreadBadge: false,
                 maxItemsPerFeed: 10,
+                sidebarSurface: 'builtin-theme',
+                dateGroupCardStyle: 'raised',
             };
 
             expect(optionsSlice.reducer(customState, optionsSlice.actions.resetOptions())).toStrictEqual(initialState);

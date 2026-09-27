@@ -16,6 +16,7 @@ import { MessageBar } from '../base-components/MessageBar/MessageBar';
 import { SearchInput } from '../base-components/SearchInput/SearchInput';
 import clsx from 'clsx';
 import { getCssCustomPropertyNumberValue } from '../utils/getCssCustomProperty';
+import { getPlatformOs } from '../utils/platform';
 
 const getMoreMenuCoordinates = (target: HTMLButtonElement): { x: number; y: number } => {
     // target offset is the top left corner of the button
@@ -45,12 +46,34 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const moreMenuVisible = useAppSelector(
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
-    const mainViewDisplayMode = useAppSelector(selectOptions).mainViewDisplayMode;
+    const { mainViewDisplayMode, sidebarSurface } = useAppSelector(selectOptions);
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));
     const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
     const persistenceError = useAppSelector((state) => state.session.persistenceError);
 
     const [filterString, setFilterString] = useState<string>('');
+
+    React.useEffect(() => {
+        const root = document.documentElement;
+
+        if (sidebarSurface !== 'auto') {
+            root.setAttribute('data-sidebar-surface', sidebarSurface);
+            return;
+        }
+
+        let pending = true;
+
+        void getPlatformOs().then((os) => {
+            // only Linux resolves the panel surface color to the platform theme
+            if (pending) {
+                root.setAttribute('data-sidebar-surface', os === 'linux' ? 'system-theme' : 'builtin-theme');
+            }
+        });
+
+        return () => {
+            pending = false;
+        };
+    }, [sidebarSurface]);
 
     return (
         <div

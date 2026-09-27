@@ -379,7 +379,12 @@ describe('trimOverflowingFeedItems action', () => {
         const newState = feedsSlice.reducer(prevState, feedsSlice.actions.trimOverflowingFeedItems(2));
 
         // the cap applies to the dated items only, the undated ones are kept whatever their age
-        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual(['dated', 'undated1', 'undated2', 'undated3']);
+        expect(newState.feeds[0].items.map((item) => item.id)).toStrictEqual([
+            'dated',
+            'undated1',
+            'undated2',
+            'undated3',
+        ]);
     });
 
     it('keeps a new undated item when the feed is already at the limit', () => {
