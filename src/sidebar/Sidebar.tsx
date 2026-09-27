@@ -46,17 +46,18 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const moreMenuVisible = useAppSelector(
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
-    const { mainViewDisplayMode, sidebarSurface } = useAppSelector(selectOptions);
+    const { mainViewDisplayMode } = useAppSelector(selectOptions);
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));
     const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
     const persistenceError = useAppSelector((state) => state.session.persistenceError);
 
     const [filterString, setFilterString] = useState<string>('');
-    const { os, surface } = useSidebarSurface(sidebarSurface);
+    const { os, surface, style } = useSidebarSurface();
 
     return (
         <div
             className="sidebar__container"
+            style={style}
             data-os={os}
             data-sidebar-surface={surface}
             onContextMenu={(e) => {

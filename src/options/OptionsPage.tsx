@@ -13,6 +13,7 @@ import optionsSlice, {
 import { Button } from '../base-components/Button/Button';
 import { Select } from '../base-components/Select/Select';
 import { Toggle } from '../base-components/Toggle/Toggle';
+import { ColorField } from './fields/ColorField';
 import { NumberField } from './fields/NumberField';
 import { OptionField } from './fields/OptionField';
 import { OptionRow } from './fields/OptionRow';
@@ -104,10 +105,32 @@ export const OptionsPage = () => {
                                 { value: 'auto', label: 'Auto' },
                                 { value: 'builtin-theme', label: 'Firefox theme' },
                                 { value: 'system-theme', label: 'System theme' },
+                                { value: 'custom', label: 'Custom' },
                             ]}
                             onChange={(value) => dispatch(optionsSlice.actions.sidebarSurfaceChanged(value))}
                         />
                     </OptionField>
+
+                    {options.sidebarSurface === 'custom' && (
+                        <>
+                            <ColorField
+                                label="Light color"
+                                description="Used while Firefox is using a light theme."
+                                value={options.sidebarCustomColorLight}
+                                onChange={(value) =>
+                                    dispatch(optionsSlice.actions.sidebarCustomColorLightChanged(value))
+                                }
+                            />
+                            <ColorField
+                                label="Dark color"
+                                description="Used while Firefox is using a dark theme."
+                                value={options.sidebarCustomColorDark}
+                                onChange={(value) =>
+                                    dispatch(optionsSlice.actions.sidebarCustomColorDarkChanged(value))
+                                }
+                            />
+                        </>
+                    )}
 
                     <OptionField label="Date group cards">
                         <Select
