@@ -2,7 +2,7 @@ import { CSSProperties, useEffect, useState } from 'react';
 
 import { useAppSelector } from '../store/hooks';
 import { selectOptions } from '../store/slices/options';
-import { getPlatformOs } from '../utils/platform';
+import { getPlatformOs, PlatformOs } from '../utils/platform';
 
 /**
  * Resolves the sidebar background option to the platform values that sidebar-styles.css keys on.
@@ -12,7 +12,7 @@ import { getPlatformOs } from '../utils/platform';
  */
 const useSidebarSurface = () => {
     const { sidebarSurface, sidebarCustomColorLight, sidebarCustomColorDark } = useAppSelector(selectOptions);
-    const [os, setOs] = useState<string | undefined>(undefined);
+    const [os, setOs] = useState<PlatformOs | 'unknown' | undefined>(undefined);
 
     useEffect(() => {
         void getPlatformOs().then(setOs);

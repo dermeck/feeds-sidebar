@@ -1,4 +1,4 @@
-type PlatformOs = browser.runtime.PlatformOs;
+export type PlatformOs = browser.runtime.PlatformOs;
 
 let platformOs: Promise<PlatformOs | 'unknown'> | undefined;
 
