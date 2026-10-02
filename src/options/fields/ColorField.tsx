@@ -8,11 +8,9 @@ type ColorFieldProps = {
     value: string;
     disabled?: boolean;
     onChange: (value: string) => void;
-    id?: string;
-    'aria-describedby'?: string;
 };
 
-export const ColorField = ({ label, description, value, disabled, onChange, ...rest }: ColorFieldProps) => (
+export const ColorField = ({ label, description, value, disabled, onChange }: ColorFieldProps) => (
     <OptionField label={label} description={description}>
         <input
             className="color-field__input"
@@ -20,7 +18,6 @@ export const ColorField = ({ label, description, value, disabled, onChange, ...r
             value={value}
             disabled={disabled}
             onChange={(e) => onChange(e.target.value)}
-            {...rest}
         />
     </OptionField>
 );
