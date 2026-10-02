@@ -6,22 +6,22 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import { NewFeedsList } from './NewFeedsList/NewFeedsList';
 import { DetectedFeeds } from './DetectedFeeds/DetectedFeeds';
+import { UrlSuggestions } from './UrlSuggestions/UrlSuggestions';
 import { Button } from '../../base-components/Button/Button';
 import { MessageBar } from '../../base-components/MessageBar/MessageBar';
 import { Header } from '../../base-components/Header/Header';
 import { TextInput } from '../../base-components/TextInput/TextInput';
-
-const isValidURL = (str: string) => {
-    const res = str.match(
-        /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
-    );
-    return res !== null;
-};
+import { detectFeedsForSite, parseUrl } from '../../services/feedDetection/feedDetection';
 
 interface SubscribeViewProps {
     urlInputRef: RefObject<HTMLInputElement | null>;
     onClose: () => void;
 }
+
+const suggestionsForInput = (input: string) => {
+    const url = parseUrl(input);
+    return url === undefined ? [] : detectFeedsForSite(url);
+};
 
 export const SubscribeView = (props: SubscribeViewProps) => {
     const dispatch = useAppDispatch();
@@ -31,6 +31,8 @@ export const SubscribeView = (props: SubscribeViewProps) => {
     const [newFeedUrl, setNewFeedUrl] = useState('');
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
     const [addedFeedUrls, setAddedFeedUrls] = useState<string[]>([]);
+
+    const suggestions = suggestionsForInput(newFeedUrl);
 
     const addNewFeed = (url: string) => {
         setAddedFeedUrls((oldItems) => (oldItems.includes(url) ? oldItems : [...oldItems, url]));
@@ -43,8 +45,21 @@ export const SubscribeView = (props: SubscribeViewProps) => {
     };
 
     const addFeed = () => {
-        if (!isValidURL(newFeedUrl)) {
-            setNewFeedUrlMessage('The ented URL is invalid.');
+        const url = parseUrl(newFeedUrl);
+
+        if (url === undefined) {
+            setNewFeedUrlMessage('The entered URL is invalid.');
+            return;
+        }
+
+        if (suggestions.length === 1) {
+            addNewFeed(suggestions[0].href);
+            setNewFeedUrl('');
+            return;
+        }
+
+        if (suggestions.length > 1) {
+            setNewFeedUrlMessage('That page offers several feeds, pick one below.');
             return;
         }
 
@@ -80,7 +95,10 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                         ref={props.urlInputRef}
                         placeholder="https://blog.mozilla.org/en/feed/"
                         value={newFeedUrl}
-                        onChange={(e) => setNewFeedUrl(e.target.value)}
+                        onChange={(e) => {
+                            setNewFeedUrl(e.target.value);
+                            setNewFeedUrlMessage('');
+                        }}
                         onFocus={() => setNewFeedUrlMessage('')}
                     />
                     <Button type="submit" className="subscribe-view__add-button">
@@ -88,6 +106,7 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                     </Button>
                 </form>
                 {newFeedUrlMessage !== '' && <MessageBar variant="error">{newFeedUrlMessage}</MessageBar>}
+                <UrlSuggestions suggestions={suggestions} addNewFeed={addNewFeed} removeFeed={removeFeed} />
                 {feedDetectionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
             </div>
