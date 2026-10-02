@@ -8,7 +8,8 @@ export type DetectedFeed = {
 };
 
 export const isSameDetectedFeeds = (a: ReadonlyArray<DetectedFeed>, b: ReadonlyArray<DetectedFeed>) =>
-    a.length === b.length && a.every((feed, i) => feed.href === b[i].href && feed.title === b[i].title && feed.type === b[i].type);
+    a.length === b.length &&
+    a.every((feed, i) => feed.href === b[i].href && feed.title === b[i].title && feed.type === b[i].type);
 
 export function detectFeeds(): DetectedFeed[] {
     const detectedFeeds = [...detectFeedsInLinks(), ...detectFeedsYoutube()];

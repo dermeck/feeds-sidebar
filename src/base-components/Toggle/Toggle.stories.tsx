@@ -9,7 +9,7 @@ const ToggleDemo = ({
     initialChecked = false,
     disabled = false,
 }: {
-    label: string;
+    label?: string;
     initialChecked?: boolean;
     disabled?: boolean;
 }) => {

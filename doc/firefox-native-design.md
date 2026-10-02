@@ -41,7 +41,9 @@ In the updated sidebar, the date-grouped history view uses
 `<moz-card type="accordion">`: rounded, bordered cards ("pills") whose header
 (label + disclosure + count) expands into a big card holding the rows. Only the
 first two cards start expanded; nested groups use borderless `nested-card`
-mini-cards. Card styling comes from the Acorn `--card-*` tokens.
+mini-cards. Card styling comes from the Acorn `--card-*` tokens, whose
+`--card-background-color` is `--background-color-box` = white, i.e. a **white box
+on the panel surface** until Nova removes it (below).
 
 Local mirror: `src/base-components/Card/` implements the accordion-card
 treatment via `Card type="accordion"`; keep it synced with the `moz-card`
@@ -53,7 +55,7 @@ accordion behavior above.
 
 | Token | Value |
 |---|---|
-| `--background-color-canvas` | `Canvas` |
+| `--background-color-canvas` | `Canvas` — in a web document the *page* canvas, i.e. white, not the chrome one |
 | `--text-color` | `currentColor` |
 | `--color-accent-primary` | `AccentColor` |
 | `--button-background-color` | `color-mix(in srgb, currentColor 13%, transparent)` |
@@ -67,6 +69,38 @@ accordion behavior above.
 Key takeaway: **Acorn chrome buttons are not `ButtonFace` — they're a subtle
 `currentColor` tint** (13% rest, 17% hover, 30% active) with a transparent
 border. This is closer to the native look than a flat `ButtonFace` fill.
+
+The sidebar panel surface is not that token. Panel documents
+(`sidebar-history.html` etc.) are transparent, so what shows through is
+`#sidebar`'s `--sidebar-background-color` = the platform's `-moz-sidebar` — the
+built-in theme's own palette, otherwise:
+
+| Setup | Panel surface |
+|---|---|
+| Windows / macOS, built-in theme | `light-dark(white, rgb(43,42,51))` |
+| Windows, system theme | `GetSysColor(COLOR_WINDOW)` — `#f3f3f3` on Win11; dark is `#2b2a33` |
+| macOS, system theme | `white` / `#2d2d2d` |
+| Linux, system theme | Adwaita `#ebebed` / dark `#2e2e32`, else the field color |
+
+(`tokens-platform.css`, `widget/{gtk,cocoa,windows}/nsLookAndFeel.*`)
+
+The macOS and Linux values are the platform's own. Windows is the odd one out:
+only its light value comes from Windows. `nsLookAndFeelWin::GetColor` returns
+`GenericDarkColor(aID)` before the switch ever reaches the `MozSidebar →
+COLOR_WINDOW` case, so the dark value is `nsXPLookAndFeel::GenericDarkColor`
+= `rgb(43,42,51)` — Firefox's generic dark palette, the same `#2b2a33` as the
+built-in dark sidebar and not a Windows color at all.
+
+`--sidebar-background-color` is also an LWT property (`lwtProperty: "sidebar"` in
+`ThemeVariableMap.sys.mjs`), so with a third-party theme installed the real panel
+is the theme's own color, which the page cannot read.
+
+A web page can read none of that — `-moz-*` colors are chrome-only, and Stylo
+marks `@media (-moz-platform)` `CHROME_AND_UA_ONLY` — hence
+`browser.runtime.getPlatformInfo()` (`src/utils/platform.ts`) read by
+`useSidebarSurface` (`src/sidebar/useSidebarSurface.ts`) and published as
+`data-os` / `data-sidebar-surface` on `.sidebar__container`, which selects
+`--background-color-sidebar` (`src/sidebar/sidebar-styles.css`).
 
 ### Shared size/spacing tokens
 
@@ -103,10 +137,16 @@ For the date-grouped history view (`moz-card` accordions) Nova means:
   outline (`outline: 1px solid var(--color-accent-primary); outline-offset: -1px`)
   with a subtle tinted background.
 
+That card change is pref-gated: `browser/components/sidebar/sidebar.css` only
+sets `--card-background-color: transparent` inside
+`@media -moz-pref("browser.nova.enabled")` (`true` by default), which is why the
+card style is the `dateGroupCardStyle` option rather than a detection.
+
 Local mirror (the rows/cards below already implement this):
-- `src/sidebar/MainView/date-sorted-list/date-sorted-list.css` — Nova card look:
-  borderless `.card`, `.card__content` with no inline padding, `.feed-item` pills
-  at `var(--border-radius-circle)` with a `--space-xsmall` row gap.
+- `src/sidebar/MainView/date-sorted-list/date-sorted-list.css` — the Nova card
+  look behind `[data-card-style='flat']`: borderless `.card`, `.card__content`
+  with no inline padding, `.feed-item` pills at `var(--border-radius-circle)`
+  with a `--space-xsmall` row gap.
 - Pill radius + selection ring on the shared rows: `.feed-item` /
   `.folder__title-container` at a 99% radius
   (`src/sidebar/MainView/FeedList/item/feed-list-item.css`,

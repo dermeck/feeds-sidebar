@@ -1,0 +1,46 @@
+/* mirrors Firefox's in-content select styling (toolkit/themes/shared/global-shared.css),
+   which draws it as a button */
+.select {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.select__control {
+    appearance: none;
+    /* a min-width on the wrapper has to widen the control, not push the icon out of it */
+    flex: 1 1 auto;
+    min-height: var(--button-min-height);
+    padding: var(--button-padding);
+    /* room for the drop icon, which Firefox draws with a chrome:// background image */
+    padding-inline-end: calc(2 * var(--space-small) + var(--icon-size-xsmall));
+    border: none;
+    border-radius: var(--button-border-radius);
+    font-weight: var(--button-font-weight);
+    color: var(--button-text-color);
+    background-color: var(--button-background-color);
+
+    &:hover {
+        background-color: var(--button-background-color-hover);
+    }
+
+    &:hover:active {
+        background-color: var(--button-background-color-active);
+    }
+
+    &:focus-visible {
+        outline: var(--focus-outline-width) solid var(--focus-outline-color);
+        outline-offset: var(--focus-outline-offset);
+    }
+
+    &:disabled {
+        opacity: var(--button-opacity-disabled);
+    }
+}
+
+.select__icon {
+    position: absolute;
+    inset-inline-end: var(--space-small);
+    color: var(--icon-color);
+    pointer-events: none;
+}

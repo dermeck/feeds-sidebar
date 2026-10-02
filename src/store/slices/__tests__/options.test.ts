@@ -20,6 +20,10 @@ describe('options slice', () => {
         diagnosisInactiveDays: 60,
         showUnreadBadge: true,
         maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
+        sidebarSurface: 'auto',
+        sidebarCustomColorLight: '#ffffff',
+        sidebarCustomColorDark: '#2b2a33',
+        dateGroupCardStyle: 'flat',
     };
 
     describe('global extensionStateLoaded action', () => {
@@ -34,6 +38,8 @@ describe('options slice', () => {
                     diagnosisInactiveDays: 90,
                     showUnreadBadge: false,
                     maxItemsPerFeed: 100,
+                    sidebarSurface: 'system-theme',
+                    dateGroupCardStyle: 'raised',
                 },
             });
 
@@ -45,6 +51,10 @@ describe('options slice', () => {
                 diagnosisInactiveDays: 90,
                 showUnreadBadge: false,
                 maxItemsPerFeed: 100,
+                sidebarSurface: 'system-theme',
+                sidebarCustomColorLight: '#ffffff',
+                sidebarCustomColorDark: '#2b2a33',
+                dateGroupCardStyle: 'raised',
             });
         });
 
@@ -67,6 +77,10 @@ describe('options slice', () => {
                 diagnosisInactiveDays: 60,
                 showUnreadBadge: true,
                 maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
+                sidebarSurface: 'auto',
+                sidebarCustomColorLight: '#ffffff',
+                sidebarCustomColorDark: '#2b2a33',
+                dateGroupCardStyle: 'flat',
             });
         });
     });
@@ -176,6 +190,47 @@ describe('options slice', () => {
         });
     });
 
+    describe('sidebarSurfaceChanged', () => {
+        it('sets the value', () => {
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.sidebarSurfaceChanged('system-theme'));
+            expect(state.sidebarSurface).toBe('system-theme');
+        });
+    });
+
+    describe.each([
+        ['Light', 'sidebarCustomColorLight', 'sidebarCustomColorLightChanged'],
+        ['Dark', 'sidebarCustomColorDark', 'sidebarCustomColorDarkChanged'],
+    ] as const)('%s custom color', (_name, stateKey, actionName) => {
+        const action = (value: string) => optionsSlice.actions[actionName](value);
+
+        it('sets the value', () => {
+            const state = optionsSlice.reducer(prevState, action('#aabbcc'));
+            expect(state[stateKey]).toBe('#aabbcc');
+        });
+
+        it('normalizes case and surrounding whitespace', () => {
+            const state = optionsSlice.reducer(prevState, action('  #AABBCC '));
+            expect(state[stateKey]).toBe('#aabbcc');
+        });
+
+        it('keeps the previous value when the color is not a hex color', () => {
+            const state = optionsSlice.reducer(prevState, action('rebeccapurple'));
+            expect(state[stateKey]).toBe(prevState[stateKey]);
+        });
+
+        it('keeps the previous value for shorthand and non-hex notations', () => {
+            expect(optionsSlice.reducer(prevState, action('#abc'))[stateKey]).toBe(prevState[stateKey]);
+            expect(optionsSlice.reducer(prevState, action('rgb(1, 2, 3)'))[stateKey]).toBe(prevState[stateKey]);
+        });
+    });
+
+    describe('dateGroupCardStyleChanged', () => {
+        it('sets the value', () => {
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.dateGroupCardStyleChanged('raised'));
+            expect(state.dateGroupCardStyle).toBe('raised');
+        });
+    });
+
     describe('resetOptions', () => {
         it('restores default values', () => {
             const customState: RootState['options'] = {
@@ -187,6 +242,8 @@ describe('options slice', () => {
                 diagnosisInactiveDays: 365,
                 showUnreadBadge: false,
                 maxItemsPerFeed: 10,
+                sidebarSurface: 'builtin-theme',
+                dateGroupCardStyle: 'raised',
             };
 
             expect(optionsSlice.reducer(customState, optionsSlice.actions.resetOptions())).toStrictEqual(initialState);

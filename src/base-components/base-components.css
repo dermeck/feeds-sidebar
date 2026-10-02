@@ -6,6 +6,7 @@
 @import './Menu/menu.css';
 @import './MessageBar/message-bar.css';
 @import './Header/header.css';
+@import './Select/select.css';
 @import './SearchInput/search-input.css';
 @import './TextInput/text-input.css';
 @import './Toggle/toggle.css';

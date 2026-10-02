@@ -83,7 +83,29 @@
     text-align: end;
 }
 
+.color-field__input {
+    flex: 0 0 auto;
+    width: 96px;
+    height: 28px;
+    padding: 2px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--background-color-box);
+    cursor: pointer;
+}
+
+.color-field__input:disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
 .options__field > .toggle {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    min-width: 140px;
+}
+
+.options__field > .select {
     flex: 0 0 auto;
     min-width: 140px;
 }

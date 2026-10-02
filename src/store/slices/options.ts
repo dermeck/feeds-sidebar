@@ -5,6 +5,11 @@ import { RootState } from '../store';
 
 export type MainViewDisplayMode = 'folder-tree' | 'plain-list' | 'date-sorted-list';
 
+export type SidebarSurface = 'auto' | 'builtin-theme' | 'system-theme' | 'custom';
+
+// 'flat' is Firefox's current (Nova) history look, 'raised' the pre-Nova moz-card box
+export type DateGroupCardStyle = 'flat' | 'raised';
+
 export const FEED_UPDATE_MINUTES_MIN = 5;
 export const FEED_UPDATE_MINUTES_MAX = 1440;
 export const FETCH_THREADS_MIN = 1;
@@ -21,6 +26,10 @@ type OptionsSliceState = {
     diagnosisInactiveDays: number;
     showUnreadBadge: boolean;
     maxItemsPerFeed: number;
+    sidebarSurface: SidebarSurface;
+    sidebarCustomColorLight: string;
+    sidebarCustomColorDark: string;
+    dateGroupCardStyle: DateGroupCardStyle;
 };
 
 export const initialState: OptionsSliceState = {
@@ -31,11 +40,22 @@ export const initialState: OptionsSliceState = {
     diagnosisInactiveDays: 60,
     showUnreadBadge: true,
     maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
+    sidebarSurface: 'auto',
+    sidebarCustomColorLight: '#ffffff',
+    sidebarCustomColorDark: '#2b2a33',
+    dateGroupCardStyle: 'flat',
 };
 
 export const selectOptions = (state: RootState) => state.options;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+// input[type=color] only ever yields #rrggbb, but persisted options are not guaranteed to come from it
+const normalizeColor = (value: string) => {
+    const trimmed = value.trim().toLowerCase();
+
+    return /^#[\da-f]{6}$/.test(trimmed) ? trimmed : undefined;
+};
 
 const optionsSlice = createSlice({
     name: 'options',
@@ -61,6 +81,26 @@ const optionsSlice = createSlice({
         },
         changeMaxItemsPerFeed(state, action: PayloadAction<number>) {
             state.maxItemsPerFeed = Math.max(0, Math.round(action.payload));
+        },
+        sidebarSurfaceChanged(state, action: PayloadAction<SidebarSurface>) {
+            state.sidebarSurface = action.payload;
+        },
+        sidebarCustomColorLightChanged(state, action: PayloadAction<string>) {
+            const color = normalizeColor(action.payload);
+
+            if (color !== undefined) {
+                state.sidebarCustomColorLight = color;
+            }
+        },
+        sidebarCustomColorDarkChanged(state, action: PayloadAction<string>) {
+            const color = normalizeColor(action.payload);
+
+            if (color !== undefined) {
+                state.sidebarCustomColorDark = color;
+            }
+        },
+        dateGroupCardStyleChanged(state, action: PayloadAction<DateGroupCardStyle>) {
+            state.dateGroupCardStyle = action.payload;
         },
         resetOptions() {
             return { ...initialState };

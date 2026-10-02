@@ -16,6 +16,7 @@ import { MessageBar } from '../base-components/MessageBar/MessageBar';
 import { SearchInput } from '../base-components/SearchInput/SearchInput';
 import clsx from 'clsx';
 import { getCssCustomPropertyNumberValue } from '../utils/getCssCustomProperty';
+import useSidebarSurface from './useSidebarSurface';
 
 const getMoreMenuCoordinates = (target: HTMLButtonElement): { x: number; y: number } => {
     // target offset is the top left corner of the button
@@ -45,16 +46,20 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
     const moreMenuVisible = useAppSelector(
         (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
     );
-    const mainViewDisplayMode = useAppSelector(selectOptions).mainViewDisplayMode;
+    const { mainViewDisplayMode } = useAppSelector(selectOptions);
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));
     const isLoading = useAppSelector((state) => selectIsLoadingFeeds(state.session));
     const persistenceError = useAppSelector((state) => state.session.persistenceError);
 
     const [filterString, setFilterString] = useState<string>('');
+    const { os, surface, style } = useSidebarSurface();
 
     return (
         <div
             className="sidebar__container"
+            style={style}
+            data-os={os}
+            data-sidebar-surface={surface}
             onContextMenu={(e) => {
                 if (urlInputRef.current !== e.target) {
                     // allow paste into url input but prevent all other context menus
