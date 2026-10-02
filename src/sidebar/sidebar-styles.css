@@ -32,6 +32,14 @@
     --background-color-sidebar: light-dark(white, #2d2d2d);
 }
 
+/* Firefox derives the sidebar colors from the platform theme only on GTK, so only Linux
+   tints the accordion header with the accent. */
+@media not ((prefers-contrast) or (forced-colors)) {
+    .sidebar__container[data-os='linux'] {
+        --card-header-hover-background-color: color-mix(in srgb, var(--color-accent-primary) 17%, transparent);
+    }
+}
+
 .sidebar__main-header {
     display: grid;
     align-items: center;

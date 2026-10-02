@@ -18,6 +18,8 @@
     --selected-item-no-focus-background-color: var(--color-accent-primary);
     --selected-item-no-focus-text-color: var(--button-text-color-primary);
 
+    --card-header-hover-background-color: var(--button-background-color-hover);
+
     --menu-hover-background-color: var(--button-background-color-hover);
     --menu-hover-text-color: currentColor;
     --menu-border-color: var(--border-color-deemphasized);
