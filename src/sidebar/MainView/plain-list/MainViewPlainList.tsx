@@ -14,9 +14,16 @@ const getItemLabel = (feed: Feed, item: FeedItem) => `${feed.title ? `${feed.tit
 
 export const MainViewPlainList = ({ className, filterString }: Props) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
+    const readItemIds = useAppSelector((state) => state.feeds.readItemIds);
+
+    const makeReadKey = (feedId: string, itemId: string) => `${feedId}::${itemId}`;
+    const isRead = (feedId: string, itemId: string) =>
+        readItemIds.includes(makeReadKey(feedId, itemId)) ||
+        readItemIds.includes(itemId) ||
+        feeds.some((f) => f.id === feedId && f.items.some((i) => i.id === itemId && i.isRead));
 
     const hasMatchingItems = feeds.some((feed) =>
-        feed.items.some((item) => !item.isRead && item.title?.toLowerCase().includes(filterString.toLowerCase())),
+        feed.items.some((item) => !isRead(feed.id, item.id) && item.title?.toLowerCase().includes(filterString.toLowerCase())),
     );
 
     return (
@@ -26,7 +33,7 @@ export const MainViewPlainList = ({ className, filterString }: Props) => {
                     return (
                         <FeedItemList
                             key={feed.id}
-                            items={feed.items.map((item) => ({ ...item, parentId: feed.id, parentTitle: feed.title }))}
+                            items={feed.items.map((item) => ({ ...item, parentId: feed.id, parentTitle: feed.title, isRead: isRead(feed.id, item.id) }))}
                             filterString={filterString}
                             getItemLabel={(item) => getItemLabel(feed, item)}
                         />

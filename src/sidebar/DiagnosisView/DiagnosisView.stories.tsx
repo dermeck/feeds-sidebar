@@ -28,6 +28,8 @@ const staleFeed: Feed = {
     ],
 };
 
+const nodeMeta = { nodeType: 0 as any, nodeId: staleFeed.id };
+
 const meta = {
     title: 'sidebar/DiagnosisView',
     component: DiagnosisView,
@@ -48,7 +50,8 @@ export const Default: Story = {
             feeds: {
                 feeds: [...(stateFixture.feeds?.feeds ?? []), staleFeed],
                 folders: stateFixture.feeds?.folders ?? [],
-                selectedNode: stateFixture.feeds?.selectedNode,
+                selectedNode: nodeMeta,
+                readItemIds: stateFixture.feeds?.readItemIds ?? [],
             },
             session: {
                 ...sessionFixture,
@@ -57,6 +60,7 @@ export const Default: Story = {
         }),
     ],
 };
+
 
 export const NoFeeds: Story = {
     decorators: [withStore(emptyStateFixture)],

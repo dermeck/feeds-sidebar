@@ -54,7 +54,11 @@ const toDateGroups = (groups: Map<string, FeedListItemModel[]>) =>
         .sort(([a], [b]) => b.localeCompare(a))
         .map(([date, items]) => ({ date, items }));
 
-export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>) => {
+const makeReadKey = (feedId: string, itemId: string) => `${feedId}::${itemId}`;
+const isRead = (readItemIds: ReadonlyArray<string>, feedId: string, itemId: string) =>
+    readItemIds.includes(makeReadKey(feedId, itemId)) || readItemIds.includes(itemId);
+
+export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>, readItemIds: ReadonlyArray<string> = []) => {
     const today = new Date(Date.now());
     const yesterday = new Date(Date.now());
     yesterday.setDate(today.getDate() - 1);
@@ -70,24 +74,25 @@ export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>) => {
     const monthsGroups = new Map<string, FeedListItemModel[]>();
     for (const feed of feeds) {
         for (const feedItem of feed.items) {
-            if (!feedItem.isRead) {
+            const itemIsRead = isRead(readItemIds, feed.id, feedItem.id) || feedItem.isRead;
+            if (!itemIsRead) {
                 const itemDateValue = itemDate(feedItem);
 
                 if (itemDateValue === undefined) {
-                    result.unknown.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
+                    result.unknown.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title, isRead: itemIsRead });
                     continue;
                 }
                 if (compareDateDayMonthYear(today, itemDateValue) === 'equal') {
-                    result.today.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
+                    result.today.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title, isRead: itemIsRead });
                     continue;
                 }
 
                 if (compareDateDayMonthYear(yesterday, itemDateValue) === 'equal') {
-                    result.yesterday.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title });
+                    result.yesterday.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title, isRead: itemIsRead });
                     continue;
                 }
 
-                const item = { ...feedItem, parentId: feed.id, parentTitle: feed.title };
+                const item = { ...feedItem, parentId: feed.id, parentTitle: feed.title, isRead: itemIsRead };
                 if (
                     itemDateValue.getMonth() === today.getMonth() &&
                     itemDateValue.getFullYear() === today.getFullYear()
