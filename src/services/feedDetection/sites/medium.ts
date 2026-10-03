@@ -12,9 +12,11 @@ const detect = (url: URL): DetectedFeed[] => {
         return [];
     }
 
-    // https://{handle}.medium.com
-    if (url.hostname !== 'medium.com' && url.hostname !== 'www.medium.com' && segments.length === 0) {
-        return [feed(`Medium (${url.hostname.replace(/\.medium\.com$/, '')})`, `${url.origin}/feed`)];
+    // https://{handle}.medium.com[/post-slug]
+    if (url.hostname !== 'medium.com' && url.hostname !== 'www.medium.com') {
+        const handle = url.hostname.replace(/\.medium\.com$/, '');
+
+        return [feed(`Medium (${handle})`, `https://medium.com/feed/${handle}`)];
     }
 
     if (segments.length === 0) {

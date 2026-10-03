@@ -119,8 +119,9 @@ describe('medium', () => {
         ]);
     });
 
-    it('resolves a custom domain publication to its root feed', () => {
-        expect(hrefs('https://username.medium.com/')).toEqual(['https://username.medium.com/feed']);
+    it('resolves a custom domain publication to its feed on medium.com', () => {
+        expect(hrefs('https://username.medium.com/')).toEqual(['https://medium.com/feed/username']);
+        expect(hrefs('https://username.medium.com/some-post')).toEqual(['https://medium.com/feed/username']);
     });
 
     it('offers nothing for an already resolved feed url', () => {
