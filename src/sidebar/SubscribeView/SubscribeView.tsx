@@ -10,13 +10,7 @@ import { Button } from '../../base-components/Button/Button';
 import { MessageBar } from '../../base-components/MessageBar/MessageBar';
 import { Header } from '../../base-components/Header/Header';
 import { TextInput } from '../../base-components/TextInput/TextInput';
-
-const isValidURL = (str: string) => {
-    const res = str.match(
-        /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
-    );
-    return res !== null;
-};
+import { parseUrl } from '../../services/feedDetection/feedDetection';
 
 interface SubscribeViewProps {
     urlInputRef: RefObject<HTMLInputElement | null>;
@@ -43,15 +37,18 @@ export const SubscribeView = (props: SubscribeViewProps) => {
     };
 
     const addFeed = () => {
-        if (!isValidURL(newFeedUrl)) {
-            setNewFeedUrlMessage('The ented URL is invalid.');
+        const url = parseUrl(newFeedUrl);
+
+        if (url === undefined) {
+            setNewFeedUrlMessage('The entered URL is invalid.');
             return;
         }
 
-        const existingFeed = feeds.find((x) => x.id === newFeedUrl);
+        const feedUrl = newFeedUrl.trim();
+        const existingFeed = feeds.find((x) => x.id === feedUrl);
 
         if (existingFeed === undefined) {
-            addNewFeed(newFeedUrl);
+            addNewFeed(feedUrl);
         } else {
             setNewFeedUrlMessage(`You are already subscribed to that feed (${existingFeed.title})`);
         }
@@ -80,7 +77,10 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                         ref={props.urlInputRef}
                         placeholder="https://blog.mozilla.org/en/feed/"
                         value={newFeedUrl}
-                        onChange={(e) => setNewFeedUrl(e.target.value)}
+                        onChange={(e) => {
+                            setNewFeedUrl(e.target.value);
+                            setNewFeedUrlMessage('');
+                        }}
                         onFocus={() => setNewFeedUrlMessage('')}
                     />
                     <Button type="submit" className="subscribe-view__add-button">

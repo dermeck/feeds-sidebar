@@ -8,29 +8,57 @@
 
 ## Detection flow
 
-The detection logic aggregates results from two detectors:
+Detection aggregates results from two sources:
 
 - `detectFeedsInLinks()` — inspects `link[type]` elements on the page and matches known RSS/Atom MIME types.
-- `detectFeedsYoutube()` — special handling for YouTube pages; currently detects playlist feeds via the `list` query parameter and returns a YouTube playlist RSS feed URL.
-  
+- `detectFeedsForSite()` — runs the site detectors in `sites/` against the current page URL.
+
 ```mermaid
 flowchart LR
   BT[Browser Tabs] --> BG[Background]
   BG -->|send StartFeedDetection| CS[PageAction ContentScript]
   CS --> DF[detectFeeds]
   DF --> LNK[detectFeedsInLinks]
-  DF --> YT[detectFeedsYoutube]
-  LNK --> DET[Detected Feeds]
-  YT --> DET
+  DF --> DFS[detectFeedsForSite]
+  DFS --> SITE[Site Detectors]
+  LNK --> DEDUP[deduplicate by normalized url]
+  SITE --> DEDUP
+  DEDUP --> DET[Detected Feeds]
   DET -->|send FeedsDetected| BG
   BG -->|dispatch feedsDetected| STORE[Redux Store]
 ```
 
-Detected feeds are deduplicated by `href` before being returned to the page-action handler.
+## Site detectors
+
+Each detector in `sites/` is a pure function from a `URL` to feed candidates.
+
+```ts
+export type SiteDetector = {
+    hostnames: ReadonlyArray<string>;
+    detect: (url: URL) => DetectedFeed[];
+};
+```
+
+A detector runs when one of its hostnames matches the page hostname.
+
+Add a new site by adding a file to `sites/` and listing it in `sites/siteDetectors.ts`.
+
+| Site | Rule |
+|---|---|
+| GitHub | `/{owner}/{repo}` → `releases.atom`, `tags.atom`, `commits.atom`. `/{user}` → `/{user}.atom`. Section pages narrow to the matching feed. |
+| GitLab | Splits the project path at the `-` separator. `{project}.atom`, `{project}/-/issues.atom`, `{project}/-/tags?format=atom`. |
+| Hacker News | Frontpage only, at `/rss`. Per-user and per-item feeds would need the third party `hnrss.org`, which this extension deliberately does not depend on. |
+| Kickstarter | `/projects/{creator}/{slug}` → `/posts.atom` (project updates). |
+| Medium | `@{handle}`, `{handle}`, `{publication}`, `/tag/{tag}`, `/{pub}/tagged/{tag}` → the matching `/feed/…` path. `{handle}.medium.com` → `medium.com/feed/{handle}`; the subdomain serves no feed of its own. |
+| Reddit | Appends `.rss`, preserving the query. Covers subreddits, sorts, single posts, users, multireddits, search and domain listings. |
+| Stack Exchange | `/questions/tagged/{tag}` → `/feeds/tag/{tag}`, otherwise `/feeds`. |
+| Substack | `{origin}/feed` on any `*.substack.com` host. The path is discarded — `/`, `/about` and `/archive` all resolve to the same feed. |
+| YouTube | `list` query parameter → playlist feed. `/channel/{id}` → channel feed. |
 
 ## Which feeds are detected
 
-- **Link-based detection** looks for `link[type]` elements whose `type` matches one of the following MIME types:
+- **Link-based detection** looks for `link[type]` elements whose `type` matches one of the
+  following MIME types:
 
   - `application/rss+xml`
   - `application/atom+xml`
@@ -44,5 +72,3 @@ Detected feeds are deduplicated by `href` before being returned to the page-acti
   - `text/rss`
   - `text/atom`
   - `text/rdf`
-
-- **YouTube playlist feeds**: when the current URL contains a `list` parameter, a feed at `https://www.youtube.com/feeds/videos.xml?playlist_id={list}` is returned. Channel-id detection is present as commented code in the source and can be enabled/extended if needed.
