@@ -28,11 +28,12 @@ const monthLabel = (key: string) =>
 
 export const MainViewDateSortedList = ({ className, filterString }: MainViewPlainListProps) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
+    const readItemIds = useAppSelector((state) => state.feeds.readItemIds);
     const cardStyle = useAppSelector((state) => selectOptions(state).dateGroupCardStyle);
     const [expandedSections, setExpandedSections] = useState<string[]>(['today', 'yesterday']);
     const sortedFeeds: DateSortedFeedItems = useMemo(() => {
-        return getDateSortedFeedItems(feeds);
-    }, [feeds]);
+        return getDateSortedFeedItems(feeds, readItemIds);
+    }, [feeds, readItemIds]);
 
     const filteredFeeds = useMemo(() => {
         const matchesFilter = (items: FeedListItemModel[]) =>

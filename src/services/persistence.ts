@@ -5,6 +5,7 @@ const storageKeys = {
     feeds: 'feedsKey',
     options: 'optionsKey',
     timestamp: 'timestampKey',
+    readItemIds: 'readItemIdsKey',
 };
 
 export const saveState = (state: RootState): Promise<void> => {
@@ -12,6 +13,7 @@ export const saveState = (state: RootState): Promise<void> => {
         [storageKeys.feeds]: state.feeds,
         [storageKeys.options]: state.options,
         [storageKeys.timestamp]: Date.now(),
+        [storageKeys.readItemIds]: state.feeds.readItemIds,
     };
 
     return browser.storage.local.set(localStorageData);
@@ -21,9 +23,11 @@ export const loadState = async (): Promise<(RootState & { timestamp: number }) |
     const feeds = await browser.storage.local.get(storageKeys.feeds);
     const options = await browser.storage.local.get(storageKeys.options);
     const timestamp = await browser.storage.local.get(storageKeys.timestamp);
+    const readItemIds = await browser.storage.local.get(storageKeys.readItemIds);
 
     const loadedFeeds = feeds[storageKeys.feeds];
     const loadedOptions = options[storageKeys.options];
+    const loadedReadItemIds = readItemIds[storageKeys.readItemIds];
 
     if (
         typeof loadedFeeds !== 'object' ||
@@ -39,9 +43,12 @@ export const loadState = async (): Promise<(RootState & { timestamp: number }) |
     }
 
     return {
-        feeds: loadedFeeds as RootState['feeds'],
+        feeds: {
+            ...loadedFeeds,
+            readItemIds: Array.isArray(loadedReadItemIds) ? loadedReadItemIds : [],
+        } as RootState['feeds'],
         options: loadedOptions as RootState['options'],
         session: initialSessionSliceState,
-        timestamp: Number(timestamp.timestampKey),
+        timestamp: Number(timestamp.timestampKey) || Date.now(),
     };
 };

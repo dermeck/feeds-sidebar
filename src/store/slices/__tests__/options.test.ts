@@ -29,7 +29,7 @@ describe('options slice', () => {
     describe('global extensionStateLoaded action', () => {
         it('replaces previous state with payload', () => {
             const action = extensionStateLoaded({
-                feeds: { folders: [], feeds: [], selectedNode: undefined },
+                feeds: { folders: [], feeds: [], selectedNode: undefined, readItemIds: [] },
                 options: {
                     feedUpdatePeriodInMinutes: 45,
                     fetchThreadsCount: 8,
@@ -60,7 +60,7 @@ describe('options slice', () => {
 
         it('merges missing keys of older saved state with defaults', () => {
             const action = extensionStateLoaded({
-                feeds: { folders: [], feeds: [], selectedNode: undefined },
+                feeds: { folders: [], feeds: [], selectedNode: undefined, readItemIds: [] },
                 options: {
                     feedUpdatePeriodInMinutes: 45,
                     fetchThreadsCount: 8,

@@ -23,6 +23,8 @@ type FeedSliceState = {
     folders: ReadonlyArray<Folder>;
     feeds: ReadonlyArray<Feed>;
     selectedNode: NodeMeta | undefined;
+    // Track read item IDs separately to preserve read state even if items are trimmed
+    readItemIds: ReadonlyArray<string>;
 };
 
 export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
@@ -113,14 +115,32 @@ const initialState: FeedSliceState = {
               ],
     feeds: process.env.NODE_ENV === 'development' ? sampleDataFeeds : [],
     selectedNode: undefined,
+    readItemIds: [],
 };
 
 export const selectFeeds = (state: FeedSliceState) => state.feeds;
 export const selectFolders = (state: FeedSliceState) => state.folders;
 
+const makeReadKey = (feedId: string, itemId: string) => `${feedId}::${itemId}`;
+
+const isItemRead = (state: FeedSliceState, feedId: string, itemId: string, specificFeed?: Feed) => {
+    const key = makeReadKey(feedId, itemId);
+    if (state.readItemIds.includes(key)) {
+        return true;
+    }
+    const feed = specificFeed ?? state.feeds.find((f) => f.id === feedId);
+    if (feed) {
+        const item = feed.items.find((i) => i.id === itemId);
+        if (item && item.isRead) {
+            return true;
+        }
+    }
+    return false;
+};
+
 export const selectTotalUnreadItems = (state: FeedSliceState) =>
     state.feeds
-        .map((feed) => feed.items.filter((i) => !i.isRead).length)
+        .map((feed) => feed.items.filter((i) => !isItemRead(state, feed.id, i.id, feed)).length)
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
 
 /* factory function for creating memoized selector for each component instance (use nodeId from props) */
@@ -398,9 +418,12 @@ const feedsSlice = createSlice({
             state.selectedNode = action.payload;
         },
         markItemAsRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
+            const { feedId, itemId } = action.payload;
+            const key = makeReadKey(feedId, itemId);
             return {
                 ...state,
-                feeds: [...markItemAsRead(state.feeds, action.payload.feedId, action.payload.itemId)],
+                readItemIds: state.readItemIds.includes(key) ? state.readItemIds : [...state.readItemIds, key],
+                feeds: [...markItemAsRead(state.feeds, feedId, itemId)],
             };
         },
         markSelectedNodeAsRead(state) {
@@ -413,30 +436,48 @@ const feedsSlice = createSlice({
                     // always handled via markItemAsRead action
                     return state;
 
-                case NodeType.Feed:
+                case NodeType.Feed: {
+                    const feed = feedById(state.feeds, state.selectedNode.nodeId);
+                    const newReadIds = new Set(state.readItemIds);
+                    feed.items.forEach((item) => newReadIds.add(makeReadKey(feed.id, item.id)));
                     return {
                         ...state,
+                        readItemIds: Array.from(newReadIds),
                         feeds: [...markFeedsAsRead(state.feeds, [state.selectedNode.nodeId])],
                     };
+                }
 
-                case NodeType.Folder:
+                case NodeType.Folder: {
+                    const feedIds = feedIdsByFolderId(state.folders, state.selectedNode.nodeId);
+                    const newReadIds = new Set(state.readItemIds);
+                    feedIds.forEach((feedId) => {
+                        const feed = feedById(state.feeds, feedId);
+                        feed.items.forEach((item) => newReadIds.add(makeReadKey(feedId, item.id)));
+                    });
                     return {
                         ...state,
+                        readItemIds: Array.from(newReadIds),
                         feeds: [
                             ...markFeedsAsRead(
                                 state.feeds,
-                                feedIdsByFolderId(state.folders, state.selectedNode.nodeId),
+                                feedIds,
                             ),
                         ],
                     };
+                }
 
                 default:
                     throw new UnreachableCaseError(state.selectedNode.nodeType);
             }
         },
         markAllAsRead(state) {
+            const newReadIds = new Set(state.readItemIds);
+            state.feeds.forEach((feed) => {
+                feed.items.forEach((item) => newReadIds.add(makeReadKey(feed.id, item.id)));
+            });
             return {
                 ...state,
+                readItemIds: Array.from(newReadIds),
                 feeds: state.feeds.map((feed) => markAllItemsOfFeedRead(feed)),
             };
         },
@@ -549,6 +590,7 @@ const feedsSlice = createSlice({
         builder.addCase(extensionStateLoaded, (_, action) => {
             return {
                 ...action.payload.feeds,
+                readItemIds: action.payload.feeds.readItemIds ?? [],
             };
         });
     },
