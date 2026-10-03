@@ -37,9 +37,10 @@ export function detectFeedsForSite(url: URL): DetectedFeed[] {
 }
 
 export function parseUrl(input: string): URL | undefined {
-    const hasScheme = /^[a-z][a-z0-9+.-]*:\/\//i.test(input);
+    const trimmed = input.trim();
+    const hasProtocol = /^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed);
     try {
-        return new URL(hasScheme ? input : `https://${input.trim()}`);
+        return new URL(hasProtocol ? trimmed : `https://${trimmed}`);
     } catch {
         return undefined;
     }

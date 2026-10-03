@@ -5,15 +5,17 @@ describe('parseUrl', () => {
         expect(parseUrl('https://github.com/foo/bar')?.href).toBe('https://github.com/foo/bar');
     });
 
-    it('defaults to https when the scheme is missing', () => {
+    it('defaults to https when the protocol is missing', () => {
         expect(parseUrl('github.com/foo/bar')?.href).toBe('https://github.com/foo/bar');
     });
 
     it('trims surrounding whitespace', () => {
         expect(parseUrl('  github.com/foo/bar  ')?.href).toBe('https://github.com/foo/bar');
+        expect(parseUrl('  https://github.com/foo/bar  ')?.href).toBe('https://github.com/foo/bar');
+        expect(parseUrl('\nhttps://github.com/foo/bar\n')?.href).toBe('https://github.com/foo/bar');
     });
 
-    it('keeps an explicit http scheme', () => {
+    it('keeps an explicit http protocol', () => {
         expect(parseUrl('http://github.com/foo/bar')?.href).toBe('http://github.com/foo/bar');
     });
 
@@ -27,11 +29,11 @@ describe('parseUrl', () => {
 });
 
 describe('detectFeedsForSite', () => {
-    it('resolves a scheme-less input the same as a full url', () => {
-        const withoutScheme = detectFeedsForSite(parseUrl('github.com/foo/bar')!);
-        const withScheme = detectFeedsForSite(parseUrl('https://github.com/foo/bar')!);
+    it('resolves a protocol-less input the same as a full url', () => {
+        const withoutProtocol = detectFeedsForSite(parseUrl('github.com/foo/bar')!);
+        const withProtocol = detectFeedsForSite(parseUrl('https://github.com/foo/bar')!);
 
-        expect(withoutScheme.map((x) => x.href)).toEqual(withScheme.map((x) => x.href));
+        expect(withoutProtocol.map((x) => x.href)).toEqual(withProtocol.map((x) => x.href));
     });
 
     it('returns nothing for an unknown host', () => {

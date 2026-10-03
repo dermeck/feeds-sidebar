@@ -63,10 +63,11 @@ export const SubscribeView = (props: SubscribeViewProps) => {
             return;
         }
 
-        const existingFeed = feeds.find((x) => x.id === newFeedUrl);
+        const feedUrl = newFeedUrl.trim();
+        const existingFeed = feeds.find((x) => x.id === feedUrl);
 
         if (existingFeed === undefined) {
-            addNewFeed(newFeedUrl);
+            addNewFeed(feedUrl);
         } else {
             setNewFeedUrlMessage(`You are already subscribed to that feed (${existingFeed.title})`);
         }
