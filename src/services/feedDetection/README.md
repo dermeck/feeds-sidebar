@@ -21,15 +21,12 @@ flowchart LR
   DF --> LNK[detectFeedsInLinks]
   DF --> DFS[detectFeedsForSite]
   DFS --> SITE[Site Detectors]
-  LNK --> DET[Detected Feeds]
-  SITE --> DET
+  LNK --> DEDUP[deduplicate by normalized url]
+  SITE --> DEDUP
+  DEDUP --> DET[Detected Feeds]
   DET -->|send FeedsDetected| BG
   BG -->|dispatch feedsDetected| STORE[Redux Store]
 ```
-
-Detected feeds are deduplicated before being returned to the page-action handler. Deduplication
-runs on a normalized key — lowercase hostname without `www.`, trailing slash removed, **query
-string kept** — because distinct feeds often differ only by query.
 
 ## Site detectors
 
@@ -42,9 +39,7 @@ export type SiteDetector = {
 };
 ```
 
-A detector runs when one of its hostnames matches the page hostname, ignoring a leading `www.`
-Hosts are matched as a suffix, so `old.reddit.com` and `gist.github.com` reach the `reddit.com`
-and `github.com` detectors without being listed individually.
+A detector runs when one of its hostnames matches the page hostname.
 
 Add a new site by adding a file to `sites/` and listing it in `sites/siteDetectors.ts`.
 
@@ -59,16 +54,6 @@ Add a new site by adding a file to `sites/` and listing it in `sites/siteDetecto
 | Stack Exchange | `/questions/tagged/{tag}` → `/feeds/tag/{tag}`, otherwise `/feeds`. |
 | Substack | `{origin}/feed` on any `*.substack.com` host. The path is discarded — `/`, `/about` and `/archive` all resolve to the same feed. |
 | YouTube | `list` query parameter → playlist feed. `/channel/{id}` → channel feed. |
-
-Notes on deliberate omissions:
-
-- **GitHub private feeds** (`{user}.private.atom?token=…`) are never synthesized — there is nowhere
-  to store the token. A user who pastes one still gets a working feed.
-- **Substack custom domains** are not matched. `/feed` is Substack's convention but not a Substack
-  marker, so a custom-domain Substack is indistinguishable from any WordPress blog. Those already
-  publish `<link rel="alternate" href="/feed">`, which `detectFeedsInLinks()` picks up.
-- **Kickstarter** publishes only project updates. There is no creator, category or discovery feed,
-  and its pages sit behind bot protection that returns 403, so `link[type]` finds nothing there.
 
 ## Which feeds are detected
 
@@ -87,10 +72,3 @@ Notes on deliberate omissions:
   - `text/rss`
   - `text/atom`
   - `text/rdf`
-
-## Rate limiting
-
-Reddit and Stack Exchange rate-limit anonymous requests hard — repeated bursts return HTTP 429,
-and Stack Exchange throttles after a handful of requests. A wrong guess returns 404 with an XML
-body, which is distinguishable from 429, so candidates can be validated by status code without a
-second request.
