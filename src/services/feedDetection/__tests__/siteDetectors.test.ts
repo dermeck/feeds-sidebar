@@ -44,6 +44,11 @@ describe('github', () => {
         expect(hrefs('https://github.com/organizations')).toEqual([]);
     });
 
+    it('offers only the owner feed for a gist, which has no per-gist feed', () => {
+        expect(hrefs('https://gist.github.com/someone')).toEqual(['https://gist.github.com/someone.atom']);
+        expect(hrefs('https://gist.github.com/someone/abc123')).toEqual([]);
+    });
+
     it('offers nothing for an already resolved feed url', () => {
         expect(hrefs('https://github.com/foo/bar/commits.atom')).toEqual([]);
     });

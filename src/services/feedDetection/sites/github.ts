@@ -58,6 +58,10 @@ const detect = (url: URL): DetectedFeed[] => {
         return [feed(`GitHub Activity (${owner})`, `${url.origin}/${owner}.atom`)];
     }
 
+    if (url.hostname === 'gist.github.com') {
+        return [];
+    }
+
     const repoUrl = `${url.origin}/${owner}/${repo}`;
     const repoName = `${owner}/${repo}`;
 
