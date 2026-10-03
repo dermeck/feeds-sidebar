@@ -142,6 +142,10 @@ const main = async () => {
 
     const upstream = git('rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}');
     const ahead = upstream.code === 0 ? git('rev-list', '--count', `${upstream.out}..HEAD`).out : null;
+    // @{u} is <remote>/<branch>, git push wants the two separately
+    const separator = upstream.out.indexOf('/');
+    const upstreamRemote = separator === -1 ? 'origin' : upstream.out.slice(0, separator);
+    const upstreamBranch = separator === -1 ? upstream.out : upstream.out.slice(separator + 1);
 
     const prompt = await createPrompter();
     const confirm = async (question, fallback) => {
@@ -225,7 +229,9 @@ const main = async () => {
     if (!apiKey || !apiSecret) fail('the AMO API key and the API secret are both needed to sign');
 
     const push =
-        !flag('no-push') && upstream.code === 0 && (await confirm(`Push ${upstream.out} and the tag to origin?`, true));
+        !flag('no-push') &&
+        upstream.code === 0 &&
+        (await confirm(`Push ${upstreamBranch} to ${upstreamRemote} and the tag?`, true));
     const ghRelease = hasGh && (await confirm('Create a GitHub Release with the artifacts?', true));
 
     heading('Confirm');
@@ -267,9 +273,9 @@ const main = async () => {
     console.log(`\ncommitted ${commit}, tagged v${version}`);
 
     if (push) {
-        if (run('git', ['push', upstream.out]).code !== 0)
+        if (run('git', ['push', upstreamRemote, upstreamBranch]).code !== 0)
             fail(`could not push ${upstream.out}, the tag is local only`);
-        if (run('git', ['push', 'origin', `v${version}`]).code !== 0) fail(`could not push the tag v${version}`);
+        if (run('git', ['push', upstreamRemote, `v${version}`]).code !== 0) fail(`could not push the tag v${version}`);
         console.log(`pushed ${upstream.out} and v${version}`);
     }
 
