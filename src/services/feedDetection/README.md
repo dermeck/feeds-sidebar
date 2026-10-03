@@ -33,9 +33,7 @@ string kept** — because distinct feeds often differ only by query.
 
 ## Site detectors
 
-Each detector in `sites/` is a pure function from a `URL` to feed candidates. No network access
-and no DOM access, which is what makes them unit-testable and lets the Subscribe view reuse them
-for pasted URLs:
+Each detector in `sites/` is a pure function from a `URL` to feed candidates.
 
 ```ts
 export type SiteDetector = {
@@ -89,18 +87,6 @@ Notes on deliberate omissions:
   - `text/rss`
   - `text/atom`
   - `text/rdf`
-
-## Pasted URLs
-
-`parseUrl()` and `detectFeedsForSite()` are also called from the Subscribe view as the user types.
-Submitting the form:
-
-- **one candidate** → subscribes to it, since four of the sites above have a single rule and the
-  intent is unambiguous
-- **several candidates** → lists them and subscribes to nothing, because picking is the user's call
-- **no candidates** → subscribes to the typed URL as before
-
-Candidates also render live while typing, so any suggestion can be added explicitly.
 
 ## Rate limiting
 

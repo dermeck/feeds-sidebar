@@ -6,22 +6,16 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import feedsSlice, { fetchFeedsCommand } from '../../store/slices/feeds';
 import { NewFeedsList } from './NewFeedsList/NewFeedsList';
 import { DetectedFeeds } from './DetectedFeeds/DetectedFeeds';
-import { UrlSuggestions } from './UrlSuggestions/UrlSuggestions';
 import { Button } from '../../base-components/Button/Button';
 import { MessageBar } from '../../base-components/MessageBar/MessageBar';
 import { Header } from '../../base-components/Header/Header';
 import { TextInput } from '../../base-components/TextInput/TextInput';
-import { detectFeedsForSite, parseUrl } from '../../services/feedDetection/feedDetection';
+import { parseUrl } from '../../services/feedDetection/feedDetection';
 
 interface SubscribeViewProps {
     urlInputRef: RefObject<HTMLInputElement | null>;
     onClose: () => void;
 }
-
-const suggestionsForInput = (input: string) => {
-    const url = parseUrl(input);
-    return url === undefined ? [] : detectFeedsForSite(url);
-};
 
 export const SubscribeView = (props: SubscribeViewProps) => {
     const dispatch = useAppDispatch();
@@ -31,8 +25,6 @@ export const SubscribeView = (props: SubscribeViewProps) => {
     const [newFeedUrl, setNewFeedUrl] = useState('');
     const [newFeedUrlMessage, setNewFeedUrlMessage] = useState('');
     const [addedFeedUrls, setAddedFeedUrls] = useState<string[]>([]);
-
-    const suggestions = suggestionsForInput(newFeedUrl);
 
     const addNewFeed = (url: string) => {
         setAddedFeedUrls((oldItems) => (oldItems.includes(url) ? oldItems : [...oldItems, url]));
@@ -49,17 +41,6 @@ export const SubscribeView = (props: SubscribeViewProps) => {
 
         if (url === undefined) {
             setNewFeedUrlMessage('The entered URL is invalid.');
-            return;
-        }
-
-        if (suggestions.length === 1) {
-            addNewFeed(suggestions[0].href);
-            setNewFeedUrl('');
-            return;
-        }
-
-        if (suggestions.length > 1) {
-            setNewFeedUrlMessage('That page offers several feeds, pick one below.');
             return;
         }
 
@@ -107,7 +88,6 @@ export const SubscribeView = (props: SubscribeViewProps) => {
                     </Button>
                 </form>
                 {newFeedUrlMessage !== '' && <MessageBar variant="error">{newFeedUrlMessage}</MessageBar>}
-                <UrlSuggestions suggestions={suggestions} addNewFeed={addNewFeed} removeFeed={removeFeed} />
                 {feedDetectionEnabled && <DetectedFeeds addNewFeed={addNewFeed} removeFeed={removeFeed} />}
                 <NewFeedsList newFeedUrls={addedFeedUrls} />
             </div>
