@@ -224,8 +224,10 @@ const main = async () => {
           );
     const channel = CHANNELS[channelIndex];
 
-    const apiKey = option('api-key') ?? (await prompt.askSecret('AMO API key (JWT issuer): '));
-    const apiSecret = option('api-secret') ?? (await prompt.askSecret('AMO API secret (JWT secret): '));
+    const apiKey = option('api-key') ?? (await prompt.askSecret('AMO API key (JWT issuer, e.g. user:12345678:123): '));
+    const apiSecret =
+        option('api-secret') ??
+        (await prompt.askSecret('AMO API secret (JWT secret, the long string on the API keys page): '));
     if (!apiKey || !apiSecret) fail('the AMO API key and the API secret are both needed to sign');
 
     const push =
