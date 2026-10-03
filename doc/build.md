@@ -2,9 +2,9 @@
 
 ## `yarn release`
 
-An interactive script that does the whole release: it asks for the version number, runs the tests and the
-production build, sets the version in `src/manifest.json` and `package.json`, commits, tags, pushes, creates
-`dist/*.zip` and signs the add-on.
+An interactive script that does the whole release: it asks for the version number, runs the tests, asks for the
+release channel and the AMO credentials, and after a final confirmation sets the version in `src/manifest.json`
+and `package.json`, runs the production build, commits, tags, pushes, creates `dist/*.zip` and signs the add-on.
 
 It asks for
 
@@ -12,7 +12,7 @@ It asks for
   printed above the prompt. addons.mozilla.org accepts one to four numbers without leading zeros.
 - the channel, `unlisted` (a signed `.xpi` for self-installation) or `listed` (a submission to
   addons.mozilla.org for review).
-- the AMO API key and secret, unless they are already in `.env`. Both are needed to sign.
+- the AMO API key and secret.
 
 The tag is derived from the version (`0.61.0` becomes `v0.61.0`), the commit message is `Version 0.61.0` and only
 the two version files end up in that commit. The release is cut from the checked out branch, `master` is only

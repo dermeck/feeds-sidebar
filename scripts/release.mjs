@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 
 const PACKAGE_JSON = 'package.json';
 const MANIFEST_JSON = 'src/manifest.json';
 const VERSION_FILES = [PACKAGE_JSON, MANIFEST_JSON];
-const ENV_FILE = '.env';
 
 const argv = process.argv.slice(2);
 const flag = (name) => argv.includes(`--${name}`);
@@ -21,9 +20,13 @@ const option = (name) => {
 const bare = () => argv.find((arg) => !arg.startsWith('-'));
 
 const fail = (message) => {
+    restoreVersions();
     console.error(`\nerror: ${message}`);
     process.exit(1);
 };
+
+process.on('SIGINT', () => fail('interrupted'));
+process.on('SIGTERM', () => fail('interrupted'));
 
 const run = (command, args, { capture = false } = {}) => {
     const result = spawnSync(command, args, {
@@ -31,7 +34,8 @@ const run = (command, args, { capture = false } = {}) => {
         encoding: 'utf8',
     });
     if (result.error?.code === 'ENOENT') return { code: 127, out: '' };
-    return { code: result.status ?? 1, out: (capture ? result.stdout : '') || '' };
+    const out = capture && result.stdout ? result.stdout.replace(/\r?\n$/, '') : '';
+    return { code: result.status ?? 1, out };
 };
 
 const git = (...args) => run('git', args, { capture: true });
@@ -57,7 +61,8 @@ const createPrompter = async () => {
     const lines = piped.split('\n');
     const next = async (question) => {
         process.stdout.write(question);
-        return (lines.shift() ?? '').trim();
+        if (lines.length === 0) return null;
+        return lines.shift().trim();
     };
     return { ask: next, askSecret: next, close: () => {} };
 };
@@ -84,7 +89,13 @@ const bump = (version, level) => {
     return `${major}.${minor}.${patch + 1}`;
 };
 
+// rewritten before the build so the copied manifest carries the new version, and kept until
+// the commit so a failure in between puts the tree back
+let versionBackup = null;
+
 const setVersion = (version) => {
+    if (versionBackup) return;
+    versionBackup = VERSION_FILES.map((file) => [file, readFileSync(file, 'utf8')]);
     VERSION_FILES.forEach((file) => {
         const before = readFileSync(file, 'utf8');
         // a targeted replace keeps the formatting, writing back the parsed json would reflow the whole file
@@ -94,27 +105,14 @@ const setVersion = (version) => {
     });
 };
 
-const readEnv = () =>
-    Object.fromEntries(
-        (existsSync(ENV_FILE) ? readFileSync(ENV_FILE, 'utf8') : '')
-            .split('\n')
-            .map((line) => line.trim())
-            .filter((line) => line && !line.startsWith('#') && line.includes('='))
-            .map((line) => {
-                const separator = line.indexOf('=');
-                return [line.slice(0, separator), line.slice(separator + 1)];
-            }),
-    );
+const restoreVersions = () => {
+    if (!versionBackup) return;
+    versionBackup.forEach(([file, contents]) => writeFileSync(file, contents));
+    versionBackup = null;
+};
 
-const writeEnv = (values) => {
-    const lines = (existsSync(ENV_FILE) ? readFileSync(ENV_FILE, 'utf8') : '').split('\n').filter(Boolean);
-    Object.entries(values).forEach(([key, value]) => {
-        const index = lines.findIndex((line) => line.startsWith(`${key}=`));
-        const line = `${key}=${value}`;
-        if (index === -1) lines.push(line);
-        else lines[index] = line;
-    });
-    writeFileSync(ENV_FILE, lines.join('\n') + '\n');
+const keepVersion = () => {
+    versionBackup = null;
 };
 
 const heading = (text) => console.log(`\n${text}\n${'-'.repeat(text.length)}`);
@@ -148,14 +146,23 @@ const main = async () => {
     const prompt = await createPrompter();
     const confirm = async (question, fallback) => {
         if (flag('yes')) return fallback;
-        const answer = await prompt.ask(`${question} (${fallback ? 'Y/n' : 'y/N'}) `);
-        return answer ? /^y(es)?$/i.test(answer) : fallback;
+        for (;;) {
+            const line = await prompt.ask(`${question} (${fallback ? 'Y/n' : 'y/N'}) `);
+            if (line === null || line === '') return fallback;
+            const answer = line.toLowerCase();
+            if (answer === 'y' || answer === 'yes') return true;
+            if (answer === 'n' || answer === 'no') return false;
+            console.log('  pick y or n');
+        }
     };
     const choose = async (question, options) => {
+        if (options.length === 0) fail(`no options for ${question}`);
         options.forEach((label, index) => console.log(`  ${index + 1}) ${label}`));
         for (;;) {
-            const index = Number(await prompt.ask(`${question} [1-${options.length}] `)) - 1;
-            if (Number.isInteger(index) && index >= 0 && index < options.length) return index;
+            const line = await prompt.ask(`${question} [1-${options.length}] `);
+            if (line === null) fail(`no answer for ${question}`);
+            const index = Number(line) - 1;
+            if (line !== '' && Number.isInteger(index) && index >= 0 && index < options.length) return index;
             console.log('  pick one of the listed options');
         }
     };
@@ -201,12 +208,6 @@ const main = async () => {
     const runBuild = flag('skip-build') ? false : await confirm('Run the production build (lint + webpack)?', true);
 
     if (runTests && run(packageManager, ['run', 'test']).code !== 0) fail('tests failed, nothing was changed');
-    if (runBuild) {
-        if (run(packageManager, ['run', 'build']).code !== 0) fail('build failed, nothing was changed');
-        const built = versionOf('build/manifest.json');
-        if (built !== version) fail(`build/manifest.json is at ${built}, expected ${version}`);
-        console.log(`build/manifest.json is at ${built}`);
-    }
 
     heading('Distribution');
     const requested = option('channel');
@@ -219,17 +220,9 @@ const main = async () => {
           );
     const channel = CHANNELS[channelIndex];
 
-    const saved = readEnv();
-    const fromEnv = saved.FF_API_KEY && saved.FF_API_SECRET;
-    const fromFlags = option('api-key') || option('api-secret');
-    const apiKey = option('api-key') ?? saved.FF_API_KEY ?? (await prompt.askSecret('AMO API key (JWT issuer): '));
-    const apiSecret =
-        option('api-secret') ?? saved.FF_API_SECRET ?? (await prompt.askSecret('AMO API secret (JWT secret): '));
+    const apiKey = option('api-key') ?? (await prompt.askSecret('AMO API key (JWT issuer): '));
+    const apiSecret = option('api-secret') ?? (await prompt.askSecret('AMO API secret (JWT secret): '));
     if (!apiKey || !apiSecret) fail('the AMO API key and the API secret are both needed to sign');
-    if (!fromEnv && !fromFlags && (await confirm(`Save the credentials in ${ENV_FILE}?`, true))) {
-        writeEnv({ FF_API_KEY: apiKey, FF_API_SECRET: apiSecret });
-        console.log(`written to ${ENV_FILE}, which is gitignored`);
-    }
 
     const push =
         !flag('no-push') && upstream.code === 0 && (await confirm(`Push ${upstream.out} and the tag to origin?`, true));
@@ -248,16 +241,27 @@ const main = async () => {
         .forEach((action) => console.log(`  - ${action}`));
     if (!(await confirm('Proceed?', true))) {
         console.log('aborted, nothing was changed');
+        prompt.close();
         return;
     }
     if (flag('dry-run')) {
         console.log(`\ndry run, nothing was written`);
+        prompt.close();
         return;
     }
+    prompt.close();
 
     setVersion(version);
+    if (runBuild) {
+        if (run(packageManager, ['run', 'build']).code !== 0) fail('build failed, nothing was changed');
+        const built = versionOf('build/manifest.json');
+        if (built !== version) fail(`build/manifest.json is at ${built}, expected ${version}`);
+        console.log(`build/manifest.json is at ${built}`);
+    }
+
     gitOrFail('add', ...VERSION_FILES);
     gitOrFail('commit', '-m', `Version ${version}`);
+    keepVersion();
     gitOrFail('tag', `v${version}`);
     const commit = gitOrFail('rev-parse', '--short', 'HEAD');
     console.log(`\ncommitted ${commit}, tagged v${version}`);
@@ -271,23 +275,24 @@ const main = async () => {
 
     if (runBuild) {
         if (run(webExt, ['build', '--source-dir=build', '--artifacts-dir=dist']).code !== 0) fail('no zip was created');
-        const sign = [
-            'sign',
-            `--channel=${channel.name}`,
-            '--source-dir=build',
-            '--artifacts-dir=dist',
-            `--api-key=${apiKey}`,
-            `--api-secret=${apiSecret}`,
-        ];
+        const sign = ['sign', `--channel=${channel.name}`, '--source-dir=build', '--artifacts-dir=dist'];
         // a listed version is reviewed asynchronously, waiting for the approval would block the release
         if (channel.name === 'listed') sign.push('--approval-timeout=0');
+        // the credentials go through the environment, web-ext reads WEB_EXT_API_KEY and WEB_EXT_API_SECRET
+        process.env.WEB_EXT_API_KEY = apiKey;
+        process.env.WEB_EXT_API_SECRET = apiSecret;
         if (run(webExt, sign).code !== 0) fail('signing failed, the commit and the tag are fine');
     } else {
         console.log('no build was made, run yarn build:zip before signing');
     }
 
     if (ghRelease) {
-        const files = ['dist/*.zip', 'dist/*.xpi'];
+        const files = existsSync('dist')
+            ? readdirSync('dist')
+                  .filter((name) => name.endsWith('.zip') || name.endsWith('.xpi'))
+                  .map((name) => `dist/${name}`)
+            : [];
+        if (files.length === 0) fail('no .zip or .xpi in dist/ to attach to the GitHub Release');
         if (
             run('gh', ['release', 'create', `v${version}`, ...files, '--title', `v${version}`, '--generate-notes'])
                 .code !== 0
@@ -304,6 +309,4 @@ const main = async () => {
     if (!hasGh) console.log(`release   https://github.com/dermeck/feeds-sidebar/releases/new?tag=v${version}`);
 };
 
-main()
-    .catch((error) => fail(error.message))
-    .finally(() => process.exit(process.exitCode ?? 0));
+main().catch((error) => fail(error.message));
