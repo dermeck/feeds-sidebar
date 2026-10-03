@@ -27,6 +27,12 @@ describe('github', () => {
         expect(hrefs('https://github.com/foo/bar/commits/main')).toEqual(['https://github.com/foo/bar/commits/main.atom']);
     });
 
+    it('keeps a slashed branch name intact', () => {
+        expect(hrefs('https://github.com/foo/bar/commits/feature/x')).toEqual([
+            'https://github.com/foo/bar/commits/feature/x.atom',
+        ]);
+    });
+
     it('falls back to the three repo feeds on issues and tree pages', () => {
         expect(hrefs('https://github.com/foo/bar/issues')).toHaveLength(3);
         expect(hrefs('https://github.com/foo/bar/tree/main')).toHaveLength(3);

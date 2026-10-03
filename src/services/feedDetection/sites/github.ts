@@ -44,7 +44,7 @@ const feed = (title: string, href: string): DetectedFeed => ({ title, href, type
 
 const detect = (url: URL): DetectedFeed[] => {
     const segments = pathSegments(url);
-    const [owner, repo, section, branch] = segments;
+    const [owner, repo, section] = segments;
 
     if (segments.some((segment) => /\.(rss|atom|xml)$/.test(segment))) {
         return [];
@@ -61,7 +61,8 @@ const detect = (url: URL): DetectedFeed[] => {
     const repoUrl = `${url.origin}/${owner}/${repo}`;
     const repoName = `${owner}/${repo}`;
 
-    if (section === 'commits' && branch !== undefined) {
+    if (section === 'commits' && segments.length > 3) {
+        const branch = segments.slice(3).join('/');
         return [feed(`GitHub Commits (${repoName} ${branch})`, `${repoUrl}/commits/${branch}.atom`)];
     }
 
