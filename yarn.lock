@@ -3195,16 +3195,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/feedparser@npm:^2.2.8":
-  version: 2.2.8
-  resolution: "@types/feedparser@npm:2.2.8"
-  dependencies:
-    "@types/node": "*"
-    "@types/sax": "*"
-  checksum: 94a471a131cc4fa4135c7c699698f2f60b3c0b0443036882a93d40a6be50901531026286e53d7db7ab68433b180e5a1bd50f7066826f40d55111043b855e21f0
-  languageName: node
-  linkType: hard
-
 "@types/firefox-webext-browser@npm:^120.0.4":
   version: 120.0.4
   resolution: "@types/firefox-webext-browser@npm:120.0.4"
@@ -3389,15 +3379,6 @@ __metadata:
   version: 0.12.2
   resolution: "@types/retry@npm:0.12.2"
   checksum: e5675035717b39ce4f42f339657cae9637cf0c0051cf54314a6a2c44d38d91f6544be9ddc0280587789b6afd056be5d99dbe3e9f4df68c286c36321579b1bf4a
-  languageName: node
-  linkType: hard
-
-"@types/sax@npm:*":
-  version: 1.2.4
-  resolution: "@types/sax@npm:1.2.4"
-  dependencies:
-    "@types/node": "*"
-  checksum: 2aa50cbf1d1f0cf8541ef1787f94c7442e58e63900afd3b45c354e4140ed5efc5cf26fca8eb9df9970a74c7ea582293ae2083271bd046dedf4c3cc2689a40892
   languageName: node
   linkType: hard
 
@@ -6664,16 +6645,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.0.0":
-  version: 5.10.0
-  resolution: "enhanced-resolve@npm:5.10.0"
-  dependencies:
-    graceful-fs: ^4.2.4
-    tapable: ^2.2.0
-  checksum: 0bb9830704db271610f900e8d79d70a740ea16f251263362b0c91af545576d09fe50103496606c1300a05e588372d6f9780a9bc2e30ce8ef9b827ec8f44687ff
-  languageName: node
-  linkType: hard
-
 "enhanced-resolve@npm:^5.24.4":
   version: 5.24.5
   resolution: "enhanced-resolve@npm:5.24.5"
@@ -7739,9 +7710,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"feedparser@npm:^2.2.10":
-  version: 2.2.10
-  resolution: "feedparser@npm:2.2.10"
+"feedparser@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "feedparser@npm:2.6.0"
   dependencies:
     addressparser: ^1.0.1
     array-indexofobject: ~0.0.1
@@ -7751,10 +7722,10 @@ __metadata:
     lodash.uniq: ^4.5.0
     mri: ^1.1.5
     readable-stream: ^2.3.7
-    sax: ^1.2.4
+    sax: ">=1.2.4 <1.4.4"
   bin:
     feedparser: bin/feedparser.js
-  checksum: 1b13452824b4711d32e38fbda1a165f40b2de8887bbe8d9dfb88bc9981575ed6bd7f8cca3e53ca22f7d1d564caffa1d632b2559545721433d6ea9a10dcb130be
+  checksum: dbd856299193f943682d88a5e835e7160ac2d776aec60072cf8dc0aa0af75989fe14b9628a6ce990fb9dc5f6a499346318f74ea1294aadfafcf0ac30a4c21d0e
   languageName: node
   linkType: hard
 
@@ -7768,7 +7739,6 @@ __metadata:
     "@storybook/react-webpack5": 10.6.1
     "@total-typescript/ts-reset": ^0.6.1
     "@trivago/prettier-plugin-sort-imports": ^4.3.0
-    "@types/feedparser": ^2.2.8
     "@types/firefox-webext-browser": ^120.0.4
     "@types/jest": ^29.5.14
     "@types/react": ^19.3.0
@@ -7785,8 +7755,8 @@ __metadata:
     eslint-plugin-react-compiler: beta
     eslint-plugin-react-hooks: ^5.2.0
     fast-xml-parser: ^4.5.7
-    feedparser: ^2.2.10
-    html-entities: ^2.5.2
+    feedparser: ^2.6.0
+    html-entities: ^2.6.0
     jest: ^29.7.0
     jest-environment-jsdom: ^29.7.0
     node-polyfill-webpack-plugin: ^4.0.0
@@ -7798,7 +7768,7 @@ __metadata:
     rimraf: ^6.0.1
     storybook: 10.6.1
     ts-jest: ^29.4.14
-    ts-loader: ^9.5.1
+    ts-loader: ^9.6.2
     ts-node: ^10.9.2
     ts-prune: ^0.10.3
     typescript: ^5.9.3
@@ -8717,17 +8687,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-entities@npm:^2.1.0":
+"html-entities@npm:^2.1.0, html-entities@npm:^2.6.0":
   version: 2.6.0
   resolution: "html-entities@npm:2.6.0"
   checksum: 720643f7954019c80911430a7df2728524c07080edfe812610bfc5d8191cd772b470bee0ee151bf7426679314ae53cf28a1c845d702123714e625a8565b26567
-  languageName: node
-  linkType: hard
-
-"html-entities@npm:^2.5.2":
-  version: 2.5.2
-  resolution: "html-entities@npm:2.5.2"
-  checksum: b23f4a07d33d49ade1994069af4e13d31650e3fb62621e92ae10ecdf01d1a98065c78fd20fdc92b4c7881612210b37c275f2c9fba9777650ab0d6f2ceb3b99b6
   languageName: node
   linkType: hard
 
@@ -10988,7 +10951,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromatch@npm:^4.0.0, micromatch@npm:^4.0.2, micromatch@npm:^4.0.4":
+"micromatch@npm:^4.0.2, micromatch@npm:^4.0.4":
   version: 4.0.5
   resolution: "micromatch@npm:4.0.5"
   dependencies:
@@ -12255,7 +12218,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picomatch@npm:^4.0.3":
+"picomatch@npm:^4.0.0, picomatch@npm:^4.0.3":
   version: 4.0.7
   resolution: "picomatch@npm:4.0.7"
   checksum: a97edd7659fc7f39769734bcacd8e9c2f8711d0c30f0caf143577c4d59b3338e17e884ead92805701c71d54040067909e8d3dd45ed814fc8af154ca747fb06a4
@@ -13406,10 +13369,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sax@npm:>=0.6.0, sax@npm:^1.2.4":
+"sax@npm:>=0.6.0":
   version: 1.2.4
   resolution: "sax@npm:1.2.4"
   checksum: d3df7d32b897a2c2f28e941f732c71ba90e27c24f62ee918bd4d9a8cfb3553f2f81e5493c7f0be94a11c1911b643a9108f231dd6f60df3fa9586b5d2e3e9e1fe
+  languageName: node
+  linkType: hard
+
+"sax@npm:>=1.2.4 <1.4.4":
+  version: 1.4.3
+  resolution: "sax@npm:1.4.3"
+  checksum: 136a202eee9364f312fb1c6abadb045ef430a7468853f804758d8f2dc8d2560801245620e2bfd4ead2e332c025bef50865271974d142a0c26f69d5fc3de9baf1
   languageName: node
   linkType: hard
 
@@ -13539,7 +13509,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.4, semver@npm:^7.3.5":
+"semver@npm:^7.3.5":
   version: 7.3.8
   resolution: "semver@npm:7.3.8"
   dependencies:
@@ -14525,13 +14495,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tapable@npm:^2.2.0":
-  version: 2.2.1
-  resolution: "tapable@npm:2.2.1"
-  checksum: 3b7a1b4d86fa940aad46d9e73d1e8739335efd4c48322cb37d073eb6f80f5281889bf0320c6d8ffcfa1a0dd5bfdbd0f9d037e252ef972aca595330538aac4d51
-  languageName: node
-  linkType: hard
-
 "tar@npm:^6.1.11, tar@npm:^6.1.2":
   version: 6.1.11
   resolution: "tar@npm:6.1.11"
@@ -14805,19 +14768,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-loader@npm:^9.5.1":
-  version: 9.5.1
-  resolution: "ts-loader@npm:9.5.1"
+"ts-loader@npm:^9.6.2":
+  version: 9.6.2
+  resolution: "ts-loader@npm:9.6.2"
   dependencies:
     chalk: ^4.1.0
-    enhanced-resolve: ^5.0.0
-    micromatch: ^4.0.0
-    semver: ^7.3.4
+    picomatch: ^4.0.0
     source-map: ^0.7.4
   peerDependencies:
+    loader-utils: "*"
     typescript: "*"
-    webpack: ^5.0.0
-  checksum: 7cf396e656d905388ea2a9b5e82f16d3c955fda8d3df2fbf219f4bee16ff50a3c995c44ae3e584634e9443f056cec70bb3151add3917ffb4588ecd7394bac0ec
+    webpack: ^4.0.0 || ^5.0.0
+  peerDependenciesMeta:
+    loader-utils:
+      optional: true
+  checksum: a87d88b4ece8e5c119fd73faaea144a9d26da905e0efafb7646503d4f633bb570a2ad59d8f3fe4f1030c2fe4ab67d95f7d64b34ddafb52b4675d6710fa6ca231
   languageName: node
   linkType: hard
 
