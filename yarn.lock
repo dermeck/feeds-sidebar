@@ -2999,31 +2999,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node10@npm:^1.0.7":
-  version: 1.0.9
-  resolution: "@tsconfig/node10@npm:1.0.9"
-  checksum: a33ae4dc2a621c0678ac8ac4bceb8e512ae75dac65417a2ad9b022d9b5411e863c4c198b6ba9ef659e14b9fb609bbec680841a2e84c1172df7a5ffcf076539df
+"@tsconfig/node14@npm:*":
+  version: 14.1.9
+  resolution: "@tsconfig/node14@npm:14.1.9"
+  checksum: f98638e10a44f79320f1f69500946620e8029953c5fbafe98fd16f63ea1a59374560c933978f96c85140e67a9096654d0568b26818b9dd42960f1a039c802e30
   languageName: node
   linkType: hard
 
-"@tsconfig/node12@npm:^1.0.7":
-  version: 1.0.11
-  resolution: "@tsconfig/node12@npm:1.0.11"
-  checksum: 5ce29a41b13e7897a58b8e2df11269c5395999e588b9a467386f99d1d26f6c77d1af2719e407621412520ea30517d718d5192a32403b8dfcc163bf33e40a338a
+"@tsconfig/node16@npm:*":
+  version: 16.1.9
+  resolution: "@tsconfig/node16@npm:16.1.9"
+  checksum: 2bfa919418f67ce6a6a4325dcf8eabbdf8b84f7363de81b9e34a705cd527cb7f3161f7acf255705c11b8661e0567cceba511323dfceae653f06f4ea0ebdf032e
   languageName: node
   linkType: hard
 
-"@tsconfig/node14@npm:^1.0.0":
-  version: 1.0.3
-  resolution: "@tsconfig/node14@npm:1.0.3"
-  checksum: 19275fe80c4c8d0ad0abed6a96dbf00642e88b220b090418609c4376e1cef81bf16237bf170ad1b341452feddb8115d8dd2e5acdfdea1b27422071163dc9ba9d
+"@tsconfig/node18@npm:*":
+  version: 18.2.7
+  resolution: "@tsconfig/node18@npm:18.2.7"
+  checksum: 625d1a390f77b03e8c8d999db76f7ddacf261156a76e906d972e89a4b7fccdafecd44c9d8ed7d51c3cd752f1d15a8deeb459ef0f870c072d7c53094817ab6373
   languageName: node
   linkType: hard
 
-"@tsconfig/node16@npm:^1.0.2":
-  version: 1.0.3
-  resolution: "@tsconfig/node16@npm:1.0.3"
-  checksum: 3a8b657dd047495b7ad23437d6afd20297ce90380ff0bdee93fc7d39a900dbd8d9e26e53ff6b465e7967ce2adf0b218782590ce9013285121e6a5928fbd6819f
+"@tsconfig/node20@npm:*":
+  version: 20.1.10
+  resolution: "@tsconfig/node20@npm:20.1.10"
+  checksum: d57747bc85d3ab0e51d0d3804b2f26acb3c1488bc4bcd396ce8b27a0f83fb0414c58abc9150bb14ff0230f32f3b0546b25d58f43fc05dde15514141a7e23f4ca
   languageName: node
   linkType: hard
 
@@ -5912,13 +5912,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-require@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "create-require@npm:1.1.1"
-  checksum: a9a1503d4390d8b59ad86f4607de7870b39cad43d929813599a23714831e81c520bddf61bcdd1f8e30f05fd3a2b71ae8538e946eb2786dc65c2bbc520f692eff
-  languageName: node
-  linkType: hard
-
 "cross-replace@npm:^0.2.0":
   version: 0.2.0
   resolution: "cross-replace@npm:0.2.0"
@@ -7851,9 +7844,9 @@ __metadata:
     storybook: 10.6.1
     ts-jest: ^29.4.14
     ts-loader: ^9.6.2
-    ts-node: ^10.9.2
+    ts-node: ^11.0.0-beta.1
     ts-prune: ^0.10.3
-    typescript: ^5.9.3
+    typescript: ^6.0.3
     web-ext: ^8.9.0
     webpack: ^5.111.1
     webpack-cli: ^5.1.4
@@ -14901,28 +14894,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.9.2":
-  version: 10.9.2
-  resolution: "ts-node@npm:10.9.2"
+"ts-node@npm:^11.0.0-beta.1":
+  version: 11.0.0-beta.1
+  resolution: "ts-node@npm:11.0.0-beta.1"
   dependencies:
     "@cspotcode/source-map-support": ^0.8.0
-    "@tsconfig/node10": ^1.0.7
-    "@tsconfig/node12": ^1.0.7
-    "@tsconfig/node14": ^1.0.0
-    "@tsconfig/node16": ^1.0.2
+    "@tsconfig/node14": "*"
+    "@tsconfig/node16": "*"
+    "@tsconfig/node18": "*"
+    "@tsconfig/node20": "*"
     acorn: ^8.4.1
     acorn-walk: ^8.1.1
     arg: ^4.1.0
-    create-require: ^1.1.0
     diff: ^4.0.1
     make-error: ^1.1.1
     v8-compile-cache-lib: ^3.0.1
-    yn: 3.1.1
   peerDependencies:
-    "@swc/core": ">=1.2.50"
-    "@swc/wasm": ">=1.2.50"
+    "@swc/core": ">=1.3.85"
+    "@swc/wasm": ">=1.3.85"
     "@types/node": "*"
-    typescript: ">=2.7"
+    typescript: ">=4.4"
   peerDependenciesMeta:
     "@swc/core":
       optional: true
@@ -14934,8 +14925,7 @@ __metadata:
     ts-node-esm: dist/bin-esm.js
     ts-node-script: dist/bin-script.js
     ts-node-transpile-only: dist/bin-transpile.js
-    ts-script: dist/bin-script-deprecated.js
-  checksum: fde256c9073969e234526e2cfead42591b9a2aec5222bac154b0de2fa9e4ceb30efcd717ee8bc785a56f3a119bdd5aa27b333d9dbec94ed254bd26f8944c67ac
+  checksum: 2dcd24536b3941b713fae338d392963c6c4859f9485bf2dc5fb5f60e2932d0cabc5b5294146229f735ad4cd51b702c9a2b8d7ff5944174b11ff82d6d7a5f58e3
   languageName: node
   linkType: hard
 
@@ -15198,23 +15188,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.9.3":
-  version: 5.9.3
-  resolution: "typescript@npm:5.9.3"
+"typescript@npm:^6.0.3":
+  version: 6.0.3
+  resolution: "typescript@npm:6.0.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 0d0ffb84f2cd072c3e164c79a2e5a1a1f4f168e84cb2882ff8967b92afe1def6c2a91f6838fb58b168428f9458c57a2ba06a6737711fdd87a256bbe83e9a217f
+  checksum: c1182dfadf8a8cb22a4e32442715afef1af1b950ae635b1c52c27e0d7fb7a5e2607ed7c7c4079bba4163579250e02445fd8d46b09cbceda71ff72a5b7d69db61
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.9.3#~builtin<compat/typescript>":
-  version: 5.9.3
-  resolution: "typescript@patch:typescript@npm%3A5.9.3#~builtin<compat/typescript>::version=5.9.3&hash=701156"
+"typescript@patch:typescript@^6.0.3#~builtin<compat/typescript>":
+  version: 6.0.3
+  resolution: "typescript@patch:typescript@npm%3A6.0.3#~builtin<compat/typescript>::version=6.0.3&hash=701156"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 8bb8d86819ac86a498eada254cad7fb69c5f74778506c700c2a712daeaff21d3a6f51fd0d534fe16903cb010d1b74f89437a3d02d4d0ff5ca2ba9a4660de8497
+  checksum: 8ed159a81ab4901a620c19fda539632cee610f8ec34dde57a3acc6b6df72894ad0b50bdd1946b763313d9b73dedb019d2e81c03eff06c0f2c785cde30a537d15
   languageName: node
   linkType: hard
 
@@ -16290,13 +16280,6 @@ __metadata:
     buffer-crc32: ~0.2.3
     fd-slicer: ~1.1.0
   checksum: 7f21fe0bbad6e2cb130044a5d1d0d5a0e5bf3d8d4f8c4e6ee12163ce798fee3de7388d22a7a0907f563ac5f9d40f8699a223d3d5c1718da90b0156da6904022b
-  languageName: node
-  linkType: hard
-
-"yn@npm:3.1.1":
-  version: 3.1.1
-  resolution: "yn@npm:3.1.1"
-  checksum: 2c487b0e149e746ef48cda9f8bad10fc83693cd69d7f9dcd8be4214e985de33a29c9e24f3c0d6bcf2288427040a8947406ab27f7af67ee9456e6b84854f02dd6
   languageName: node
   linkType: hard
 
