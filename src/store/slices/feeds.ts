@@ -123,6 +123,9 @@ export const selectFolders = (state: FeedSliceState) => state.folders;
 
 const makeReadKey = (feedId: string, itemId: string) => `${feedId}::${itemId}`;
 
+const dropReadKeysOfFeeds = (readItemIds: ReadonlyArray<string>, feedIds: ReadonlyArray<string>) =>
+    readItemIds.filter((key) => !feedIds.some((feedId) => key.startsWith(`${feedId}::`)));
+
 const isItemRead = (state: FeedSliceState, feedId: string, itemId: string, specificFeed?: Feed) => {
     const key = makeReadKey(feedId, itemId);
     if (state.readItemIds.includes(key)) {
@@ -558,6 +561,7 @@ const feedsSlice = createSlice({
                         // delete feeds in selected folder and its subfolders (all levels)
                         const feedIdsToDelete = feedIdsByFolderId(state.folders, selectedFolderId);
                         state.feeds = state.feeds.filter((feed) => !feedIdsToDelete.some((id) => feed.id === id));
+                        state.readItemIds = dropReadKeysOfFeeds(state.readItemIds, feedIdsToDelete);
 
                         // delete folder and subfolders (all levels)
                         const subfolderIdsToDelete = subfolderIdsByFolderId(state.folders, selectedFolderId);
@@ -801,6 +805,7 @@ const deleteFeed = (prevState: FeedSliceState, feedUrl: string) => {
         ...prevState,
         folders: folders,
         feeds: feeds,
+        readItemIds: dropReadKeysOfFeeds(prevState.readItemIds, [feedUrl]),
     };
 };
 
