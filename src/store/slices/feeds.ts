@@ -211,27 +211,52 @@ const sortItemsByAgeDesc = <T extends Feed>(feed: T): T => ({
     items: [...feed.items].sort((a, b) => itemTimestamp(b) - itemTimestamp(a)),
 });
 
+const toItemLimit = (maxItems: number) => (Number.isFinite(maxItems) ? Math.round(maxItems) : 0);
+
+// undefined when nothing has to be dropped, so that a feed within the limit keeps its reference
+const trimmedItemsOfFeed = (feed: Feed, limit: number): FeedItem[] | undefined => {
+    if (limit <= 0) {
+        return undefined;
+    }
+
+    // without a date there is no way to tell which item is the newest, so the feed is left alone
+    // instead of being frozen at the limit
+    if (feed.items.length <= limit || feed.items.every((item) => !hasItemDate(item))) {
+        return undefined;
+    }
+
+    const sorted = sortItemsByAgeDesc(feed).items;
+    // the cap applies to the dated items only: an undated one cannot be ranked, and dropping an
+    // item is worse than exceeding the limit
+    const undated = sorted.filter((item) => !hasItemDate(item));
+
+    return [...sorted.filter(hasItemDate).slice(0, limit), ...undated];
+};
+
+const trimFeedsToLimit = (feeds: ReadonlyArray<Feed>, maxItems: number): ReadonlyArray<Feed> => {
+    const limit = toItemLimit(maxItems);
+
+    return feeds.map((feed) => {
+        const items = trimmedItemsOfFeed(feed, limit);
+
+        return items === undefined ? feed : { ...feed, items };
+    });
+};
+
 // only overflowing feeds are touched, so that trimming without any effect leaves the state untouched
 const trimOverflowingItems = (state: FeedSliceState, maxItems: number) => {
-    const limit = Number.isFinite(maxItems) ? Math.round(maxItems) : 0;
+    const limit = toItemLimit(maxItems);
 
     if (limit <= 0) {
         return;
     }
 
     state.feeds.forEach((feed) => {
-        // without a date there is no way to tell which item is the newest, so the feed is left alone
-        // instead of being frozen at the limit
-        if (feed.items.length <= limit || feed.items.every((item) => !hasItemDate(item))) {
-            return;
+        const items = trimmedItemsOfFeed(feed, limit);
+
+        if (items !== undefined) {
+            feed.items = items;
         }
-
-        const sorted = sortItemsByAgeDesc(feed).items;
-        // the cap applies to the dated items only: an undated one cannot be ranked, and dropping an
-        // item is worse than exceeding the limit
-        const undated = sorted.filter((item) => !hasItemDate(item));
-
-        feed.items = [...sorted.filter(hasItemDate).slice(0, limit), ...undated];
     });
 };
 
@@ -484,8 +509,9 @@ const feedsSlice = createSlice({
                 feeds: state.feeds.map((feed) => markAllItemsOfFeedRead(feed)),
             };
         },
-        updateFeeds(state, action: PayloadAction<ReadonlyArray<Feed>>) {
-            const newFeeds = action.payload.filter((updatedFeed) => !state.feeds.some((x) => x.id === updatedFeed.id));
+        updateFeeds(state, action: PayloadAction<{ feeds: ReadonlyArray<Feed>; maxItemsPerFeed: number }>) {
+            const updatedFeeds = action.payload.feeds;
+            const newFeeds = updatedFeeds.filter((updatedFeed) => !state.feeds.some((x) => x.id === updatedFeed.id));
 
             const folders = state.folders.map((folder) =>
                 folder.id === rootFolderId
@@ -496,13 +522,14 @@ const feedsSlice = createSlice({
                     : folder,
             );
 
+            // every feed is trimmed, not only the updated ones, so that no state above the limit is ever published
             return {
                 ...state,
                 folders: folders,
-                feeds: [
-                    ...updateFeeds(state.feeds, action.payload),
-                    ...newFeeds.map((feed) => sortItemsByAgeDesc(feed)),
-                ],
+                feeds: trimFeedsToLimit(
+                    [...updateFeeds(state.feeds, updatedFeeds), ...newFeeds.map((feed) => sortItemsByAgeDesc(feed))],
+                    action.payload.maxItemsPerFeed,
+                ),
             };
         },
         trimOverflowingFeedItems(state, action: PayloadAction<number>) {

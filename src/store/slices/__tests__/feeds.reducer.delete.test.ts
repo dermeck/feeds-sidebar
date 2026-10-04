@@ -1,6 +1,7 @@
-import { NodeType } from '../../../model/feeds';
+import { Feed, NodeType } from '../../../model/feeds';
 import { RootState } from '../../store';
 import feedsSlice, { selectTotalUnreadItems } from '../feeds';
+import { MAX_ITEMS_PER_FEED_DEFAULT } from '../options';
 import {
     feed1Fixture,
     feed2Fixture,
@@ -12,6 +13,9 @@ import {
 } from './feeds.fixtures';
 
 type FeedSliceState = RootState['feeds'];
+
+const update = (feeds: ReadonlyArray<Feed>) =>
+    feedsSlice.actions.updateFeeds({ feeds, maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT });
 
 describe('deleteFeed action', () => {
     it('deletes the selected feed', () => {
@@ -59,7 +63,7 @@ describe('deleteFeed action', () => {
 
         const deletedState = feedsSlice.reducer(readState, feedsSlice.actions.deleteFeed({ url: feed1Fixture.id }));
 
-        const readdedState = feedsSlice.reducer(deletedState, feedsSlice.actions.updateFeeds([feed1Fixture]));
+        const readdedState = feedsSlice.reducer(deletedState, update([feed1Fixture]));
 
         expect(selectTotalUnreadItems(readdedState)).toBe(feed1Fixture.items.length);
     });

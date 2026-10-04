@@ -32,7 +32,7 @@ function* fetchFeeds(action: PayloadAction<ReadonlyArray<string>>) {
 
     const now = new Date().toISOString();
     const updatePayload = results.flatMap((r) => (r.type === 'success' ? [{ ...r.parsedFeed, lastFetched: now }] : []));
-    yield put(feedsSlice.actions.updateFeeds(updatePayload));
+    yield put(feedsSlice.actions.updateFeeds({ feeds: updatePayload, maxItemsPerFeed: options.maxItemsPerFeed }));
     yield put(
         sessionSlice.actions.changeFeedsStatus({
             newStatus: 'loaded',
