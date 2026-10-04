@@ -1,6 +1,6 @@
 import { NodeType } from '../../../model/feeds';
 import { RootState } from '../../store';
-import feedsSlice from '../feeds';
+import feedsSlice, { selectTotalUnreadItems } from '../feeds';
 import {
     feed1Fixture,
     feed2Fixture,
@@ -36,6 +36,32 @@ describe('deleteFeed action', () => {
         const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteFeed({ url: feed1Fixture.id }));
 
         expect(newState.folders).toHaveLength(1);
+    });
+
+    it('drops the read keys of the deleted feed', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [feed1Fixture, feed2Fixture],
+            readItemIds: [`${feed1Fixture.id}::itemId1`, `${feed1Fixture.id}::itemId2`, `${feed2Fixture.id}::itemId1`],
+        };
+
+        const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteFeed({ url: feed1Fixture.id }));
+
+        expect(newState.readItemIds).toStrictEqual([`${feed2Fixture.id}::itemId1`]);
+    });
+
+    it('brings a re-added feed back with unread items', () => {
+        const readState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: [feed1Fixture],
+            readItemIds: feed1Fixture.items.map((item) => `${feed1Fixture.id}::${item.id}`),
+        };
+
+        const deletedState = feedsSlice.reducer(readState, feedsSlice.actions.deleteFeed({ url: feed1Fixture.id }));
+
+        const readdedState = feedsSlice.reducer(deletedState, feedsSlice.actions.updateFeeds([feed1Fixture]));
+
+        expect(selectTotalUnreadItems(readdedState)).toBe(feed1Fixture.items.length);
     });
 });
 
@@ -130,6 +156,28 @@ describe('deleteSelectedNode action', () => {
             expect(newState.feeds).toHaveLength(1);
             expect(newState.folders[0]).toStrictEqual({ ...folder4Fixture, feedIds: [feed3Fixture.id] });
             expect(newState.feeds[0]).toStrictEqual(feed3Fixture);
+        });
+
+        it('drops the read keys of the deleted feeds only', () => {
+            const prevState: FeedSliceState = {
+                ...feedsSlice.getInitialState(),
+                folders: [
+                    { ...folder1Fixture, subfolderIds: [folder2Fixture.id], feedIds: [feed1Fixture.id] },
+                    { ...folder2Fixture, feedIds: [feed2Fixture.id] },
+                    folder3Fixture,
+                ],
+                feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
+                readItemIds: [
+                    `${feed1Fixture.id}::itemId1`,
+                    `${feed2Fixture.id}::itemId2`,
+                    `${feed3Fixture.id}::itemId1`,
+                ],
+                selectedNode: { nodeType: NodeType.Folder, nodeId: folder1Fixture.id },
+            };
+
+            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
+
+            expect(newState.readItemIds).toStrictEqual([`${feed3Fixture.id}::itemId1`]);
         });
 
         it('deletes the relation to the parent folder', () => {
