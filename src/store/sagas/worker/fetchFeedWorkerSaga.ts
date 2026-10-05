@@ -78,7 +78,7 @@ const callFeedParser = async (input: FeedParserInput): Promise<Feed> => {
         });
 
         parser.on('readable', () => {
-            let item: Item;
+            let item: FeedParser.Item | null;
 
             while ((item = parser.read())) {
                 parsedItems.push(mapFeedItem(item));
