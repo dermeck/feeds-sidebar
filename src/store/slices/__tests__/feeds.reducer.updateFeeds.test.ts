@@ -1,10 +1,13 @@
-import { FeedItem } from '../../../model/feeds';
+import { Feed, FeedItem } from '../../../model/feeds';
 import { RootState } from '../../store';
 import feedsSlice from '../feeds';
 import optionsSlice, { MAX_ITEMS_PER_FEED_DEFAULT } from '../options';
 import { feed1Fixture, feed2Fixture, itemFixture } from './feeds.fixtures';
 
 type FeedSliceState = RootState['feeds'];
+
+const update = (feeds: ReadonlyArray<Feed>) =>
+    feedsSlice.actions.updateFeeds({ feeds, maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT });
 
 describe('updateFeeds action', () => {
     it('does not change existing feeds if feedId does not match', () => {
@@ -13,7 +16,7 @@ describe('updateFeeds action', () => {
             feeds: [feed1Fixture],
         };
 
-        const action = feedsSlice.actions.updateFeeds([feed2Fixture]);
+        const action = update([feed2Fixture]);
 
         expect(feedsSlice.reducer(prevState, action).feeds[0]).toStrictEqual(feed1Fixture);
     });
@@ -25,7 +28,7 @@ describe('updateFeeds action', () => {
                 feeds: [feed1Fixture],
             };
 
-            const action = feedsSlice.actions.updateFeeds([feed2Fixture]);
+            const action = update([feed2Fixture]);
 
             const newState = feedsSlice.reducer(prevState, action);
 
@@ -38,7 +41,7 @@ describe('updateFeeds action', () => {
                 ...feedsSlice.getInitialState(),
             };
 
-            const action = feedsSlice.actions.updateFeeds([feed1Fixture]);
+            const action = update([feed1Fixture]);
 
             const newState = feedsSlice.reducer(prevState, action);
 
@@ -60,7 +63,7 @@ describe('updateFeeds action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeeds([
+                update([
                     {
                         ...feed1Fixture,
                         link: 'thenewlink',
@@ -79,7 +82,7 @@ describe('updateFeeds action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeeds([
+                update([
                     {
                         ...feed1Fixture,
                         title: 'updatedTitle',
@@ -98,7 +101,7 @@ describe('updateFeeds action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeeds([
+                update([
                     {
                         ...feed1Fixture,
                         title: 'updatedTitle?',
@@ -117,7 +120,7 @@ describe('updateFeeds action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeeds([
+                update([
                     {
                         ...feed1Fixture,
                         items: [itemFixture('id1'), itemFixture('id2')],
@@ -152,7 +155,7 @@ describe('updateFeeds action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeeds([
+                update([
                     {
                         ...feed1Fixture,
                         items: [
@@ -187,7 +190,7 @@ describe('updateFeeds action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeeds([
+                update([
                     {
                         ...feed1Fixture,
                         items: [itemFixture('id3')],
@@ -210,7 +213,7 @@ describe('updateFeeds action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeeds([
+                update([
                     {
                         ...feed1Fixture,
                         items: [itemFixture('id1'), itemFixture('id2')],
@@ -243,7 +246,7 @@ describe('updateFeeds action', () => {
 
             const newState = feedsSlice.reducer(
                 prevState,
-                feedsSlice.actions.updateFeeds([
+                update([
                     {
                         ...feed1Fixture,
                         items: [{ ...itemFixture('newest'), published: '2023-03-03' }],
@@ -257,7 +260,7 @@ describe('updateFeeds action', () => {
         it('orders items of a newly added feed by age', () => {
             const newState = feedsSlice.reducer(
                 feedsSlice.getInitialState(),
-                feedsSlice.actions.updateFeeds([
+                update([
                     {
                         ...feed2Fixture,
                         items: [
@@ -332,9 +335,7 @@ describe('trimOverflowingFeedItems action', () => {
 
         const merged = feedsSlice.reducer(
             prevState,
-            feedsSlice.actions.updateFeeds([
-                { ...feed1Fixture, items: [{ ...itemFixture('new'), published: 'Mon Jan 01 2024' }] },
-            ]),
+            update([{ ...feed1Fixture, items: [{ ...itemFixture('new'), published: 'Mon Jan 01 2024' }] }]),
         );
         const newState = feedsSlice.reducer(merged, feedsSlice.actions.trimOverflowingFeedItems(2));
 
@@ -403,7 +404,7 @@ describe('trimOverflowingFeedItems action', () => {
 
         const merged = feedsSlice.reducer(
             prevState,
-            feedsSlice.actions.updateFeeds([{ ...feed1Fixture, items: [itemFixture('new-undated')] }]),
+            update([{ ...feed1Fixture, items: [itemFixture('new-undated')] }]),
         );
         const newState = feedsSlice.reducer(merged, feedsSlice.actions.trimOverflowingFeedItems(2));
 

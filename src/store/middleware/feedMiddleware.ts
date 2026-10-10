@@ -26,7 +26,7 @@ const badgeRelevantActions = [
     optionsSlice.actions.resetOptions.type,
 ];
 
-export const feedMiddleware: Middleware<object, RootState, Dispatch> = (middlewareApi) => (next) => async (action) => {
+export const feedMiddleware: Middleware<object, RootState, Dispatch> = (middlewareApi) => (next) => (action) => {
     if (fetchAllFeedsCommand.match(action)) {
         const feedsTofetch = middlewareApi.getState().feeds.feeds.map((x) => x.id);
 
@@ -35,16 +35,11 @@ export const feedMiddleware: Middleware<object, RootState, Dispatch> = (middlewa
         }
     }
 
-    await next(action);
-
-    // reducers must run before this code
-    if (feedsSlice.actions.updateFeeds.match(action)) {
-        const { maxItemsPerFeed } = middlewareApi.getState().options;
-
-        middlewareApi.dispatch(feedsSlice.actions.trimOverflowingFeedItems(maxItemsPerFeed));
-    }
+    const result = next(action);
 
     if (badgeRelevantActions.includes((action as UnknownAction).type)) {
         updateBadge(middlewareApi.getState());
     }
+
+    return result;
 };

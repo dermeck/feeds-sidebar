@@ -31,6 +31,7 @@ export const MoreMenu = (props: Props) => {
     const dispatch = useAppDispatch();
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));
     const folders = useAppSelector((state) => selectFolders(state.feeds));
+    const { maxItemsPerFeed } = useAppSelector((state) => state.options);
 
     return (
         <Menu anchorPoint={props.anchorPoint}>
@@ -105,7 +106,12 @@ export const MoreMenu = (props: Props) => {
                     } else {
                         dispatch(fetchFeedsCommand(fileContent.feeds.map((f) => f.id)));
                         if (fileContent.folders.length > 1) {
-                            dispatch(feedsSlice.actions.updateFeeds(fileContent.feeds)); // ensure referenced feeds exist before folders are created
+                            dispatch(
+                                feedsSlice.actions.updateFeeds({
+                                    feeds: fileContent.feeds,
+                                    maxItemsPerFeed,
+                                }),
+                            ); // ensure referenced feeds exist before folders are created
                             dispatch(feedsSlice.actions.replaceFolders(fileContent.folders));
                         }
                     }
