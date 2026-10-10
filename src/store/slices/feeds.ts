@@ -152,10 +152,16 @@ export const selectYoutubeItemsMissingDuration = (
     state: RootState,
 ): ReadonlyArray<{ feedId: string; itemId: string; videoId: string }> => {
     const pending: Array<{ feedId: string; itemId: string; videoId: string }> = [];
+    const includeRead = state.options.youtubeVideoDurationScope === 'all';
 
     for (const feed of state.feeds.feeds) {
         for (const item of feed.items) {
             if (item.durationSeconds !== undefined) {
+                continue;
+            }
+
+            // read items are hidden in the list, so fetching their length is wasted unless asked for
+            if (!includeRead && isItemRead(state.feeds, feed.id, item.id, feed)) {
                 continue;
             }
 

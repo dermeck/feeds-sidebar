@@ -58,6 +58,74 @@ describe('video duration queue', () => {
         expect(itemDurations).toEqual([754, 31]);
     });
 
+    it('does not fetch read items by default', async () => {
+        mockedFetch.mockResolvedValue(100);
+
+        const store = setupStore();
+        addFeed(store, youtubeFeed('feed1', [
+            { id: 'unreadItem', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'unread' },
+            { id: 'readItem', url: 'https://www.youtube.com/watch?v=BBBBBBBBBBB', title: 'read', isRead: true },
+        ]));
+        store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
+
+        await jest.advanceTimersByTimeAsync(10_000);
+
+        expect(mockedFetch).toHaveBeenCalledTimes(1);
+        expect(mockedFetch).toHaveBeenCalledWith('AAAAAAAAAAA');
+    });
+
+    it('fetches read items when the scope is set to all', async () => {
+        mockedFetch.mockResolvedValue(100);
+
+        const store = setupStore();
+        addFeed(store, youtubeFeed('feed1', [
+            { id: 'unreadItem', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'unread' },
+            { id: 'readItem', url: 'https://www.youtube.com/watch?v=BBBBBBBBBBB', title: 'read', isRead: true },
+        ]));
+        store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationScope('all'));
+        store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
+
+        await jest.advanceTimersByTimeAsync(10_000);
+
+        expect(mockedFetch).toHaveBeenCalledTimes(2);
+    });
+
+    it('fetches at most the configured number of videos per run', async () => {
+        mockedFetch.mockResolvedValue(100);
+
+        const store = setupStore();
+        addFeed(store, youtubeFeed('feed1', [
+            { id: 'videoItem1', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
+            { id: 'videoItem2', url: 'https://youtu.be/BBBBBBBBBBB', title: 'two' },
+            { id: 'videoItem3', url: 'https://youtu.be/CCCCCCCCCCC', title: 'three' },
+        ]));
+        store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(2));
+        store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
+
+        await jest.advanceTimersByTimeAsync(10_000);
+
+        expect(mockedFetch).toHaveBeenCalledTimes(2);
+        const itemDurations = store.getState().feeds.feeds[0].items.map((i) => i.durationSeconds);
+        expect(itemDurations).toEqual([100, 100, undefined]);
+    });
+
+    it('fetches every video per run when the limit is 0', async () => {
+        mockedFetch.mockResolvedValue(100);
+
+        const store = setupStore();
+        addFeed(store, youtubeFeed('feed1', [
+            { id: 'videoItem1', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
+            { id: 'videoItem2', url: 'https://youtu.be/BBBBBBBBBBB', title: 'two' },
+            { id: 'videoItem3', url: 'https://youtu.be/CCCCCCCCCCC', title: 'three' },
+        ]));
+        store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(0));
+        store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
+
+        await jest.advanceTimersByTimeAsync(10_000);
+
+        expect(mockedFetch).toHaveBeenCalledTimes(3);
+    });
+
     it('fetches a video shared by two feeds only once per run', async () => {
         mockedFetch.mockResolvedValue(100);
 

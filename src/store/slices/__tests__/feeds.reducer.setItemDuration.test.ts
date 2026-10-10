@@ -112,4 +112,28 @@ describe('selectYoutubeItemsMissingDuration', () => {
 
         expect(selectYoutubeItemsMissingDuration(state)).toHaveLength(0);
     });
+
+    it('skips items that are already read', () => {
+        const state = stateWithItems();
+        state.feeds.feeds[0].items[0].isRead = true;
+
+        const result = selectYoutubeItemsMissingDuration(state);
+
+        expect(result).toEqual([{ feedId: 'feed2', itemId: 'shortItem', videoId: 'JXgV1rJzwd4' }]);
+    });
+
+    it('skips items whose read key is tracked separately', () => {
+        const state = stateWithItems();
+        state.feeds.readItemIds = ['feed1::youtubeItem'];
+
+        expect(selectYoutubeItemsMissingDuration(state).map((x) => x.itemId)).toEqual(['shortItem']);
+    });
+
+    it('includes read items when the scope is set to all', () => {
+        const state = stateWithItems();
+        state.options.youtubeVideoDurationScope = 'all';
+        state.feeds.feeds[0].items[0].isRead = true;
+
+        expect(selectYoutubeItemsMissingDuration(state).map((x) => x.itemId)).toEqual(['youtubeItem', 'shortItem']);
+    });
 });

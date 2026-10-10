@@ -10,6 +10,11 @@ export type SidebarSurface = 'auto' | 'builtin-theme' | 'system-theme' | 'custom
 // 'flat' is Firefox's current (Nova) history look, 'raised' the pre-Nova moz-card box
 export type DateGroupCardStyle = 'flat' | 'raised';
 
+// 'unread' skips items that are already read (the list hides them), 'all' also fetches read items
+export type YoutubeVideoDurationScope = 'unread' | 'all';
+
+export const YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT = 25;
+
 export const FEED_UPDATE_MINUTES_MIN = 5;
 export const FEED_UPDATE_MINUTES_MAX = 1440;
 export const FETCH_THREADS_MIN = 1;
@@ -26,6 +31,8 @@ type OptionsSliceState = {
     diagnosisInactiveDays: number;
     showUnreadBadge: boolean;
     youtubeVideoDurationEnabled: boolean;
+    youtubeVideoDurationScope: YoutubeVideoDurationScope;
+    youtubeVideoDurationMaxPerRun: number;
     maxItemsPerFeed: number;
     sidebarSurface: SidebarSurface;
     sidebarCustomColorLight: string;
@@ -41,6 +48,8 @@ export const initialState: OptionsSliceState = {
     diagnosisInactiveDays: 60,
     showUnreadBadge: true,
     youtubeVideoDurationEnabled: false,
+    youtubeVideoDurationScope: 'unread',
+    youtubeVideoDurationMaxPerRun: YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
     maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
     sidebarSurface: 'auto',
     sidebarCustomColorLight: '#ffffff',
@@ -83,6 +92,12 @@ const optionsSlice = createSlice({
         },
         changeYoutubeVideoDurationEnabled(state, action: PayloadAction<boolean>) {
             state.youtubeVideoDurationEnabled = action.payload;
+        },
+        changeYoutubeVideoDurationScope(state, action: PayloadAction<YoutubeVideoDurationScope>) {
+            state.youtubeVideoDurationScope = action.payload;
+        },
+        changeYoutubeVideoDurationMaxPerRun(state, action: PayloadAction<number>) {
+            state.youtubeVideoDurationMaxPerRun = Math.max(0, Math.round(action.payload));
         },
         changeMaxItemsPerFeed(state, action: PayloadAction<number>) {
             state.maxItemsPerFeed = Math.max(0, Math.round(action.payload));

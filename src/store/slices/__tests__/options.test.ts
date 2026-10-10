@@ -8,6 +8,7 @@ import optionsSlice, {
     FEED_UPDATE_MINUTES_MAX,
     FEED_UPDATE_MINUTES_MIN,
     MAX_ITEMS_PER_FEED_DEFAULT,
+    YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
     initialState,
 } from '../options';
 
@@ -20,6 +21,8 @@ describe('options slice', () => {
         diagnosisInactiveDays: 60,
         showUnreadBadge: true,
         youtubeVideoDurationEnabled: false,
+        youtubeVideoDurationScope: 'unread',
+        youtubeVideoDurationMaxPerRun: YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
         maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
         sidebarSurface: 'auto',
         sidebarCustomColorLight: '#ffffff',
@@ -52,6 +55,8 @@ describe('options slice', () => {
                 diagnosisInactiveDays: 90,
                 showUnreadBadge: false,
                 youtubeVideoDurationEnabled: false,
+                youtubeVideoDurationScope: 'unread',
+                youtubeVideoDurationMaxPerRun: YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
                 maxItemsPerFeed: 100,
                 sidebarSurface: 'system-theme',
                 sidebarCustomColorLight: '#ffffff',
@@ -79,6 +84,8 @@ describe('options slice', () => {
                 diagnosisInactiveDays: 60,
                 showUnreadBadge: true,
                 youtubeVideoDurationEnabled: false,
+                youtubeVideoDurationScope: 'unread',
+                youtubeVideoDurationMaxPerRun: YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
                 maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
                 sidebarSurface: 'auto',
                 sidebarCustomColorLight: '#ffffff',
@@ -155,6 +162,45 @@ describe('options slice', () => {
                 optionsSlice.actions.changeYoutubeVideoDurationEnabled(true),
             );
             expect(state.youtubeVideoDurationEnabled).toBe(true);
+        });
+    });
+
+    describe('changeYoutubeVideoDurationScope', () => {
+        it('sets the value', () => {
+            const state = optionsSlice.reducer(
+                prevState,
+                optionsSlice.actions.changeYoutubeVideoDurationScope('all'),
+            );
+            expect(state.youtubeVideoDurationScope).toBe('all');
+        });
+    });
+
+    describe('changeYoutubeVideoDurationMaxPerRun', () => {
+        it('sets the value', () => {
+            const state = optionsSlice.reducer(
+                prevState,
+                optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(100),
+            );
+            expect(state.youtubeVideoDurationMaxPerRun).toBe(100);
+        });
+
+        it('keeps 0 for no limit', () => {
+            const state = optionsSlice.reducer(
+                prevState,
+                optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(0),
+            );
+            expect(state.youtubeVideoDurationMaxPerRun).toBe(0);
+        });
+
+        it('rounds fractions and clamps negatives to 0', () => {
+            expect(
+                optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(0.5))
+                    .youtubeVideoDurationMaxPerRun,
+            ).toBe(1);
+            expect(
+                optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(-5))
+                    .youtubeVideoDurationMaxPerRun,
+            ).toBe(0);
         });
     });
 
