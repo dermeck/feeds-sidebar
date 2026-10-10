@@ -16,7 +16,9 @@ import {
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { moveOrInsertElementBefore, moveOrInsertElementAfter } from '../../utils/arrayUtils';
 import { randomUUID } from '../../utils/uuid';
+import { youtubeVideoIdFromItemId, youtubeVideoIdFromUrl } from '../../services/youtube/videoUrl';
 import { extensionStateLoaded } from '../actions';
+import type { RootState } from '../store';
 import optionsSlice, { initialState as initialOptions } from './options';
 
 type FeedSliceState = {
@@ -25,7 +27,12 @@ type FeedSliceState = {
     selectedNode: NodeMeta | undefined;
     // Track read item IDs separately to preserve read state even if items are trimmed
     readItemIds: ReadonlyArray<string>;
+    // video id -> timestamp of the last failed length fetch, so failures are not retried every update
+    durationFetchFailures: Readonly<Record<string, number>>;
 };
+
+// a permanently unavailable video must not be re-requested on every feed update
+export const DURATION_FETCH_RETRY_WINDOW_MS = 6 * 60 * 60 * 1000;
 
 export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
@@ -116,6 +123,7 @@ const initialState: FeedSliceState = {
     feeds: process.env.NODE_ENV === 'development' ? sampleDataFeeds : [],
     selectedNode: undefined,
     readItemIds: [],
+    durationFetchFailures: {},
 };
 
 export const selectFeeds = (state: FeedSliceState) => state.feeds;
@@ -145,6 +153,37 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
     state.feeds
         .map((feed) => feed.items.filter((i) => !isItemRead(state, feed.id, i.id, feed)).length)
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
+
+export const selectYoutubeItemsMissingDuration = (
+    state: RootState,
+): ReadonlyArray<{ feedId: string; itemId: string; videoId: string }> => {
+    const pending: Array<{ feedId: string; itemId: string; videoId: string }> = [];
+    const includeRead = state.options.youtubeVideoDurationScope === 'all';
+
+    for (const feed of state.feeds.feeds) {
+        for (const item of feed.items) {
+            if (item.durationSeconds !== undefined) {
+                continue;
+            }
+
+            // read items are hidden in the list, so fetching their length is wasted unless asked for
+            if (!includeRead && isItemRead(state.feeds, feed.id, item.id, feed)) {
+                continue;
+            }
+
+            const videoId = youtubeVideoIdFromUrl(item.url) ?? youtubeVideoIdFromItemId(item.id);
+
+            if (videoId !== undefined) {
+                pending.push({ feedId: feed.id, itemId: item.id, videoId });
+            }
+        }
+    }
+
+    return pending;
+};
+
+export const selectDurationFetchFailures = (state: RootState): Readonly<Record<string, number>> =>
+    state.feeds.durationFetchFailures;
 
 /* factory function for creating memoized selector for each component instance (use nodeId from props) */
 export const makeSelectTreeNode = () =>
@@ -454,6 +493,50 @@ const feedsSlice = createSlice({
                 feeds: [...markItemAsRead(state.feeds, feedId, itemId)],
             };
         },
+        setItemDuration(state, action: PayloadAction<{ feedId: string; itemId: string; durationSeconds: number }>) {
+            const { feedId, itemId, durationSeconds } = action.payload;
+            const feed = state.feeds.find((f) => f.id === feedId);
+            const item = feed?.items.find((i) => i.id === itemId);
+
+            // no-op when the duration is already known, to avoid needless state writes and saves
+            if (feed === undefined || item === undefined || item.durationSeconds === durationSeconds) {
+                return state;
+            }
+
+            return {
+                ...state,
+                feeds: state.feeds.map((f) =>
+                    f.id !== feedId
+                        ? f
+                        : { ...f, items: f.items.map((i) => (i.id !== itemId ? i : { ...i, durationSeconds })) },
+                ),
+            };
+        },
+        recordDurationFetchFailure(state, action: PayloadAction<{ videoId: string; failedAt: number }>) {
+            const { videoId, failedAt } = action.payload;
+
+            // drop entries whose retry window has passed, so the map cannot grow without bound
+            const failures = Object.fromEntries(
+                Object.entries(state.durationFetchFailures).filter(
+                    ([, failedAtOfEntry]) => failedAt - failedAtOfEntry < DURATION_FETCH_RETRY_WINDOW_MS,
+                ),
+            );
+            failures[videoId] = failedAt;
+
+            return { ...state, durationFetchFailures: failures };
+        },
+        clearDurationFetchFailure(state, action: PayloadAction<string>) {
+            const videoId = action.payload;
+
+            if (state.durationFetchFailures[videoId] === undefined) {
+                return state;
+            }
+
+            const failures = { ...state.durationFetchFailures };
+            delete failures[videoId];
+
+            return { ...state, durationFetchFailures: failures };
+        },
         markSelectedNodeAsRead(state) {
             if (state.selectedNode === undefined) {
                 throw new Error('Cannot mark node as read because selection is undefined.');
@@ -485,12 +568,7 @@ const feedsSlice = createSlice({
                     return {
                         ...state,
                         readItemIds: Array.from(newReadIds),
-                        feeds: [
-                            ...markFeedsAsRead(
-                                state.feeds,
-                                feedIds,
-                            ),
-                        ],
+                        feeds: [...markFeedsAsRead(state.feeds, feedIds)],
                     };
                 }
 
@@ -622,6 +700,7 @@ const feedsSlice = createSlice({
             return {
                 ...action.payload.feeds,
                 readItemIds: action.payload.feeds.readItemIds ?? [],
+                durationFetchFailures: action.payload.feeds.durationFetchFailures ?? {},
             };
         });
     },

@@ -86,6 +86,45 @@ export const OptionsPage = () => {
                         />
                     </OptionField>
 
+                    <OptionField
+                        label="Show video lengths for YouTube items"
+                        description="Fetch the length of each YouTube video and show it next to the title. Fetching runs in the background, one video at a time. Each length is a separate request to YouTube, so enabling this produces ongoing background network activity."
+                    >
+                        <Toggle
+                            checked={options.youtubeVideoDurationEnabled}
+                            onChange={(checked) =>
+                                dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(checked))
+                            }
+                        />
+                    </OptionField>
+
+                    {options.youtubeVideoDurationEnabled && (
+                        <>
+                            <OptionField label="Fetch lengths for">
+                                <Select
+                                    value={options.youtubeVideoDurationScope}
+                                    options={[
+                                        { value: 'unread', label: 'Unread items' },
+                                        { value: 'all', label: 'All items' },
+                                    ]}
+                                    onChange={(value) =>
+                                        dispatch(optionsSlice.actions.changeYoutubeVideoDurationScope(value))
+                                    }
+                                />
+                            </OptionField>
+
+                            <NumberField
+                                label="Max lengths per update"
+                                description={`Fetch at most this many video lengths each time the feeds are updated. Set a lower number if you have many YouTube feeds or a metered connection, so a large backlog is spread over several updates instead of one long run. Set to 0 for no limit.`}
+                                value={options.youtubeVideoDurationMaxPerRun}
+                                min={0}
+                                onCommit={(value) =>
+                                    dispatch(optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(value))
+                                }
+                            />
+                        </>
+                    )}
+
                     <NumberField
                         label="Max items per feed"
                         description={`Keep at most this many items per feed. Newer items are kept, older ones are removed. Defaults to ${MAX_ITEMS_PER_FEED_DEFAULT}. Set to 0 for unlimited.`}

@@ -52,6 +52,7 @@ export const Default: Story = {
                 folders: stateFixture.feeds?.folders ?? [],
                 selectedNode: nodeMeta,
                 readItemIds: stateFixture.feeds?.readItemIds ?? [],
+                durationFetchFailures: stateFixture.feeds?.durationFetchFailures ?? {},
             },
             session: {
                 ...sessionFixture,
@@ -60,7 +61,6 @@ export const Default: Story = {
         }),
     ],
 };
-
 
 export const NoFeeds: Story = {
     decorators: [withStore(emptyStateFixture)],
