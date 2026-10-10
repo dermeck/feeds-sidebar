@@ -45,10 +45,13 @@ describe('video duration queue', () => {
         mockedFetch.mockResolvedValueOnce(754).mockResolvedValueOnce(31);
 
         const store = setupStore();
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'videoItem1', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
-            { id: 'videoItem2', url: 'https://youtu.be/BBBBBBBBBBB', title: 'two' },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [
+                { id: 'videoItem1', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
+                { id: 'videoItem2', url: 'https://youtu.be/BBBBBBBBBBB', title: 'two' },
+            ]),
+        );
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
 
         await jest.advanceTimersByTimeAsync(10_000);
@@ -62,10 +65,13 @@ describe('video duration queue', () => {
         mockedFetch.mockResolvedValue(100);
 
         const store = setupStore();
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'unreadItem', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'unread' },
-            { id: 'readItem', url: 'https://www.youtube.com/watch?v=BBBBBBBBBBB', title: 'read', isRead: true },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [
+                { id: 'unreadItem', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'unread' },
+                { id: 'readItem', url: 'https://www.youtube.com/watch?v=BBBBBBBBBBB', title: 'read', isRead: true },
+            ]),
+        );
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
 
         await jest.advanceTimersByTimeAsync(10_000);
@@ -78,10 +84,13 @@ describe('video duration queue', () => {
         mockedFetch.mockResolvedValue(100);
 
         const store = setupStore();
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'unreadItem', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'unread' },
-            { id: 'readItem', url: 'https://www.youtube.com/watch?v=BBBBBBBBBBB', title: 'read', isRead: true },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [
+                { id: 'unreadItem', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'unread' },
+                { id: 'readItem', url: 'https://www.youtube.com/watch?v=BBBBBBBBBBB', title: 'read', isRead: true },
+            ]),
+        );
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationScope('all'));
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
 
@@ -94,11 +103,14 @@ describe('video duration queue', () => {
         mockedFetch.mockResolvedValue(100);
 
         const store = setupStore();
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'videoItem1', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
-            { id: 'videoItem2', url: 'https://youtu.be/BBBBBBBBBBB', title: 'two' },
-            { id: 'videoItem3', url: 'https://youtu.be/CCCCCCCCCCC', title: 'three' },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [
+                { id: 'videoItem1', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
+                { id: 'videoItem2', url: 'https://youtu.be/BBBBBBBBBBB', title: 'two' },
+                { id: 'videoItem3', url: 'https://youtu.be/CCCCCCCCCCC', title: 'three' },
+            ]),
+        );
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(2));
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
 
@@ -113,11 +125,14 @@ describe('video duration queue', () => {
         mockedFetch.mockResolvedValue(100);
 
         const store = setupStore();
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'videoItem1', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
-            { id: 'videoItem2', url: 'https://youtu.be/BBBBBBBBBBB', title: 'two' },
-            { id: 'videoItem3', url: 'https://youtu.be/CCCCCCCCCCC', title: 'three' },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [
+                { id: 'videoItem1', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
+                { id: 'videoItem2', url: 'https://youtu.be/BBBBBBBBBBB', title: 'two' },
+                { id: 'videoItem3', url: 'https://youtu.be/CCCCCCCCCCC', title: 'three' },
+            ]),
+        );
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(0));
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
 
@@ -130,12 +145,16 @@ describe('video duration queue', () => {
         mockedFetch.mockResolvedValue(100);
 
         const store = setupStore();
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
-        ]));
-        addFeed(store, youtubeFeed('feed2', [
-            { id: 'itemB', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'same video' },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [{ id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' }]),
+        );
+        addFeed(
+            store,
+            youtubeFeed('feed2', [
+                { id: 'itemB', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'same video' },
+            ]),
+        );
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
 
         await jest.advanceTimersByTimeAsync(10_000);
@@ -149,10 +168,13 @@ describe('video duration queue', () => {
         mockedFetch.mockResolvedValueOnce(undefined).mockResolvedValueOnce(50);
 
         const store = setupStore();
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
-            { id: 'itemB', url: 'https://www.youtube.com/watch?v=BBBBBBBBBBB', title: 'two' },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [
+                { id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
+                { id: 'itemB', url: 'https://www.youtube.com/watch?v=BBBBBBBBBBB', title: 'two' },
+            ]),
+        );
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
 
         await jest.advanceTimersByTimeAsync(10_000);
@@ -166,9 +188,10 @@ describe('video duration queue', () => {
         mockedFetch.mockResolvedValueOnce(undefined).mockResolvedValueOnce(50);
 
         const store = setupStore();
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [{ id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' }]),
+        );
         store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
 
         await jest.advanceTimersByTimeAsync(10_000);
@@ -176,17 +199,19 @@ describe('video duration queue', () => {
         expect(mockedFetch).toHaveBeenCalledTimes(1);
         expect(store.getState().feeds.durationFetchFailures).toEqual({ AAAAAAAAAAA: expect.any(Number) });
 
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [{ id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' }]),
+        );
         await jest.advanceTimersByTimeAsync(1_000);
 
         expect(mockedFetch).toHaveBeenCalledTimes(1);
 
         await jest.advanceTimersByTimeAsync(DURATION_FETCH_RETRY_WINDOW_MS);
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [{ id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' }]),
+        );
         await jest.advanceTimersByTimeAsync(10_000);
 
         expect(mockedFetch).toHaveBeenCalledTimes(2);
@@ -196,9 +221,10 @@ describe('video duration queue', () => {
 
     it('does not fetch anything when the option is disabled', async () => {
         const store = setupStore();
-        addFeed(store, youtubeFeed('feed1', [
-            { id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
-        ]));
+        addFeed(
+            store,
+            youtubeFeed('feed1', [{ id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' }]),
+        );
 
         await jest.advanceTimersByTimeAsync(10_000);
 

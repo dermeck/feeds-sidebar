@@ -568,12 +568,7 @@ const feedsSlice = createSlice({
                     return {
                         ...state,
                         readItemIds: Array.from(newReadIds),
-                        feeds: [
-                            ...markFeedsAsRead(
-                                state.feeds,
-                                feedIds,
-                            ),
-                        ],
+                        feeds: [...markFeedsAsRead(state.feeds, feedIds)],
                     };
                 }
 

@@ -42,7 +42,12 @@ const liveStreamHtml = `
 const facadeHtml = '<html><body>no player response here</body></html>';
 
 const fakeFetch = (body: string, ok = true): typeof fetch =>
-    (async () => ({ ok, async text() { return body; } })) as unknown as typeof fetch;
+    (async () => ({
+        ok,
+        async text() {
+            return body;
+        },
+    })) as unknown as typeof fetch;
 
 describe('#fetchYoutubeDurationSeconds', () => {
     it('extracts the duration from the watch page', async () => {
@@ -51,11 +56,15 @@ describe('#fetchYoutubeDurationSeconds', () => {
 
     it('returns undefined when the video is unavailable', async () => {
         await expect(fetchYoutubeDurationSeconds('OU6HZ-PTOPI', fakeFetch(errorPageHtml))).resolves.toBeUndefined();
-        await expect(fetchYoutubeDurationSeconds('OU6HZ-PTOPI', fakeFetch(loginRequiredPageHtml))).resolves.toBeUndefined();
+        await expect(
+            fetchYoutubeDurationSeconds('OU6HZ-PTOPI', fakeFetch(loginRequiredPageHtml)),
+        ).resolves.toBeUndefined();
     });
 
     it('returns undefined when the page shows a different video', async () => {
-        await expect(fetchYoutubeDurationSeconds('OU6HZ-PTOPI', fakeFetch(wrongVideoPageHtml))).resolves.toBeUndefined();
+        await expect(
+            fetchYoutubeDurationSeconds('OU6HZ-PTOPI', fakeFetch(wrongVideoPageHtml)),
+        ).resolves.toBeUndefined();
     });
 
     it('returns undefined for a live video that reports zero seconds', async () => {

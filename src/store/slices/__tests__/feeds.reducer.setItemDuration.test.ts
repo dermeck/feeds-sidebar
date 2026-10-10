@@ -28,24 +28,29 @@ const stateWithItems = (): RootState =>
     }) as unknown as RootState;
 
 describe('setItemDuration action', () => {
-
     it('sets the duration on the target item', () => {
-        const state = feedsSlice.reducer(stateWithItems().feeds, feedsSlice.actions.setItemDuration({
-            feedId: 'feed1',
-            itemId: 'youtubeItem',
-            durationSeconds: 754,
-        }));
+        const state = feedsSlice.reducer(
+            stateWithItems().feeds,
+            feedsSlice.actions.setItemDuration({
+                feedId: 'feed1',
+                itemId: 'youtubeItem',
+                durationSeconds: 754,
+            }),
+        );
 
         expect(state.feeds[0].items[0].durationSeconds).toBe(754);
     });
 
     it('leaves all other items untouched', () => {
         const prev = stateWithItems().feeds;
-        const state = feedsSlice.reducer(prev, feedsSlice.actions.setItemDuration({
-            feedId: 'feed1',
-            itemId: 'youtubeItem',
-            durationSeconds: 754,
-        }));
+        const state = feedsSlice.reducer(
+            prev,
+            feedsSlice.actions.setItemDuration({
+                feedId: 'feed1',
+                itemId: 'youtubeItem',
+                durationSeconds: 754,
+            }),
+        );
 
         expect(state.feeds[0].items[1].durationSeconds).toBeUndefined();
         expect(state.feeds[0].items[2].durationSeconds).toBe(31);
@@ -54,22 +59,28 @@ describe('setItemDuration action', () => {
 
     it('does nothing when the duration is already set to the same value', () => {
         const prev = stateWithItems().feeds;
-        const state = feedsSlice.reducer(prev, feedsSlice.actions.setItemDuration({
-            feedId: 'feed1',
-            itemId: 'knownItem',
-            durationSeconds: 31,
-        }));
+        const state = feedsSlice.reducer(
+            prev,
+            feedsSlice.actions.setItemDuration({
+                feedId: 'feed1',
+                itemId: 'knownItem',
+                durationSeconds: 31,
+            }),
+        );
 
         expect(state).toStrictEqual(prev);
     });
 
     it('does nothing for an unknown item', () => {
         const prev = stateWithItems().feeds;
-        const state = feedsSlice.reducer(prev, feedsSlice.actions.setItemDuration({
-            feedId: 'feed1',
-            itemId: 'doesNotExist',
-            durationSeconds: 100,
-        }));
+        const state = feedsSlice.reducer(
+            prev,
+            feedsSlice.actions.setItemDuration({
+                feedId: 'feed1',
+                itemId: 'doesNotExist',
+                durationSeconds: 100,
+            }),
+        );
 
         expect(state).toStrictEqual(prev);
     });

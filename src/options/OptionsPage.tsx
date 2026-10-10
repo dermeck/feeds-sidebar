@@ -8,7 +8,6 @@ import optionsSlice, {
     FEED_UPDATE_MINUTES_MAX,
     FEED_UPDATE_MINUTES_MIN,
     MAX_ITEMS_PER_FEED_DEFAULT,
-    YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
     selectOptions,
 } from '../store/slices/options';
 import { Button } from '../base-components/Button/Button';
@@ -101,9 +100,7 @@ export const OptionsPage = () => {
 
                     {options.youtubeVideoDurationEnabled && (
                         <>
-                            <OptionField
-                                label="Fetch lengths for"
-                            >
+                            <OptionField label="Fetch lengths for">
                                 <Select
                                     value={options.youtubeVideoDurationScope}
                                     options={[

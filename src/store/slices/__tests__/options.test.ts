@@ -157,20 +157,14 @@ describe('options slice', () => {
 
     describe('changeYoutubeVideoDurationEnabled', () => {
         it('sets the value', () => {
-            const state = optionsSlice.reducer(
-                prevState,
-                optionsSlice.actions.changeYoutubeVideoDurationEnabled(true),
-            );
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
             expect(state.youtubeVideoDurationEnabled).toBe(true);
         });
     });
 
     describe('changeYoutubeVideoDurationScope', () => {
         it('sets the value', () => {
-            const state = optionsSlice.reducer(
-                prevState,
-                optionsSlice.actions.changeYoutubeVideoDurationScope('all'),
-            );
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeVideoDurationScope('all'));
             expect(state.youtubeVideoDurationScope).toBe('all');
         });
     });
@@ -185,10 +179,7 @@ describe('options slice', () => {
         });
 
         it('keeps 0 for no limit', () => {
-            const state = optionsSlice.reducer(
-                prevState,
-                optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(0),
-            );
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(0));
             expect(state.youtubeVideoDurationMaxPerRun).toBe(0);
         });
 

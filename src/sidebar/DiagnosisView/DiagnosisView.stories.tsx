@@ -62,7 +62,6 @@ export const Default: Story = {
     ],
 };
 
-
 export const NoFeeds: Story = {
     decorators: [withStore(emptyStateFixture)],
 };

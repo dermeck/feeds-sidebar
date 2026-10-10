@@ -25,7 +25,9 @@ describe('#youtubeVideoIdFromUrl', () => {
 
     it('returns undefined for non-video urls', () => {
         expect(youtubeVideoIdFromUrl('https://www.youtube.com/channel/UC5NOEUbkLheQcaaRldYW5GA')).toBeUndefined();
-        expect(youtubeVideoIdFromUrl('https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA')).toBeUndefined();
+        expect(
+            youtubeVideoIdFromUrl('https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA'),
+        ).toBeUndefined();
         expect(youtubeVideoIdFromUrl('https://example.com/watch?v=OU6HZ-PTOPI')).toBeUndefined();
         expect(youtubeVideoIdFromUrl('https://www.youtube.com/watch')).toBeUndefined();
         expect(youtubeVideoIdFromUrl('https://youtu.be/')).toBeUndefined();

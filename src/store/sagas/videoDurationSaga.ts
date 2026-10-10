@@ -25,7 +25,9 @@ function* drainQueue() {
         return;
     }
 
-    const pending: ReturnType<typeof selectYoutubeItemsMissingDuration> = yield select(selectYoutubeItemsMissingDuration);
+    const pending: ReturnType<typeof selectYoutubeItemsMissingDuration> = yield select(
+        selectYoutubeItemsMissingDuration,
+    );
     const failures: ReturnType<typeof selectDurationFetchFailures> = yield select(selectDurationFetchFailures);
     const now = Date.now();
 
