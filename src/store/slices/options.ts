@@ -25,6 +25,7 @@ type OptionsSliceState = {
     feedDetectionEnabled: boolean;
     diagnosisInactiveDays: number;
     showUnreadBadge: boolean;
+    youtubeVideoDurationEnabled: boolean;
     maxItemsPerFeed: number;
     sidebarSurface: SidebarSurface;
     sidebarCustomColorLight: string;
@@ -39,6 +40,7 @@ export const initialState: OptionsSliceState = {
     feedDetectionEnabled: true,
     diagnosisInactiveDays: 60,
     showUnreadBadge: true,
+    youtubeVideoDurationEnabled: false,
     maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
     sidebarSurface: 'auto',
     sidebarCustomColorLight: '#ffffff',
@@ -78,6 +80,9 @@ const optionsSlice = createSlice({
         },
         changeShowUnreadBadge(state, action: PayloadAction<boolean>) {
             state.showUnreadBadge = action.payload;
+        },
+        changeYoutubeVideoDurationEnabled(state, action: PayloadAction<boolean>) {
+            state.youtubeVideoDurationEnabled = action.payload;
         },
         changeMaxItemsPerFeed(state, action: PayloadAction<number>) {
             state.maxItemsPerFeed = Math.max(0, Math.round(action.payload));

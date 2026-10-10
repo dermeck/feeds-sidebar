@@ -19,6 +19,7 @@ describe('options slice', () => {
         feedDetectionEnabled: true,
         diagnosisInactiveDays: 60,
         showUnreadBadge: true,
+        youtubeVideoDurationEnabled: false,
         maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
         sidebarSurface: 'auto',
         sidebarCustomColorLight: '#ffffff',
@@ -50,6 +51,7 @@ describe('options slice', () => {
                 feedDetectionEnabled: false,
                 diagnosisInactiveDays: 90,
                 showUnreadBadge: false,
+                youtubeVideoDurationEnabled: false,
                 maxItemsPerFeed: 100,
                 sidebarSurface: 'system-theme',
                 sidebarCustomColorLight: '#ffffff',
@@ -76,6 +78,7 @@ describe('options slice', () => {
                 feedDetectionEnabled: false,
                 diagnosisInactiveDays: 60,
                 showUnreadBadge: true,
+                youtubeVideoDurationEnabled: false,
                 maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
                 sidebarSurface: 'auto',
                 sidebarCustomColorLight: '#ffffff',
@@ -142,6 +145,16 @@ describe('options slice', () => {
         it('sets the value', () => {
             const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeShowUnreadBadge(false));
             expect(state.showUnreadBadge).toBe(false);
+        });
+    });
+
+    describe('changeYoutubeVideoDurationEnabled', () => {
+        it('sets the value', () => {
+            const state = optionsSlice.reducer(
+                prevState,
+                optionsSlice.actions.changeYoutubeVideoDurationEnabled(true),
+            );
+            expect(state.youtubeVideoDurationEnabled).toBe(true);
         });
     });
 

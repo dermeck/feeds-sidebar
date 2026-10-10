@@ -86,6 +86,18 @@ export const OptionsPage = () => {
                         />
                     </OptionField>
 
+                    <OptionField
+                        label="Show video lengths for YouTube items"
+                        description="Fetch the length of each YouTube video (e.g. 12:34) once and show it next to the title. Fetching runs in the background, one video at a time."
+                    >
+                        <Toggle
+                            checked={options.youtubeVideoDurationEnabled}
+                            onChange={(checked) =>
+                                dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(checked))
+                            }
+                        />
+                    </OptionField>
+
                     <NumberField
                         label="Max items per feed"
                         description={`Keep at most this many items per feed. Newer items are kept, older ones are removed. Defaults to ${MAX_ITEMS_PER_FEED_DEFAULT}. Set to 0 for unlimited.`}
