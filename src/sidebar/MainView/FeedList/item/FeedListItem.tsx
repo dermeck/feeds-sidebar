@@ -99,7 +99,7 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, dura
                     >
                         {label}
                     </a>
-                    {isDurationEnabled && durationSeconds !== undefined && (
+                    {isDurationEnabled && durationSeconds !== undefined && durationSeconds > 0 && (
                         <span className="feed-item__duration">{formatDuration(durationSeconds)}</span>
                     )}
                 </div>

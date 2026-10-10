@@ -35,6 +35,10 @@ var ytInitialPlayerResponse = {"playabilityStatus":{"status":"LOGIN_REQUIRED","r
 </script>
 `;
 
+const liveStreamHtml = `
+<script>var ytInitialPlayerResponse = {"videoId":"OU6HZ-PTOPI","isLiveContent":true,"lengthSeconds":"0"}</script>
+`;
+
 const facadeHtml = '<html><body>no player response here</body></html>';
 
 const fakeFetch = (body: string, ok = true): typeof fetch =>
@@ -52,6 +56,10 @@ describe('#fetchYoutubeDurationSeconds', () => {
 
     it('returns undefined when the page shows a different video', async () => {
         await expect(fetchYoutubeDurationSeconds('OU6HZ-PTOPI', fakeFetch(wrongVideoPageHtml))).resolves.toBeUndefined();
+    });
+
+    it('returns undefined for a live video that reports zero seconds', async () => {
+        await expect(fetchYoutubeDurationSeconds('OU6HZ-PTOPI', fakeFetch(liveStreamHtml))).resolves.toBeUndefined();
     });
 
     it('returns undefined when the player response is missing', async () => {

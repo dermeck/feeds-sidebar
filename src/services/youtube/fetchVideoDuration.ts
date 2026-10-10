@@ -36,7 +36,9 @@ const parseLengthSeconds = (html: string, videoId: string): number | undefined =
         index += 1;
     }
 
-    return value === '' ? undefined : Number(value);
+    const seconds = value === '' ? undefined : Number(value);
+
+    return seconds === 0 ? undefined : seconds;
 };
 
 export const fetchYoutubeDurationSeconds = async (
