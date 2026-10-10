@@ -6,6 +6,7 @@ import { FeedItem, NodeType } from '../../../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import feedsSlice from '../../../../store/slices/feeds';
 import { MouseEventButton } from '../../../../utils/types/web-api';
+import { formatDuration } from '../../../../utils/timeUtils';
 import { Button } from '../../../../base-components/Button/Button';
 import { clsx } from 'clsx';
 
@@ -17,11 +18,12 @@ type Props = {
     isRead: boolean;
     feedId: string;
     nestedLevel: number;
+    durationSeconds?: number;
 };
 
 export type FeedListItemModel = FeedItem & { parentId: string; parentTitle?: string };
 
-const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel }: Props) => {
+const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, durationSeconds }: Props) => {
     const dispatch = useAppDispatch();
 
     const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === id;
@@ -79,22 +81,27 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel }: Pr
         >
             <div className="feed-item__grid">
                 <GlobeSimple size={20} weight="light" />
-                <a
-                    className="feed-item__link"
-                    title={title}
-                    href={url}
-                    onAuxClick={(e) => {
-                        if (e.button === MouseEventButton.middleMousButton) {
-                            // mark item as read if middle mouse button is clicked
-                            handleFeedItemClick(feedId, id);
-                        }
-                    }}
-                    onContextMenu={(e) => e.preventDefault()}
-                    onClick={() => handleFeedItemClick(feedId, id)}
-                    onDragStart={(e) => e.preventDefault()}
-                >
-                    {label}
-                </a>
+                <div className="feed-item__title-row">
+                    <a
+                        className="feed-item__link"
+                        title={title}
+                        href={url}
+                        onAuxClick={(e) => {
+                            if (e.button === MouseEventButton.middleMousButton) {
+                                // mark item as read if middle mouse button is clicked
+                                handleFeedItemClick(feedId, id);
+                            }
+                        }}
+                        onContextMenu={(e) => e.preventDefault()}
+                        onClick={() => handleFeedItemClick(feedId, id)}
+                        onDragStart={(e) => e.preventDefault()}
+                    >
+                        {label}
+                    </a>
+                    {durationSeconds !== undefined && (
+                        <span className="feed-item__duration">{formatDuration(durationSeconds)}</span>
+                    )}
+                </div>
                 <Button
                     className="feed-item__remove-button"
                     title="Mark as Read"

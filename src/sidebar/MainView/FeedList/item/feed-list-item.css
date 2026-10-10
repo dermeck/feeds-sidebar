@@ -71,11 +71,20 @@
     }
 }
 
-.feed-item__link {
+.feed-item__title-row {
     grid-column: 2;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
     padding-top: 4px;
     padding-bottom: 4px;
+}
+
+.feed-item__link {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
 
     color: inherit;
     text-decoration: none;
@@ -91,6 +100,14 @@
     }
 }
 
+.feed-item__duration {
+    flex: none;
+    color: var(--text-color-deemphasized);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
 /* outline follows the pill, not the inner text link */
 .feed-item:has(.feed-item__link:focus-visible) {
     outline: var(--focus-outline);
@@ -98,7 +115,7 @@
 }
 
 .feed-item:hover {
-    .feed-item__link {
+    .feed-item__title-row {
         padding-right: 28px; /* 24px button + 4px right offset */
     }
 
