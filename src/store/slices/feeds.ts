@@ -16,7 +16,9 @@ import {
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { moveOrInsertElementBefore, moveOrInsertElementAfter } from '../../utils/arrayUtils';
 import { randomUUID } from '../../utils/uuid';
+import { youtubeVideoIdFromItemId, youtubeVideoIdFromUrl } from '../../services/youtube/videoUrl';
 import { extensionStateLoaded } from '../actions';
+import type { RootState } from '../store';
 import optionsSlice, { initialState as initialOptions } from './options';
 
 type FeedSliceState = {
@@ -145,6 +147,26 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
     state.feeds
         .map((feed) => feed.items.filter((i) => !isItemRead(state, feed.id, i.id, feed)).length)
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
+
+export const selectYoutubeItemMissingDuration = (
+    state: RootState,
+): { feedId: string; itemId: string; videoId: string } | undefined => {
+    for (const feed of state.feeds.feeds) {
+        for (const item of feed.items) {
+            if (item.durationSeconds !== undefined) {
+                continue;
+            }
+
+            const videoId = youtubeVideoIdFromUrl(item.url) ?? youtubeVideoIdFromItemId(item.id);
+
+            if (videoId !== undefined) {
+                return { feedId: feed.id, itemId: item.id, videoId };
+            }
+        }
+    }
+
+    return undefined;
+};
 
 /* factory function for creating memoized selector for each component instance (use nodeId from props) */
 export const makeSelectTreeNode = () =>
@@ -452,6 +474,25 @@ const feedsSlice = createSlice({
                 ...state,
                 readItemIds: state.readItemIds.includes(key) ? state.readItemIds : [...state.readItemIds, key],
                 feeds: [...markItemAsRead(state.feeds, feedId, itemId)],
+            };
+        },
+        setItemDuration(state, action: PayloadAction<{ feedId: string; itemId: string; durationSeconds: number }>) {
+            const { feedId, itemId, durationSeconds } = action.payload;
+            const feed = state.feeds.find((f) => f.id === feedId);
+            const item = feed?.items.find((i) => i.id === itemId);
+
+            // no-op when the duration is already known, to avoid needless state writes and saves
+            if (feed === undefined || item === undefined || item.durationSeconds === durationSeconds) {
+                return state;
+            }
+
+            return {
+                ...state,
+                feeds: state.feeds.map((f) =>
+                    f.id !== feedId
+                        ? f
+                        : { ...f, items: f.items.map((i) => (i.id !== itemId ? i : { ...i, durationSeconds })) },
+                ),
             };
         },
         markSelectedNodeAsRead(state) {
