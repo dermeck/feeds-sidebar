@@ -148,9 +148,11 @@ export const selectTotalUnreadItems = (state: FeedSliceState) =>
         .map((feed) => feed.items.filter((i) => !isItemRead(state, feed.id, i.id, feed)).length)
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
 
-export const selectYoutubeItemMissingDuration = (
+export const selectYoutubeItemsMissingDuration = (
     state: RootState,
-): { feedId: string; itemId: string; videoId: string } | undefined => {
+): ReadonlyArray<{ feedId: string; itemId: string; videoId: string }> => {
+    const pending: Array<{ feedId: string; itemId: string; videoId: string }> = [];
+
     for (const feed of state.feeds.feeds) {
         for (const item of feed.items) {
             if (item.durationSeconds !== undefined) {
@@ -160,12 +162,12 @@ export const selectYoutubeItemMissingDuration = (
             const videoId = youtubeVideoIdFromUrl(item.url) ?? youtubeVideoIdFromItemId(item.id);
 
             if (videoId !== undefined) {
-                return { feedId: feed.id, itemId: item.id, videoId };
+                pending.push({ feedId: feed.id, itemId: item.id, videoId });
             }
         }
     }
 
-    return undefined;
+    return pending;
 };
 
 /* factory function for creating memoized selector for each component instance (use nodeId from props) */

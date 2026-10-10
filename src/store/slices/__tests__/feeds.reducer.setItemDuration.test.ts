@@ -1,5 +1,5 @@
 import { RootState } from '../../store';
-import feedsSlice, { selectYoutubeItemMissingDuration } from '../feeds';
+import feedsSlice, { selectYoutubeItemsMissingDuration } from '../feeds';
 
 const stateWithItems = (): RootState =>
     ({
@@ -74,15 +74,14 @@ describe('setItemDuration action', () => {
     });
 });
 
-describe('selectYoutubeItemMissingDuration', () => {
-    it('returns the first item whose duration is not yet known', () => {
+describe('selectYoutubeItemsMissingDuration', () => {
+    it('returns the items whose duration is not yet known', () => {
         const state = stateWithItems();
 
-        expect(selectYoutubeItemMissingDuration(state)).toEqual({
-            feedId: 'feed1',
-            itemId: 'youtubeItem',
-            videoId: 'OU6HZ-PTOPI',
-        });
+        expect(selectYoutubeItemsMissingDuration(state)).toEqual([
+            { feedId: 'feed1', itemId: 'youtubeItem', videoId: 'OU6HZ-PTOPI' },
+            { feedId: 'feed2', itemId: 'shortItem', videoId: 'JXgV1rJzwd4' },
+        ]);
     });
 
     it('prefers the video id from the url over the one from the item id', () => {
@@ -91,9 +90,9 @@ describe('selectYoutubeItemMissingDuration', () => {
         const feedsSliceState = state.feeds;
         feedsSliceState.feeds[0].items[0].id = 'yt:video:JXgV1rJzwd4';
 
-        const result = selectYoutubeItemMissingDuration({ ...state, feeds: feedsSliceState });
+        const result = selectYoutubeItemsMissingDuration(state);
 
-        expect(result?.videoId).toBe('OU6HZ-PTOPI');
+        expect(result[0]?.videoId).toBe('OU6HZ-PTOPI');
     });
 
     it('falls back to the video id from the item id', () => {
@@ -101,16 +100,16 @@ describe('selectYoutubeItemMissingDuration', () => {
         state.feeds.feeds[0].items[0].url = 'https://example.com/redirect';
         state.feeds.feeds[0].items[0].id = 'yt:video:JXgV1rJzwd4';
 
-        const result = selectYoutubeItemMissingDuration(state);
+        const result = selectYoutubeItemsMissingDuration(state);
 
-        expect(result).toEqual({ feedId: 'feed1', itemId: 'yt:video:JXgV1rJzwd4', videoId: 'JXgV1rJzwd4' });
+        expect(result[0]).toEqual({ feedId: 'feed1', itemId: 'yt:video:JXgV1rJzwd4', videoId: 'JXgV1rJzwd4' });
     });
 
-    it('returns undefined when every youtube item already has a duration', () => {
+    it('returns an empty array when every youtube item already has a duration', () => {
         const state = stateWithItems();
         state.feeds.feeds[0].items[0].durationSeconds = 754;
         state.feeds.feeds[1].items[0].durationSeconds = 59;
 
-        expect(selectYoutubeItemMissingDuration(state)).toBeUndefined();
+        expect(selectYoutubeItemsMissingDuration(state)).toHaveLength(0);
     });
 });
