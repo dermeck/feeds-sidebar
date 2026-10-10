@@ -27,6 +27,7 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, dura
     const dispatch = useAppDispatch();
 
     const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === id;
+    const isDurationEnabled = useAppSelector((state) => state.options.youtubeVideoDurationEnabled);
 
     useEffect(() => {
         if (isSelected) {
@@ -98,7 +99,7 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, dura
                     >
                         {label}
                     </a>
-                    {durationSeconds !== undefined && (
+                    {isDurationEnabled && durationSeconds !== undefined && (
                         <span className="feed-item__duration">{formatDuration(durationSeconds)}</span>
                     )}
                 </div>
