@@ -1,5 +1,5 @@
 import { RootState } from '../../store';
-import feedsSlice, { selectYoutubeItemsMissingDuration } from '../feeds';
+import feedsSlice, { DURATION_FETCH_RETRY_WINDOW_MS, selectYoutubeItemsMissingDuration } from '../feeds';
 
 const stateWithItems = (): RootState =>
     ({
@@ -21,6 +21,7 @@ const stateWithItems = (): RootState =>
             ],
             selectedNode: undefined,
             readItemIds: [],
+            durationFetchFailures: {},
         },
         options: { youtubeVideoDurationEnabled: false },
         session: {},
@@ -135,5 +136,67 @@ describe('selectYoutubeItemsMissingDuration', () => {
         state.feeds.feeds[0].items[0].isRead = true;
 
         expect(selectYoutubeItemsMissingDuration(state).map((x) => x.itemId)).toEqual(['youtubeItem', 'shortItem']);
+    });
+});
+
+describe('recordDurationFetchFailure', () => {
+    it('records the failure timestamp for the video', () => {
+        const state = stateWithItems();
+
+        const next = feedsSlice.reducer(
+            state.feeds,
+            feedsSlice.actions.recordDurationFetchFailure({ videoId: 'OU6HZ-PTOPI', failedAt: 1000 }),
+        );
+
+        expect(next.durationFetchFailures).toEqual({ 'OU6HZ-PTOPI': 1000 });
+    });
+
+    it('keeps older failures that are still inside the retry window', () => {
+        const state = stateWithItems();
+        state.feeds.durationFetchFailures = { old: 1000 };
+
+        const next = feedsSlice.reducer(
+            state.feeds,
+            feedsSlice.actions.recordDurationFetchFailure({
+                videoId: 'new',
+                failedAt: 1000 + DURATION_FETCH_RETRY_WINDOW_MS - 1,
+            }),
+        );
+
+        expect(next.durationFetchFailures).toEqual({ old: 1000, new: 1000 + DURATION_FETCH_RETRY_WINDOW_MS - 1 });
+    });
+
+    it('drops failures that are past the retry window', () => {
+        const state = stateWithItems();
+        state.feeds.durationFetchFailures = { stale: 1000 };
+
+        const next = feedsSlice.reducer(
+            state.feeds,
+            feedsSlice.actions.recordDurationFetchFailure({
+                videoId: 'fresh',
+                failedAt: 1000 + DURATION_FETCH_RETRY_WINDOW_MS,
+            }),
+        );
+
+        expect(next.durationFetchFailures).toEqual({ fresh: 1000 + DURATION_FETCH_RETRY_WINDOW_MS });
+    });
+});
+
+describe('clearDurationFetchFailure', () => {
+    it('removes the failure entry for the video', () => {
+        const state = stateWithItems();
+        state.feeds.durationFetchFailures = { 'OU6HZ-PTOPI': 1000, other: 2000 };
+
+        const next = feedsSlice.reducer(state.feeds, feedsSlice.actions.clearDurationFetchFailure('OU6HZ-PTOPI'));
+
+        expect(next.durationFetchFailures).toEqual({ other: 2000 });
+    });
+
+    it('returns the same state when there is nothing to clear', () => {
+        const state = stateWithItems();
+
+        const next = feedsSlice.reducer(state.feeds, feedsSlice.actions.clearDurationFetchFailure('OU6HZ-PTOPI'));
+
+        expect(next).toBe(state.feeds);
     });
 });

@@ -3,7 +3,7 @@ import createSagaMiddleware from 'redux-saga';
 
 import { Feed } from '../../model/feeds';
 import { fetchYoutubeDurationSeconds } from '../../services/youtube/fetchVideoDuration';
-import feedsSlice from '../slices/feeds';
+import feedsSlice, { DURATION_FETCH_RETRY_WINDOW_MS } from '../slices/feeds';
 import optionsSlice from '../slices/options';
 import { watchVideoDurationSaga } from './videoDurationSaga';
 
@@ -160,6 +160,38 @@ describe('video duration queue', () => {
         expect(mockedFetch).toHaveBeenCalledTimes(2);
         const itemDurations = store.getState().feeds.feeds.flatMap((feed) => feed.items.map((i) => i.durationSeconds));
         expect(itemDurations).toEqual([undefined, 50]);
+    });
+
+    it('does not retry a failed video until the retry window passes', async () => {
+        mockedFetch.mockResolvedValueOnce(undefined).mockResolvedValueOnce(50);
+
+        const store = setupStore();
+        addFeed(store, youtubeFeed('feed1', [
+            { id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
+        ]));
+        store.dispatch(optionsSlice.actions.changeYoutubeVideoDurationEnabled(true));
+
+        await jest.advanceTimersByTimeAsync(10_000);
+
+        expect(mockedFetch).toHaveBeenCalledTimes(1);
+        expect(store.getState().feeds.durationFetchFailures).toEqual({ AAAAAAAAAAA: expect.any(Number) });
+
+        addFeed(store, youtubeFeed('feed1', [
+            { id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
+        ]));
+        await jest.advanceTimersByTimeAsync(1_000);
+
+        expect(mockedFetch).toHaveBeenCalledTimes(1);
+
+        await jest.advanceTimersByTimeAsync(DURATION_FETCH_RETRY_WINDOW_MS);
+        addFeed(store, youtubeFeed('feed1', [
+            { id: 'itemA', url: 'https://www.youtube.com/watch?v=AAAAAAAAAAA', title: 'one' },
+        ]));
+        await jest.advanceTimersByTimeAsync(10_000);
+
+        expect(mockedFetch).toHaveBeenCalledTimes(2);
+        expect(store.getState().feeds.feeds[0].items[0].durationSeconds).toBe(50);
+        expect(store.getState().feeds.durationFetchFailures).toEqual({});
     });
 
     it('does not fetch anything when the option is disabled', async () => {

@@ -52,6 +52,7 @@ export const Default: Story = {
                 folders: stateFixture.feeds?.folders ?? [],
                 selectedNode: nodeMeta,
                 readItemIds: stateFixture.feeds?.readItemIds ?? [],
+                durationFetchFailures: stateFixture.feeds?.durationFetchFailures ?? {},
             },
             session: {
                 ...sessionFixture,
