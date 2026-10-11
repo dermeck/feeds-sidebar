@@ -59,6 +59,7 @@ const sessionSlice = createSlice({
                 anchorPoint: action.payload.anchorPoint,
                 node: action.payload.node,
             };
+            state.menuVisible = true;
         },
         showMoreMenu(state, action: PayloadAction<Point>) {
             state.menuContext = {
