@@ -69,16 +69,18 @@ describe('deleteFeed action', () => {
     });
 });
 
-describe('deleteSelectedNode action', () => {
-    describe('when selected node is a feed', () => {
-        it('deletes the selected feed', () => {
+describe('deleteNode action', () => {
+    describe('when the node is a feed', () => {
+        it('deletes the feed', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 feeds: [feed1Fixture, feed2Fixture],
-                selectedNode: { nodeType: NodeType.Feed, nodeId: feed1Fixture.id },
             };
 
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.deleteNode({ nodeType: NodeType.Feed, nodeId: feed1Fixture.id }),
+            );
 
             expect(newState.feeds).toHaveLength(1);
             expect(newState.feeds[0]).toStrictEqual(feed2Fixture);
@@ -89,59 +91,33 @@ describe('deleteSelectedNode action', () => {
                 ...feedsSlice.getInitialState(),
                 feeds: [feed1Fixture],
                 folders: [{ ...folder1Fixture, feedIds: [feed1Fixture.id] }],
-                selectedNode: { nodeType: NodeType.Feed, nodeId: feed1Fixture.id },
             };
 
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.deleteNode({ nodeType: NodeType.Feed, nodeId: feed1Fixture.id }),
+            );
 
             expect(newState.folders).toHaveLength(1);
         });
 
-        // TODO select parent
-        it('clears selectedNode if it was the only existing feed', () => {
+        it('deletes the only feed', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 feeds: [feed1Fixture],
-                selectedNode: { nodeType: NodeType.Feed, nodeId: feed1Fixture.id },
             };
 
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.deleteNode({ nodeType: NodeType.Feed, nodeId: feed1Fixture.id }),
+            );
 
             expect(newState.feeds).toHaveLength(0);
-            expect(newState.selectedNode).toBe(undefined);
-        });
-
-        // TODO
-        it.skip('selects the previuous feed if the deleted feed was the last one', () => {
-            const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
-                feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
-                selectedNode: { nodeType: NodeType.Feed, nodeId: feed3Fixture.id },
-            };
-
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
-
-            expect(newState.feeds).toHaveLength(2);
-            expect(newState.selectedNode).toBe(feed2Fixture.id);
-        });
-
-        // TODO
-        it.skip('selects the subsequent feed if the deleted feed was not the last one', () => {
-            const prevState: FeedSliceState = {
-                ...feedsSlice.getInitialState(),
-                feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
-                selectedNode: { nodeType: NodeType.Feed, nodeId: feed2Fixture.id },
-            };
-
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
-
-            expect(newState.feeds).toHaveLength(2);
-            expect(newState.selectedNode).toBe(feed3Fixture.id);
         });
     });
 
-    describe('when selected node is a folder', () => {
-        it('deletes the selected folder and its content (subfolders and feeds)', () => {
+    describe('when the node is a folder', () => {
+        it('deletes the folder and its content (subfolders and feeds)', () => {
             const prevState: FeedSliceState = {
                 ...feedsSlice.getInitialState(),
                 folders: [
@@ -151,10 +127,12 @@ describe('deleteSelectedNode action', () => {
                     { ...folder4Fixture, feedIds: [feed3Fixture.id] },
                 ],
                 feeds: [feed1Fixture, feed2Fixture, feed3Fixture],
-                selectedNode: { nodeType: NodeType.Folder, nodeId: folder1Fixture.id },
             };
 
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.deleteNode({ nodeType: NodeType.Folder, nodeId: folder1Fixture.id }),
+            );
 
             expect(newState.folders).toHaveLength(1);
             expect(newState.feeds).toHaveLength(1);
@@ -176,10 +154,12 @@ describe('deleteSelectedNode action', () => {
                     `${feed2Fixture.id}::itemId2`,
                     `${feed3Fixture.id}::itemId1`,
                 ],
-                selectedNode: { nodeType: NodeType.Folder, nodeId: folder1Fixture.id },
             };
 
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.deleteNode({ nodeType: NodeType.Folder, nodeId: folder1Fixture.id }),
+            );
 
             expect(newState.readItemIds).toStrictEqual([`${feed3Fixture.id}::itemId1`]);
         });
@@ -195,10 +175,12 @@ describe('deleteSelectedNode action', () => {
                     folder2Fixture,
                     folder3Fixture,
                 ],
-                selectedNode: { nodeType: NodeType.Folder, nodeId: folder2Fixture.id },
             };
 
-            const newState = feedsSlice.reducer(prevState, feedsSlice.actions.deleteSelectedNode());
+            const newState = feedsSlice.reducer(
+                prevState,
+                feedsSlice.actions.deleteNode({ nodeType: NodeType.Folder, nodeId: folder2Fixture.id }),
+            );
 
             expect(newState.folders).toHaveLength(2);
             expect(newState.folders[0]).toStrictEqual({
@@ -206,11 +188,5 @@ describe('deleteSelectedNode action', () => {
                 subfolderIds: [folder3Fixture.id],
             });
         });
-
-        it.todo('it selects the parent folder if it was the only subfolder');
-
-        it.todo('selects the previous subfolder of the parent if it was the last subfolder');
-
-        it.todo('selects the subsequent subfolder of the parent if it was not the last subfolder');
     });
 });

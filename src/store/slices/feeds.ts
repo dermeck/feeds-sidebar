@@ -3,15 +3,13 @@ import { createAction, createSelector, createSlice, PayloadAction } from '@redux
 import {
     Feed,
     FeedItem,
-    FeedNode,
+    FeedItemWithParent,
     Folder,
-    FolderNode,
     InsertMode,
     itemDate,
     NodeMeta,
     NodeType,
     rootFolderId,
-    TreeNode,
 } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { moveOrInsertElementBefore, moveOrInsertElementAfter } from '../../utils/arrayUtils';
@@ -24,7 +22,6 @@ import optionsSlice, { initialState as initialOptions } from './options';
 type FeedSliceState = {
     folders: ReadonlyArray<Folder>;
     feeds: ReadonlyArray<Feed>;
-    selectedNode: NodeMeta | undefined;
     // Track read item IDs separately to preserve read state even if items are trimmed
     readItemIds: ReadonlyArray<string>;
     // video id -> timestamp of the last failed length fetch, so failures are not retried every update
@@ -121,7 +118,6 @@ const initialState: FeedSliceState = {
                   },
               ],
     feeds: process.env.NODE_ENV === 'development' ? sampleDataFeeds : [],
-    selectedNode: undefined,
     readItemIds: [],
     durationFetchFailures: {},
 };
@@ -184,40 +180,6 @@ export const selectYoutubeItemsMissingDuration = (
 
 export const selectDurationFetchFailures = (state: RootState): Readonly<Record<string, number>> =>
     state.feeds.durationFetchFailures;
-
-/* factory function for creating memoized selector for each component instance (use nodeId from props) */
-export const makeSelectTreeNode = () =>
-    createSelector(
-        selectFeeds,
-        selectFolders,
-        (_: FeedSliceState, nodeId: string) => nodeId,
-        (feeds, folders, nodeId): TreeNode | undefined => {
-            const folder = folders.find((f) => f.id === nodeId);
-
-            if (folder !== undefined) {
-                return {
-                    nodeType: NodeType.Folder,
-                    data: folder,
-                };
-            }
-
-            const feed = feeds.find((f) => f.id === nodeId);
-
-            if (feed !== undefined) {
-                return {
-                    nodeType: NodeType.Feed,
-                    data: feed,
-                };
-            }
-
-            // TODO something triggers selectTreeNode with ids that were just deleted
-            // occurs if folders with subfolders are deleted
-            // fix this workaround and throw error again
-            // throw new Error(`Node with id: "${nodeId}" not found.`);
-
-            return undefined;
-        },
-    );
 
 const folderById = (folders: FeedSliceState['folders'], id: string) => {
     const folder = folders.find((x) => x.id === id);
@@ -299,27 +261,7 @@ const trimOverflowingItems = (state: FeedSliceState, maxItems: number) => {
     });
 };
 
-const selectChildNodes = (
-    feeds: FeedSliceState['feeds'],
-    folders: FeedSliceState['folders'],
-    parentId: string,
-): ReadonlyArray<TreeNode> => {
-    const parentFolder = folderById(folders, parentId);
-
-    const folderNodes: ReadonlyArray<FolderNode> = parentFolder.subfolderIds.map((subFolderId) => ({
-        nodeType: NodeType.Folder,
-        data: folderById(folders, subFolderId),
-    }));
-
-    const feedNodes: ReadonlyArray<FeedNode> = parentFolder.feedIds.map((feedId) => ({
-        nodeType: NodeType.Feed,
-        data: feedById(feeds, feedId),
-    }));
-
-    return [...folderNodes, ...feedNodes];
-};
-
-const selectDescendentNodeIds = (
+export const selectDescendentNodeIds = (
     feeds: FeedSliceState['feeds'],
     folders: FeedSliceState['folders'],
     parentId: string,
@@ -337,66 +279,101 @@ const selectDescendentNodeIds = (
     ];
 };
 
-/* factory function for creating memoized selector (parentId is a parameter) */
-export const makeselectDescendentNodeIds = () =>
-    createSelector(
-        selectFeeds,
-        selectFolders,
-        (_: FeedSliceState, parentId: string | undefined) => parentId,
-        (feeds, folders, parentId): ReadonlyArray<string> => {
-            if (parentId === undefined) {
-                return [];
-            }
+export type TreeViewItem = {
+    id: string;
+    nodeType: NodeType.Folder | NodeType.Feed;
+    title: string;
+    children?: TreeViewItem[];
+};
 
-            if (folders.find((x) => x.id === parentId) === undefined) {
-                return [];
-            }
+const buildTreeItems = (
+    feeds: FeedSliceState['feeds'],
+    folders: FeedSliceState['folders'],
+    folderId: string,
+): TreeViewItem[] => {
+    const folder = folders.find((f) => f.id === folderId);
 
-            const parentFolder = folderById(folders, parentId);
+    if (folder === undefined) {
+        return [];
+    }
 
-            return [
-                ...parentFolder.subfolderIds,
-                ...parentFolder.feedIds,
-                ...parentFolder.subfolderIds.flatMap((sid) => selectDescendentNodeIds(feeds, folders, sid)),
-            ];
-        },
-    );
+    const subfolders: TreeViewItem[] = folder.subfolderIds
+        .map((id) => folders.find((f) => f.id === id))
+        .filter((f): f is Folder => f !== undefined)
+        .map((f) => {
+            const children = buildTreeItems(feeds, folders, f.id);
+            return { id: f.id, nodeType: NodeType.Folder, title: f.title, ...(children.length ? { children } : {}) };
+        });
 
-export const selectHasVisibleChildren = (state: FeedSliceState, nodeMeta: NodeMeta): boolean => {
-    const { nodeId, nodeType } = nodeMeta;
+    const feedNodes: TreeViewItem[] = folder.feedIds
+        .map((id) => feeds.find((f) => f.id === id))
+        .filter((f): f is Feed => f !== undefined)
+        .map((f) => ({ id: f.id, nodeType: NodeType.Feed, title: f.title ?? f.id }));
 
-    switch (nodeType) {
-        case NodeType.FeedItem:
-            return false;
+    return [...subfolders, ...feedNodes];
+};
 
-        case NodeType.Feed:
-            return hasFeedUnreadItem(state, nodeId);
+export const selectTreeItems = createSelector(selectFeeds, selectFolders, (feeds, folders) =>
+    buildTreeItems(feeds, folders, rootFolderId),
+);
 
-        case NodeType.Folder: {
-            return hasFolderChildren(state, nodeId);
+export const selectFolderIds = createSelector(selectFolders, (folders) =>
+    folders.filter((f) => f.id !== rootFolderId).map((f) => f.id),
+);
+
+export const nodeMetaById = (
+    folders: FeedSliceState['folders'],
+    feeds: FeedSliceState['feeds'],
+    id: string,
+): NodeMeta | undefined => {
+    if (folders.some((f) => f.id === id)) {
+        return { nodeId: id, nodeType: NodeType.Folder };
+    }
+
+    if (feeds.some((f) => f.id === id)) {
+        return { nodeId: id, nodeType: NodeType.Feed };
+    }
+
+    return undefined;
+};
+
+export const feedItemsByNode = (
+    feeds: FeedSliceState['feeds'],
+    folders: FeedSliceState['folders'],
+    selectedNode: NodeMeta | undefined,
+): FeedItemWithParent[] => {
+    if (selectedNode === undefined || selectedNode.nodeType === NodeType.FeedItem) {
+        return [];
+    }
+
+    const withParent = (feed: Feed): FeedItemWithParent[] =>
+        feed.items.map((item) => ({ ...item, parentId: feed.id, parentTitle: feed.title }));
+
+    if (selectedNode.nodeType === NodeType.Feed) {
+        const feed = feeds.find((f) => f.id === selectedNode.nodeId);
+
+        return feed ? withParent(feed) : [];
+    }
+
+    const collect = (folderId: string): FeedItemWithParent[] => {
+        const folder = folders.find((f) => f.id === folderId);
+
+        if (folder === undefined) {
+            return [];
         }
 
-        default:
-            throw new UnreachableCaseError(nodeType);
-    }
+        return [
+            ...folder.subfolderIds.flatMap(collect),
+            ...folder.feedIds.flatMap((feedId) => {
+                const feed = feeds.find((f) => f.id === feedId);
+
+                return feed ? withParent(feed) : [];
+            }),
+        ];
+    };
+
+    return collect(selectedNode.nodeId);
 };
-
-const hasFeedUnreadItem = (state: FeedSliceState, feedId: string): boolean => {
-    return !!state.feeds.find((f) => f.id === feedId)?.items.find((item) => !item.isRead);
-};
-
-const hasFolderChildren = (state: FeedSliceState, folderId: string): boolean => {
-    const folder = state.folders.find((f) => f.id === folderId);
-    if (!folder) {
-        return false;
-    }
-
-    return folder.subfolderIds.length > 0 || folder.feedIds.length > 0;
-};
-
-export const selectTopLevelNodes = createSelector(selectFeeds, selectFolders, (feeds, folders) =>
-    selectChildNodes(feeds, folders, rootFolderId),
-);
 
 const feedsSlice = createSlice({
     name: 'feeds',
@@ -481,9 +458,6 @@ const feedsSlice = createSlice({
                     throw new UnreachableCaseError(movedNode.nodeType);
             }
         },
-        select(state, action: PayloadAction<NodeMeta>) {
-            state.selectedNode = action.payload;
-        },
         markItemAsRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             const { feedId, itemId } = action.payload;
             const key = makeReadKey(feedId, itemId);
@@ -537,29 +511,27 @@ const feedsSlice = createSlice({
 
             return { ...state, durationFetchFailures: failures };
         },
-        markSelectedNodeAsRead(state) {
-            if (state.selectedNode === undefined) {
-                throw new Error('Cannot mark node as read because selection is undefined.');
-            }
+        markNodeAsRead(state, action: PayloadAction<NodeMeta>) {
+            const node = action.payload;
 
-            switch (state.selectedNode.nodeType) {
+            switch (node.nodeType) {
                 case NodeType.FeedItem:
                     // always handled via markItemAsRead action
                     return state;
 
                 case NodeType.Feed: {
-                    const feed = feedById(state.feeds, state.selectedNode.nodeId);
+                    const feed = feedById(state.feeds, node.nodeId);
                     const newReadIds = new Set(state.readItemIds);
                     feed.items.forEach((item) => newReadIds.add(makeReadKey(feed.id, item.id)));
                     return {
                         ...state,
                         readItemIds: Array.from(newReadIds),
-                        feeds: [...markFeedsAsRead(state.feeds, [state.selectedNode.nodeId])],
+                        feeds: [...markFeedsAsRead(state.feeds, [node.nodeId])],
                     };
                 }
 
                 case NodeType.Folder: {
-                    const feedIds = feedIdsByFolderId(state.folders, state.selectedNode.nodeId);
+                    const feedIds = feedIdsByFolderId(state.folders, node.nodeId);
                     const newReadIds = new Set(state.readItemIds);
                     feedIds.forEach((feedId) => {
                         const feed = feedById(state.feeds, feedId);
@@ -573,7 +545,7 @@ const feedsSlice = createSlice({
                 }
 
                 default:
-                    throw new UnreachableCaseError(state.selectedNode.nodeType);
+                    throw new UnreachableCaseError(node.nodeType);
             }
         },
         markAllAsRead(state) {
@@ -614,42 +586,19 @@ const feedsSlice = createSlice({
             trimOverflowingItems(state, action.payload);
         },
 
-        deleteSelectedNode(state) {
-            if (state.selectedNode === undefined) {
-                throw new Error('Cannot delete node because selection is undefined.');
-            }
+        deleteNode(state, action: PayloadAction<NodeMeta>) {
+            const node = action.payload;
 
-            switch (state.selectedNode.nodeType) {
+            switch (node.nodeType) {
                 case NodeType.FeedItem:
                     throw new Error('Cannot delete feed item.');
 
                 case NodeType.Feed:
-                    {
-                        // index of the feed that gets deleted
-                        const selectedFeedId = state.selectedNode.nodeId;
-                        // const selectedIndex = state.feeds.findIndex((f) => f.id === selectedFeedId); // TODO
-
-                        const newState = deleteFeed(state, selectedFeedId);
-                        return {
-                            ...newState,
-                            selectedNode: undefined,
-                        };
-
-                        // if possible select the the next feed
-                        // TODO consider changed selection
-                        /*state.selectedNodeId =
-                    state.feeds.length === 0
-                    ? ''
-                    : state.feeds.length > selectedIndex
-                                ? state.feeds[selectedIndex].id
-                                : state.feeds[selectedIndex - 1].id;
-                                */
-                    }
-                    break;
+                    return deleteFeed(state, node.nodeId);
 
                 case NodeType.Folder:
                     {
-                        const selectedFolderId = state.selectedNode.nodeId;
+                        const selectedFolderId = node.nodeId;
 
                         // delete relation in parent
                         state.folders = state.folders.map((folder) =>
@@ -673,14 +622,11 @@ const feedsSlice = createSlice({
                         state.folders = state.folders.filter(
                             (folder) => ![selectedFolderId, ...subfolderIdsToDelete].some((id) => folder.id === id),
                         );
-
-                        // TODO consider changed selection
-                        state.selectedNode = undefined;
                     }
                     break;
 
                 default:
-                    throw new UnreachableCaseError(state.selectedNode.nodeType);
+                    throw new UnreachableCaseError(node.nodeType);
             }
         },
         deleteFeed(state, action: PayloadAction<{ url: string }>) {

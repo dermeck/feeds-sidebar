@@ -4,7 +4,6 @@ import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import Sidebar from './Sidebar';
 import Menu from './Menu/Menu';
 import { View } from './App';
-import { MenuType } from '../store/slices/session';
 import { emptyStateFixture, mozillaFeedUrl, sessionFixture, stateFixture } from '../storybook/fixtures';
 import { withSidebarFrame, withStore } from '../storybook/decorators';
 
@@ -50,7 +49,7 @@ export const MoreMenuOpen: Story = {
             session: {
                 ...sessionFixture,
                 menuVisible: true,
-                menuContext: { type: MenuType.moreMenu, anchorPoint: { x: 110, y: 40 } },
+                menuContext: { anchorPoint: { x: 110, y: 40 } },
             },
         }),
     ],

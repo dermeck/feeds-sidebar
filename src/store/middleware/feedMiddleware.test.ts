@@ -40,7 +40,6 @@ const loadUnreadItems = (store: ReturnType<typeof setupStore>, options: { showUn
             feeds: {
                 folders: [],
                 feeds: [{ id: 'https://example.com/feed', items: [item('a', 1), item('b', 2), item('c', 3)] }],
-                selectedNode: undefined,
                 readItemIds: [],
                 durationFetchFailures: {},
             },

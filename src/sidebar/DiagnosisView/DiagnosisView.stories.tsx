@@ -2,7 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import { DiagnosisView } from './DiagnosisView';
-import { Feed, NodeType } from '../../model/feeds';
+import { Feed } from '../../model/feeds';
 import { emptyStateFixture, sessionFixture, stateFixture } from '../../storybook/fixtures';
 import { View } from '../App';
 import Sidebar from '../Sidebar';
@@ -28,8 +28,6 @@ const staleFeed: Feed = {
     ],
 };
 
-const nodeMeta = { nodeType: NodeType.Feed, nodeId: staleFeed.id };
-
 const meta = {
     title: 'sidebar/DiagnosisView',
     component: DiagnosisView,
@@ -50,7 +48,6 @@ export const Default: Story = {
             feeds: {
                 feeds: [...(stateFixture.feeds?.feeds ?? []), staleFeed],
                 folders: stateFixture.feeds?.folders ?? [],
-                selectedNode: nodeMeta,
                 readItemIds: stateFixture.feeds?.readItemIds ?? [],
                 durationFetchFailures: stateFixture.feeds?.durationFetchFailures ?? {},
             },

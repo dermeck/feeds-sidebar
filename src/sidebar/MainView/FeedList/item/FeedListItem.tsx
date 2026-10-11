@@ -1,8 +1,9 @@
-import { GlobeSimple, X } from '@phosphor-icons/react';
+import { GlobeSimple, X, YoutubeLogo } from '@phosphor-icons/react';
 
 import React, { memo, useEffect, useState } from 'react';
 
-import { FeedItem, NodeType } from '../../../../model/feeds';
+import { FeedItemWithParent } from '../../../../model/feeds';
+import { youtubeVideoIdFromItemId, youtubeVideoIdFromUrl } from '../../../../services/youtube/videoUrl';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import feedsSlice from '../../../../store/slices/feeds';
 import { MouseEventButton } from '../../../../utils/types/web-api';
@@ -16,18 +17,31 @@ type Props = {
     title: string;
     url: string;
     isRead: boolean;
+    isSelected: boolean;
     feedId: string;
+    onSelect: (itemId: string) => void;
     nestedLevel: number;
     durationSeconds?: number;
 };
 
-export type FeedListItemModel = FeedItem & { parentId: string; parentTitle?: string };
+export type FeedListItemModel = FeedItemWithParent;
 
-const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, durationSeconds }: Props) => {
+const FeedListItem = ({
+    id,
+    label,
+    title,
+    url,
+    isRead,
+    isSelected,
+    feedId,
+    onSelect,
+    nestedLevel,
+    durationSeconds,
+}: Props) => {
     const dispatch = useAppDispatch();
 
-    const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === id;
     const isDurationEnabled = useAppSelector((state) => state.options.youtubeVideoDurationEnabled);
+    const isYoutube = youtubeVideoIdFromUrl(url) !== undefined || youtubeVideoIdFromItemId(id) !== undefined;
 
     useEffect(() => {
         if (isSelected) {
@@ -43,7 +57,7 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, dura
     }
 
     const handleFeedItemClick = (feedId: string, itemId: string) => {
-        dispatch(feedsSlice.actions.select({ nodeType: NodeType.FeedItem, nodeId: id }));
+        onSelect(id);
 
         dispatch(
             feedsSlice.actions.markItemAsRead({
@@ -81,7 +95,7 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, dura
             }}
         >
             <div className="feed-item__grid">
-                <GlobeSimple size={20} weight="light" />
+                {isYoutube ? <YoutubeLogo size={20} weight="light" /> : <GlobeSimple size={20} weight="light" />}
                 <div className="feed-item__title-row">
                     <a
                         className="feed-item__link"

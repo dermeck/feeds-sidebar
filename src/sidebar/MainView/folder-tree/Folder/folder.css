@@ -1,4 +1,7 @@
 .folder {
+    /* the row is the focusable treegrid element; drop its UA focus ring, the pill carries focus */
+    outline: none;
+
     .folder__title-container {
         display: flex;
         flex-direction: column;
@@ -6,22 +9,17 @@
         margin-inline: 4px;
         height: var(--size-item-large);
         border-radius: var(--border-radius-circle);
-        padding-left: calc(var(--folder-nested-level) * 15px + 8px);
+        padding-left: calc((var(--tree-item-level) - 1) * 15px + 8px);
         padding-right: 4px;
+    }
 
-        &:not(.folder__title-container--selected):hover {
-            background-color: var(--item-hover-background-color);
-            color: var(--item-hover-text-color);
-        }
-
-        &:focus-visible {
-            outline: var(--focus-outline);
-            outline-offset: var(--focus-outline-inset);
-        }
+    &:not([data-selected]) .folder__title-container:hover {
+        background-color: var(--item-hover-background-color);
+        color: var(--item-hover-text-color);
     }
 
     /* Nova selected pill: accent ring instead of a flat fill */
-    .folder__title-container--selected {
+    &[data-selected] .folder__title-container {
         color: var(--text-color);
         outline: 1px solid var(--color-accent-primary);
         outline-offset: -1px;
@@ -35,14 +33,33 @@
         }
     }
 
+    &[data-focus-visible] .folder__title-container {
+        outline: var(--focus-outline);
+        outline-offset: var(--focus-outline-inset);
+    }
+
+    &[data-drop-target] .folder__label {
+        background-color: var(--selected-item-background-color);
+    }
+
     .folder__title-row {
         display: flex;
         flex-direction: row;
         gap: 4px;
         align-items: center;
 
+        /* RAC's Button is a bare <button>; reset the UA styles */
         .folder__toggle-indicator {
             display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 0;
+            appearance: none;
+            background: transparent;
+            color: inherit;
+            line-height: 0;
+            cursor: pointer;
 
             svg {
                 height: 12px;
@@ -63,13 +80,33 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-    }
 
-    .folder__title-container.drag-drop__container--disabled {
-        opacity: 0.3;
-    }
+        /* keyboard/screen-reader drag handle: visually hidden, shown when focused */
+        .folder__drag-handle {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            border: 0;
+            appearance: none;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            clip-path: inset(50%);
+            white-space: nowrap;
+            background: transparent;
+            color: inherit;
 
-    .folder__title-container.drag-drop__container--drag-middle-actice .folder__label {
-        background-color: var(--selected-item-background-color);
+            &:focus-visible {
+                position: static;
+                width: auto;
+                height: auto;
+                margin: 0;
+                flex-shrink: 0;
+                overflow: visible;
+                clip: auto;
+                clip-path: none;
+            }
+        }
     }
 }

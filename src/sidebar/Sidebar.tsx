@@ -3,7 +3,7 @@ import { ArrowsClockwise, CalendarBlank, DotsThreeOutline, List, TreeView } from
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeedsCommand, selectFeeds } from '../store/slices/feeds';
 import optionsSlice, { selectOptions } from '../store/slices/options';
-import sessionSlice, { MenuType, selectIsLoadingFeeds } from '../store/slices/session';
+import sessionSlice, { selectIsLoadingFeeds } from '../store/slices/session';
 import { MainView } from './MainView/MainView';
 import { SubscribeView } from './SubscribeView/SubscribeView';
 import { DiagnosisView } from './DiagnosisView/DiagnosisView';
@@ -44,7 +44,7 @@ const Sidebar = ({ activeView, changeView }: SideBarProps) => {
 
     // TODO mr move this to local state
     const moreMenuVisible = useAppSelector(
-        (state) => state.session.menuContext?.type === MenuType.moreMenu && state.session.menuVisible,
+        (state) => state.session.menuContext !== undefined && state.session.menuVisible,
     );
     const { mainViewDisplayMode } = useAppSelector(selectOptions);
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));

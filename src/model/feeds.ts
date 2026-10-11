@@ -32,18 +32,6 @@ export interface NodeMeta {
     nodeType: NodeType;
 }
 
-export interface FeedNode {
-    nodeType: NodeType.Feed;
-    data: Feed;
-}
-
-export interface FolderNode {
-    nodeType: NodeType.Folder;
-    data: Folder;
-}
-
-export type TreeNode = FolderNode | FeedNode;
-
 export interface FeedItem {
     id: string;
     title: string;
@@ -53,6 +41,8 @@ export interface FeedItem {
     isRead?: boolean;
     durationSeconds?: number;
 }
+
+export type FeedItemWithParent = FeedItem & { parentId: string; parentTitle?: string };
 
 export const itemDate = (item: FeedItem): Date | undefined => {
     const value = item.lastModified ?? item.published;

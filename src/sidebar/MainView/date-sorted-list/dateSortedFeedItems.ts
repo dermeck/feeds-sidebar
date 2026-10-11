@@ -79,7 +79,12 @@ export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>, readItemIds: 
                 const itemDateValue = itemDate(feedItem);
 
                 if (itemDateValue === undefined) {
-                    result.unknown.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title, isRead: itemIsRead });
+                    result.unknown.push({
+                        ...feedItem,
+                        parentId: feed.id,
+                        parentTitle: feed.title,
+                        isRead: itemIsRead,
+                    });
                     continue;
                 }
                 if (compareDateDayMonthYear(today, itemDateValue) === 'equal') {
@@ -88,7 +93,12 @@ export const getDateSortedFeedItems = (feeds: ReadonlyArray<Feed>, readItemIds: 
                 }
 
                 if (compareDateDayMonthYear(yesterday, itemDateValue) === 'equal') {
-                    result.yesterday.push({ ...feedItem, parentId: feed.id, parentTitle: feed.title, isRead: itemIsRead });
+                    result.yesterday.push({
+                        ...feedItem,
+                        parentId: feed.id,
+                        parentTitle: feed.title,
+                        isRead: itemIsRead,
+                    });
                     continue;
                 }
 

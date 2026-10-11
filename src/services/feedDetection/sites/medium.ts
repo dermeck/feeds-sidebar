@@ -1,7 +1,22 @@
 import { DetectedFeed, SiteDetector } from '../feedDetection';
 import { pathSegments } from './pathUtils';
 
-const RESERVED_SEGMENTS = ['about', 'become-a-member', 'blog', 'careers', 'contact', 'faq', 'membership', 'press', 'pricing', 'search', 'sign-in', 'sign-up', 'tag', 'tos'];
+const RESERVED_SEGMENTS = [
+    'about',
+    'become-a-member',
+    'blog',
+    'careers',
+    'contact',
+    'faq',
+    'membership',
+    'press',
+    'pricing',
+    'search',
+    'sign-in',
+    'sign-up',
+    'tag',
+    'tos',
+];
 
 const feed = (title: string, href: string): DetectedFeed => ({ title, href, type: 'rss' });
 
@@ -41,7 +56,9 @@ const detect = (url: URL): DetectedFeed[] => {
         return [];
     }
 
-    return [feed(`Medium ${first.startsWith('@') ? 'Profile' : 'Publication'} (${name})`, `${url.origin}/feed/${name}`)];
+    return [
+        feed(`Medium ${first.startsWith('@') ? 'Profile' : 'Publication'} (${name})`, `${url.origin}/feed/${name}`),
+    ];
 };
 
 export const mediumDetector: SiteDetector = {

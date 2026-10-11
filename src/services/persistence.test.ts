@@ -16,7 +16,12 @@ beforeEach(() => {
     (global as unknown as { browser: unknown }).browser = { storage: { local: storageLocal } };
 });
 
-const validFeeds = { folders: [], feeds: [], selectedNode: undefined, readItemIds: [], durationFetchFailures: {} };
+const validFeeds = {
+    folders: [],
+    feeds: [],
+    readItemIds: [],
+    durationFetchFailures: {},
+};
 
 describe('saveState', () => {
     it('writes the feeds, the options and a timestamp', async () => {

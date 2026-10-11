@@ -24,7 +24,9 @@ describe('github', () => {
     });
 
     it('keeps the branch on a branch specific commits page', () => {
-        expect(hrefs('https://github.com/foo/bar/commits/main')).toEqual(['https://github.com/foo/bar/commits/main.atom']);
+        expect(hrefs('https://github.com/foo/bar/commits/main')).toEqual([
+            'https://github.com/foo/bar/commits/main.atom',
+        ]);
     });
 
     it('keeps a slashed branch name intact', () => {
@@ -139,7 +141,9 @@ describe('substack', () => {
     });
 
     it('matches a www subdomain', () => {
-        expect(hrefs('https://www.stratechery.substack.com/about')).toEqual(['https://www.stratechery.substack.com/feed']);
+        expect(hrefs('https://www.stratechery.substack.com/about')).toEqual([
+            'https://www.stratechery.substack.com/feed',
+        ]);
     });
 
     it('offers nothing for an already resolved feed url', () => {

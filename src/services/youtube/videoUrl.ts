@@ -18,29 +18,43 @@ const matchVideoId = (value: string): string | undefined => {
     return VIDEO_ID_PATTERN.test(value) ? value : undefined;
 };
 
-export const youtubeVideoIdFromUrl = (url: string): string | undefined => {
-    const parsed = resolveUrl(url);
+const parseYoutubeUrl = (value: string): { host: string; url: URL } | undefined => {
+    const url = resolveUrl(value);
+
+    if (url === undefined) {
+        return undefined;
+    }
+
+    const host = url.hostname.replace(/^www\./, '');
+
+    if (host !== 'youtu.be' && host !== 'youtube.com' && !host.endsWith('.youtube.com')) {
+        return undefined;
+    }
+
+    return { host, url };
+};
+
+export const isYoutubeUrl = (value: string): boolean => parseYoutubeUrl(value) !== undefined;
+
+export const youtubeVideoIdFromUrl = (value: string): string | undefined => {
+    const parsed = parseYoutubeUrl(value);
 
     if (parsed === undefined) {
         return undefined;
     }
 
-    const host = parsed.hostname.replace(/^www\./, '');
+    const { host, url } = parsed;
 
     if (host === 'youtu.be') {
-        return matchVideoId(parsed.pathname.slice(1));
+        return matchVideoId(url.pathname.slice(1));
     }
 
-    if (host !== 'youtube.com' && !host.endsWith('.youtube.com')) {
-        return undefined;
-    }
-
-    const watchId = parsed.searchParams.get('v');
+    const watchId = url.searchParams.get('v');
     if (watchId !== null) {
         return matchVideoId(watchId);
     }
 
-    const [section, id] = parsed.pathname.split('/').filter(Boolean);
+    const [section, id] = url.pathname.split('/').filter(Boolean);
     if ((section === 'shorts' || section === 'live' || section === 'embed') && id !== undefined) {
         return matchVideoId(id);
     }

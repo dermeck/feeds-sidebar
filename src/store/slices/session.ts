@@ -5,18 +5,12 @@ import { DetectedFeed, isSameDetectedFeeds } from '../../services/feedDetection/
 
 export type FeedFetchStatus = 'loading' | 'loaded' | 'error';
 
-export const enum MenuType {
-    contextMenu,
-    moreMenu,
-}
-
 export interface Point {
     x: number;
     y: number;
 }
 
 export interface MenuContext {
-    type: MenuType;
     anchorPoint: Point;
 }
 
@@ -51,16 +45,8 @@ const sessionSlice = createSlice({
     name: 'session',
     initialState,
     reducers: {
-        showContextMenu(state, action: PayloadAction<Point>) {
-            state.menuContext = {
-                type: MenuType.contextMenu,
-                anchorPoint: action.payload,
-            };
-            state.menuVisible = true;
-        },
         showMoreMenu(state, action: PayloadAction<Point>) {
             state.menuContext = {
-                type: MenuType.moreMenu,
                 anchorPoint: action.payload,
             };
             state.menuVisible = true;
