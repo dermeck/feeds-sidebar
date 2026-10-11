@@ -46,6 +46,10 @@ export const loadState = async (): Promise<(RootState & { timestamp: number }) |
         feeds: {
             ...loadedFeeds,
             readItemIds: Array.isArray(loadedReadItemIds) ? loadedReadItemIds : [],
+            durationFetchFailures:
+                typeof loadedFeeds.durationFetchFailures === 'object' && loadedFeeds.durationFetchFailures !== null
+                    ? loadedFeeds.durationFetchFailures
+                    : {},
         } as RootState['feeds'],
         options: loadedOptions as RootState['options'],
         session: initialSessionSliceState,

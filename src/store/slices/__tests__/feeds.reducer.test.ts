@@ -28,10 +28,17 @@ describe('global extensionStateLoaded action', () => {
             feeds: [feed1Fixture],
             selectedNode: undefined,
             readItemIds: [],
+            durationFetchFailures: {},
         };
 
         const action = extensionStateLoaded({
-            feeds: { folders: [folder2Fixture], feeds: [feed2Fixture], selectedNode: undefined, readItemIds: [] },
+            feeds: {
+                folders: [folder2Fixture],
+                feeds: [feed2Fixture],
+                selectedNode: undefined,
+                readItemIds: [],
+                durationFetchFailures: {},
+            },
             options: initialOptionsState,
         });
 
@@ -40,6 +47,7 @@ describe('global extensionStateLoaded action', () => {
             feeds: [feed2Fixture],
             selectedNode: undefined,
             readItemIds: [],
+            durationFetchFailures: {},
         };
 
         expect(feedsSlice.reducer(prevState, action)).toStrictEqual(expectation);

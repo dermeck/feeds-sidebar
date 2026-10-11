@@ -51,6 +51,7 @@ export interface FeedItem {
     published?: string;
     lastModified?: string;
     isRead?: boolean;
+    durationSeconds?: number;
 }
 
 export const itemDate = (item: FeedItem): Date | undefined => {

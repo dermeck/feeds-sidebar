@@ -32,6 +32,7 @@ export const FeedItemList = ({ items, nestedLevel = 0, filterString, getItemLabe
                             isRead={item.isRead ?? false}
                             title={`${item.parentTitle} | ${item.title} \n${item.url}`}
                             nestedLevel={nestedLevel}
+                            durationSeconds={item.durationSeconds}
                         />
                     ),
             )}
