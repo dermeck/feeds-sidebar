@@ -45,8 +45,16 @@
         gap: 4px;
         align-items: center;
 
+        /* RAC's Button is a bare <button>; reset the UA styles */
         .folder__toggle-indicator {
             display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
 
             svg {
                 height: 12px;
@@ -68,7 +76,7 @@
             white-space: nowrap;
         }
 
-        // keyboard/screen-reader drag handle: hidden by default, shown when focused
+        /* keyboard/screen-reader drag handle: hidden by default, shown when focused */
         .folder__drag-handle {
             position: absolute;
             width: 1px;
@@ -77,8 +85,10 @@
             margin: -1px;
             border: 0;
             overflow: hidden;
-            clip: rect(0 0 0 0);
+            clip-path: inset(50%);
             white-space: nowrap;
+            background: transparent;
+            color: inherit;
 
             &:focus-visible {
                 position: static;
@@ -87,10 +97,7 @@
                 margin: 0;
                 flex-shrink: 0;
                 overflow: visible;
-                clip: auto;
-                background: transparent;
-                border: 0;
-                color: inherit;
+                clip-path: none;
             }
         }
     }
