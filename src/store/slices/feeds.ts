@@ -3,6 +3,7 @@ import { createAction, createSelector, createSlice, PayloadAction } from '@redux
 import {
     Feed,
     FeedItem,
+    FeedItemWithParent,
     FeedNode,
     Folder,
     FolderNode,
@@ -322,7 +323,7 @@ const selectChildNodes = (
     return [...folderNodes, ...feedNodes];
 };
 
-const selectDescendentNodeIds = (
+export const selectDescendentNodeIds = (
     feeds: FeedSliceState['feeds'],
     folders: FeedSliceState['folders'],
     parentId: string,
@@ -399,6 +400,105 @@ const hasFolderChildren = (state: FeedSliceState, folderId: string): boolean => 
 
 export const selectTopLevelNodes = createSelector(selectFeeds, selectFolders, (feeds, folders) =>
     selectChildNodes(feeds, folders, rootFolderId),
+);
+
+export const selectSelectedNode = (state: FeedSliceState) => state.selectedNode;
+
+export type TreeViewItem = {
+    id: string;
+    nodeType: NodeType.Folder | NodeType.Feed;
+    title: string;
+    children?: TreeViewItem[];
+};
+
+const buildTreeItems = (
+    feeds: FeedSliceState['feeds'],
+    folders: FeedSliceState['folders'],
+    folderId: string,
+): TreeViewItem[] => {
+    const folder = folders.find((f) => f.id === folderId);
+
+    if (folder === undefined) {
+        return [];
+    }
+
+    const subfolders: TreeViewItem[] = folder.subfolderIds
+        .map((id) => folders.find((f) => f.id === id))
+        .filter((f): f is Folder => f !== undefined)
+        .map((f) => {
+            const children = buildTreeItems(feeds, folders, f.id);
+            return { id: f.id, nodeType: NodeType.Folder, title: f.title, ...(children.length ? { children } : {}) };
+        });
+
+    const feedNodes: TreeViewItem[] = folder.feedIds
+        .map((id) => feeds.find((f) => f.id === id))
+        .filter((f): f is Feed => f !== undefined)
+        .map((f) => ({ id: f.id, nodeType: NodeType.Feed, title: f.title ?? f.id }));
+
+    return [...subfolders, ...feedNodes];
+};
+
+export const selectTreeItems = createSelector(selectFeeds, selectFolders, (feeds, folders) =>
+    buildTreeItems(feeds, folders, rootFolderId),
+);
+
+export const selectFolderIds = createSelector(selectFolders, (folders) =>
+    folders.filter((f) => f.id !== rootFolderId).map((f) => f.id),
+);
+
+export const nodeMetaById = (
+    folders: FeedSliceState['folders'],
+    feeds: FeedSliceState['feeds'],
+    id: string,
+): NodeMeta | undefined => {
+    if (folders.some((f) => f.id === id)) {
+        return { nodeId: id, nodeType: NodeType.Folder };
+    }
+
+    if (feeds.some((f) => f.id === id)) {
+        return { nodeId: id, nodeType: NodeType.Feed };
+    }
+
+    return undefined;
+};
+
+export const selectSelectedNodeFeedItems = createSelector(
+    selectFeeds,
+    selectFolders,
+    selectSelectedNode,
+    (feeds, folders, selectedNode): FeedItemWithParent[] => {
+        if (selectedNode === undefined || selectedNode.nodeType === NodeType.FeedItem) {
+            return [];
+        }
+
+        const withParent = (feed: Feed): FeedItemWithParent[] =>
+            feed.items.map((item) => ({ ...item, parentId: feed.id, parentTitle: feed.title }));
+
+        if (selectedNode.nodeType === NodeType.Feed) {
+            const feed = feeds.find((f) => f.id === selectedNode.nodeId);
+
+            return feed ? withParent(feed) : [];
+        }
+
+        const collect = (folderId: string): FeedItemWithParent[] => {
+            const folder = folders.find((f) => f.id === folderId);
+
+            if (folder === undefined) {
+                return [];
+            }
+
+            return [
+                ...folder.subfolderIds.flatMap(collect),
+                ...folder.feedIds.flatMap((feedId) => {
+                    const feed = feeds.find((f) => f.id === feedId);
+
+                    return feed ? withParent(feed) : [];
+                }),
+            ];
+        };
+
+        return collect(selectedNode.nodeId);
+    },
 );
 
 const feedsSlice = createSlice({
