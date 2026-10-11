@@ -54,6 +54,8 @@ export interface FeedItem {
     durationSeconds?: number;
 }
 
+export type FeedItemWithParent = FeedItem & { parentId: string; parentTitle?: string };
+
 export const itemDate = (item: FeedItem): Date | undefined => {
     const value = item.lastModified ?? item.published;
 

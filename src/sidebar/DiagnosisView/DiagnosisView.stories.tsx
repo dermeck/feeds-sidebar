@@ -51,6 +51,7 @@ export const Default: Story = {
                 feeds: [...(stateFixture.feeds?.feeds ?? []), staleFeed],
                 folders: stateFixture.feeds?.folders ?? [],
                 selectedNode: nodeMeta,
+                selectedFeedItemId: undefined,
                 readItemIds: stateFixture.feeds?.readItemIds ?? [],
                 durationFetchFailures: stateFixture.feeds?.durationFetchFailures ?? {},
             },

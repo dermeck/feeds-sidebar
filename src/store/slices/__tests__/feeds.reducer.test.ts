@@ -27,6 +27,7 @@ describe('global extensionStateLoaded action', () => {
             folders: [folder1Fixture],
             feeds: [feed1Fixture],
             selectedNode: undefined,
+            selectedFeedItemId: undefined,
             readItemIds: [],
             durationFetchFailures: {},
         };
@@ -36,6 +37,7 @@ describe('global extensionStateLoaded action', () => {
                 folders: [folder2Fixture],
                 feeds: [feed2Fixture],
                 selectedNode: undefined,
+                selectedFeedItemId: undefined,
                 readItemIds: [],
                 durationFetchFailures: {},
             },
@@ -46,6 +48,7 @@ describe('global extensionStateLoaded action', () => {
             folders: [folder2Fixture],
             feeds: [feed2Fixture],
             selectedNode: undefined,
+            selectedFeedItemId: undefined,
             readItemIds: [],
             durationFetchFailures: {},
         };
@@ -66,6 +69,36 @@ describe('select action', () => {
         const expected: NodeMeta = { nodeType: NodeType.Feed, nodeId: 'feedId2' };
 
         expect(feedsSlice.reducer(prevState, action).selectedNode).toStrictEqual(expected);
+    });
+
+    it('clears the selected feed item', () => {
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: feedsFixture,
+            selectedNode: { nodeType: NodeType.FeedItem, nodeId: 'itemId1' },
+            selectedFeedItemId: 'itemId1',
+        };
+
+        const action = feedsSlice.actions.select({ nodeType: NodeType.Feed, nodeId: feed1Fixture.id });
+
+        expect(feedsSlice.reducer(prevState, action).selectedFeedItemId).toBeUndefined();
+    });
+});
+
+describe('selectFeedItem action', () => {
+    it('sets selectedFeedItemId without changing selectedNode', () => {
+        const selectedNode: NodeMeta = { nodeType: NodeType.Feed, nodeId: feed1Fixture.id };
+        const prevState: FeedSliceState = {
+            ...feedsSlice.getInitialState(),
+            feeds: feedsFixture,
+            selectedNode,
+        };
+
+        const action = feedsSlice.actions.selectFeedItem('itemId1');
+        const nextState = feedsSlice.reducer(prevState, action);
+
+        expect(nextState.selectedFeedItemId).toBe('itemId1');
+        expect(nextState.selectedNode).toStrictEqual(selectedNode);
     });
 });
 

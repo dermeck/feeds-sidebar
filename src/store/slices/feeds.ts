@@ -25,6 +25,8 @@ type FeedSliceState = {
     folders: ReadonlyArray<Folder>;
     feeds: ReadonlyArray<Feed>;
     selectedNode: NodeMeta | undefined;
+    // article selection, decoupled from the tree selection
+    selectedFeedItemId: string | undefined;
     // Track read item IDs separately to preserve read state even if items are trimmed
     readItemIds: ReadonlyArray<string>;
     // video id -> timestamp of the last failed length fetch, so failures are not retried every update
@@ -122,6 +124,7 @@ const initialState: FeedSliceState = {
               ],
     feeds: process.env.NODE_ENV === 'development' ? sampleDataFeeds : [],
     selectedNode: undefined,
+    selectedFeedItemId: undefined,
     readItemIds: [],
     durationFetchFailures: {},
 };
@@ -483,6 +486,10 @@ const feedsSlice = createSlice({
         },
         select(state, action: PayloadAction<NodeMeta>) {
             state.selectedNode = action.payload;
+            state.selectedFeedItemId = undefined;
+        },
+        selectFeedItem(state, action: PayloadAction<string>) {
+            state.selectedFeedItemId = action.payload;
         },
         markItemAsRead(state, action: PayloadAction<{ feedId: string; itemId: string }>) {
             const { feedId, itemId } = action.payload;

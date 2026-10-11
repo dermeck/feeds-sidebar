@@ -2,7 +2,7 @@ import { GlobeSimple, X } from '@phosphor-icons/react';
 
 import React, { memo, useEffect, useState } from 'react';
 
-import { FeedItem, NodeType } from '../../../../model/feeds';
+import { FeedItemWithParent } from '../../../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import feedsSlice from '../../../../store/slices/feeds';
 import { MouseEventButton } from '../../../../utils/types/web-api';
@@ -21,12 +21,12 @@ type Props = {
     durationSeconds?: number;
 };
 
-export type FeedListItemModel = FeedItem & { parentId: string; parentTitle?: string };
+export type FeedListItemModel = FeedItemWithParent;
 
 const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, durationSeconds }: Props) => {
     const dispatch = useAppDispatch();
 
-    const isSelected = useAppSelector((state) => state.feeds.selectedNode?.nodeId) === id;
+    const isSelected = useAppSelector((state) => state.feeds.selectedFeedItemId) === id;
     const isDurationEnabled = useAppSelector((state) => state.options.youtubeVideoDurationEnabled);
 
     useEffect(() => {
@@ -43,7 +43,7 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, dura
     }
 
     const handleFeedItemClick = (feedId: string, itemId: string) => {
-        dispatch(feedsSlice.actions.select({ nodeType: NodeType.FeedItem, nodeId: id }));
+        dispatch(feedsSlice.actions.selectFeedItem(id));
 
         dispatch(
             feedsSlice.actions.markItemAsRead({
