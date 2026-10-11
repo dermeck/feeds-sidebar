@@ -1,4 +1,4 @@
-import { CaretDown, CaretRight, FolderSimple } from '@phosphor-icons/react';
+import { CaretDown, CaretRight, DotsSixVertical, FolderSimple } from '@phosphor-icons/react';
 
 import React from 'react';
 import { Button, TreeItemContent } from 'react-aria-components';
@@ -43,6 +43,9 @@ export const FolderTreeItem = ({ item }: FolderTreeItemProps) => {
                         </Button>
                         <FolderSimple className="folder__icon" size={20} weight="light" />
                         <label className="folder__label">{item.title}</label>
+                        <Button slot="drag" className="folder__drag-handle">
+                            <DotsSixVertical size={14} />
+                        </Button>
                     </div>
                 </div>
             )}
