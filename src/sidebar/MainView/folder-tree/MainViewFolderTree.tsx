@@ -111,7 +111,10 @@ export const MainViewFolderTree = ({ className, filterString }: MainViewFolderTr
     );
 
     const selectedKeys = useMemo(
-        () => new Set(selectedNode === undefined || selectedNode.nodeType === NodeType.FeedItem ? [] : [selectedNode.nodeId]),
+        () =>
+            new Set(
+                selectedNode === undefined || selectedNode.nodeType === NodeType.FeedItem ? [] : [selectedNode.nodeId],
+            ),
         [selectedNode],
     );
 
@@ -150,7 +153,8 @@ export const MainViewFolderTree = ({ className, filterString }: MainViewFolderTr
                     onSelectionChange={handleSelectionChange}
                     expandedKeys={expandedKeys}
                     onExpandedChange={handleExpandedChange}
-                    dragAndDropHooks={dragAndDropHooks}>
+                    dragAndDropHooks={dragAndDropHooks}
+                >
                     {renderTreeItem}
                 </Tree>
             </div>

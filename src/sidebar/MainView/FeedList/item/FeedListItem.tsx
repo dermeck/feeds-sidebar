@@ -82,12 +82,8 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, dura
                 setUiActive(false);
             }}
         >
-                <div className="feed-item__grid">
-                    {isYoutube ? (
-                        <YoutubeLogo size={20} weight="light" />
-                    ) : (
-                        <GlobeSimple size={20} weight="light" />
-                    )}
+            <div className="feed-item__grid">
+                {isYoutube ? <YoutubeLogo size={20} weight="light" /> : <GlobeSimple size={20} weight="light" />}
                 <div className="feed-item__title-row">
                     <a
                         className="feed-item__link"

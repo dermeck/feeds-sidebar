@@ -40,7 +40,11 @@ export const FolderTreeItem = ({ item }: FolderTreeItemProps) => {
                     <div className="folder__title-row">
                         <Button
                             slot="chevron"
-                            className={clsx('folder__toggle-indicator', !hasChildItems && 'folder__toglle-indicator--hidden')}>
+                            className={clsx(
+                                'folder__toggle-indicator',
+                                !hasChildItems && 'folder__toglle-indicator--hidden',
+                            )}
+                        >
                             {isExpanded ? <CaretDown weight="bold" /> : <CaretRight weight="bold" />}
                         </Button>
                         {item.nodeType === NodeType.Folder ? (
