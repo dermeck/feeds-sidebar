@@ -53,6 +53,7 @@
         "node-polyfill-webpack-plugin": "^4.0.0",
         "prettier": "^3.4.2",
         "react": "^19.3.0",
+        "react-aria-components": "^1.22.1",
         "react-dom": "^19.3.0",
         "react-redux": "^9.3.0",
         "redux-saga": "^1.5.1",
