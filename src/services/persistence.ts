@@ -1,3 +1,4 @@
+import { NodeType } from '../model/feeds';
 import { initialState as initialSessionSliceState } from '../store/slices/session';
 import { RootState } from '../store/store';
 
@@ -17,6 +18,25 @@ export const saveState = (state: RootState): Promise<void> => {
     };
 
     return browser.storage.local.set(localStorageData);
+};
+
+// older versions selected the article itself, which the tree no longer holds
+const normalizeLegacySelection = (feeds: RootState['feeds']): RootState['feeds'] => {
+    const { selectedNode } = feeds;
+
+    if (selectedNode?.nodeType !== NodeType.FeedItem) {
+        return feeds;
+    }
+
+    const feed = feeds.feeds.find((f) => f.items.some((item) => item.id === selectedNode.nodeId));
+
+    return feed
+        ? {
+              ...feeds,
+              selectedNode: { nodeId: feed.id, nodeType: NodeType.Feed },
+              selectedFeedItemId: selectedNode.nodeId,
+          }
+        : { ...feeds, selectedNode: undefined, selectedFeedItemId: undefined };
 };
 
 export const loadState = async (): Promise<(RootState & { timestamp: number }) | undefined> => {
@@ -43,14 +63,14 @@ export const loadState = async (): Promise<(RootState & { timestamp: number }) |
     }
 
     return {
-        feeds: {
+        feeds: normalizeLegacySelection({
             ...loadedFeeds,
             readItemIds: Array.isArray(loadedReadItemIds) ? loadedReadItemIds : [],
             durationFetchFailures:
                 typeof loadedFeeds.durationFetchFailures === 'object' && loadedFeeds.durationFetchFailures !== null
                     ? loadedFeeds.durationFetchFailures
                     : {},
-        } as RootState['feeds'],
+        } as RootState['feeds']),
         options: loadedOptions as RootState['options'],
         session: initialSessionSliceState,
         timestamp: Number(timestamp.timestampKey) || Date.now(),
