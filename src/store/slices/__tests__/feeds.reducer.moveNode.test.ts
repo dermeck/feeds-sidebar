@@ -370,7 +370,7 @@ describe('moveNode action', () => {
                         mode: InsertMode.Into,
                     }),
                 ),
-            ).toThrowError("Feed can not be moved into node with id: 'http://feedId2.url' because it is not a folder.");
+            ).toThrow("Feed can not be moved into node with id: 'http://feedId2.url' because it is not a folder.");
         });
 
         it('adds moved feed to feedIds of target folder', () => {
@@ -469,7 +469,7 @@ describe('moveNode action', () => {
                         mode: InsertMode.Before,
                     }),
                 ),
-            ).toThrowError("Feed can not be moved before or after node with id: 'folder1' because it is not a feed.");
+            ).toThrow("Feed can not be moved before or after node with id: 'folder1' because it is not a feed.");
         });
 
         it('adds moved feed before target feed', () => {
@@ -590,7 +590,7 @@ describe('moveNode action', () => {
                         mode: InsertMode.After,
                     }),
                 ),
-            ).toThrowError("Feed can not be moved before or after node with id: 'folder1' because it is not a feed.");
+            ).toThrow("Feed can not be moved before or after node with id: 'folder1' because it is not a feed.");
         });
 
         it('adds moved feed after target feed', () => {

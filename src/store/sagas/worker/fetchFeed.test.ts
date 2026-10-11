@@ -11,8 +11,8 @@ describe('#fetchFeed', () => {
 
         await fetchFeed('http://test.url');
 
-        expect(fetchMock).toBeCalledTimes(1);
-        expect(fetchMock).toBeCalledWith('http://test.url');
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledWith('http://test.url');
     });
 
     it('returns success response if fetch is successful', async () => {
