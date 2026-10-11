@@ -1,6 +1,29 @@
 @import './Folder/folder.css';
 @import './FolderEdit/folder-edit.css';
 
+.folder-tree-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+.folder-tree-view__tree {
+    flex: 2 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: var(--space-small);
+}
+
+.folder-tree-view__articles {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding-top: var(--space-small);
+    border-top: var(--border-width) solid var(--border-color);
+    background-color: var(--background-color-box);
+}
+
 .folder-tree .react-aria-DropIndicator[data-drop-target] {
     height: 2px;
     width: 48px;

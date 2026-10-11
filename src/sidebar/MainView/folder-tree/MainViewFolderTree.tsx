@@ -15,6 +15,7 @@ import feedsSlice, {
 import { canDropNode, insertModeByDropPosition } from './folderTreeDrop';
 import { FolderTreeArticleList } from './FolderTreeArticleList';
 import { FolderTreeItem } from './FolderTreeItem';
+import { clsx } from 'clsx';
 
 const nodeDragType = 'application/x-feeds-sidebar-tree-node';
 
@@ -137,21 +138,25 @@ export const MainViewFolderTree = ({ className, filterString }: MainViewFolderTr
     };
 
     return (
-        <div className={className}>
-            <Tree
-                aria-label="Feeds"
-                className="folder-tree"
-                items={items}
-                selectionMode="single"
-                disallowEmptySelection
-                selectedKeys={selectedKeys}
-                onSelectionChange={handleSelectionChange}
-                expandedKeys={expandedKeys}
-                onExpandedChange={handleExpandedChange}
-                dragAndDropHooks={dragAndDropHooks}>
-                {renderTreeItem}
-            </Tree>
-            <FolderTreeArticleList filterString={filterString} disabled={isDragging} />
+        <div className={clsx('folder-tree-view', className)}>
+            <div className="folder-tree-view__tree">
+                <Tree
+                    aria-label="Feeds"
+                    className="folder-tree"
+                    items={items}
+                    selectionMode="single"
+                    disallowEmptySelection
+                    selectedKeys={selectedKeys}
+                    onSelectionChange={handleSelectionChange}
+                    expandedKeys={expandedKeys}
+                    onExpandedChange={handleExpandedChange}
+                    dragAndDropHooks={dragAndDropHooks}>
+                    {renderTreeItem}
+                </Tree>
+            </div>
+            <div className="folder-tree-view__articles">
+                <FolderTreeArticleList filterString={filterString} disabled={isDragging} />
+            </div>
         </div>
     );
 };

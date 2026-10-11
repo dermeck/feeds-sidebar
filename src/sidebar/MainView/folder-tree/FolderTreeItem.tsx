@@ -1,9 +1,10 @@
-import { CaretDown, CaretRight, DotsSixVertical, FolderSimple } from '@phosphor-icons/react';
+import { CaretDown, CaretRight, DotsSixVertical, FolderSimple, Rss } from '@phosphor-icons/react';
 
 import React from 'react';
 import { Button, TreeItemContent } from 'react-aria-components';
 import { clsx } from 'clsx';
 
+import { NodeType } from '../../../model/feeds';
 import { useAppDispatch } from '../../../store/hooks';
 import feedsSlice, { TreeViewItem } from '../../../store/slices/feeds';
 import sessionSlice from '../../../store/slices/session';
@@ -41,7 +42,11 @@ export const FolderTreeItem = ({ item }: FolderTreeItemProps) => {
                             className={clsx('folder__toggle-indicator', !hasChildItems && 'folder__toglle-indicator--hidden')}>
                             {isExpanded ? <CaretDown weight="bold" /> : <CaretRight weight="bold" />}
                         </Button>
-                        <FolderSimple className="folder__icon" size={20} weight="light" />
+                        {item.nodeType === NodeType.Folder ? (
+                            <FolderSimple className="folder__icon" size={20} weight="light" />
+                        ) : (
+                            <Rss className="folder__icon" size={20} weight="light" />
+                        )}
                         <label className="folder__label">{item.title}</label>
                         <Button slot="drag" className="folder__drag-handle">
                             <DotsSixVertical size={14} />
