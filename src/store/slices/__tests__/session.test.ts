@@ -1,25 +1,6 @@
 import feedsSlice from '../feeds';
-import { NodeType } from '../../../model/feeds';
 import { RootState } from '../../store';
-import sessionSlice, { initialState, MenuType } from '../session';
-
-describe('showContextMenu action', () => {
-    it('makes the menu visible and carries the node', () => {
-        const node = { nodeId: 'feed-1', nodeType: NodeType.Feed } as const;
-
-        const newState = sessionSlice.reducer(
-            initialState,
-            sessionSlice.actions.showContextMenu({ anchorPoint: { x: 1, y: 2 }, node }),
-        );
-
-        expect(newState.menuVisible).toBe(true);
-        expect(newState.menuContext).toStrictEqual({
-            type: MenuType.contextMenu,
-            anchorPoint: { x: 1, y: 2 },
-            node,
-        });
-    });
-});
+import sessionSlice, { initialState } from '../session';
 
 describe('changeFeedsStatus action', () => {
     it('adds entry if url status is not already tracked', () => {

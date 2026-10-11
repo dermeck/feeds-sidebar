@@ -1,15 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import feedsSlice from './feeds';
-import { NodeMeta } from '../../model/feeds';
 import { DetectedFeed, isSameDetectedFeeds } from '../../services/feedDetection/feedDetection';
 
 export type FeedFetchStatus = 'loading' | 'loaded' | 'error';
-
-export const enum MenuType {
-    contextMenu,
-    moreMenu,
-}
 
 export interface Point {
     x: number;
@@ -17,9 +11,7 @@ export interface Point {
 }
 
 export interface MenuContext {
-    type: MenuType;
     anchorPoint: Point;
-    node?: NodeMeta;
 }
 
 type SessionSliceState = {
@@ -53,17 +45,8 @@ const sessionSlice = createSlice({
     name: 'session',
     initialState,
     reducers: {
-        showContextMenu(state, action: PayloadAction<{ anchorPoint: Point; node: NodeMeta }>) {
-            state.menuContext = {
-                type: MenuType.contextMenu,
-                anchorPoint: action.payload.anchorPoint,
-                node: action.payload.node,
-            };
-            state.menuVisible = true;
-        },
         showMoreMenu(state, action: PayloadAction<Point>) {
             state.menuContext = {
-                type: MenuType.moreMenu,
                 anchorPoint: action.payload,
             };
             state.menuVisible = true;
