@@ -1,5 +1,6 @@
-import { GlobeSimple, PlusCircle, MinusCircle } from '@phosphor-icons/react';
+import { GlobeSimple, PlusCircle, MinusCircle, YoutubeLogo } from '@phosphor-icons/react';
 import React from 'react';
+import { isYoutubeUrl } from '../../../services/youtube/videoUrl';
 import { useAppSelector } from '../../../store/hooks';
 
 export const DetectedFeeds = ({
@@ -22,7 +23,11 @@ export const DetectedFeeds = ({
                     return (
                         <li className="detected-feed" key={feed.href}>
                             <div className="detected-feed-icon">
-                                <GlobeSimple size={20} weight="light" />
+                                {isYoutubeUrl(feed.href) ? (
+                                    <YoutubeLogo size={20} weight="light" />
+                                ) : (
+                                    <GlobeSimple size={20} weight="light" />
+                                )}
                             </div>
                             <label title={labelText} className="detected-feed-label">
                                 {labelText}

@@ -1,8 +1,9 @@
-import { GlobeSimple, X } from '@phosphor-icons/react';
+import { GlobeSimple, X, YoutubeLogo } from '@phosphor-icons/react';
 
 import React, { memo, useEffect, useState } from 'react';
 
 import { FeedItemWithParent } from '../../../../model/feeds';
+import { youtubeVideoIdFromItemId, youtubeVideoIdFromUrl } from '../../../../services/youtube/videoUrl';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import feedsSlice from '../../../../store/slices/feeds';
 import { MouseEventButton } from '../../../../utils/types/web-api';
@@ -28,6 +29,7 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, dura
 
     const isSelected = useAppSelector((state) => state.feeds.selectedFeedItemId) === id;
     const isDurationEnabled = useAppSelector((state) => state.options.youtubeVideoDurationEnabled);
+    const isYoutube = youtubeVideoIdFromUrl(url) !== undefined || youtubeVideoIdFromItemId(id) !== undefined;
 
     useEffect(() => {
         if (isSelected) {
@@ -80,8 +82,12 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, dura
                 setUiActive(false);
             }}
         >
-            <div className="feed-item__grid">
-                <GlobeSimple size={20} weight="light" />
+                <div className="feed-item__grid">
+                    {isYoutube ? (
+                        <YoutubeLogo size={20} weight="light" />
+                    ) : (
+                        <GlobeSimple size={20} weight="light" />
+                    )}
                 <div className="feed-item__title-row">
                     <a
                         className="feed-item__link"

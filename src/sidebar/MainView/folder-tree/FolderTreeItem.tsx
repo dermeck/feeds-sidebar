@@ -1,10 +1,11 @@
-import { CaretDown, CaretRight, DotsSixVertical, FolderSimple, Rss } from '@phosphor-icons/react';
+import { CaretDown, CaretRight, DotsSixVertical, FolderSimple, Rss, YoutubeLogo } from '@phosphor-icons/react';
 
 import React from 'react';
 import { Button, TreeItemContent } from 'react-aria-components';
 import { clsx } from 'clsx';
 
 import { NodeType } from '../../../model/feeds';
+import { isYoutubeUrl } from '../../../services/youtube/videoUrl';
 import { useAppDispatch } from '../../../store/hooks';
 import feedsSlice, { TreeViewItem } from '../../../store/slices/feeds';
 import sessionSlice from '../../../store/slices/session';
@@ -44,6 +45,8 @@ export const FolderTreeItem = ({ item }: FolderTreeItemProps) => {
                         </Button>
                         {item.nodeType === NodeType.Folder ? (
                             <FolderSimple className="folder__icon" size={20} weight="light" />
+                        ) : isYoutubeUrl(item.id) ? (
+                            <YoutubeLogo className="folder__icon" size={20} weight="light" />
                         ) : (
                             <Rss className="folder__icon" size={20} weight="light" />
                         )}

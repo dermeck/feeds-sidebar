@@ -1,4 +1,19 @@
-import { youtubeVideoIdFromItemId, youtubeVideoIdFromUrl } from './videoUrl';
+import { isYoutubeUrl, youtubeVideoIdFromItemId, youtubeVideoIdFromUrl } from './videoUrl';
+
+describe('#isYoutubeUrl', () => {
+    it('matches youtube hosts, including feed and channel urls', () => {
+        expect(isYoutubeUrl('https://www.youtube.com/feeds/videos.xml?channel_id=UC5NOEUbkLheQcaaRldYW5GA')).toBe(true);
+        expect(isYoutubeUrl('https://youtube.com/watch?v=OU6HZ-PTOPI')).toBe(true);
+        expect(isYoutubeUrl('https://m.youtube.com/shorts/OU6HZ-PTOPI')).toBe(true);
+        expect(isYoutubeUrl('https://youtu.be/OU6HZ-PTOPI')).toBe(true);
+    });
+
+    it('rejects lookalike hosts and non-youtube urls', () => {
+        expect(isYoutubeUrl('https://notyoutube.com/feed/')).toBe(false);
+        expect(isYoutubeUrl('https://example.com/watch?v=OU6HZ-PTOPI')).toBe(false);
+        expect(isYoutubeUrl('not a url')).toBe(false);
+    });
+});
 
 describe('#youtubeVideoIdFromUrl', () => {
     it('extracts the id from watch URLs', () => {
