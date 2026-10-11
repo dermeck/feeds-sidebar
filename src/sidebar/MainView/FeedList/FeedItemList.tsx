@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 
+import { useItemSelection } from '../selection';
 import { FeedListItem, FeedListItemModel } from './item/FeedListItem';
 import { clsx } from 'clsx';
 
@@ -12,6 +13,8 @@ type FeedItemListProps = {
 };
 
 export const FeedItemList = ({ items, nestedLevel = 0, filterString, getItemLabel, disabled }: FeedItemListProps) => {
+    const { selectedFeedItemId, selectFeedItem } = useItemSelection();
+
     if (!items.some((x) => !x.isRead)) {
         return <Fragment />;
     }
@@ -28,6 +31,8 @@ export const FeedItemList = ({ items, nestedLevel = 0, filterString, getItemLabe
                             label={getItemLabel ? getItemLabel(item) : item.title}
                             url={item.url}
                             isRead={item.isRead ?? false}
+                            isSelected={item.id === selectedFeedItemId}
+                            onSelect={selectFeedItem}
                             title={`${item.parentTitle} | ${item.title} \n${item.url}`}
                             nestedLevel={nestedLevel}
                             durationSeconds={item.durationSeconds}

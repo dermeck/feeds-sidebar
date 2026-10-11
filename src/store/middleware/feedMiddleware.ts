@@ -17,9 +17,9 @@ export const updateBadge = (state: RootState) => {
 const badgeRelevantActions = [
     feedsSlice.actions.updateFeeds.type,
     feedsSlice.actions.markItemAsRead.type,
-    feedsSlice.actions.markSelectedNodeAsRead.type,
+    feedsSlice.actions.markNodeAsRead.type,
     feedsSlice.actions.markAllAsRead.type,
-    feedsSlice.actions.deleteSelectedNode.type,
+    feedsSlice.actions.deleteNode.type,
     feedsSlice.actions.deleteFeed.type,
     optionsSlice.actions.changeMaxItemsPerFeed.type,
     optionsSlice.actions.changeShowUnreadBadge.type,

@@ -1,4 +1,4 @@
-import { Folder, NodeMeta, NodeType } from '../../../model/feeds';
+import { Folder, NodeType } from '../../../model/feeds';
 import { extensionStateLoaded } from '../../actions';
 import { RootState } from '../../store';
 import feedsSlice from '../feeds';
@@ -26,8 +26,6 @@ describe('global extensionStateLoaded action', () => {
         const prevState: FeedSliceState = {
             folders: [folder1Fixture],
             feeds: [feed1Fixture],
-            selectedNode: undefined,
-            selectedFeedItemId: undefined,
             readItemIds: [],
             durationFetchFailures: {},
         };
@@ -36,8 +34,6 @@ describe('global extensionStateLoaded action', () => {
             feeds: {
                 folders: [folder2Fixture],
                 feeds: [feed2Fixture],
-                selectedNode: undefined,
-                selectedFeedItemId: undefined,
                 readItemIds: [],
                 durationFetchFailures: {},
             },
@@ -47,58 +43,11 @@ describe('global extensionStateLoaded action', () => {
         const expectation: FeedSliceState = {
             folders: [folder2Fixture],
             feeds: [feed2Fixture],
-            selectedNode: undefined,
-            selectedFeedItemId: undefined,
             readItemIds: [],
             durationFetchFailures: {},
         };
 
         expect(feedsSlice.reducer(prevState, action)).toStrictEqual(expectation);
-    });
-});
-
-describe('select action', () => {
-    it('sets selectedNode', () => {
-        const prevState: FeedSliceState = {
-            ...feedsSlice.getInitialState(),
-            feeds: feedsFixture,
-        };
-
-        const action = feedsSlice.actions.select({ nodeType: NodeType.Feed, nodeId: 'feedId2' });
-
-        const expected: NodeMeta = { nodeType: NodeType.Feed, nodeId: 'feedId2' };
-
-        expect(feedsSlice.reducer(prevState, action).selectedNode).toStrictEqual(expected);
-    });
-
-    it('clears the selected feed item', () => {
-        const prevState: FeedSliceState = {
-            ...feedsSlice.getInitialState(),
-            feeds: feedsFixture,
-            selectedNode: { nodeType: NodeType.FeedItem, nodeId: 'itemId1' },
-            selectedFeedItemId: 'itemId1',
-        };
-
-        const action = feedsSlice.actions.select({ nodeType: NodeType.Feed, nodeId: feed1Fixture.id });
-
-        expect(feedsSlice.reducer(prevState, action).selectedFeedItemId).toBeUndefined();
-    });
-});
-
-describe('selectFeedItem action', () => {
-    it('sets selectedFeedItemId without changing selectedNode', () => {
-        const selectedNode: NodeMeta = { nodeType: NodeType.Feed, nodeId: feed1Fixture.id };
-        const prevState: FeedSliceState = {
-            ...feedsSlice.getInitialState(),
-            feeds: feedsFixture,
-            selectedNode,
-        };
-
-        const action = feedsSlice.actions.selectFeedItem('itemId1');
-        const nextState = feedsSlice.reducer(prevState, action);
-
-        expect(nextState.selectedFeedItemId).toBe('itemId1');
-        expect(nextState.selectedNode).toStrictEqual(selectedNode);
     });
 });
 
@@ -118,15 +67,14 @@ describe('markItemAsRead action', () => {
     });
 });
 
-describe('markSelectedNodeAsRead action', () => {
-    it('marks all items of feed as read if selectedNode is a feed', () => {
+describe('markNodeAsRead action', () => {
+    it('marks all items of feed as read if the node is a feed', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             feeds: feedsFixture,
-            selectedNode: { nodeType: NodeType.Feed, nodeId: feed1Fixture.id },
         };
 
-        const action = feedsSlice.actions.markSelectedNodeAsRead();
+        const action = feedsSlice.actions.markNodeAsRead({ nodeType: NodeType.Feed, nodeId: feed1Fixture.id });
         const newState = feedsSlice.reducer(prevState, action);
 
         expect(newState.feeds[0].items[0].isRead).toBe(true);
@@ -135,7 +83,7 @@ describe('markSelectedNodeAsRead action', () => {
         expect(newState.feeds[2].items[0].isRead).toBe(false);
     });
 
-    it('marks all items within folder as read if selectedNode is a folder', () => {
+    it('marks all items within folder as read if the node is a folder', () => {
         const prevState: FeedSliceState = {
             ...feedsSlice.getInitialState(),
             folders: [
@@ -144,10 +92,9 @@ describe('markSelectedNodeAsRead action', () => {
                 { ...folder3Fixture, feedIds: [feed3Fixture.id] },
             ],
             feeds: feedsFixture,
-            selectedNode: { nodeType: NodeType.Folder, nodeId: folder2Fixture.id },
         };
 
-        const action = feedsSlice.actions.markSelectedNodeAsRead();
+        const action = feedsSlice.actions.markNodeAsRead({ nodeType: NodeType.Folder, nodeId: folder2Fixture.id });
         const newState = feedsSlice.reducer(prevState, action);
 
         expect(newState.feeds[0].items[0].isRead).toBe(false);

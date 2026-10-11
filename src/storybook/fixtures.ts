@@ -134,8 +134,6 @@ export const stateFixture: Partial<RootState> = {
     feeds: {
         feeds: feedsFixture,
         folders: foldersFixture,
-        selectedNode: undefined,
-        selectedFeedItemId: undefined,
         readItemIds: [],
         durationFetchFailures: {},
     },
@@ -147,8 +145,6 @@ export const emptyStateFixture: Partial<RootState> = {
     feeds: {
         feeds: [],
         folders: [{ id: rootFolderId, title: 'root', feedIds: [], subfolderIds: [] }],
-        selectedNode: undefined,
-        selectedFeedItemId: undefined,
         readItemIds: [],
         durationFetchFailures: {},
     },

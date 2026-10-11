@@ -1,4 +1,3 @@
-import { NodeType } from '../model/feeds';
 import { initialState as initialOptions } from '../store/slices/options';
 import { initialState as initialSession } from '../store/slices/session';
 import { loadState, saveState } from './persistence';
@@ -20,8 +19,6 @@ beforeEach(() => {
 const validFeeds = {
     folders: [],
     feeds: [],
-    selectedNode: undefined,
-    selectedFeedItemId: undefined,
     readItemIds: [],
     durationFetchFailures: {},
 };
@@ -87,38 +84,5 @@ describe('loadState', () => {
         }
 
         await expect(loadState()).resolves.toBeUndefined();
-    });
-});
-
-describe('legacy feed item selection', () => {
-    const feedsWithSelection = (selectedNode: unknown) => ({
-        folders: [],
-        feeds: [{ id: 'feed1', items: [{ id: 'item1', title: 'Item', url: 'http://feed1/item1' }] }],
-        selectedNode,
-        readItemIds: [],
-        durationFetchFailures: {},
-    });
-
-    beforeEach(() => {
-        storage.optionsKey = initialOptions;
-        storage.timestampKey = 1700000000000;
-    });
-
-    it('moves the selection to the parent feed and the article slot', async () => {
-        storage.feedsKey = feedsWithSelection({ nodeType: NodeType.FeedItem, nodeId: 'item1' });
-
-        const loaded = await loadState();
-
-        expect(loaded?.feeds.selectedNode).toStrictEqual({ nodeType: NodeType.Feed, nodeId: 'feed1' });
-        expect(loaded?.feeds.selectedFeedItemId).toBe('item1');
-    });
-
-    it('clears a selection whose article is gone', async () => {
-        storage.feedsKey = feedsWithSelection({ nodeType: NodeType.FeedItem, nodeId: 'missing' });
-
-        const loaded = await loadState();
-
-        expect(loaded?.feeds.selectedNode).toBeUndefined();
-        expect(loaded?.feeds.selectedFeedItemId).toBeUndefined();
     });
 });

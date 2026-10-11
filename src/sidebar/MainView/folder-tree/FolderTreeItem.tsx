@@ -7,7 +7,7 @@ import { clsx } from 'clsx';
 import { NodeType } from '../../../model/feeds';
 import { isYoutubeUrl } from '../../../services/youtube/videoUrl';
 import { useAppDispatch } from '../../../store/hooks';
-import feedsSlice, { TreeViewItem } from '../../../store/slices/feeds';
+import { TreeViewItem } from '../../../store/slices/feeds';
 import sessionSlice from '../../../store/slices/session';
 import useWindowDimensions from '../../../utils/hooks/useWindowDimensions';
 import { menuPosition } from '../../Menu/ContextMenu/menuPosition';
@@ -29,8 +29,12 @@ export const FolderTreeItem = ({ item }: FolderTreeItemProps) => {
             return;
         }
 
-        dispatch(feedsSlice.actions.select({ nodeId: item.id, nodeType: item.nodeType }));
-        dispatch(sessionSlice.actions.showContextMenu(position));
+        dispatch(
+            sessionSlice.actions.showContextMenu({
+                anchorPoint: position,
+                node: { nodeId: item.id, nodeType: item.nodeType },
+            }),
+        );
     };
 
     return (

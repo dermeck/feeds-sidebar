@@ -10,7 +10,7 @@ import { clsx } from 'clsx';
 const renderMenu = (context: MenuContext, changeView: (value: View) => void) => {
     switch (context.type) {
         case MenuType.contextMenu:
-            return <ContextMenu anchorPoint={context.anchorPoint} />;
+            return context.node ? <ContextMenu anchorPoint={context.anchorPoint} node={context.node} /> : null;
 
         case MenuType.moreMenu:
             return <MoreMenu anchorPoint={context.anchorPoint} changeView={changeView} />;

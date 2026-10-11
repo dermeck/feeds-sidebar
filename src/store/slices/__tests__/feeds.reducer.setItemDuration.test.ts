@@ -19,7 +19,6 @@ const stateWithItems = (): RootState =>
                     items: [{ id: 'shortItem', url: 'https://www.youtube.com/shorts/JXgV1rJzwd4', title: 'short' }],
                 },
             ],
-            selectedNode: undefined,
             readItemIds: [],
             durationFetchFailures: {},
         },

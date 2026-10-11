@@ -1,10 +1,10 @@
 import { NodeType, rootFolderId } from '../../../model/feeds';
 import { RootState } from '../../store';
 import feedsSlice, {
+    feedItemsByNode,
     nodeMetaById,
     selectDescendentNodeIds,
     selectFolderIds,
-    selectSelectedNodeFeedItems,
     selectTotalUnreadItems,
     selectTreeItems,
 } from '../feeds';
@@ -159,41 +159,36 @@ describe('nodeMetaById', () => {
     });
 });
 
-describe('selectSelectedNodeFeedItems', () => {
-    const state: RootState['feeds'] = {
-        ...feedsSlice.getInitialState(),
-        folders: [
-            { ...folder1Fixture, id: rootFolderId, subfolderIds: [folder2Fixture.id], feedIds: [feed1Fixture.id] },
-            { ...folder2Fixture, feedIds: [feed2Fixture.id] },
-        ],
-        feeds: [feed1Fixture, feed2Fixture],
-    };
+describe('feedItemsByNode', () => {
+    const folders: RootState['feeds']['folders'] = [
+        { ...folder1Fixture, id: rootFolderId, subfolderIds: [folder2Fixture.id], feedIds: [feed1Fixture.id] },
+        { ...folder2Fixture, feedIds: [feed2Fixture.id] },
+    ];
+    const feeds: RootState['feeds']['feeds'] = [feed1Fixture, feed2Fixture];
 
     const withParent = (feed: typeof feed1Fixture) =>
         feed.items.map((item) => ({ ...item, parentId: feed.id, parentTitle: feed.title }));
 
     it('returns an empty array when nothing is selected', () => {
-        expect(selectSelectedNodeFeedItems({ ...state, selectedNode: undefined })).toStrictEqual([]);
+        expect(feedItemsByNode(feeds, folders, undefined)).toStrictEqual([]);
     });
 
     it('returns an empty array when a feed item is selected', () => {
         const selection = { nodeId: 'some-item', nodeType: NodeType.FeedItem } as const;
 
-        expect(selectSelectedNodeFeedItems({ ...state, selectedNode: selection })).toStrictEqual([]);
+        expect(feedItemsByNode(feeds, folders, selection)).toStrictEqual([]);
     });
 
     it('returns the items of the selected feed with their parent', () => {
         const selection = { nodeId: feed1Fixture.id, nodeType: NodeType.Feed } as const;
 
-        expect(selectSelectedNodeFeedItems({ ...state, selectedNode: selection })).toStrictEqual(
-            withParent(feed1Fixture),
-        );
+        expect(feedItemsByNode(feeds, folders, selection)).toStrictEqual(withParent(feed1Fixture));
     });
 
     it('returns the items of every feed under the selected folder', () => {
         const selection = { nodeId: rootFolderId, nodeType: NodeType.Folder } as const;
 
-        expect(selectSelectedNodeFeedItems({ ...state, selectedNode: selection })).toStrictEqual([
+        expect(feedItemsByNode(feeds, folders, selection)).toStrictEqual([
             ...withParent(feed2Fixture),
             ...withParent(feed1Fixture),
         ]);

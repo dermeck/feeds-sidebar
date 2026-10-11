@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { NodeMeta } from '../../../model/feeds';
 import { Menu } from '../../../base-components/Menu/Menu';
 import { MenuItem } from '../../../base-components/Menu/MenuItem';
 import { MenuList } from '../../../base-components/Menu/MenuList';
@@ -9,6 +10,7 @@ import sessionSlice, { Point } from '../../../store/slices/session';
 
 interface Props {
     anchorPoint: Point;
+    node: NodeMeta;
 }
 
 export const ContextMenu = (props: Props) => {
@@ -21,12 +23,12 @@ export const ContextMenu = (props: Props) => {
                     onMouseDown={() => {
                         dispatch(sessionSlice.actions.hideMenu());
                         window.confirm('Do you want to delete the selected folder and all its contents?')
-                            ? dispatch(feedsSlice.actions.deleteSelectedNode())
+                            ? dispatch(feedsSlice.actions.deleteNode(props.node))
                             : undefined;
                     }}>
                     Delete
                 </MenuItem>
-                <MenuItem onMouseDown={() => dispatch(feedsSlice.actions.markSelectedNodeAsRead())}>
+                <MenuItem onMouseDown={() => dispatch(feedsSlice.actions.markNodeAsRead(props.node))}>
                     Mark as Read
                 </MenuItem>
             </MenuList>

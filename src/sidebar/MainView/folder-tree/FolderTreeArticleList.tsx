@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { NodeType } from '../../../model/feeds';
 import { useAppSelector } from '../../../store/hooks';
-import { selectSelectedNode, selectSelectedNodeFeedItems } from '../../../store/slices/feeds';
+import { feedItemsByNode, selectFeeds, selectFolders } from '../../../store/slices/feeds';
+import { useNodeSelection } from '../selection';
 import { FeedItemList } from '../FeedList/FeedItemList';
 import { FeedListItemModel } from '../FeedList/item/FeedListItem';
 
@@ -12,8 +13,10 @@ type FolderTreeArticleListProps = {
 };
 
 export const FolderTreeArticleList = ({ filterString, disabled }: FolderTreeArticleListProps) => {
-    const selectedNode = useAppSelector((state) => selectSelectedNode(state.feeds));
-    const items = useAppSelector((state) => selectSelectedNodeFeedItems(state.feeds));
+    const { selectedNode } = useNodeSelection();
+    const feeds = useAppSelector((state) => selectFeeds(state.feeds));
+    const folders = useAppSelector((state) => selectFolders(state.feeds));
+    const items = useMemo(() => feedItemsByNode(feeds, folders, selectedNode), [feeds, folders, selectedNode]);
 
     if (selectedNode === undefined) {
         return null;

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Collection, Key, Selection, Tree, TreeItem, useDragAndDrop } from 'react-aria-components';
 
 import { NodeMeta, NodeType } from '../../../model/feeds';
@@ -8,10 +8,10 @@ import feedsSlice, {
     selectFeeds,
     selectFolderIds,
     selectFolders,
-    selectSelectedNode,
     selectTreeItems,
     TreeViewItem,
 } from '../../../store/slices/feeds';
+import { useNodeSelection } from '../selection';
 import { canDropNode, insertModeByDropPosition } from './folderTreeDrop';
 import { FolderTreeArticleList } from './FolderTreeArticleList';
 import { FolderTreeItem } from './FolderTreeItem';
@@ -94,12 +94,11 @@ type MainViewFolderTreeProps = {
 };
 
 export const MainViewFolderTree = ({ className, filterString }: MainViewFolderTreeProps) => {
-    const dispatch = useAppDispatch();
     const items = useAppSelector((state) => selectTreeItems(state.feeds));
     const folderIds = useAppSelector((state) => selectFolderIds(state.feeds));
     const folders = useAppSelector((state) => selectFolders(state.feeds));
     const feeds = useAppSelector((state) => selectFeeds(state.feeds));
-    const selectedNode = useAppSelector((state) => selectSelectedNode(state.feeds));
+    const { selectedNode, selectNode, clearNodeSelection } = useNodeSelection();
 
     const { dragAndDropHooks, isDragging } = useFolderTreeDragDrop();
 
@@ -136,9 +135,17 @@ export const MainViewFolderTree = ({ className, filterString }: MainViewFolderTr
         const meta = nodeMetaById(folders, feeds, id);
 
         if (meta !== undefined) {
-            dispatch(feedsSlice.actions.select(meta));
+            selectNode(meta);
         }
     };
+
+    // the selected node can disappear when it is deleted; a stale selection would then keep the
+    // article pane bound to a node that no longer exists
+    useEffect(() => {
+        if (selectedNode !== undefined && nodeMetaById(folders, feeds, selectedNode.nodeId) === undefined) {
+            clearNodeSelection();
+        }
+    }, [selectedNode, folders, feeds, clearNodeSelection]);
 
     return (
         <div className={clsx('folder-tree-view', className)}>

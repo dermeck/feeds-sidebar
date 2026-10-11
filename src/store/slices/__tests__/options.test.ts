@@ -36,8 +36,6 @@ describe('options slice', () => {
                 feeds: {
                     folders: [],
                     feeds: [],
-                    selectedNode: undefined,
-                    selectedFeedItemId: undefined,
                     readItemIds: [],
                     durationFetchFailures: {},
                 },
@@ -77,8 +75,6 @@ describe('options slice', () => {
                 feeds: {
                     folders: [],
                     feeds: [],
-                    selectedNode: undefined,
-                    selectedFeedItemId: undefined,
                     readItemIds: [],
                     durationFetchFailures: {},
                 },

@@ -17,17 +17,29 @@ type Props = {
     title: string;
     url: string;
     isRead: boolean;
+    isSelected: boolean;
     feedId: string;
+    onSelect: (itemId: string) => void;
     nestedLevel: number;
     durationSeconds?: number;
 };
 
 export type FeedListItemModel = FeedItemWithParent;
 
-const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, durationSeconds }: Props) => {
+const FeedListItem = ({
+    id,
+    label,
+    title,
+    url,
+    isRead,
+    isSelected,
+    feedId,
+    onSelect,
+    nestedLevel,
+    durationSeconds,
+}: Props) => {
     const dispatch = useAppDispatch();
 
-    const isSelected = useAppSelector((state) => state.feeds.selectedFeedItemId) === id;
     const isDurationEnabled = useAppSelector((state) => state.options.youtubeVideoDurationEnabled);
     const isYoutube = youtubeVideoIdFromUrl(url) !== undefined || youtubeVideoIdFromItemId(id) !== undefined;
 
@@ -45,7 +57,7 @@ const FeedListItem = ({ id, label, title, url, isRead, feedId, nestedLevel, dura
     }
 
     const handleFeedItemClick = (feedId: string, itemId: string) => {
-        dispatch(feedsSlice.actions.selectFeedItem(id));
+        onSelect(id);
 
         dispatch(
             feedsSlice.actions.markItemAsRead({
