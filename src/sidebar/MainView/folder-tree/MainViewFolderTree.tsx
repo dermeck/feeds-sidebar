@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Collection, Key, Selection, Tree, TreeItem, useDragAndDrop } from 'react-aria-components';
 
-import { NodeMeta } from '../../../model/feeds';
+import { NodeMeta, NodeType } from '../../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import feedsSlice, {
     nodeMetaById,
@@ -110,7 +110,7 @@ export const MainViewFolderTree = ({ className, filterString }: MainViewFolderTr
     );
 
     const selectedKeys = useMemo(
-        () => new Set(selectedNode === undefined ? [] : [selectedNode.nodeId]),
+        () => new Set(selectedNode === undefined || selectedNode.nodeType === NodeType.FeedItem ? [] : [selectedNode.nodeId]),
         [selectedNode],
     );
 

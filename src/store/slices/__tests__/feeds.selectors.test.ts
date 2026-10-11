@@ -176,6 +176,12 @@ describe('selectSelectedNodeFeedItems', () => {
         expect(selectSelectedNodeFeedItems({ ...state, selectedNode: undefined })).toStrictEqual([]);
     });
 
+    it('returns an empty array when a feed item is selected', () => {
+        const selection = { nodeId: 'some-item', nodeType: NodeType.FeedItem } as const;
+
+        expect(selectSelectedNodeFeedItems({ ...state, selectedNode: selection })).toStrictEqual([]);
+    });
+
     it('returns the items of the selected feed with their parent', () => {
         const selection = { nodeId: feed1Fixture.id, nodeType: NodeType.Feed } as const;
 

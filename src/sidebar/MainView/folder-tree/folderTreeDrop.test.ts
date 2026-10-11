@@ -26,6 +26,21 @@ describe('canDropNode', () => {
         });
     });
 
+    it('rejects dropping a folder on a feed inside its own subtree', () => {
+        const feedInSubtreeId = 'feed-in-subtree';
+        const foldersWithFeed = [
+            { ...folder1Fixture, subfolderIds: [folder2Fixture.id] },
+            { ...folder2Fixture, subfolderIds: [folder3Fixture.id], feedIds: [feedInSubtreeId] },
+            { ...folder3Fixture },
+        ];
+
+        positions.forEach((position) => {
+            expect(canDropNode(folder(folder1Fixture.id), feed(feedInSubtreeId), position, foldersWithFeed)).toBe(
+                false,
+            );
+        });
+    });
+
     it('only allows a feed to be reordered relative to another feed', () => {
         expect(canDropNode(feed('feed1'), feed('feed2'), 'before', folders)).toBe(true);
         expect(canDropNode(feed('feed1'), feed('feed2'), 'after', folders)).toBe(true);
