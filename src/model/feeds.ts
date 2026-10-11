@@ -32,18 +32,6 @@ export interface NodeMeta {
     nodeType: NodeType;
 }
 
-export interface FeedNode {
-    nodeType: NodeType.Feed;
-    data: Feed;
-}
-
-export interface FolderNode {
-    nodeType: NodeType.Folder;
-    data: Folder;
-}
-
-export type TreeNode = FolderNode | FeedNode;
-
 export interface FeedItem {
     id: string;
     title: string;

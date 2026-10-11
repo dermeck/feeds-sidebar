@@ -4,15 +4,12 @@ import {
     Feed,
     FeedItem,
     FeedItemWithParent,
-    FeedNode,
     Folder,
-    FolderNode,
     InsertMode,
     itemDate,
     NodeMeta,
     NodeType,
     rootFolderId,
-    TreeNode,
 } from '../../model/feeds';
 import { UnreachableCaseError } from '../../utils/UnreachableCaseError';
 import { moveOrInsertElementBefore, moveOrInsertElementAfter } from '../../utils/arrayUtils';
@@ -189,40 +186,6 @@ export const selectYoutubeItemsMissingDuration = (
 export const selectDurationFetchFailures = (state: RootState): Readonly<Record<string, number>> =>
     state.feeds.durationFetchFailures;
 
-/* factory function for creating memoized selector for each component instance (use nodeId from props) */
-export const makeSelectTreeNode = () =>
-    createSelector(
-        selectFeeds,
-        selectFolders,
-        (_: FeedSliceState, nodeId: string) => nodeId,
-        (feeds, folders, nodeId): TreeNode | undefined => {
-            const folder = folders.find((f) => f.id === nodeId);
-
-            if (folder !== undefined) {
-                return {
-                    nodeType: NodeType.Folder,
-                    data: folder,
-                };
-            }
-
-            const feed = feeds.find((f) => f.id === nodeId);
-
-            if (feed !== undefined) {
-                return {
-                    nodeType: NodeType.Feed,
-                    data: feed,
-                };
-            }
-
-            // TODO something triggers selectTreeNode with ids that were just deleted
-            // occurs if folders with subfolders are deleted
-            // fix this workaround and throw error again
-            // throw new Error(`Node with id: "${nodeId}" not found.`);
-
-            return undefined;
-        },
-    );
-
 const folderById = (folders: FeedSliceState['folders'], id: string) => {
     const folder = folders.find((x) => x.id === id);
 
@@ -303,26 +266,6 @@ const trimOverflowingItems = (state: FeedSliceState, maxItems: number) => {
     });
 };
 
-const selectChildNodes = (
-    feeds: FeedSliceState['feeds'],
-    folders: FeedSliceState['folders'],
-    parentId: string,
-): ReadonlyArray<TreeNode> => {
-    const parentFolder = folderById(folders, parentId);
-
-    const folderNodes: ReadonlyArray<FolderNode> = parentFolder.subfolderIds.map((subFolderId) => ({
-        nodeType: NodeType.Folder,
-        data: folderById(folders, subFolderId),
-    }));
-
-    const feedNodes: ReadonlyArray<FeedNode> = parentFolder.feedIds.map((feedId) => ({
-        nodeType: NodeType.Feed,
-        data: feedById(feeds, feedId),
-    }));
-
-    return [...folderNodes, ...feedNodes];
-};
-
 export const selectDescendentNodeIds = (
     feeds: FeedSliceState['feeds'],
     folders: FeedSliceState['folders'],
@@ -340,67 +283,6 @@ export const selectDescendentNodeIds = (
         ...parentFolder.subfolderIds.flatMap((sid) => selectDescendentNodeIds(feeds, folders, sid)),
     ];
 };
-
-/* factory function for creating memoized selector (parentId is a parameter) */
-export const makeselectDescendentNodeIds = () =>
-    createSelector(
-        selectFeeds,
-        selectFolders,
-        (_: FeedSliceState, parentId: string | undefined) => parentId,
-        (feeds, folders, parentId): ReadonlyArray<string> => {
-            if (parentId === undefined) {
-                return [];
-            }
-
-            if (folders.find((x) => x.id === parentId) === undefined) {
-                return [];
-            }
-
-            const parentFolder = folderById(folders, parentId);
-
-            return [
-                ...parentFolder.subfolderIds,
-                ...parentFolder.feedIds,
-                ...parentFolder.subfolderIds.flatMap((sid) => selectDescendentNodeIds(feeds, folders, sid)),
-            ];
-        },
-    );
-
-export const selectHasVisibleChildren = (state: FeedSliceState, nodeMeta: NodeMeta): boolean => {
-    const { nodeId, nodeType } = nodeMeta;
-
-    switch (nodeType) {
-        case NodeType.FeedItem:
-            return false;
-
-        case NodeType.Feed:
-            return hasFeedUnreadItem(state, nodeId);
-
-        case NodeType.Folder: {
-            return hasFolderChildren(state, nodeId);
-        }
-
-        default:
-            throw new UnreachableCaseError(nodeType);
-    }
-};
-
-const hasFeedUnreadItem = (state: FeedSliceState, feedId: string): boolean => {
-    return !!state.feeds.find((f) => f.id === feedId)?.items.find((item) => !item.isRead);
-};
-
-const hasFolderChildren = (state: FeedSliceState, folderId: string): boolean => {
-    const folder = state.folders.find((f) => f.id === folderId);
-    if (!folder) {
-        return false;
-    }
-
-    return folder.subfolderIds.length > 0 || folder.feedIds.length > 0;
-};
-
-export const selectTopLevelNodes = createSelector(selectFeeds, selectFolders, (feeds, folders) =>
-    selectChildNodes(feeds, folders, rootFolderId),
-);
 
 export const selectSelectedNode = (state: FeedSliceState) => state.selectedNode;
 

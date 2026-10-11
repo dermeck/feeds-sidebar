@@ -1,10 +1,8 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo } from 'react';
 
-import { NodeMeta } from '../../model/feeds';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import feedsSlice, { selectTopLevelNodes } from '../../store/slices/feeds';
+import feedsSlice from '../../store/slices/feeds';
 import { FolderEdit } from './folder-tree/FolderEdit/FolderEdit';
-import { DragDropContext } from './folder-tree/dragdrop/dragdrop-context';
 import { MainViewFolderTree } from './folder-tree/MainViewFolderTree';
 import { MainViewPlainList } from './plain-list/MainViewPlainList';
 import { MainViewDateSortedList } from './date-sorted-list/MainViewDateSortedList';
@@ -20,26 +18,19 @@ type MainViewProps = {
 const MainView = ({ displayMode, filterString }: MainViewProps) => {
     const dispatch = useAppDispatch();
     const showNewFolderInput = useAppSelector((state) => state.session.newFolderEditActive); // TODO mr move to local state
-    const topLevelNodes = useAppSelector((state) => selectTopLevelNodes(state.feeds));
 
     const handleEditComplete = (title: string) => {
         dispatch(feedsSlice.actions.addFolder(title));
     };
 
-    const [draggedNode, setDraggedNode] = useState<NodeMeta | undefined>(undefined);
-    const contextValue = useMemo(() => ({ draggedNode, setDraggedNode }), [draggedNode]);
-
     return (
         <div className="main-view">
             {showNewFolderInput && <FolderEdit initialValue={'New Folder'} onEditComplete={handleEditComplete} />}
 
-            <DragDropContext value={contextValue}>
-                <MainViewFolderTree
-                    className={clsx(displayMode === 'folder-tree' ? 'view-visible' : 'view-hidden')}
-                    nodes={topLevelNodes}
-                    filterString={filterString}
-                />
-            </DragDropContext>
+            <MainViewFolderTree
+                className={clsx(displayMode === 'folder-tree' ? 'view-visible' : 'view-hidden')}
+                filterString={filterString}
+            />
             <MainViewPlainList
                 className={clsx(displayMode === 'plain-list' ? 'view-visible' : 'view-hidden')}
                 filterString={filterString}
