@@ -28,7 +28,7 @@ const normalizeLegacySelection = (feeds: RootState['feeds']): RootState['feeds']
         return feeds;
     }
 
-    const feed = feeds.feeds.find((f) => f.items.some((item) => item.id === selectedNode.nodeId));
+    const feed = feeds.feeds.find((f) => f.items?.some((item) => item.id === selectedNode.nodeId));
 
     return feed
         ? {
