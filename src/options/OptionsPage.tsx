@@ -86,6 +86,18 @@ export const OptionsPage = () => {
                         />
                     </OptionField>
 
+                    <NumberField
+                        label="Max items per feed"
+                        description={`Keep at most this many items per feed. Newer items are kept, older ones are removed. Defaults to ${MAX_ITEMS_PER_FEED_DEFAULT}. Set to 0 for unlimited.`}
+                        value={options.maxItemsPerFeed}
+                        min={0}
+                        onCommit={setMaxItemsPerFeed}
+                    />
+                </section>
+
+                <section className="options-page__section">
+                    <h2 className="options-page__section-heading">YouTube</h2>
+
                     <OptionField
                         label="Show video lengths for YouTube items"
                         description="Fetch the length of each YouTube video and show it next to the title. Fetching runs in the background, one video at a time. Each length is a separate request to YouTube, so enabling this produces ongoing background network activity."
@@ -146,14 +158,6 @@ export const OptionsPage = () => {
                             onCommit={(value) => dispatch(optionsSlice.actions.changeYoutubeShortsMaxPerRun(value))}
                         />
                     )}
-
-                    <NumberField
-                        label="Max items per feed"
-                        description={`Keep at most this many items per feed. Newer items are kept, older ones are removed. Defaults to ${MAX_ITEMS_PER_FEED_DEFAULT}. Set to 0 for unlimited.`}
-                        value={options.maxItemsPerFeed}
-                        min={0}
-                        onCommit={setMaxItemsPerFeed}
-                    />
                 </section>
 
                 <section className="options-page__section">
