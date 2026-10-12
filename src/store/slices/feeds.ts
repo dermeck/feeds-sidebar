@@ -38,6 +38,8 @@ export const SHORTS_MAX_DURATION_SECONDS = 180;
 
 export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
+// emitted once the duration drain finishes, so the shorts pass sees the freshly fetched durations
+export const youtubeDurationsSettled = createAction('feeds/youtubeDurationsSettled');
 
 const sampleDataFolders: ReadonlyArray<Folder> = [
     {
@@ -552,21 +554,52 @@ const feedsSlice = createSlice({
 
             return { ...state, durationFetchFailures: failures };
         },
-        setItemShortStatus(state, action: PayloadAction<{ feedId: string; itemId: string; isShort: boolean }>) {
-            const { feedId, itemId, isShort } = action.payload;
-            const feed = state.feeds.find((f) => f.id === feedId);
-            const item = feed?.items.find((i) => i.id === itemId);
+        setItemsShortStatus(
+            state,
+            action: PayloadAction<ReadonlyArray<{ feedId: string; itemId: string; isShort: boolean }>>,
+        ) {
+            const updates = action.payload;
 
-            if (feed === undefined || item === undefined || item.isShort === isShort) {
+            if (updates.length === 0) {
                 return state;
             }
 
-            return {
-                ...state,
-                feeds: state.feeds.map((f) =>
-                    f.id !== feedId ? f : { ...f, items: f.items.map((i) => (i.id !== itemId ? i : { ...i, isShort })) },
-                ),
-            };
+            const updatesByFeed = new Map<string, Map<string, boolean>>();
+            for (const update of updates) {
+                const itemsOfFeed = updatesByFeed.get(update.feedId) ?? new Map<string, boolean>();
+                itemsOfFeed.set(update.itemId, update.isShort);
+                updatesByFeed.set(update.feedId, itemsOfFeed);
+            }
+
+            let changed = false;
+            const feeds = state.feeds.map((feed) => {
+                const updatesOfFeed = updatesByFeed.get(feed.id);
+
+                if (updatesOfFeed === undefined) {
+                    return feed;
+                }
+
+                let feedChanged = false;
+                const items = feed.items.map((item) => {
+                    const isShort = updatesOfFeed.get(item.id);
+
+                    if (isShort === undefined || item.isShort === isShort) {
+                        return item;
+                    }
+
+                    feedChanged = true;
+                    return { ...item, isShort };
+                });
+
+                if (!feedChanged) {
+                    return feed;
+                }
+
+                changed = true;
+                return { ...feed, items };
+            });
+
+            return changed ? { ...state, feeds } : state;
         },
         recordShortsFetchFailure(state, action: PayloadAction<{ videoId: string; failedAt: number }>) {
             const { videoId, failedAt } = action.payload;

@@ -47,6 +47,10 @@ export const fetchYoutubeShortStatus = async (
     try {
         const response = await fetchImpl(SHORTS_URL(videoId), requestOptions);
 
+        if (!response.ok) {
+            return undefined;
+        }
+
         return isShortFromResponseUrl(response.url);
     } catch {
         return undefined;

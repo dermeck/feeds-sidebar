@@ -1,12 +1,12 @@
 import { call, delay, put, select, takeLatest } from 'redux-saga/effects';
 
-import { extensionStateLoaded } from '../actions';
 import { fetchYoutubeShortStatus } from '../../services/youtube/fetchVideoShortStatus';
 import feedsSlice, {
     DURATION_FETCH_RETRY_WINDOW_MS,
     SHORTS_MAX_DURATION_SECONDS,
     selectShortsFetchFailures,
     selectYoutubeItemsMissingShortStatus,
+    youtubeDurationsSettled,
 } from '../slices/feeds';
 import optionsSlice, { selectOptions } from '../slices/options';
 import { REQUEST_DELAY_JITTER_MS, REQUEST_DELAY_MS } from './videoDurationSaga';
@@ -62,12 +62,13 @@ function* drainQueue() {
 
     const groups = groupByVideoId(pending);
     const dueVideoIds: string[] = [];
+    const eliminated: Array<{ feedId: string; itemId: string; isShort: boolean }> = [];
 
     for (const group of groups.values()) {
         // a video longer than the shorts ceiling cannot be a short, so no request is needed
         if (group.durationSeconds !== undefined && group.durationSeconds > SHORTS_MAX_DURATION_SECONDS) {
             for (const item of group.items) {
-                yield put(feedsSlice.actions.setItemShortStatus({ ...item, isShort: false }));
+                eliminated.push({ ...item, isShort: false });
             }
             continue;
         }
@@ -83,6 +84,11 @@ function* drainQueue() {
     const maxPerRun = options.youtubeShortsMaxPerRun;
     const videosToFetch = maxPerRun > 0 ? dueVideoIds.slice(0, maxPerRun) : dueVideoIds;
 
+    // one write for the whole elimination pass, so a large backlog does not cause a write per item
+    if (eliminated.length > 0) {
+        yield put(feedsSlice.actions.setItemsShortStatus(eliminated));
+    }
+
     for (const videoId of videosToFetch) {
         const optionsNow: ReturnType<typeof selectOptions> = yield select(selectOptions);
 
@@ -96,8 +102,10 @@ function* drainQueue() {
         if (isShort !== undefined) {
             yield put(feedsSlice.actions.clearShortsFetchFailure(videoId));
 
-            for (const item of group?.items ?? []) {
-                yield put(feedsSlice.actions.setItemShortStatus({ ...item, isShort }));
+            const updates = (group?.items ?? []).map((item) => ({ ...item, isShort }));
+
+            if (updates.length > 0) {
+                yield put(feedsSlice.actions.setItemsShortStatus(updates));
             }
         } else {
             yield put(feedsSlice.actions.recordShortsFetchFailure({ videoId, failedAt: Date.now() }));
@@ -110,10 +118,9 @@ function* drainQueue() {
 export function* watchYoutubeShortsSaga() {
     yield takeLatest(
         [
+            youtubeDurationsSettled.type,
             optionsSlice.actions.changeYoutubeShortsFilterEnabled.type,
             optionsSlice.actions.changeYoutubeShortsMaxPerRun.type,
-            extensionStateLoaded.type,
-            feedsSlice.actions.updateFeeds.type,
         ],
         drainQueue,
     );

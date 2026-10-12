@@ -5,6 +5,7 @@ import { Feed } from '../../model/feeds';
 import { fetchYoutubeShortStatus } from '../../services/youtube/fetchVideoShortStatus';
 import feedsSlice, { DURATION_FETCH_RETRY_WINDOW_MS } from '../slices/feeds';
 import optionsSlice from '../slices/options';
+import { watchVideoDurationSaga } from './videoDurationSaga';
 import { watchYoutubeShortsSaga } from './youtubeShortsSaga';
 
 jest.mock('../../services/youtube/fetchVideoShortStatus');
@@ -22,6 +23,8 @@ const setupStore = () => {
         reducer: { feeds: feedsSlice.reducer, options: optionsSlice.reducer },
         middleware: (gdm) => gdm().concat(sagaMiddleware),
     });
+    // the shorts pass runs after the duration drain settles, so both watchers must be active
+    sagaMiddleware.run(watchVideoDurationSaga);
     sagaMiddleware.run(watchYoutubeShortsSaga);
 
     return store;

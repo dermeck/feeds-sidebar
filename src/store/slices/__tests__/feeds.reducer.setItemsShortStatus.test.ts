@@ -34,20 +34,24 @@ const stateWithItems = (): RootState =>
         session: {},
     }) as unknown as RootState;
 
-describe('setItemShortStatus action', () => {
-    it('sets the status on the target item', () => {
+describe('setItemsShortStatus action', () => {
+    it('sets the status on the target items in a single pass', () => {
         const state = feedsSlice.reducer(
             stateWithItems().feeds,
-            feedsSlice.actions.setItemShortStatus({ feedId: 'feed1', itemId: 'youtubeItem', isShort: true }),
+            feedsSlice.actions.setItemsShortStatus([
+                { feedId: 'feed1', itemId: 'youtubeItem', isShort: true },
+                { feedId: 'feed2', itemId: 'shortItem', isShort: false },
+            ]),
         );
 
         expect(state.feeds[0].items[0].isShort).toBe(true);
+        expect(state.feeds[1].items[0].isShort).toBe(false);
     });
 
     it('leaves all other items untouched', () => {
         const state = feedsSlice.reducer(
             stateWithItems().feeds,
-            feedsSlice.actions.setItemShortStatus({ feedId: 'feed1', itemId: 'youtubeItem', isShort: true }),
+            feedsSlice.actions.setItemsShortStatus([{ feedId: 'feed1', itemId: 'youtubeItem', isShort: true }]),
         );
 
         expect(state.feeds[0].items[1].isShort).toBeUndefined();
@@ -55,14 +59,24 @@ describe('setItemShortStatus action', () => {
         expect(state.feeds[1].items[0].isShort).toBeUndefined();
     });
 
-    it('does nothing when the status is already set to the same value', () => {
+    it('does nothing when every status is already set to the same value', () => {
         const prev = stateWithItems().feeds;
         const state = feedsSlice.reducer(
             prev,
-            feedsSlice.actions.setItemShortStatus({ feedId: 'feed1', itemId: 'knownItem', isShort: true }),
+            feedsSlice.actions.setItemsShortStatus([
+                { feedId: 'feed1', itemId: 'knownItem', isShort: true },
+                { feedId: 'feed1', itemId: 'missingItem', isShort: false },
+            ]),
         );
 
         expect(state).toStrictEqual(prev);
+    });
+
+    it('does nothing for an empty update list', () => {
+        const prev = stateWithItems().feeds;
+        const state = feedsSlice.reducer(prev, feedsSlice.actions.setItemsShortStatus([]));
+
+        expect(state).toBe(prev);
     });
 });
 
