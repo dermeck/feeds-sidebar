@@ -50,6 +50,10 @@ export const loadState = async (): Promise<(RootState & { timestamp: number }) |
                 typeof loadedFeeds.durationFetchFailures === 'object' && loadedFeeds.durationFetchFailures !== null
                     ? loadedFeeds.durationFetchFailures
                     : {},
+            shortsFetchFailures:
+                typeof loadedFeeds.shortsFetchFailures === 'object' && loadedFeeds.shortsFetchFailures !== null
+                    ? loadedFeeds.shortsFetchFailures
+                    : {},
         } as RootState['feeds'],
         options: loadedOptions as RootState['options'],
         session: initialSessionSliceState,

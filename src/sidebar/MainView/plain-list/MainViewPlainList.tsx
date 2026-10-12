@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { useAppSelector } from '../../../store/hooks';
 import { FeedItemList } from '../FeedList/FeedItemList';
-import { Feed, FeedItem } from '../../../model/feeds';
+import { Feed, FeedItem, isHiddenByShortsFilter } from '../../../model/feeds';
 import { EmptyListMessage } from '../EmptyListMessage';
 
 interface Props {
@@ -15,6 +15,7 @@ const getItemLabel = (feed: Feed, item: FeedItem) => `${feed.title ? `${feed.tit
 export const MainViewPlainList = ({ className, filterString }: Props) => {
     const feeds = useAppSelector((state) => state.feeds.feeds);
     const readItemIds = useAppSelector((state) => state.feeds.readItemIds);
+    const hideYoutubeShorts = useAppSelector((state) => state.options.youtubeShortsFilterEnabled);
 
     const makeReadKey = (feedId: string, itemId: string) => `${feedId}::${itemId}`;
     const isRead = (feedId: string, itemId: string) =>
@@ -23,7 +24,12 @@ export const MainViewPlainList = ({ className, filterString }: Props) => {
         feeds.some((f) => f.id === feedId && f.items.some((i) => i.id === itemId && i.isRead));
 
     const hasMatchingItems = feeds.some((feed) =>
-        feed.items.some((item) => !isRead(feed.id, item.id) && item.title?.toLowerCase().includes(filterString.toLowerCase())),
+        feed.items.some(
+            (item) =>
+                !isRead(feed.id, item.id) &&
+                !isHiddenByShortsFilter(item, hideYoutubeShorts) &&
+                item.title?.toLowerCase().includes(filterString.toLowerCase()),
+        ),
     );
 
     return (

@@ -50,6 +50,7 @@ export const Default: Story = {
                 folders: stateFixture.feeds?.folders ?? [],
                 readItemIds: stateFixture.feeds?.readItemIds ?? [],
                 durationFetchFailures: stateFixture.feeds?.durationFetchFailures ?? {},
+                shortsFetchFailures: stateFixture.feeds?.shortsFetchFailures ?? {},
             },
             session: {
                 ...sessionFixture,

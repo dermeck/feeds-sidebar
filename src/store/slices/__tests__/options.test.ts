@@ -9,6 +9,7 @@ import optionsSlice, {
     FEED_UPDATE_MINUTES_MIN,
     MAX_ITEMS_PER_FEED_DEFAULT,
     YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
+    YOUTUBE_SHORTS_MAX_PER_RUN_DEFAULT,
     initialState,
 } from '../options';
 
@@ -23,6 +24,8 @@ describe('options slice', () => {
         youtubeVideoDurationEnabled: false,
         youtubeVideoDurationScope: 'unread',
         youtubeVideoDurationMaxPerRun: YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
+        youtubeShortsFilterEnabled: false,
+        youtubeShortsMaxPerRun: YOUTUBE_SHORTS_MAX_PER_RUN_DEFAULT,
         maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
         sidebarSurface: 'auto',
         sidebarCustomColorLight: '#ffffff',
@@ -38,6 +41,7 @@ describe('options slice', () => {
                     feeds: [],
                     readItemIds: [],
                     durationFetchFailures: {},
+                    shortsFetchFailures: {},
                 },
                 options: {
                     feedUpdatePeriodInMinutes: 45,
@@ -62,6 +66,8 @@ describe('options slice', () => {
                 youtubeVideoDurationEnabled: false,
                 youtubeVideoDurationScope: 'unread',
                 youtubeVideoDurationMaxPerRun: YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
+                youtubeShortsFilterEnabled: false,
+                youtubeShortsMaxPerRun: YOUTUBE_SHORTS_MAX_PER_RUN_DEFAULT,
                 maxItemsPerFeed: 100,
                 sidebarSurface: 'system-theme',
                 sidebarCustomColorLight: '#ffffff',
@@ -77,6 +83,7 @@ describe('options slice', () => {
                     feeds: [],
                     readItemIds: [],
                     durationFetchFailures: {},
+                    shortsFetchFailures: {},
                 },
                 options: {
                     feedUpdatePeriodInMinutes: 45,
@@ -96,6 +103,8 @@ describe('options slice', () => {
                 youtubeVideoDurationEnabled: false,
                 youtubeVideoDurationScope: 'unread',
                 youtubeVideoDurationMaxPerRun: YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
+                youtubeShortsFilterEnabled: false,
+                youtubeShortsMaxPerRun: YOUTUBE_SHORTS_MAX_PER_RUN_DEFAULT,
                 maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
                 sidebarSurface: 'auto',
                 sidebarCustomColorLight: '#ffffff',
@@ -201,6 +210,36 @@ describe('options slice', () => {
             expect(
                 optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeVideoDurationMaxPerRun(-5))
                     .youtubeVideoDurationMaxPerRun,
+            ).toBe(0);
+        });
+    });
+
+    describe('changeYoutubeShortsFilterEnabled', () => {
+        it('sets the value', () => {
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeShortsFilterEnabled(true));
+            expect(state.youtubeShortsFilterEnabled).toBe(true);
+        });
+    });
+
+    describe('changeYoutubeShortsMaxPerRun', () => {
+        it('sets the value', () => {
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeShortsMaxPerRun(100));
+            expect(state.youtubeShortsMaxPerRun).toBe(100);
+        });
+
+        it('keeps 0 for no limit', () => {
+            const state = optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeShortsMaxPerRun(0));
+            expect(state.youtubeShortsMaxPerRun).toBe(0);
+        });
+
+        it('rounds fractions and clamps negatives to 0', () => {
+            expect(
+                optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeShortsMaxPerRun(0.5))
+                    .youtubeShortsMaxPerRun,
+            ).toBe(1);
+            expect(
+                optionsSlice.reducer(prevState, optionsSlice.actions.changeYoutubeShortsMaxPerRun(-5))
+                    .youtubeShortsMaxPerRun,
             ).toBe(0);
         });
     });

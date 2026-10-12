@@ -26,10 +26,15 @@ type FeedSliceState = {
     readItemIds: ReadonlyArray<string>;
     // video id -> timestamp of the last failed length fetch, so failures are not retried every update
     durationFetchFailures: Readonly<Record<string, number>>;
+    // video id -> timestamp of the last failed short-status probe
+    shortsFetchFailures: Readonly<Record<string, number>>;
 };
 
 // a permanently unavailable video must not be re-requested on every feed update
 export const DURATION_FETCH_RETRY_WINDOW_MS = 6 * 60 * 60 * 1000;
+
+// a video longer than this cannot be a YouTube Short (3 minutes is the current ceiling)
+export const SHORTS_MAX_DURATION_SECONDS = 180;
 
 export const fetchAllFeedsCommand = createAction('feeds/fetchAllFeedsCommand');
 export const fetchFeedsCommand = createAction<ReadonlyArray<string>>('feeds/fetchFeedsCommand');
@@ -120,6 +125,7 @@ const initialState: FeedSliceState = {
     feeds: process.env.NODE_ENV === 'development' ? sampleDataFeeds : [],
     readItemIds: [],
     durationFetchFailures: {},
+    shortsFetchFailures: {},
 };
 
 export const selectFeeds = (state: FeedSliceState) => state.feeds;
@@ -180,6 +186,41 @@ export const selectYoutubeItemsMissingDuration = (
 
 export const selectDurationFetchFailures = (state: RootState): Readonly<Record<string, number>> =>
     state.feeds.durationFetchFailures;
+
+export type YoutubeShortCandidate = {
+    feedId: string;
+    itemId: string;
+    videoId: string;
+    durationSeconds?: number;
+};
+
+// unread items only: read items are hidden in the list, so probing them for a short would be wasted
+export const selectYoutubeItemsMissingShortStatus = (state: RootState): ReadonlyArray<YoutubeShortCandidate> => {
+    const pending: Array<YoutubeShortCandidate> = [];
+
+    for (const feed of state.feeds.feeds) {
+        for (const item of feed.items) {
+            if (item.isShort !== undefined) {
+                continue;
+            }
+
+            if (isItemRead(state.feeds, feed.id, item.id, feed)) {
+                continue;
+            }
+
+            const videoId = youtubeVideoIdFromUrl(item.url) ?? youtubeVideoIdFromItemId(item.id);
+
+            if (videoId !== undefined) {
+                pending.push({ feedId: feed.id, itemId: item.id, videoId, durationSeconds: item.durationSeconds });
+            }
+        }
+    }
+
+    return pending;
+};
+
+export const selectShortsFetchFailures = (state: RootState): Readonly<Record<string, number>> =>
+    state.feeds.shortsFetchFailures;
 
 const folderById = (folders: FeedSliceState['folders'], id: string) => {
     const folder = folders.find((x) => x.id === id);
@@ -511,6 +552,46 @@ const feedsSlice = createSlice({
 
             return { ...state, durationFetchFailures: failures };
         },
+        setItemShortStatus(state, action: PayloadAction<{ feedId: string; itemId: string; isShort: boolean }>) {
+            const { feedId, itemId, isShort } = action.payload;
+            const feed = state.feeds.find((f) => f.id === feedId);
+            const item = feed?.items.find((i) => i.id === itemId);
+
+            if (feed === undefined || item === undefined || item.isShort === isShort) {
+                return state;
+            }
+
+            return {
+                ...state,
+                feeds: state.feeds.map((f) =>
+                    f.id !== feedId ? f : { ...f, items: f.items.map((i) => (i.id !== itemId ? i : { ...i, isShort })) },
+                ),
+            };
+        },
+        recordShortsFetchFailure(state, action: PayloadAction<{ videoId: string; failedAt: number }>) {
+            const { videoId, failedAt } = action.payload;
+
+            const failures = Object.fromEntries(
+                Object.entries(state.shortsFetchFailures).filter(
+                    ([, failedAtOfEntry]) => failedAt - failedAtOfEntry < DURATION_FETCH_RETRY_WINDOW_MS,
+                ),
+            );
+            failures[videoId] = failedAt;
+
+            return { ...state, shortsFetchFailures: failures };
+        },
+        clearShortsFetchFailure(state, action: PayloadAction<string>) {
+            const videoId = action.payload;
+
+            if (state.shortsFetchFailures[videoId] === undefined) {
+                return state;
+            }
+
+            const failures = { ...state.shortsFetchFailures };
+            delete failures[videoId];
+
+            return { ...state, shortsFetchFailures: failures };
+        },
         markNodeAsRead(state, action: PayloadAction<NodeMeta>) {
             const node = action.payload;
 
@@ -647,6 +728,7 @@ const feedsSlice = createSlice({
                 ...action.payload.feeds,
                 readItemIds: action.payload.feeds.readItemIds ?? [],
                 durationFetchFailures: action.payload.feeds.durationFetchFailures ?? {},
+                shortsFetchFailures: action.payload.feeds.shortsFetchFailures ?? {},
             };
         });
     },
