@@ -1,5 +1,6 @@
 import { detectFeedsInLinks } from './links/feedDetectionLinks';
 import { siteDetectors } from './sites/siteDetectors';
+import { resolveUrl } from '../../utils/url';
 
 export type DetectedFeed = {
     type: string;
@@ -21,7 +22,7 @@ const normalizeHostname = (hostname: string) => hostname.toLowerCase().replace(/
 /** Keeps the query, so feeds differing only by search are not merged */
 const deduplicationKey = (href: string): string => {
     try {
-        const url = new URL(href);
+        const url = resolveUrl(href) ?? new URL(href);
         return `${url.protocol}//${normalizeHostname(url.hostname)}${url.pathname.replace(/\/$/, '')}${url.search}`;
     } catch {
         return href;
@@ -37,13 +38,7 @@ export function detectFeedsForSite(url: URL): DetectedFeed[] {
 }
 
 export function parseUrl(input: string): URL | undefined {
-    const trimmed = input.trim();
-    const hasProtocol = /^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed);
-    try {
-        return new URL(hasProtocol ? trimmed : `https://${trimmed}`);
-    } catch {
-        return undefined;
-    }
+    return resolveUrl(input);
 }
 
 export function detectFeeds(): DetectedFeed[] {

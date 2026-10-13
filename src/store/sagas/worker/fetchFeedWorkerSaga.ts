@@ -7,6 +7,7 @@ import { UnreachableCaseError } from '../../../utils/UnreachableCaseError';
 import { fetchFeed, FetchFeedResult } from './fetchFeed';
 import { FetchFeedAction, WorkerResponseAction } from './workerApi';
 import { stripHtmlTags } from '../../../utils/stringUtils';
+import { normalizeUrl } from '../../../utils/url';
 
 interface FeedParserInput {
     feedUrl: string;
@@ -56,7 +57,7 @@ const toIsoString = (date: Date | null | undefined): string | undefined => {
 
 const mapFeedItem = (item: Item): FeedItem => ({
     id: item.guid ?? item.link,
-    url: item.link,
+    url: item.link ? normalizeUrl(item.link) : item.link,
     title: item.title ?? stripHtmlTags(item.description),
     published: toIsoString(item.pubdate),
     lastModified: toIsoString(item.date),
