@@ -1,4 +1,5 @@
 import { DetectedFeed } from '../feedDetection';
+import { normalizeUrl } from '../../../utils/url';
 
 const LINK_TYPES = [
     'application/rss+xml',
@@ -17,7 +18,7 @@ const LINK_TYPES = [
 
 const mapLink = (link: HTMLLinkElement) => {
     const { type, href, title = link.href } = link;
-    return { type, href, title };
+    return { type, href: normalizeUrl(href), title };
 };
 
 export const detectFeedsInLinks = (): DetectedFeed[] => {

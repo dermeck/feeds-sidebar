@@ -1,18 +1,6 @@
 const VIDEO_ID_PATTERN = /^[\w-]{11}$/;
 
-const resolveUrl = (url: string): URL | undefined => {
-    try {
-        if (url.startsWith('//')) {
-            return new URL(`https:${url}`);
-        }
-        if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(url)) {
-            return new URL(`https://${url}`);
-        }
-        return new URL(url);
-    } catch {
-        return undefined;
-    }
-};
+import { resolveUrl } from '../../utils/url';
 
 const matchVideoId = (value: string): string | undefined => {
     return VIDEO_ID_PATTERN.test(value) ? value : undefined;
