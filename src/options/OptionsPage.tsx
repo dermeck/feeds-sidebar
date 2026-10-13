@@ -86,6 +86,18 @@ export const OptionsPage = () => {
                         />
                     </OptionField>
 
+                    <NumberField
+                        label="Max items per feed"
+                        description={`Keep at most this many items per feed. Newer items are kept, older ones are removed. Defaults to ${MAX_ITEMS_PER_FEED_DEFAULT}. Set to 0 for unlimited.`}
+                        value={options.maxItemsPerFeed}
+                        min={0}
+                        onCommit={setMaxItemsPerFeed}
+                    />
+                </section>
+
+                <section className="options-page__section">
+                    <h2 className="options-page__section-heading">YouTube</h2>
+
                     <OptionField
                         label="Show video lengths for YouTube items"
                         description="Fetch the length of each YouTube video and show it next to the title. Fetching runs in the background, one video at a time. Each length is a separate request to YouTube, so enabling this produces ongoing background network activity."
@@ -125,13 +137,27 @@ export const OptionsPage = () => {
                         </>
                     )}
 
-                    <NumberField
-                        label="Max items per feed"
-                        description={`Keep at most this many items per feed. Newer items are kept, older ones are removed. Defaults to ${MAX_ITEMS_PER_FEED_DEFAULT}. Set to 0 for unlimited.`}
-                        value={options.maxItemsPerFeed}
-                        min={0}
-                        onCommit={setMaxItemsPerFeed}
-                    />
+                    <OptionField
+                        label="Hide YouTube Shorts"
+                        description="Hide Shorts from YouTube feeds. Videos already known to be longer than 3 minutes are skipped; every other unread video needs one background request to YouTube to tell Shorts apart from short normal videos. Runs one video at a time."
+                    >
+                        <Toggle
+                            checked={options.youtubeShortsFilterEnabled}
+                            onChange={(checked) =>
+                                dispatch(optionsSlice.actions.changeYoutubeShortsFilterEnabled(checked))
+                            }
+                        />
+                    </OptionField>
+
+                    {options.youtubeShortsFilterEnabled && (
+                        <NumberField
+                            label="Max Shorts checks per update"
+                            description="Probe at most this many videos each time the feeds are updated. Set a lower number if you have many YouTube feeds or a metered connection, so a large backlog is spread over several updates instead of one long run. Set to 0 for no limit."
+                            value={options.youtubeShortsMaxPerRun}
+                            min={0}
+                            onCommit={(value) => dispatch(optionsSlice.actions.changeYoutubeShortsMaxPerRun(value))}
+                        />
+                    )}
                 </section>
 
                 <section className="options-page__section">

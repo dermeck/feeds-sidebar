@@ -28,6 +28,7 @@ describe('global extensionStateLoaded action', () => {
             feeds: [feed1Fixture],
             readItemIds: [],
             durationFetchFailures: {},
+            shortsFetchFailures: {},
         };
 
         const action = extensionStateLoaded({
@@ -36,6 +37,7 @@ describe('global extensionStateLoaded action', () => {
                 feeds: [feed2Fixture],
                 readItemIds: [],
                 durationFetchFailures: {},
+                shortsFetchFailures: {},
             },
             options: initialOptionsState,
         });
@@ -45,6 +47,7 @@ describe('global extensionStateLoaded action', () => {
             feeds: [feed2Fixture],
             readItemIds: [],
             durationFetchFailures: {},
+            shortsFetchFailures: {},
         };
 
         expect(feedsSlice.reducer(prevState, action)).toStrictEqual(expectation);

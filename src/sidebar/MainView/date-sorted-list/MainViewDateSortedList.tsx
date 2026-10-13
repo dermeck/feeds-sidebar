@@ -7,6 +7,7 @@ import { DateSortedFeedItems, getDateSortedFeedItems } from './dateSortedFeedIte
 import { FeedItemList } from '../FeedList/FeedItemList';
 import { FeedListItemModel } from '../FeedList/item/FeedListItem';
 import { EmptyListMessage } from '../EmptyListMessage';
+import { isHiddenByShortsFilter } from '../../../model/feeds';
 
 interface MainViewPlainListProps {
     className: string;
@@ -30,6 +31,7 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
     const feeds = useAppSelector((state) => state.feeds.feeds);
     const readItemIds = useAppSelector((state) => state.feeds.readItemIds);
     const cardStyle = useAppSelector((state) => selectOptions(state).dateGroupCardStyle);
+    const hideYoutubeShorts = useAppSelector((state) => selectOptions(state).youtubeShortsFilterEnabled);
     const [expandedSections, setExpandedSections] = useState<string[]>(['today', 'yesterday']);
     const sortedFeeds: DateSortedFeedItems = useMemo(() => {
         return getDateSortedFeedItems(feeds, readItemIds);
@@ -37,7 +39,12 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
 
     const filteredFeeds = useMemo(() => {
         const matchesFilter = (items: FeedListItemModel[]) =>
-            items.filter((item) => !item.isRead && item.title?.toLowerCase().includes(filterString.toLowerCase()));
+            items.filter(
+                (item) =>
+                    !item.isRead &&
+                    !isHiddenByShortsFilter(item, hideYoutubeShorts) &&
+                    item.title?.toLowerCase().includes(filterString.toLowerCase()),
+            );
         return {
             today: matchesFilter(sortedFeeds.today),
             yesterday: matchesFilter(sortedFeeds.yesterday),
@@ -45,7 +52,7 @@ export const MainViewDateSortedList = ({ className, filterString }: MainViewPlai
             months: sortedFeeds.months.map((group) => ({ ...group, items: matchesFilter(group.items) })),
             unknown: matchesFilter(sortedFeeds.unknown),
         };
-    }, [sortedFeeds, filterString]);
+    }, [sortedFeeds, filterString, hideYoutubeShorts]);
 
     const hasMatchingItems = useMemo(() => {
         return (

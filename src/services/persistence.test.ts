@@ -21,6 +21,7 @@ const validFeeds = {
     feeds: [],
     readItemIds: [],
     durationFetchFailures: {},
+    shortsFetchFailures: {},
 };
 
 describe('saveState', () => {

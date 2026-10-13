@@ -27,11 +27,12 @@ const setupStore = () =>
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 // all items are unread, item "a" is the oldest
-const item = (id: string, day: number): FeedItem => ({
+const item = (id: string, day: number, isShort?: boolean): FeedItem => ({
     id,
     title: id,
     url: `https://example.com/${id}`,
     published: `2024-01-0${day}T00:00:00Z`,
+    ...(isShort !== undefined ? { isShort } : {}),
 });
 
 const loadUnreadItems = (store: ReturnType<typeof setupStore>, options: { showUnreadBadge?: boolean } = {}) =>
@@ -42,8 +43,25 @@ const loadUnreadItems = (store: ReturnType<typeof setupStore>, options: { showUn
                 feeds: [{ id: 'https://example.com/feed', items: [item('a', 1), item('b', 2), item('c', 3)] }],
                 readItemIds: [],
                 durationFetchFailures: {},
+                shortsFetchFailures: {},
             },
             options,
+        }),
+    );
+
+const loadUnreadItemsWithShorts = (store: ReturnType<typeof setupStore>) =>
+    store.dispatch(
+        extensionStateLoaded({
+            feeds: {
+                folders: [],
+                feeds: [
+                    { id: 'https://example.com/feed', items: [item('a', 1, true), item('b', 2), item('c', 3)] },
+                ],
+                readItemIds: [],
+                durationFetchFailures: {},
+                shortsFetchFailures: {},
+            },
+            options: { showUnreadBadge: true, youtubeShortsFilterEnabled: true },
         }),
     );
 
@@ -86,5 +104,30 @@ describe('unread badge', () => {
         await flush();
 
         expect(setBadgeText).toHaveBeenCalledWith({ text: '' });
+    });
+
+    it('excludes hidden shorts from the badge when the shorts filter is enabled', async () => {
+        const store = setupStore();
+        loadUnreadItemsWithShorts(store);
+        store.dispatch(optionsSlice.actions.changeYoutubeShortsFilterEnabled(true));
+        await flush();
+
+        expect(setBadgeText).toHaveBeenLastCalledWith({ text: '2' });
+    });
+
+    it('updates the badge when an item becomes a known short', async () => {
+        const store = setupStore();
+        loadUnreadItems(store);
+        store.dispatch(optionsSlice.actions.changeYoutubeShortsFilterEnabled(true));
+        await flush();
+        expect(setBadgeText).toHaveBeenLastCalledWith({ text: '3' });
+
+        setBadgeText.mockClear();
+        store.dispatch(
+            feedsSlice.actions.setItemsShortStatus([{ feedId: 'https://example.com/feed', itemId: 'a', isShort: true }]),
+        );
+        await flush();
+
+        expect(setBadgeText).toHaveBeenCalledWith({ text: '2' });
     });
 });

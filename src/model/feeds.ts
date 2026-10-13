@@ -40,9 +40,13 @@ export interface FeedItem {
     lastModified?: string;
     isRead?: boolean;
     durationSeconds?: number;
+    isShort?: boolean;
 }
 
 export type FeedItemWithParent = FeedItem & { parentId: string; parentTitle?: string };
+
+export const isHiddenByShortsFilter = (item: Pick<FeedItem, 'isShort'>, hideYoutubeShorts: boolean): boolean =>
+    hideYoutubeShorts && item.isShort === true;
 
 export const itemDate = (item: FeedItem): Date | undefined => {
     const value = item.lastModified ?? item.published;

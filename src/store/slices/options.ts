@@ -14,6 +14,7 @@ export type DateGroupCardStyle = 'flat' | 'raised';
 export type YoutubeVideoDurationScope = 'unread' | 'all';
 
 export const YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT = 25;
+export const YOUTUBE_SHORTS_MAX_PER_RUN_DEFAULT = 25;
 
 export const FEED_UPDATE_MINUTES_MIN = 5;
 export const FEED_UPDATE_MINUTES_MAX = 1440;
@@ -33,6 +34,8 @@ type OptionsSliceState = {
     youtubeVideoDurationEnabled: boolean;
     youtubeVideoDurationScope: YoutubeVideoDurationScope;
     youtubeVideoDurationMaxPerRun: number;
+    youtubeShortsFilterEnabled: boolean;
+    youtubeShortsMaxPerRun: number;
     maxItemsPerFeed: number;
     sidebarSurface: SidebarSurface;
     sidebarCustomColorLight: string;
@@ -50,6 +53,8 @@ export const initialState: OptionsSliceState = {
     youtubeVideoDurationEnabled: false,
     youtubeVideoDurationScope: 'unread',
     youtubeVideoDurationMaxPerRun: YOUTUBE_DURATION_MAX_PER_RUN_DEFAULT,
+    youtubeShortsFilterEnabled: false,
+    youtubeShortsMaxPerRun: YOUTUBE_SHORTS_MAX_PER_RUN_DEFAULT,
     maxItemsPerFeed: MAX_ITEMS_PER_FEED_DEFAULT,
     sidebarSurface: 'auto',
     sidebarCustomColorLight: '#ffffff',
@@ -98,6 +103,12 @@ const optionsSlice = createSlice({
         },
         changeYoutubeVideoDurationMaxPerRun(state, action: PayloadAction<number>) {
             state.youtubeVideoDurationMaxPerRun = Math.max(0, Math.round(action.payload));
+        },
+        changeYoutubeShortsFilterEnabled(state, action: PayloadAction<boolean>) {
+            state.youtubeShortsFilterEnabled = action.payload;
+        },
+        changeYoutubeShortsMaxPerRun(state, action: PayloadAction<number>) {
+            state.youtubeShortsMaxPerRun = Math.max(0, Math.round(action.payload));
         },
         changeMaxItemsPerFeed(state, action: PayloadAction<number>) {
             state.maxItemsPerFeed = Math.max(0, Math.round(action.payload));
