@@ -6,6 +6,7 @@ import {
     FeedItemWithParent,
     Folder,
     InsertMode,
+    isHiddenByShortsFilter,
     itemDate,
     NodeMeta,
     NodeType,
@@ -153,9 +154,14 @@ const isItemRead = (state: FeedSliceState, feedId: string, itemId: string, speci
     return false;
 };
 
-export const selectTotalUnreadItems = (state: FeedSliceState) =>
+export const selectTotalUnreadItems = (state: FeedSliceState, hideYoutubeShorts = false) =>
     state.feeds
-        .map((feed) => feed.items.filter((i) => !isItemRead(state, feed.id, i.id, feed)).length)
+        .map(
+            (feed) =>
+                feed.items.filter(
+                    (i) => !isItemRead(state, feed.id, i.id, feed) && !isHiddenByShortsFilter(i, hideYoutubeShorts),
+                ).length,
+        )
         .reduce((totalUnreadReadItems, unReadItemsNexFeed) => totalUnreadReadItems + unReadItemsNexFeed, 0);
 
 export const selectYoutubeItemsMissingDuration = (

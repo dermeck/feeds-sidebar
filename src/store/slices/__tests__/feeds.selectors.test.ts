@@ -65,6 +65,25 @@ describe('selectTotalUnreadItems', () => {
 
         expect(selectTotalUnreadItems(state)).toBe(3);
     });
+
+    it('excludes unread shorts only when the shorts filter is enabled', () => {
+        const state: RootState['feeds'] = {
+            ...feedsSlice.getInitialState(),
+            feeds: [
+                {
+                    ...feed1Fixture,
+                    items: [
+                        { ...itemFixture('1'), isRead: false, isShort: true },
+                        { ...itemFixture('2'), isRead: false, isShort: false },
+                        { ...itemFixture('3'), isRead: false },
+                    ],
+                },
+            ],
+        };
+
+        expect(selectTotalUnreadItems(state, false)).toBe(3);
+        expect(selectTotalUnreadItems(state, true)).toBe(2);
+    });
 });
 
 describe('selectDescendentNodeIds', () => {

@@ -9,7 +9,9 @@ export const updateBadge = (state: RootState) => {
         return;
     }
 
-    const totalUnreadReadItems = state.options.showUnreadBadge ? selectTotalUnreadItems(state.feeds) : 0;
+    const totalUnreadReadItems = state.options.showUnreadBadge
+        ? selectTotalUnreadItems(state.feeds, state.options.youtubeShortsFilterEnabled)
+        : 0;
 
     browser.action.setBadgeText({ text: totalUnreadReadItems !== 0 ? totalUnreadReadItems.toString() : '' });
 };
@@ -21,8 +23,10 @@ const badgeRelevantActions = [
     feedsSlice.actions.markAllAsRead.type,
     feedsSlice.actions.deleteNode.type,
     feedsSlice.actions.deleteFeed.type,
+    feedsSlice.actions.setItemsShortStatus.type,
     optionsSlice.actions.changeMaxItemsPerFeed.type,
     optionsSlice.actions.changeShowUnreadBadge.type,
+    optionsSlice.actions.changeYoutubeShortsFilterEnabled.type,
     optionsSlice.actions.resetOptions.type,
 ];
 
